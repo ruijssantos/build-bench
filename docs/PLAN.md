@@ -3,9 +3,13 @@
 A companion app for 1:24 scale model car building, centred on a Tamiya 74540 HG Trigger
 airbrush workflow and pre-build kit research.
 
-**Status:** revision 3, awaiting review. No implementation code written yet.
+**Status:** revision 4 — **locked, ready to build**. No implementation code written yet.
 **Planning pass:** Opus. **Implementation:** Sonnet, phase by phase.
 
+> **Changed in r4** — Visual design settled and folded in: §4.1 is now the complete token
+> spec (palette, type ramp, geometry, livery) replacing the prototype's dark palette. Dark
+> theme dropped from scope. Everything needed for Phase 0 and Phase 1 is now decided.
+>
 > **Changed in r3** — All four open questions answered and closed. Manual PDFs are now
 > **uploaded by you and viewed in the app** rather than fetched automatically, which
 > decouples paint shopping from kit research and re-orders the phases. Single-rig confirmed.
@@ -31,6 +35,8 @@ airbrush workflow and pre-build kit research.
 | Paint inventory source of truth | App database, one-time import from the Google Sheet |
 | Airbrush | **Single-rig: Tamiya 74540 HG Trigger** |
 | Phone | PWA / responsive web. Desktop for manuals, phone for quick lookups |
+| Visual design | Warm cream, one accent, tonal livery, Barlow Condensed display — locked, §4.1 |
+| Theme | **Light only.** No dark theme for now |
 
 ### 1.1 Making Vercel work
 
@@ -429,7 +435,7 @@ scale-model-bench/
 │   │   └── shopping.ts             ← requirements − inventory → buy list
 │   ├── research/                   ← feature 2, isolated (§5)
 │   ├── components/
-│   └── styles/tokens.css           ← the MVP's palette and type, lifted verbatim
+│   └── styles/tokens.css           ← the locked tokens in §4.1, verbatim
 └── tests/
 ```
 
@@ -441,16 +447,116 @@ Drizzle supports it directly.
 **Data access rule.** Every query goes through `src/db/repositories/*`. Route handlers and
 components never import the Drizzle client directly.
 
-### 4.1 Design system
+### 4.1 Design system — locked
 
-- **Palette:** `--ink #14161a`, `--panel #1c1f24`, `--line #2e333a`, `--paper #e8e4da`,
-  `--dim #8d8a82`, `--red #c8202a`, `--thin #5d9dc4`, `--amber #d9a441`
-- **Type:** Archivo Narrow 700 for display, IBM Plex Mono for everything else
-- **Idioms to keep:** hairline-bordered panel grid, uppercase letterspaced eyebrow labels,
-  the red em-dash bullet list, the amber/red flag callout, the segmented cup bar
+Settled across four rounds of mockups. Reference canvas (Thinner Bench, Paints, desktop
+rail, and the rejected directions):
+<https://claude.ai/code/artifact/9081aef8-94df-49d5-9ec9-d72df184865e>
 
-Dark, high-contrast, workshop-instrument. Right for a phone under a bench lamp. Keep it;
-don't introduce a second visual idea.
+The prototype's dark workshop palette is **superseded** — it was period pastiche, and the
+brief moved to clean product UI (Apple / Airbnb / Revolut as reference points) carrying a
+classic-car palette rather than imitating a dashboard.
+
+#### Colour
+
+```css
+/* surfaces */
+--bg:            #f6f2e9;   /* page */
+--card:          #fffdf8;
+--card-sunken:   #f2ece0;   /* inset tracks, card strip ground */
+--line:          #ece5d7;   /* hairline border */
+--line-strong:   #e8e1d3;   /* input borders */
+
+/* livery — a neutral, never a colour */
+--livery:        #e3dbc8;   /* tonal stripe on --bg */
+--livery-card:   #efe8d8;   /* tonal stripe on --card */
+
+/* ink */
+--ink:           #1b1a17;
+--ink-soft:      #4a4437;   /* body inside tinted panels */
+--muted:         #7c766a;   /* secondary text */
+--muted-2:       #9c9483;   /* labels, captions */
+--faint:         #c3bba8;   /* separators inside text, disabled glyphs */
+--icon-idle:     #a89f8c;
+
+/* accent — selection and primary values ONLY */
+--accent:        #1b3a6b;
+--accent-tint:   #edf1f7;
+
+/* semantic — in range / owned */
+--ok:            #4a6f52;
+--ok-tint:       #e9eee9;
+--ok-track:      #d3ded4;   /* the workable-window band */
+
+/* semantic — act on this */
+--alert:         #8c1c24;
+--alert-tint:    #f7ecea;
+```
+
+**The rule that keeps this coherent:** three colours, all of them earning their place.
+Accent marks selection and the primary value. The two semantics carry meaning and nothing
+else — `--ok` means *in range / owned*, `--alert` means *act on this* (warnings, running
+low). Nothing is coloured for decoration; the livery is a tonal neutral.
+
+That leaves **paint swatches as the only saturated colour on screen**, and those come from
+`paint.hex` — they are content, not chrome. The shelf does the colouring, the interface
+stays quiet. Adding a fourth chrome colour breaks this; don't.
+
+#### Type
+
+Three faces, one job each. All from Google Fonts, each with a fallback stack.
+
+| Token | Face | Used for |
+|---|---|---|
+| `--font-display` | Barlow Condensed | Screen titles (uppercase), hero numerals, small-caps labels |
+| `--font-ui` | Plus Jakarta Sans | Everything that is read: values, body, rows, buttons |
+| `--font-mono` | DM Mono | Paint codes only — `TS-8`, `XF-64` |
+
+| Role | Spec |
+|---|---|
+| Screen title | Display 700 · 40px phone / 38px desktop · uppercase · ls .005em · lh .98 |
+| Hero numeral | Display 700 · 66px phone / 86px desktop · ls −.01em |
+| Section label | Display 600 · 13–15px · uppercase · ls .14em · `--muted-2` |
+| Tile label | Display 600 · 12.5px · uppercase · ls .12em · `--muted-2` |
+| Tile value | Display 700 · 24px (19px desktop tiles) |
+| Row title | UI 700 · 14.5px · ls −.01em |
+| Body / value | UI 500–700 · 12.5–16px |
+| Caption | UI 500 · 11.5px · `--muted-2` |
+| Paint code | Mono 500 · 12px · ls .02em · `--muted-2` |
+
+Barlow Condensed is what gives the app its automotive voice. It does that through type, not
+through ornament — which is why it survives on screens (Paints, Shopping) that have nothing
+to do with instruments.
+
+#### Geometry
+
+- **Spacing:** 4px scale. Screen gutter 20px phone / 40px desktop.
+- **Radii:** card 20 (22 desktop) · tile, input 14 · chip 6–12 · pill 999.
+- **Borders:** 1px `--line`. Hairlines do the separating.
+- **Elevation:** exactly one shadow in the whole app, on the hero card —
+  `0 1px 2px rgba(28,26,23,.04), 0 10px 28px rgba(28,26,23,.045)`. Everything else is a
+  hairline. Do not add a second elevation level.
+- **Touch targets:** ≥44px everywhere; tab-bar items 52px.
+- **Tab bar:** 84px tall, hairline top, 5 items, active in `--accent`.
+- **Left rail:** 260px, items 44px, active state is an `--accent-tint` pill at radius 12.
+- **Status bar:** leave the top 44px of a phone layout empty. Never draw fake chrome.
+
+#### Livery
+
+The one decorative element, and it costs no colour:
+
+- **Header sweep** — `rotate(-21deg)`, two bars 26px and 10px with a 6px gap, filled
+  `--livery`, bleeding off the top-right of the header (which is `overflow: hidden`).
+- **Card echo** — a 4px strip on the hero card's top edge: 44px bar, 9px gap, 17px bar,
+  filled `--livery` on a `--card-sunken` ground. This is what makes it read as a system
+  rather than a header flourish.
+- On `--card` surfaces (the desktop rail) use `--livery-card` instead, one step lighter.
+- The livery never uses `--accent`.
+
+#### Icons
+
+Inline SVG on a 24px grid, `fill="none"`, stroke 2 (1.9–2.6 where emphasis is wanted),
+round caps and joins. One consistent set. **No emoji anywhere in the UI.**
 
 ### 4.2 Desktop and phone are different jobs
 
@@ -579,7 +685,7 @@ a genuinely optional enhancement rather than a blocking dependency.
 
 ### Phase 0 — Foundations
 Next.js scaffold, Neon via the Vercel integration, Drizzle schema and first migration, cookie
-auth + middleware, design tokens extracted from the MVP, PWA manifest, CI running
+auth + middleware, `tokens.css` written from §4.1, PWA manifest, CI running
 `verify-catalogue`.
 **Ships:** a deployed empty app you can log into from your phone.
 
@@ -625,16 +731,40 @@ ratio, promotable into a `ratio_override`.
 
 ---
 
-## 7. Open questions
+## 7. Locked
 
-**None outstanding.** All four from r2 are answered and folded in: single-rig (§2.3), brand
-ordering (§2.2), no vendor pricing (§8), manuals uploaded rather than fetched (§4.3).
+Nothing outstanding. Everything needed to start building is decided.
+
+| Area | Decision | Where |
+|---|---|---|
+| Hosting | Vercel Hobby · Neon Postgres · Vercel Blob | §1.1, §9 |
+| Framework | Next.js App Router + React + Drizzle | §1, §4 |
+| Auth | One passphrase, signed cookie, middleware | §1.1 |
+| Long jobs | Research staged into 3 calls, ≤300 s each | §1.2, §5.1 |
+| Airbrush | Single-rig 74540; facts read from the `airbrush` row | §2.3 |
+| Catalogue | Whole Tamiya range, generated + CI-verified | §2.2 |
+| Equivalence | Cybermodeler, build-time import, foreign → Tamiya | §2.2 |
+| Manuals | Uploaded by hand, viewed in app, never fetched | §4.3 |
+| Colour | 3 semantic colours + tonal livery | §4.1 |
+| Type | Barlow Condensed · Plus Jakarta Sans · DM Mono | §4.1 |
+| Geometry | 4px scale · radii 20/14/999 · one shadow | §4.1 |
+| Navigation | Bottom tabs on phone · 260px left rail on desktop | §4.1, §4.2 |
+| Theme | Light only; no dark branch anywhere | §8 |
+
+Two values still need filling in during Phase 1, both flagged at the point of use: the real
+hexes for **XF-83** and **XF-84** (§2.2 — mine are estimates), and one parser pass against
+Cybermodeler's actual HTML (§2.2 — the page was unreachable from the planning sandbox).
+
+**Start at Phase 0** (§6), with the Vercel setup in §9.2 done in parallel.
 
 ---
 
 ## 8. What I am explicitly not proposing
 
 - **No native mobile app.** PWA covers it.
+- **No dark theme.** Cut from scope. The token structure in §4.1 supports one later — it is a
+  values swap, not a redraw — but nothing in the build should assume or prepare for it, and
+  no component should carry a dark branch. A second theme is a future conversation.
 - **No Supabase**, for the pause behaviour in §1.1 — not because it's a worse product. If this
   ever goes multi-user, revisit: its auth is the reason to switch.
 - **No vendor price tracking.** Confirmed out of scope. It would mean hand-entering prices or
