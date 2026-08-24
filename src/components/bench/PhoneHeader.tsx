@@ -1,24 +1,23 @@
-"use client";
+import type { ReactNode } from "react";
 
-import { useState } from "react";
-
-import type { AirbrushRow } from "@/db/repositories/airbrush";
+import { getActiveAirbrush } from "@/db/repositories/airbrush";
 
 import { DryTipContent } from "./DryTipContent";
-import { Modal } from "./Modal";
+import { DryTipTrigger } from "./DryTipTrigger";
 import styles from "./PhoneHeader.module.css";
 import { shortRigLabel } from "./rig-label";
 import { SignOutButton } from "./SignOutButton";
 
-export function PhoneHeader({
-  title,
-  airbrush,
-}: {
-  title: string;
-  airbrush?: AirbrushRow | null;
-}) {
-  const [dryTipOpen, setDryTipOpen] = useState(false);
-
+/**
+ * The phone header. A Server Component: the title is usually this screen's LCP
+ * element, so nothing about it should wait on a query or on hydration.
+ *
+ * `rigPill` is a slot rather than a prop, so the rig row can be fetched inside
+ * its own <Suspense> boundary further down. The pill is shorter than the title
+ * block it sits beside, and the row is `align-items: flex-end`, so it lands
+ * without moving anything.
+ */
+export function PhoneHeader({ title, rigPill }: { title: string; rigPill?: ReactNode }) {
   return (
     <div className={styles.header}>
       <svg className={styles.sweep} width="230" height="230" viewBox="0 0 230 230" aria-hidden="true">
@@ -39,24 +38,30 @@ export function PhoneHeader({
           <div className={styles.eyebrow}>The Build Bench</div>
           <div className={styles.title}>{title}</div>
         </div>
-        {airbrush ? (
-          <button
-            type="button"
-            className={styles.rigPill}
-            onClick={() => setDryTipOpen(true)}
-            aria-label="Tips & guide for the current rig"
-          >
-            <span className={styles.rigDot} />
-            <span className={styles.rigLabel}>{shortRigLabel(airbrush.model ?? "Rig")}</span>
-          </button>
-        ) : null}
+        {rigPill}
       </div>
-
-      {dryTipOpen && airbrush ? (
-        <Modal title={`${airbrush.model ?? "Rig"} · Tips & Guide`} onClose={() => setDryTipOpen(false)}>
-          <DryTipContent airbrush={airbrush} />
-        </Modal>
-      ) : null}
     </div>
+  );
+}
+
+/** The rig pill on its own, so it can stream in behind its own boundary. */
+export async function PhoneHeaderRigPill() {
+  const airbrush = await getActiveAirbrush();
+  if (!airbrush) return null;
+
+  return (
+    <DryTipTrigger
+      title={`${airbrush.model ?? "Rig"} · Tips & Guide`}
+      className={styles.rigPill}
+      ariaLabel="Tips & guide for the current rig"
+      trigger={
+        <>
+          <span className={styles.rigDot} />
+          <span className={styles.rigLabel}>{shortRigLabel(airbrush.model ?? "Rig")}</span>
+        </>
+      }
+    >
+      <DryTipContent airbrush={airbrush} />
+    </DryTipTrigger>
   );
 }

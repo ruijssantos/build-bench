@@ -21,6 +21,11 @@ jobs:
       - run: npm run lint
       - run: npm run build
 
+      # docs/PERFORMANCE.md — fails the build if the Thinner Bench's initial
+      # payload grows past its budget, if the paint catalogue lands in an
+      # eagerly-loaded chunk, or if a route loses its static shell.
+      - run: npm run perf:budget
+
       # docs/PLAN.md §2.2 — fails the build if any paint code referenced by
       # the real inventory or the ratio rules is missing from the generated
       # catalogue (this is the check that would have caught XF-83/XF-84).

@@ -5,7 +5,10 @@ paint inventory, kit research and build logs, built around a Tamiya 74540 HG
 Trigger workflow.
 
 The architecture and phased build plan live in [`docs/PLAN.md`](docs/PLAN.md).
-Design system tokens are locked in §4.1 of that file.
+Design system tokens are locked in §4.1 of that file. The performance rules
+every screen follows — what's prerendered, what's compiled in, and what's
+allowed to touch the database — are in
+[`docs/PERFORMANCE.md`](docs/PERFORMANCE.md).
 
 ## Status
 
@@ -34,6 +37,7 @@ Open [http://localhost:3000](http://localhost:3000).
 | `npm run build` | Production build |
 | `npm run lint` | ESLint |
 | `npm run typecheck` | `tsc --noEmit` |
+| `npm run perf:budget` | Check a finished build against the budget in `docs/PERFORMANCE.md` |
 | `npm run db:generate` | Generate a Drizzle migration from `src/db/schema.ts` |
 | `npm run db:migrate` | Apply pending migrations to `DATABASE_URL` |
 

@@ -2,20 +2,22 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import type { ReactNode } from "react";
 
-import { DryTipContent } from "@/components/bench/DryTipContent";
-import { Modal } from "@/components/bench/Modal";
 import { SignOutButton } from "@/components/bench/SignOutButton";
 import { ThinnerIcon } from "@/components/icons";
-import type { AirbrushRow } from "@/db/repositories/airbrush";
 
 import styles from "./NavRail.module.css";
 import { NAV_ITEMS } from "./nav-items";
 
-export function NavRail({ airbrush }: { airbrush: AirbrushRow | null }) {
+/**
+ * Client only for `usePathname` — the active-link highlight is the one thing
+ * on this rail that has to react to navigation. `rig` arrives as an already
+ * rendered Server Component (see NavRailRig), so the rig row's query and the
+ * Tips & Guide text stay off the client entirely.
+ */
+export function NavRail({ rig }: { rig: ReactNode }) {
   const pathname = usePathname();
-  const [dryTipOpen, setDryTipOpen] = useState(false);
 
   return (
     <nav className={styles.rail} aria-label="Primary">
@@ -58,33 +60,11 @@ export function NavRail({ airbrush }: { airbrush: AirbrushRow | null }) {
 
       <div className={styles.spacer} />
 
-      {airbrush ? (
-        <div className={styles.rig}>
-          <div className={styles.rigLabel}>Current rig</div>
-          <div className={styles.rigModel}>{airbrush.model}</div>
-          <div className={styles.rigChips}>
-            {airbrush.nozzleMm != null ? (
-              <span className={styles.rigChip}>{airbrush.nozzleMm} mm</span>
-            ) : null}
-            {airbrush.cupCc != null ? (
-              <span className={styles.rigChip}>{airbrush.cupCc} cc</span>
-            ) : null}
-          </div>
-          <button type="button" className={styles.rigLink} onClick={() => setDryTipOpen(true)}>
-            Tips &amp; Guide
-          </button>
-        </div>
-      ) : null}
+      {rig}
 
       <div className={styles.signOut}>
         <SignOutButton />
       </div>
-
-      {dryTipOpen && airbrush ? (
-        <Modal title={`${airbrush.model ?? "Rig"} · Tips & Guide`} onClose={() => setDryTipOpen(false)}>
-          <DryTipContent airbrush={airbrush} />
-        </Modal>
-      ) : null}
     </nav>
   );
 }

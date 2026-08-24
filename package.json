@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "next typegen && tsc --noEmit",
+    "perf:budget": "tsx scripts/check-perf-budget.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx scripts/migrate.mts",
     "db:seed": "tsx scripts/seed.mts",

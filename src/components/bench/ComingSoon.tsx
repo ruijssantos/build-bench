@@ -1,25 +1,37 @@
 import type { ComponentType } from "react";
+import { Suspense } from "react";
 
 import type { IconProps } from "@/components/icons";
-import type { AirbrushRow } from "@/db/repositories/airbrush";
 
-import { PhoneHeader } from "./PhoneHeader";
+import { QuietError } from "./BenchError";
+import { PhoneHeader, PhoneHeaderRigPill } from "./PhoneHeader";
 import styles from "./ComingSoon.module.css";
 
+/**
+ * Fully static apart from the rig pill: these screens have nothing to fetch,
+ * so they prerender whole and a tab-bar tap into one is instant.
+ */
 export function ComingSoon({
   title,
   description,
   icon: Icon,
-  airbrush,
 }: {
   title: string;
   description: string;
   icon: ComponentType<IconProps>;
-  airbrush: AirbrushRow | null;
 }) {
   return (
     <>
-      <PhoneHeader title={title} airbrush={airbrush} />
+      <PhoneHeader
+        title={title}
+        rigPill={
+          <QuietError>
+            <Suspense fallback={null}>
+              <PhoneHeaderRigPill />
+            </Suspense>
+          </QuietError>
+        }
+      />
       <div className={styles.desktopHeader}>{title}</div>
       <div className={styles.body}>
         <div className={styles.card}>
