@@ -154,6 +154,32 @@ the click lands. The acrylic/enamel toggle is two `<Link>`s for the same reason.
 `partialPrefetching: true` means the six nav destinations share one prefetched
 App Shell rather than one prefetch per link per page.
 
+### The bench remembers where you left it
+
+Nav links point at a bare `/thinner`, which means *the bench, where I left it*
+— not the default. `src/proxy.ts` records the last `?code=`/`?line=` in the
+`bb_bench` cookie, and `resolveBenchParams` falls back to it. An explicit
+`?code=` on the URL always wins, so that stays the shareable form.
+
+Three details make it behave:
+
+- **The proxy writes it, not the page.** The proxy already sees every request,
+  including the RSC request behind a client-side navigation, so one place
+  covers a typed URL, a search selection and the acrylic/enamel toggle — and it
+  costs no client JavaScript.
+- **Prefetches are skipped.** Hovering a search result prefetches it; that must
+  not change what you come back to. The `next-router-prefetch` header is how
+  the proxy tells the two apart.
+- **The server reads it.** A cookie rather than `localStorage` means the right
+  paint is in the first render, instead of a default that flashes and corrects
+  itself.
+
+Returning to `/thinner` for the first time after picking a paint costs one RSC
+render of the dynamic hole; after that the client router cache serves it within
+the `stale` window and returning is free. `<Link prefetch={true}>` on the nav
+link was tried to absorb even the first one and made no measurable difference,
+so it isn't there.
+
 ## 7. Fonts
 
 Three families, locked in PLAN §4.1. Plus Jakarta Sans is variable, so it takes
@@ -170,6 +196,9 @@ first paint. All three use `display: "swap"`.
   before revisiting.
 - **React Compiler** — the client surface is four small islands. A Babel plugin
   in the build pipeline doesn't pay for itself against that.
+- **`<Link prefetch={true}>` on the Thinner Bench nav link** — meant to pull the
+  first return's render into the prefetch. Measured no difference, and runtime
+  prefetching costs a server invocation per prefetchable link.
 
 ## 9. Known, bounded, accepted
 
