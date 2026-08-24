@@ -9,7 +9,10 @@
     "lint": "eslint",
     "typecheck": "next typegen && tsc --noEmit",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "tsx scripts/migrate.ts"
+    "db:migrate": "tsx scripts/migrate.ts",
+    "db:seed": "tsx scripts/seed.ts",
+    "catalogue:build": "tsx scripts/build-catalogue.ts",
+    "catalogue:verify": "tsx scripts/verify-catalogue.ts"
   },
   "dependencies": {
     "@neondatabase/serverless": "^1.1.0",

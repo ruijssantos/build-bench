@@ -1,0 +1,177 @@
+[
+  {
+    "family": "gloss",
+    "thinner_type": "acrylic_retarder",
+    "paint_parts": 1,
+    "thinner_parts": 1,
+    "window_lo": 0.75,
+    "window_hi": 1.25,
+    "psi_text": "15–18 psi",
+    "coats_text": "3 light coats, then 1 levelling coat",
+    "distance_text": "12–15 cm",
+    "notes": [
+      "On a 1:24 shell, coverage comes from three light coats — one heavy pass floods the door shuts and drowns the panel lines.",
+      "Retarder keeps the film open, so give each coat 25–30 min before the next or solvent gets trapped under the gloss.",
+      "Acrylic gloss almost never leaves the needle glass-smooth at this scale. Plan on clear over the top, then compound."
+    ]
+  },
+  {
+    "family": "flat",
+    "thinner_type": "acrylic_retarder",
+    "paint_parts": 1,
+    "thinner_parts": 1.25,
+    "window_lo": 1,
+    "window_hi": 1.5,
+    "psi_text": "14–17 psi",
+    "coats_text": "2 light coats",
+    "distance_text": "12–15 cm",
+    "notes": [
+      "This is interior tub, floorpan, rollcage and engine-bay territory. Two light coats is plenty; flats bury fine moulded detail fast.",
+      "Hold back a little further on a floorpan so the sheen stays even across the whole panel.",
+      "Retarder helps here more than anywhere — flats are what clog a 0.3 mm nozzle mid-panel."
+    ]
+  },
+  {
+    "family": "semi",
+    "thinner_type": "acrylic_retarder",
+    "paint_parts": 1,
+    "thinner_parts": 1,
+    "window_lo": 0.75,
+    "window_hi": 1.25,
+    "psi_text": "15–18 psi",
+    "coats_text": "2–3 medium coats",
+    "distance_text": "12–15 cm",
+    "notes": [
+      "Semi-gloss is the right sheen for a 1:24 dashboard, wiper arms and window surrounds — flat reads chalky at this scale.",
+      "Sits between gloss and flat: thin a touch more than a gloss, a touch less than a flat."
+    ]
+  },
+  {
+    "family": "metallic",
+    "thinner_type": "acrylic_retarder",
+    "paint_parts": 1,
+    "thinner_parts": 1.25,
+    "window_lo": 1,
+    "window_hi": 1.5,
+    "psi_text": "12–15 psi",
+    "coats_text": "3 light passes, never flooded",
+    "distance_text": "8–12 cm",
+    "notes": [
+      "Wheels, calipers, engine block, suspension: lay metallic over gloss black and the flake reads as polished metal instead of grey.",
+      "Drop the pressure and move in closer. High pressure scatters flake and it looks coarse against a 1:24 wheel face.",
+      "Stir, never shake. Shaking whips air in and the 0.3 mm nozzle spits it straight onto the part.",
+      "Metallics are fragile — mask over them with tape you've de-tacked on your sleeve first."
+    ]
+  },
+  {
+    "family": "clear",
+    "thinner_type": "acrylic_retarder",
+    "paint_parts": 1,
+    "thinner_parts": 1.75,
+    "window_lo": 1.5,
+    "window_hi": 2,
+    "psi_text": "18–20 psi",
+    "coats_text": "1 mist, then 2 wet coats",
+    "distance_text": "15 cm",
+    "notes": [
+      "Over decals: mist coat first, leave it overnight, then go wet. A wet first pass on fresh decals silvers or lifts them.",
+      "For a 1:24 body, three thin clear coats beats one thick one — thick clear pools along the rocker panels and around mirrors.",
+      "Leave acrylic clear a full week before compounding. It feels hard long before it is."
+    ]
+  },
+  {
+    "family": "lacquer",
+    "thinner_type": "lacquer_retarder",
+    "paint_parts": 1,
+    "thinner_parts": 1.25,
+    "window_lo": 1,
+    "window_hi": 1.75,
+    "psi_text": "15–20 psi",
+    "coats_text": "Mist coat, then 2 wet coats",
+    "distance_text": "15 cm",
+    "notes": [
+      "Mist the first coat onto bare styrene. Wet lacquer straight onto raw plastic crazes fine detail like door shuts and badge outlines.",
+      "Over Tamiya lacquer primer it's very forgiving — that's the usual route to a polished 1:24 body colour.",
+      "Ventilate properly and wear a respirator; this is not the same risk level as the acrylics."
+    ]
+  },
+  {
+    "family": "sprayDecant",
+    "thinner_type": "lacquer_retarder",
+    "paint_parts": 1,
+    "thinner_parts": 0.4,
+    "window_lo": 0.25,
+    "window_hi": 0.6,
+    "psi_text": "18–22 psi",
+    "coats_text": "Mist coat, then 2 wet coats",
+    "distance_text": "15–20 cm",
+    "notes": [
+      "Decant into an open jar and wait 15–20 min until it stops fizzing, or propellant spits through the nozzle.",
+      "Rattle-can paint is already thinned to spray, so it only needs a small top-up to flow through a 0.3 mm needle.",
+      "Decanting is the standard trick for a 1:24 body: you get TS depth with airbrush control around the A-pillars and mirrors."
+    ]
+  },
+  {
+    "family": "polycarb",
+    "thinner_type": "lacquer_retarder",
+    "paint_parts": 1,
+    "thinner_parts": 1,
+    "window_lo": 0.75,
+    "window_hi": 1.25,
+    "psi_text": "15–20 psi",
+    "coats_text": "Light coats from inside the shell",
+    "distance_text": "15 cm",
+    "notes": [
+      "PS is made for flexible RC polycarbonate bodies and sprays on the inside of the shell.",
+      "It will craze the hard styrene of a 1:24 kit body. Wrong paint for this build unless you're doing an RC shell."
+    ]
+  },
+  {
+    "family": "enamel",
+    "thinner_type": "enamel_x20",
+    "paint_parts": 1,
+    "thinner_parts": 1.5,
+    "window_lo": 1.25,
+    "window_hi": 2,
+    "psi_text": "12–15 psi",
+    "coats_text": "2 light coats, 24 h to cure",
+    "distance_text": "12–15 cm",
+    "notes": [
+      "On a car build enamel usually earns its place as a panel-line wash or engine-bay detail rather than a sprayed colour.",
+      "Leave it a full day before masking — enamel skins over long before it's hard underneath.",
+      "Keep enamel and its thinner away from stressed clear parts; windscreens craze."
+    ]
+  },
+  {
+    "family": "primer",
+    "thinner_type": "lacquer_retarder",
+    "paint_parts": 1,
+    "thinner_parts": 1,
+    "window_lo": 1,
+    "window_hi": 1.5,
+    "psi_text": "18–20 psi",
+    "coats_text": "2 thin coats",
+    "distance_text": "15 cm",
+    "notes": [
+      "Two thin coats on a 1:24 shell. Primer fills scribed panel lines faster than you'd expect.",
+      "Stir it hard — the filler settles into a solid plug at the bottom of the jar.",
+      "White primer shows every dust nib and sanding scratch, which is the point. Fix them now, not under the colour."
+    ]
+  },
+  {
+    "family": "additive",
+    "thinner_type": null,
+    "paint_parts": null,
+    "thinner_parts": null,
+    "window_lo": null,
+    "window_hi": null,
+    "psi_text": null,
+    "coats_text": null,
+    "distance_text": null,
+    "notes": [
+      "Not sprayed alone. X-20A is the retarder-type acrylic thinner itself — use it as the paint's thinner, roughly 1:1 into a gloss or 1:1.25 into a flat.",
+      "X-21 Flat Base knocks the sheen off a gloss or clear. Useful for seat fabric and dashboard tops on a 1:24 interior. Start at 1 part flat base to 8–10 parts paint, then thin the mix as normal — past about 20% it goes chalky and fragile.",
+      "Stir flat base hard before use — it settles into a solid plug."
+    ]
+  }
+]

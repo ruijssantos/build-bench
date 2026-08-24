@@ -1,0 +1,572 @@
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  box-shadow: var(--shadow-hero);
+}
+
+@media (min-width: 900px) {
+  .card {
+    width: 520px;
+    flex: none;
+    border-radius: var(--radius-card-desktop);
+  }
+}
+
+.liveryStrip {
+  display: flex;
+  height: 4px;
+  background: var(--card-sunken);
+}
+
+.liveryBar1 {
+  width: 44px;
+  background: var(--livery);
+}
+
+.liveryGap {
+  width: 9px;
+}
+
+.liveryBar2 {
+  width: 17px;
+  background: var(--livery);
+}
+
+@media (min-width: 900px) {
+  .liveryStrip {
+    height: 5px;
+  }
+  .liveryBar1 {
+    width: 56px;
+  }
+  .liveryGap {
+    width: 11px;
+  }
+  .liveryBar2 {
+    width: 21px;
+  }
+}
+
+.body {
+  padding: 18px 20px 20px;
+}
+
+@media (min-width: 900px) {
+  .body {
+    padding: 24px 26px 26px;
+  }
+}
+
+.identityRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+@media (min-width: 900px) {
+  .identityRow {
+    gap: 14px;
+  }
+}
+
+.swatch {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  flex: none;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+}
+
+@media (min-width: 900px) {
+  .swatch {
+    width: 52px;
+    height: 52px;
+    border-radius: 15px;
+  }
+}
+
+.identityPhone {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.identityDesktop {
+  display: none;
+}
+
+@media (min-width: 900px) {
+  .identityPhone {
+    display: none;
+  }
+  .identityDesktop {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+}
+
+.code {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted-2);
+  letter-spacing: 0.02em;
+}
+
+@media (min-width: 900px) {
+  .code {
+    font-size: 13px;
+  }
+}
+
+.familyLine {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.name {
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.familyLabelDesktop {
+  display: none;
+}
+
+@media (min-width: 900px) {
+  .familyLabelDesktop {
+    display: block;
+    margin-left: auto;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+  }
+}
+
+.ratioSection {
+  margin-top: 18px;
+}
+
+@media (min-width: 900px) {
+  .ratioSection {
+    margin-top: 26px;
+  }
+}
+
+.ratioHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.ratioLabel {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--muted-2);
+}
+
+@media (min-width: 900px) {
+  .ratioLabel {
+    font-size: 14px;
+  }
+}
+
+.editButton {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  border: none;
+  background: none;
+  color: var(--icon-idle);
+  cursor: pointer;
+}
+
+.editButton:hover {
+  background: var(--card-sunken);
+  color: var(--ink);
+}
+
+.ratioNumbers {
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  margin-top: 2px;
+}
+
+@media (min-width: 900px) {
+  .ratioNumbers {
+    gap: 10px;
+    margin-top: 6px;
+  }
+}
+
+.num {
+  font-family: var(--font-display);
+  font-size: 66px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1;
+}
+
+@media (min-width: 900px) {
+  .num {
+    font-size: 86px;
+    letter-spacing: -0.005em;
+  }
+}
+
+.colon {
+  font-family: var(--font-display);
+  font-size: 42px;
+  font-weight: 500;
+  color: var(--faint);
+  line-height: 1;
+}
+
+@media (min-width: 900px) {
+  .colon {
+    font-size: 56px;
+  }
+}
+
+.numAccent {
+  color: var(--accent);
+}
+
+.overriddenNote {
+  font-family: var(--font-ui);
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--muted);
+  margin-top: 6px;
+}
+
+.windowSection {
+  margin-top: 14px;
+}
+
+@media (min-width: 900px) {
+  .windowSection {
+    margin-top: 24px;
+  }
+}
+
+.track {
+  position: relative;
+  height: 8px;
+  background: var(--line);
+  border-radius: 999px;
+}
+
+@media (min-width: 900px) {
+  .track {
+    height: 10px;
+  }
+}
+
+.trackFill {
+  position: absolute;
+  top: 0;
+  height: 8px;
+  background: var(--ok-track);
+  border-radius: 999px;
+}
+
+@media (min-width: 900px) {
+  .trackFill {
+    height: 10px;
+  }
+}
+
+.trackDot {
+  position: absolute;
+  top: -4px;
+  width: 16px;
+  height: 16px;
+  margin-left: -8px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 3px solid var(--card);
+  box-shadow: 0 1px 4px rgba(28, 26, 23, 0.2);
+}
+
+@media (min-width: 900px) {
+  .trackDot {
+    top: -5px;
+    width: 20px;
+    height: 20px;
+    margin-left: -10px;
+    border: 4px solid var(--card);
+    box-shadow: 0 1px 5px rgba(28, 26, 23, 0.22);
+  }
+}
+
+.windowLabels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 9px;
+}
+
+@media (min-width: 900px) {
+  .windowLabels {
+    margin-top: 10px;
+  }
+}
+
+.windowLabel {
+  font-family: var(--font-ui);
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--muted-2);
+}
+
+@media (min-width: 900px) {
+  .windowLabel {
+    font-size: 12.5px;
+  }
+}
+
+.windowMid {
+  font-family: var(--font-ui);
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--ok);
+}
+
+@media (min-width: 900px) {
+  .windowMid {
+    font-size: 12.5px;
+  }
+}
+
+.divider {
+  height: 1px;
+  background: var(--line);
+  margin: 18px 0 16px;
+}
+
+@media (min-width: 900px) {
+  .divider {
+    margin: 24px 0 20px;
+  }
+}
+
+.cupHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 9px;
+  gap: 10px;
+}
+
+@media (min-width: 900px) {
+  .cupHeader {
+    margin-bottom: 10px;
+  }
+}
+
+.cupHeaderLeft {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+@media (min-width: 900px) {
+  .cupHeaderLeft {
+    font-size: 14.5px;
+  }
+}
+
+.plus {
+  color: var(--faint);
+  font-weight: 500;
+}
+
+.cupHeaderRight {
+  font-family: var(--font-ui);
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+@media (min-width: 900px) {
+  .cupHeaderRight {
+    font-size: 13.5px;
+  }
+}
+
+.pctInline {
+  display: none;
+}
+
+@media (min-width: 900px) {
+  .pctInline {
+    display: inline;
+  }
+}
+
+.cupBar {
+  height: 8px;
+  background: var(--line);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+@media (min-width: 900px) {
+  .cupBar {
+    height: 10px;
+  }
+}
+
+.cupBarFill {
+  height: 100%;
+  border-radius: 999px;
+}
+
+.cupCaption {
+  font-family: var(--font-ui);
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--muted-2);
+  margin-top: 8px;
+}
+
+@media (min-width: 900px) {
+  .cupCaption {
+    display: none;
+  }
+}
+
+.overCapacity {
+  color: var(--alert);
+  font-weight: 700;
+}
+
+.sliderRow {
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.slider {
+  flex: 1;
+  min-width: 0;
+  accent-color: var(--accent);
+  height: 26px;
+}
+
+.sliderLabel {
+  font-family: var(--font-ui);
+  font-size: 11.5px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.editPanel {
+  margin-top: 12px;
+  padding: 14px;
+  background: var(--card-sunken);
+  border-radius: var(--radius-tile);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.editRow {
+  display: flex;
+  gap: 10px;
+}
+
+.editField {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.editLabel {
+  font-family: var(--font-display);
+  font-size: 10.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted-2);
+}
+
+.editInput {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  background: var(--card);
+  min-height: 40px;
+}
+
+.editInput:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.editActions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 2px;
+}
+
+.editButtonGhost {
+  min-height: 36px;
+  padding: 0 14px;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-tile);
+  cursor: pointer;
+}
+
+.editButtonPrimary {
+  min-height: 36px;
+  padding: 0 14px;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--card);
+  background: var(--accent);
+  border: none;
+  border-radius: var(--radius-tile);
+  cursor: pointer;
+}
+
+.editButtonPrimary:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.editError {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--alert);
+}

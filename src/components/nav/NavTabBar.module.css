@@ -1,0 +1,43 @@
+.bar {
+  flex: none;
+  height: 84px;
+  background: var(--card);
+  border-top: 1px solid var(--line);
+  display: flex;
+  align-items: flex-start;
+  padding-top: 10px;
+}
+
+@media (min-width: 900px) {
+  .bar {
+    display: none;
+  }
+}
+
+.item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  height: 52px;
+  text-decoration: none;
+  color: var(--icon-idle);
+}
+
+.itemLabel {
+  font-family: var(--font-ui);
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--icon-idle);
+}
+
+.itemActive {
+  color: var(--accent);
+}
+
+.itemActive .itemLabel {
+  font-weight: 700;
+  color: var(--accent);
+}
