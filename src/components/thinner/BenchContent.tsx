@@ -2,7 +2,7 @@ import { AdditiveCard } from "./AdditiveCard";
 import { BenchNotes } from "./BenchNotes";
 import { RatioHero } from "./RatioHero";
 import { SpecGrid } from "./SpecGrid";
-import { readBenchParams, type BenchSearchParams } from "./bench-params";
+import { resolveBenchParams, type BenchSearchParams } from "./bench-params";
 import styles from "./ThinnerBench.module.css";
 
 import { resolveThinnerBench } from "@/lib/thinner-bench";
@@ -17,7 +17,7 @@ import { resolveThinnerBench } from "@/lib/thinner-bench";
  * the only thing a first paint waits for, and both of its reads are cached.
  */
 export async function BenchContent({ searchParams }: { searchParams: Promise<BenchSearchParams> }) {
-  const { code, line } = readBenchParams(await searchParams);
+  const { code, line } = await resolveBenchParams(searchParams);
   const bundle = await resolveThinnerBench(code, line);
 
   if (!bundle.airbrush) {
