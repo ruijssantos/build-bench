@@ -1,11 +1,16 @@
-# Bench & Build — Architecture & Build Plan
+# The Build Bench — Architecture & Build Plan
 
 A companion app for 1:24 scale model car building, centred on a Tamiya 74540 HG Trigger
 airbrush workflow and pre-build kit research.
 
-**Status:** revision 5 — **locked, ready to build**. No implementation code written yet.
+**Status:** revision 6 — **locked, ready to build**.
 **Planning pass:** Opus. **Implementation:** Sonnet, phase by phase.
 
+> **Changed in r6** — Product name is now **The Build Bench** (was "Bench & Build"),
+> updated in the README, this file, and everywhere the app names itself — page titles, the
+> PWA manifest, the sign-in screen. The repo and package stay `build-bench`; only the
+> product's own display name changed.
+>
 > **Changed in r5** — Repository renamed to `build-bench`; `main` is the default branch.
 > Paths and setup steps updated to match.
 >

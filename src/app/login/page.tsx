@@ -8,7 +8,7 @@ export default async function LoginPage(props: PageProps<"/login">) {
   return (
     <div className={styles.wrap}>
       <div className={styles.card}>
-        <p className={styles.eyebrow}>Bench &amp; Build</p>
+        <p className={styles.eyebrow}>The Build Bench</p>
         <h1 className={styles.title}>Sign in</h1>
 
         {hasError ? <p className={styles.error}>Wrong passphrase.</p> : null}

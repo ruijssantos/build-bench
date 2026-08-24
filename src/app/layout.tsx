@@ -26,14 +26,14 @@ const dmMono = DM_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Bench & Build",
-    template: "%s · Bench & Build",
+    default: "The Build Bench",
+    template: "%s · The Build Bench",
   },
   description: "Thinner ratios, paint inventory, kit research and build logs for 1:24 scale model cars.",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "Bench & Build",
+    title: "Build Bench",
   },
 };
 

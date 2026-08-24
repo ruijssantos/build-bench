@@ -2,8 +2,8 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Bench & Build",
-    short_name: "Bench & Build",
+    name: "The Build Bench",
+    short_name: "Build Bench",
     description:
       "Thinner ratios, paint inventory, kit research and build logs for 1:24 scale model cars.",
     start_url: "/",
