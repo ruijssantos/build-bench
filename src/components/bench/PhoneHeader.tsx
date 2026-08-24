@@ -53,10 +53,7 @@ export function PhoneHeader({
       </div>
 
       {dryTipOpen && airbrush ? (
-        <Modal
-          title={`${shortRigLabel(airbrush.model ?? "Rig")} · Tips & Guide`}
-          onClose={() => setDryTipOpen(false)}
-        >
+        <Modal title={`${airbrush.model ?? "Rig"} · Tips & Guide`} onClose={() => setDryTipOpen(false)}>
           <DryTipContent airbrush={airbrush} />
         </Modal>
       ) : null}

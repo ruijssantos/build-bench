@@ -25,75 +25,31 @@
   }
 }
 
+/* Module title — the single shared treatment (docs/PLAN.md §4.1 "Module
+   title"), identical to BenchNotes. Tiles do not get a smaller bespoke
+   label; a module title is a module title whatever the module's size. */
 .label {
   font-family: var(--font-display);
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--muted-2);
+  letter-spacing: 0.14em;
+  color: var(--muted);
 }
 
-.combined {
-  font-family: var(--font-display);
-  font-size: 24px;
-  font-weight: 700;
-  line-height: 1.1;
-  margin-top: 2px;
+@media (min-width: 900px) {
+  .label {
+    font-size: 15px;
+  }
 }
 
-.textCombined {
+/* Same body-copy style as BenchNotes/DryTipContent — one shared typographic
+   scale for this kind of secondary reference text, not a bespoke bold/large
+   treatment per module. */
+.value {
   font-family: var(--font-ui);
   font-size: 13.5px;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  margin-top: 4px;
-}
-
-@media (min-width: 900px) {
-  .combined,
-  .textCombined {
-    display: none;
-  }
-}
-
-.desktopValue {
-  display: none;
-}
-
-.desktopUnit {
-  display: none;
-}
-
-.desktopLines {
-  display: none;
-}
-
-@media (min-width: 900px) {
-  .desktopValue {
-    display: block;
-    font-family: var(--font-display);
-    font-size: 19px;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    margin-top: 3px;
-  }
-
-  .desktopUnit {
-    display: block;
-    font-family: var(--font-ui);
-    font-size: 11.5px;
-    font-weight: 500;
-    color: var(--muted-2);
-  }
-
-  .desktopLines {
-    display: block;
-    font-family: var(--font-ui);
-    font-size: 15px;
-    font-weight: 700;
-    letter-spacing: -0.01em;
-    margin-top: 5px;
-    line-height: 1.25;
-  }
+  line-height: 1.5;
+  color: var(--ink-soft);
+  margin-top: 6px;
 }

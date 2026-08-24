@@ -6,7 +6,6 @@ import { useState } from "react";
 
 import { DryTipContent } from "@/components/bench/DryTipContent";
 import { Modal } from "@/components/bench/Modal";
-import { shortRigLabel } from "@/components/bench/rig-label";
 import { SignOutButton } from "@/components/bench/SignOutButton";
 import { ThinnerIcon } from "@/components/icons";
 import type { AirbrushRow } from "@/db/repositories/airbrush";
@@ -82,7 +81,7 @@ export function NavRail({ airbrush }: { airbrush: AirbrushRow | null }) {
       </div>
 
       {dryTipOpen && airbrush ? (
-        <Modal title={`${shortRigLabel(airbrush.model ?? "Rig")} · Tips & Guide`} onClose={() => setDryTipOpen(false)}>
+        <Modal title={`${airbrush.model ?? "Rig"} · Tips & Guide`} onClose={() => setDryTipOpen(false)}>
           <DryTipContent airbrush={airbrush} />
         </Modal>
       ) : null}
