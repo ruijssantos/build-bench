@@ -11,7 +11,6 @@ import { RatioHero, type OverrideInput } from "./RatioHero";
 import { SearchBox, type SearchResult } from "./SearchBox";
 import { SpecGrid } from "./SpecGrid";
 import styles from "./ThinnerBench.module.css";
-import { ThinnerWarningBanner } from "./ThinnerWarningBanner";
 
 export function ThinnerBench({ initialBundle }: { initialBundle: ThinnerBenchBundle }) {
   const [bundle, setBundle] = useState(initialBundle);
@@ -169,11 +168,6 @@ export function ThinnerBench({ initialBundle }: { initialBundle: ThinnerBenchBun
                     thinnerType={bundle.ratioRule?.thinnerType ?? null}
                   />
                 </div>
-                {bundle.thinnerWarning ? (
-                  <div className={styles.warningArea}>
-                    <ThinnerWarningBanner warning={bundle.thinnerWarning} />
-                  </div>
-                ) : null}
                 <div className={styles.notesArea}>
                   <BenchNotes notes={bundle.effectiveRatio.notes} />
                 </div>

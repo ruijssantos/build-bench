@@ -5,7 +5,7 @@
 @media (min-width: 900px) {
   .desktopHeader {
     display: block;
-    margin-bottom: 20px;
+    margin-bottom: 32px;
   }
 }
 
@@ -44,7 +44,7 @@
 .grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  grid-template-areas: "hero" "specs" "warning" "notes";
+  grid-template-areas: "hero" "specs" "notes";
   gap: 12px;
   padding: 0 20px 28px;
 }
@@ -55,7 +55,6 @@
     grid-template-areas:
       "hero search"
       "hero specs"
-      "hero warning"
       "hero notes";
     column-gap: 24px;
     row-gap: 16px;
@@ -86,11 +85,6 @@
 
 .specsArea {
   grid-area: specs;
-  min-width: 0;
-}
-
-.warningArea {
-  grid-area: warning;
   min-width: 0;
 }
 

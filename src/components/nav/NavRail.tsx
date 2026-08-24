@@ -72,7 +72,7 @@ export function NavRail({ airbrush }: { airbrush: AirbrushRow | null }) {
             ) : null}
           </div>
           <button type="button" className={styles.rigLink} onClick={() => setDryTipOpen(true)}>
-            Dry tip &amp; clogging guide
+            Tips &amp; Guide
           </button>
         </div>
       ) : null}
@@ -82,7 +82,7 @@ export function NavRail({ airbrush }: { airbrush: AirbrushRow | null }) {
       </div>
 
       {dryTipOpen && airbrush ? (
-        <Modal title={`${shortRigLabel(airbrush.model ?? "Rig")} · Dry tip & clogging`} onClose={() => setDryTipOpen(false)}>
+        <Modal title={`${shortRigLabel(airbrush.model ?? "Rig")} · Tips & Guide`} onClose={() => setDryTipOpen(false)}>
           <DryTipContent airbrush={airbrush} />
         </Modal>
       ) : null}

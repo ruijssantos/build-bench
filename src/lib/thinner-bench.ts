@@ -7,13 +7,7 @@ import {
   normalizePaintCode,
   type RatioFamily,
 } from "@/domain/paint-code";
-import {
-  isAdditiveFamily,
-  resolveEffectiveRatio,
-  thinnerWarningFor,
-  type EffectiveRatio,
-  type ThinnerWarning,
-} from "@/domain/ratio";
+import { isAdditiveFamily, resolveEffectiveRatio, type EffectiveRatio } from "@/domain/ratio";
 
 /** The line the user says they're mixing from — only matters for a code that's
  * ambiguously sold as both an acrylic bottle and, historically, an enamel one. */
@@ -39,7 +33,6 @@ export interface ThinnerBenchBundle {
   override: RatioOverrideRow | null;
   effectiveRatio: EffectiveRatio | null;
   isAdditive: boolean;
-  thinnerWarning: ThinnerWarning | null;
   airbrush: AirbrushRow | null;
 }
 
@@ -83,10 +76,10 @@ function resolveIdentity(rawCode: string, line: PaintLine, catalogueRow?: PaintR
 
 /**
  * Resolves a raw paint-code query into everything the Thinner Bench screen needs:
- * identity, the family's ratio rule (with any override applied), the lacquer/enamel
- * thinner warning, and the rig facts. Pure composition over the repositories — no
- * route handler or component should import the repositories directly (§4's data
- * access rule); they call this instead.
+ * identity, the family's ratio rule (with any override applied), and the rig
+ * facts. Pure composition over the repositories — no route handler or
+ * component should import the repositories directly (§4's data access
+ * rule); they call this instead.
  */
 export async function resolveThinnerBench(
   rawCode: string,
@@ -105,7 +98,6 @@ export async function resolveThinnerBench(
   const isAdditive = ratioRule ? isAdditiveFamily(ratioRule) : false;
   const effectiveRatio =
     ratioRule && !isAdditive ? resolveEffectiveRatio(ratioRule, override ?? null) : null;
-  const thinnerWarning = ratioRule && !isAdditive ? thinnerWarningFor(ratioRule.thinnerType) : null;
 
   return {
     query: rawCode,
@@ -114,7 +106,6 @@ export async function resolveThinnerBench(
     override: override ?? null,
     effectiveRatio,
     isAdditive,
-    thinnerWarning,
     airbrush: airbrush ?? null,
   };
 }

@@ -44,7 +44,7 @@ export function PhoneHeader({
             type="button"
             className={styles.rigPill}
             onClick={() => setDryTipOpen(true)}
-            aria-label="Dry tip & clogging guide for the current rig"
+            aria-label="Tips & guide for the current rig"
           >
             <span className={styles.rigDot} />
             <span className={styles.rigLabel}>{shortRigLabel(airbrush.model ?? "Rig")}</span>
@@ -54,7 +54,7 @@ export function PhoneHeader({
 
       {dryTipOpen && airbrush ? (
         <Modal
-          title={`${shortRigLabel(airbrush.model ?? "Rig")} · Dry tip & clogging`}
+          title={`${shortRigLabel(airbrush.model ?? "Rig")} · Tips & Guide`}
           onClose={() => setDryTipOpen(false)}
         >
           <DryTipContent airbrush={airbrush} />
