@@ -1,4 +1,4 @@
-# Bench & Build
+# The Build Bench
 
 A companion app for 1:24 scale model car building — airbrush thinning ratios,
 paint inventory, kit research and build logs, built around a Tamiya 74540 HG
