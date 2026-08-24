@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm run build
+
+      # Phase 1 adds scripts/verify-catalogue.ts (docs/PLAN.md §2.2) and a
+      # step here to run it — it fails the build if any paint code referenced
+      # by inventory, kit requirements, or the ratio rules is missing from
+      # the generated catalogue.
