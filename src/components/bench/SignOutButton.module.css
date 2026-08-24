@@ -1,0 +1,33 @@
+.button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  border: none;
+  background: none;
+  padding: 0 12px;
+  height: 36px;
+  cursor: pointer;
+  color: var(--muted);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.button:hover {
+  color: var(--ink);
+}
+
+.iconOnly {
+  height: 28px;
+  width: 28px;
+  padding: 0;
+  justify-content: center;
+  border-radius: 999px;
+  color: var(--icon-idle);
+}
+
+.iconOnly:hover {
+  color: var(--ink);
+  background: var(--card-sunken);
+}

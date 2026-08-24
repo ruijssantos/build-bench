@@ -21,7 +21,7 @@ jobs:
       - run: npm run lint
       - run: npm run build
 
-      # Phase 1 adds scripts/verify-catalogue.ts (docs/PLAN.md §2.2) and a
-      # step here to run it — it fails the build if any paint code referenced
-      # by inventory, kit requirements, or the ratio rules is missing from
-      # the generated catalogue.
+      # docs/PLAN.md §2.2 — fails the build if any paint code referenced by
+      # the real inventory or the ratio rules is missing from the generated
+      # catalogue (this is the check that would have caught XF-83/XF-84).
+      - run: npm run catalogue:verify

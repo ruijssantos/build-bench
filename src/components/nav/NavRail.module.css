@@ -1,0 +1,144 @@
+.rail {
+  position: relative;
+  overflow: hidden;
+  width: 260px;
+  flex: none;
+  background: var(--card);
+  border-right: 1px solid var(--line);
+  display: none;
+  flex-direction: column;
+  padding: 26px 0;
+}
+
+@media (min-width: 900px) {
+  .rail {
+    display: flex;
+  }
+}
+
+.sweep {
+  position: absolute;
+  top: -76px;
+  right: -36px;
+  pointer-events: none;
+}
+
+.brand {
+  position: relative;
+  padding: 0 20px 24px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brandMark {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  background: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  color: var(--bg);
+}
+
+.brandName {
+  font-family: var(--font-ui);
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.items {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0 12px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  height: 44px;
+  padding: 0 12px;
+  border-radius: 12px;
+  text-decoration: none;
+  color: var(--ink-soft);
+}
+
+.item svg {
+  color: var(--icon-idle);
+  flex: none;
+}
+
+.itemLabel {
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 600;
+  color: #6b6456;
+}
+
+.itemActive {
+  background: var(--accent-tint);
+}
+
+.itemActive svg {
+  color: var(--accent);
+}
+
+.itemActive .itemLabel {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.rig {
+  margin: 0 12px;
+  padding: 14px;
+  background: var(--bg);
+  border-radius: var(--radius-tile);
+}
+
+.rigLabel {
+  font-family: var(--font-display);
+  font-size: 12.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted-2);
+}
+
+.rigModel {
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 700;
+  margin-top: 3px;
+  letter-spacing: -0.01em;
+}
+
+.rigChips {
+  display: flex;
+  gap: 6px;
+  margin-top: 9px;
+}
+
+.rigChip {
+  background: var(--livery-card);
+  border-radius: var(--radius-pill);
+  padding: 4px 9px;
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 600;
+  color: #6b6456;
+}
+
+.signOut {
+  margin: 10px 12px 0;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+}

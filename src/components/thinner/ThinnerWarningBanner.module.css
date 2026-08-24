@@ -1,0 +1,79 @@
+.banner {
+  background: var(--alert-tint);
+  border-radius: var(--radius-tile);
+  padding: 13px 15px;
+  display: flex;
+  gap: 11px;
+  align-items: flex-start;
+}
+
+/* "info" severity is a workshop tip, not a mismatch — the locked palette
+   (docs/PLAN.md §4.1) has no fourth "caution" colour, so it gets the same
+   neutral treatment as any other note rather than borrowing --alert. */
+.bannerInfo {
+  background: var(--card-sunken);
+}
+
+.bannerInfo .icon {
+  color: var(--muted);
+}
+
+.bannerInfo .title {
+  color: var(--ink);
+}
+
+.bannerInfo .message {
+  color: var(--ink-soft);
+}
+
+@media (min-width: 900px) {
+  .banner {
+    border-radius: 16px;
+    padding: 16px 18px;
+    gap: 12px;
+  }
+}
+
+.icon {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  margin-top: 1px;
+  color: var(--alert);
+}
+
+@media (min-width: 900px) {
+  .icon {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+.title {
+  display: none;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--alert);
+}
+
+@media (min-width: 900px) {
+  .title {
+    display: block;
+  }
+}
+
+.message {
+  font-family: var(--font-ui);
+  font-size: 12.5px;
+  line-height: 1.45;
+  font-weight: 500;
+  color: var(--alert);
+}
+
+@media (min-width: 900px) {
+  .message {
+    font-size: 13.5px;
+    margin-top: 3px;
+  }
+}

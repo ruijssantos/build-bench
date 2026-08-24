@@ -1,0 +1,81 @@
+.header {
+  position: relative;
+  flex: none;
+  overflow: hidden;
+}
+
+@media (min-width: 900px) {
+  .header {
+    display: none;
+  }
+}
+
+.sweep {
+  position: absolute;
+  top: -58px;
+  right: -26px;
+  pointer-events: none;
+}
+
+.statusBarSpace {
+  height: 44px;
+}
+
+.signOut {
+  position: absolute;
+  top: 44px;
+  right: 12px;
+  z-index: 1;
+}
+
+.row {
+  position: relative;
+  padding: 8px 20px 18px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.eyebrow {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted-2);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 40px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.005em;
+  line-height: 0.98;
+  margin-top: 3px;
+}
+
+.rigPill {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  padding: 7px 12px;
+  margin-bottom: 3px;
+}
+
+.rigDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--ok);
+}
+
+.rigLabel {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 600;
+  color: #5f5849;
+}
