@@ -28,9 +28,9 @@ export default function BenchLayout({ children }: { children: React.ReactNode })
           </QuietError>
         }
       />
-      <div className={styles.content}>
+      <main className={styles.content}>
         <div className={styles.contentInner}>{children}</div>
-      </div>
+      </main>
       <NavTabBar />
     </div>
   );
