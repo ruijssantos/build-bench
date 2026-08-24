@@ -46,6 +46,8 @@
 }
 
 .title {
+  flex: 1;
+  min-width: 0;
   font-family: var(--font-display);
   font-size: 15px;
   font-weight: 600;

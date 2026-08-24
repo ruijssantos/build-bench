@@ -23,5 +23,31 @@
   .content {
     padding: 30px 40px;
     overflow-y: auto;
+    /* A safety net, not the primary fix: contentInner's min-width below
+       stops it thinning out on a merely-narrow desktop window, but on a
+       genuinely narrow one (just past the 900px phone/desktop switch)
+       something still has to give — a contained scrollbar here, not
+       silently clipped content past the viewport edge. */
+    overflow-x: auto;
+  }
+}
+
+/* Bounds the actual page content on desktop: without a max-width it thins
+   out into dead space on an ultrawide monitor; without a min-width a
+   moderately narrow desktop window squeezes the fixed-width hero card and
+   the spec grid until their text is cramped. */
+.contentInner {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+}
+
+@media (min-width: 900px) {
+  .contentInner {
+    max-width: 1600px;
+    min-width: 1100px;
+    margin: 0 auto;
   }
 }

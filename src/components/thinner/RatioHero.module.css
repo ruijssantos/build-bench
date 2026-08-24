@@ -316,7 +316,7 @@
   font-family: var(--font-ui);
   font-size: 11.5px;
   font-weight: 700;
-  color: var(--ok);
+  color: var(--muted-2);
 }
 
 @media (min-width: 900px) {

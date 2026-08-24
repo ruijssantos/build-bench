@@ -15,7 +15,9 @@ export default async function BenchLayout({ children }: { children: React.ReactN
   return (
     <div className={styles.shell}>
       <NavRail airbrush={airbrush ?? null} />
-      <div className={styles.content}>{children}</div>
+      <div className={styles.content}>
+        <div className={styles.contentInner}>{children}</div>
+      </div>
       <NavTabBar />
     </div>
   );
