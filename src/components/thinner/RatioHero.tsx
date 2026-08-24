@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { lazy, Suspense, useState } from "react";
 
 import { PencilIcon } from "@/components/icons";
 import {
@@ -15,68 +15,28 @@ import type { ResolvedPaintIdentity } from "@/lib/thinner-bench";
 import { familyLabel } from "./family-label";
 import styles from "./RatioHero.module.css";
 
-export interface OverrideInput {
-  paintParts: number;
-  thinnerParts: number;
-  reason?: string;
-}
+/**
+ * Client because of the drops slider — the cup maths has to follow the thumb,
+ * which is the one genuinely interactive thing on this card. Everything the
+ * correction form needs lives in a chunk that loads on the pencil click.
+ */
+const RatioOverridePanel = lazy(() =>
+  import("./RatioOverridePanel").then((m) => ({ default: m.RatioOverridePanel })),
+);
 
 export function RatioHero({
   paint,
   ratio,
   cupCc,
-  drops,
-  onDropsChange,
-  canOverride,
-  onSaveOverride,
 }: {
   paint: ResolvedPaintIdentity;
   ratio: EffectiveRatio;
   cupCc: number;
-  drops: number;
-  onDropsChange: (drops: number) => void;
-  canOverride: boolean;
-  onSaveOverride: (input: OverrideInput) => Promise<void>;
 }) {
+  const [drops, setDrops] = useState(20);
   const [editing, setEditing] = useState(false);
-  const [paintPartsInput, setPaintPartsInput] = useState(String(ratio.paintParts));
-  const [thinnerPartsInput, setThinnerPartsInput] = useState(String(ratio.thinnerParts));
-  const [reasonInput, setReasonInput] = useState("");
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
   const cupFill = calculateCupFill(drops, ratio, cupCc);
-
-  function startEdit() {
-    setPaintPartsInput(String(ratio.paintParts));
-    setThinnerPartsInput(String(ratio.thinnerParts));
-    setReasonInput("");
-    setError(null);
-    setEditing(true);
-  }
-
-  async function handleSave() {
-    const paintParts = Number(paintPartsInput);
-    const thinnerParts = Number(thinnerPartsInput);
-    if (!Number.isFinite(paintParts) || paintParts <= 0 || !Number.isFinite(thinnerParts) || thinnerParts <= 0) {
-      setError("Enter two positive numbers.");
-      return;
-    }
-    setSaving(true);
-    setError(null);
-    try {
-      await onSaveOverride({
-        paintParts,
-        thinnerParts,
-        reason: reasonInput.trim() || undefined,
-      });
-      setEditing(false);
-    } catch {
-      setError("Couldn't save that — try again.");
-    } finally {
-      setSaving(false);
-    }
-  }
 
   return (
     <div className={styles.card}>
@@ -105,11 +65,11 @@ export function RatioHero({
         <div className={styles.ratioSection}>
           <div className={styles.ratioHeader}>
             <div className={styles.ratioLabel}>Starting ratio · paint to thinner</div>
-            {canOverride && !editing ? (
+            {paint.known && !editing ? (
               <button
                 type="button"
                 className={styles.editButton}
-                onClick={startEdit}
+                onClick={() => setEditing(true)}
                 aria-label="Correct this ratio"
                 title="Correct this ratio"
               >
@@ -129,72 +89,14 @@ export function RatioHero({
           ) : null}
 
           {editing ? (
-            <div className={styles.editPanel}>
-              <div className={styles.editRow}>
-                <div className={styles.editField}>
-                  <label className={styles.editLabel} htmlFor="override-paint-parts">
-                    Paint
-                  </label>
-                  <input
-                    id="override-paint-parts"
-                    className={styles.editInput}
-                    type="number"
-                    inputMode="decimal"
-                    min="0"
-                    step="0.05"
-                    value={paintPartsInput}
-                    onChange={(e) => setPaintPartsInput(e.target.value)}
-                  />
-                </div>
-                <div className={styles.editField}>
-                  <label className={styles.editLabel} htmlFor="override-thinner-parts">
-                    Thinner
-                  </label>
-                  <input
-                    id="override-thinner-parts"
-                    className={styles.editInput}
-                    type="number"
-                    inputMode="decimal"
-                    min="0"
-                    step="0.05"
-                    value={thinnerPartsInput}
-                    onChange={(e) => setThinnerPartsInput(e.target.value)}
-                  />
-                </div>
-              </div>
-              <div className={styles.editField}>
-                <label className={styles.editLabel} htmlFor="override-reason">
-                  Why (optional)
-                </label>
-                <input
-                  id="override-reason"
-                  className={styles.editInput}
-                  type="text"
-                  placeholder="e.g. ran wetter in a damp workshop"
-                  value={reasonInput}
-                  onChange={(e) => setReasonInput(e.target.value)}
-                />
-              </div>
-              {error ? <div className={styles.editError}>{error}</div> : null}
-              <div className={styles.editActions}>
-                <button
-                  type="button"
-                  className={styles.editButtonGhost}
-                  onClick={() => setEditing(false)}
-                  disabled={saving}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="button"
-                  className={styles.editButtonPrimary}
-                  onClick={handleSave}
-                  disabled={saving}
-                >
-                  {saving ? "Saving…" : "Save correction"}
-                </button>
-              </div>
-            </div>
+            <Suspense fallback={null}>
+              <RatioOverridePanel
+                code={paint.code}
+                paintParts={ratio.paintParts}
+                thinnerParts={ratio.thinnerParts}
+                onClose={() => setEditing(false)}
+              />
+            </Suspense>
           ) : null}
         </div>
 
@@ -225,7 +127,7 @@ export function RatioHero({
               max={80}
               step={1}
               value={drops}
-              onChange={(e) => onDropsChange(Number(e.target.value))}
+              onChange={(e) => setDrops(Number(e.target.value))}
               aria-label="Drops of paint"
             />
             <span className={styles.sliderLabel}>drops of paint</span>

@@ -1,73 +1,128 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useCallback, useRef, useState, useTransition } from "react";
 
 import { SearchIcon, XIcon } from "@/components/icons";
 
+import type { PaintHit } from "./paint-search-index";
 import styles from "./SearchBox.module.css";
 
-export interface SearchResult {
-  code: string;
-  name: string | null;
-  hex: string | null;
-  family: string;
-  finish: string | null;
+/**
+ * Type-ahead over the paint catalogue.
+ *
+ * Two things make this fast. Matching happens in the browser against a
+ * catalogue chunk loaded on first focus, so there is no request, no debounce
+ * and no stale response to race — a keystroke and its results are the same
+ * frame. And picking a result is a real navigation to `/thinner?code=…`, which
+ * Next can prefetch while the result is merely highlighted, so the screen is
+ * usually already rendered by the time it's clicked.
+ */
+
+type SearchFn = (query: string, limit?: number) => PaintHit[];
+
+let searchModule: Promise<SearchFn> | null = null;
+
+/** Idempotent: the first caller starts the fetch, everyone else awaits it. */
+function loadSearch(): Promise<SearchFn> {
+  searchModule ??= import("./paint-search-index").then((m) => m.searchPaints);
+  return searchModule;
 }
 
-export function SearchBox({
-  scope,
-  query,
-  onQueryChange,
-  onSubmit,
-  suggestions,
-  showSuggestions,
-  onFocus,
-  onBlur,
-  onSelect,
-}: {
-  scope: "phone" | "desktop";
-  query: string;
-  onQueryChange: (value: string) => void;
-  onSubmit: () => void;
-  suggestions: SearchResult[];
-  showSuggestions: boolean;
-  onFocus: () => void;
-  onBlur: () => void;
-  onSelect: (code: string) => void;
-}) {
-  const wrapperClass = scope === "phone" ? styles.onlyPhone : styles.onlyDesktop;
-  const inputId = `thinner-search-${scope}`;
+export function SearchBox({ scope, initialQuery }: { scope: "phone" | "desktop"; initialQuery: string }) {
+  const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
-  const [highlighted, setHighlighted] = useState(-1);
+  const [, startTransition] = useTransition();
 
-  // A fresh set of suggestions (or the dropdown opening/closing) starts with
-  // nothing highlighted — adjusted during render (React's documented pattern
-  // for this) rather than in an effect, which would cost an extra render.
-  const [trackedSuggestions, setTrackedSuggestions] = useState(suggestions);
-  const [trackedShown, setTrackedShown] = useState(showSuggestions);
-  if (suggestions !== trackedSuggestions || showSuggestions !== trackedShown) {
-    setTrackedSuggestions(suggestions);
-    setTrackedShown(showSuggestions);
+  const [query, setQuery] = useState(initialQuery);
+  const [hits, setHits] = useState<PaintHit[]>([]);
+  const [open, setOpen] = useState(false);
+  const [highlighted, setHighlighted] = useState(-1);
+  const [search, setSearch] = useState<SearchFn | null>(null);
+
+  // Navigating to another paint re-seeds the box with the resolved label
+  // ("TS-8 Italian Red"), unless the user has since typed something else.
+  // Adjusting during render is React's documented pattern for this — an
+  // effect would cost an extra render on every navigation.
+  const [lastInitial, setLastInitial] = useState(initialQuery);
+  if (initialQuery !== lastInitial) {
+    setLastInitial(initialQuery);
+    setQuery(initialQuery);
+    setHits([]);
+    setOpen(false);
     setHighlighted(-1);
   }
 
-  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (e.key === "ArrowDown" && showSuggestions && suggestions.length > 0) {
+  const wrapperClass = scope === "phone" ? styles.onlyPhone : styles.onlyDesktop;
+  const inputId = `thinner-search-${scope}`;
+
+  /** Warms the catalogue chunk before it's needed — focus is the earliest
+   * honest signal that someone is about to search. */
+  const primeSearch = useCallback(() => {
+    // `setSearch(() => fn)`, not `setSearch(fn)` — a bare function argument
+    // would be read as a state updater.
+    if (!search) void loadSearch().then((fn) => setSearch(() => fn));
+  }, [search]);
+
+  const runQuery = useCallback(
+    (value: string, fn: SearchFn | null) => {
+      const trimmed = value.trim();
+      setHighlighted(-1);
+      if (!trimmed) {
+        setHits([]);
+        setOpen(false);
+        return;
+      }
+      setOpen(true);
+      if (fn) {
+        setHits(fn(trimmed));
+      } else {
+        // First keystroke landed before the chunk did: fill in when it arrives,
+        // as long as the box still holds the query we searched for.
+        void loadSearch().then((loaded) => {
+          setSearch(() => loaded);
+          setHits(loaded(trimmed));
+        });
+      }
+    },
+    [],
+  );
+
+  function onChange(value: string) {
+    setQuery(value);
+    runQuery(value, search);
+  }
+
+  function go(code: string) {
+    setOpen(false);
+    startTransition(() => {
+      router.push(`/thinner?code=${encodeURIComponent(code)}`);
+    });
+  }
+
+  /** Highlighting a result is a strong enough signal to render it early. */
+  function highlight(index: number) {
+    setHighlighted(index);
+    const hit = hits[index];
+    if (hit) router.prefetch(`/thinner?code=${encodeURIComponent(hit.code)}`);
+  }
+
+  function onKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === "ArrowDown" && open && hits.length > 0) {
       e.preventDefault();
-      setHighlighted((i) => Math.min(i + 1, suggestions.length - 1));
+      highlight(Math.min(highlighted + 1, hits.length - 1));
       return;
     }
-    if (e.key === "ArrowUp" && showSuggestions && suggestions.length > 0) {
+    if (e.key === "ArrowUp" && open && hits.length > 0) {
       e.preventDefault();
-      setHighlighted((i) => Math.max(i - 1, -1));
+      const next = Math.max(highlighted - 1, -1);
+      if (next < 0) setHighlighted(-1);
+      else highlight(next);
       return;
     }
     if (e.key === "Enter") {
-      if (showSuggestions && highlighted >= 0 && suggestions[highlighted]) {
-        onSelect(suggestions[highlighted].code);
-      } else {
-        onSubmit();
-      }
+      if (open && highlighted >= 0 && hits[highlighted]) go(hits[highlighted].code);
+      else if (query.trim()) go(query.trim());
       return;
     }
     if (e.key === "Escape") {
@@ -95,14 +150,18 @@ export function SearchBox({
             autoComplete="off"
             spellCheck={false}
             role="combobox"
-            aria-expanded={showSuggestions}
+            aria-expanded={open}
             aria-controls={`${inputId}-hits`}
             aria-activedescendant={highlighted >= 0 ? `${inputId}-hit-${highlighted}` : undefined}
             value={query}
-            onChange={(e) => onQueryChange(e.target.value)}
-            onFocus={onFocus}
-            onBlur={onBlur}
-            onKeyDown={handleKeyDown}
+            onChange={(e) => onChange(e.target.value)}
+            onPointerEnter={primeSearch}
+            onFocus={() => {
+              primeSearch();
+              if (query.trim()) runQuery(query, search);
+            }}
+            onBlur={() => setTimeout(() => setOpen(false), 120)}
+            onKeyDown={onKeyDown}
           />
           {query ? (
             <button
@@ -113,7 +172,7 @@ export function SearchBox({
                 // preventDefault, not onClick: keeps focus on the input rather than
                 // blurring to the button, so the dropdown doesn't close first.
                 e.preventDefault();
-                onQueryChange("");
+                onChange("");
                 inputRef.current?.focus();
               }}
             >
@@ -122,27 +181,27 @@ export function SearchBox({
           ) : null}
         </div>
 
-        {showSuggestions ? (
+        {open ? (
           <ul className={styles.hits} id={`${inputId}-hits`} role="listbox">
-            {suggestions.length === 0 ? (
+            {hits.length === 0 ? (
               <li className={styles.empty}>No match.</li>
             ) : (
-              suggestions.map((p, i) => (
+              hits.map((hit, i) => (
                 <li
-                  key={p.code}
+                  key={hit.code}
                   id={`${inputId}-hit-${i}`}
                   role="option"
                   aria-selected={i === highlighted}
                   className={`${styles.hit} ${i === highlighted ? styles.hitActive : ""}`}
-                  onMouseEnter={() => setHighlighted(i)}
+                  onMouseEnter={() => highlight(i)}
                   onMouseDown={(e) => {
                     e.preventDefault();
-                    onSelect(p.code);
+                    go(hit.code);
                   }}
                 >
-                  <span className={styles.dot} style={{ background: p.hex ?? "#c7c9d1" }} />
-                  <span className={styles.hitCode}>{p.code}</span>
-                  <span className={styles.hitName}>{p.name}</span>
+                  <span className={styles.dot} style={{ background: hit.hex ?? "#c7c9d1" }} />
+                  <span className={styles.hitCode}>{hit.code}</span>
+                  <span className={styles.hitName}>{hit.name}</span>
                 </li>
               ))
             )}

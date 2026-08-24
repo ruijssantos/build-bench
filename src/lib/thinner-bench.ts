@@ -1,7 +1,7 @@
+import { getCataloguePaint, type CataloguePaint } from "@/catalogue/paints";
+import { getCatalogueRatioRule, type CatalogueRatioRule } from "@/catalogue/ratio-rules";
 import { getActiveAirbrush, type AirbrushRow } from "@/db/repositories/airbrush";
-import { getPaintByCode, type PaintRow } from "@/db/repositories/paints";
 import { getOverrideForPaint, type RatioOverrideRow } from "@/db/repositories/ratio-overrides";
-import { getRatioRule, type RatioRuleRow } from "@/db/repositories/ratio-rules";
 import {
   familyFromLinePrefix,
   normalizePaintCode,
@@ -29,7 +29,7 @@ export interface ThinnerBenchBundle {
   query: string;
   /** null when the query doesn't even look like a Tamiya code (unknown line prefix). */
   paint: ResolvedPaintIdentity | null;
-  ratioRule: RatioRuleRow | null;
+  ratioRule: CatalogueRatioRule | null;
   override: RatioOverrideRow | null;
   effectiveRatio: EffectiveRatio | null;
   isAdditive: boolean;
@@ -40,7 +40,11 @@ function bottleFamily(family: string): boolean {
   return family === "gloss" || family === "flat";
 }
 
-function resolveIdentity(rawCode: string, line: PaintLine, catalogueRow?: PaintRow): ResolvedPaintIdentity | null {
+function resolveIdentity(
+  rawCode: string,
+  line: PaintLine,
+  catalogueRow?: CataloguePaint,
+): ResolvedPaintIdentity | null {
   const code = normalizePaintCode(rawCode);
 
   if (catalogueRow) {
@@ -75,23 +79,42 @@ function resolveIdentity(rawCode: string, line: PaintLine, catalogueRow?: PaintR
 }
 
 /**
- * Resolves a raw paint-code query into everything the Thinner Bench screen needs:
- * identity, the family's ratio rule (with any override applied), and the rig
- * facts. Pure composition over the repositories — no route handler or
- * component should import the repositories directly (§4's data access
- * rule); they call this instead.
+ * The half of the bench that needs no database at all: which paint this is,
+ * and what its family's rule says. Both come from the compiled catalogue, so
+ * this is synchronous, free, and safe to call during a prerender.
+ *
+ * Split out from `resolveThinnerBench` deliberately — it lets a caller render
+ * everything a paint code determines without waiting on the rig row or a
+ * correction, which is what keeps the screen's static shell useful.
+ */
+export function resolvePaintIdentity(
+  rawCode: string,
+  line: PaintLine = "acrylic",
+): { paint: ResolvedPaintIdentity | null; ratioRule: CatalogueRatioRule | null } {
+  const paint = resolveIdentity(rawCode, line, getCataloguePaint(normalizePaintCode(rawCode)));
+  return {
+    paint,
+    ratioRule: paint ? getCatalogueRatioRule(paint.family) ?? null : null,
+  };
+}
+
+/**
+ * Resolves a raw paint-code query into everything the Thinner Bench screen
+ * needs: identity, the family's ratio rule (with any override applied), and
+ * the rig facts.
+ *
+ * Identity and the rule are compiled in; only the correction and the rig row
+ * are queried, and those two run in parallel — one round trip's worth of
+ * latency for the whole screen, both of them cached.
  */
 export async function resolveThinnerBench(
   rawCode: string,
   line: PaintLine = "acrylic",
 ): Promise<ThinnerBenchBundle> {
-  const code = normalizePaintCode(rawCode);
-  const catalogueRow = await getPaintByCode(code);
-  const paint = resolveIdentity(rawCode, line, catalogueRow);
+  const { paint, ratioRule } = resolvePaintIdentity(rawCode, line);
 
-  const [ratioRule, override, airbrush] = await Promise.all([
-    paint ? getRatioRule(paint.family) : Promise.resolve(undefined),
-    catalogueRow ? getOverrideForPaint(catalogueRow.code) : Promise.resolve(undefined),
+  const [override, airbrush] = await Promise.all([
+    paint?.known ? getOverrideForPaint(paint.code) : Promise.resolve(undefined),
     getActiveAirbrush(),
   ]);
 
@@ -102,7 +125,7 @@ export async function resolveThinnerBench(
   return {
     query: rawCode,
     paint,
-    ratioRule: ratioRule ?? null,
+    ratioRule,
     override: override ?? null,
     effectiveRatio,
     isAdditive,

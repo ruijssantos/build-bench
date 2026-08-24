@@ -471,6 +471,14 @@ Drizzle supports it directly.
 **Data access rule.** Every query goes through `src/db/repositories/*`. Route handlers and
 components never import the Drizzle client directly.
 
+**Reference data rule.** Reference data that is seeded from a committed, CI-verified file
+and only changes on deploy is *read* from that file, not queried — `src/catalogue/*`
+imports `seed/*.json` at module scope. The tables stay: they are the seed target and the
+foreign key user-owned rows hang off. This is what lets the Thinner Bench prerender, keeps
+type-ahead search off the network entirely, and keeps `next build` from needing a database.
+The reasoning, and the rules the rest of the app follows, are in
+[`docs/PERFORMANCE.md`](PERFORMANCE.md).
+
 ### 4.1 Design system — locked
 
 Settled across four rounds of mockups. Reference canvas (Thinner Bench, Paints, desktop
@@ -799,6 +807,7 @@ Nothing outstanding. Everything needed to start building is decided.
 | Geometry | 4px scale · radii 20/14/999 · one shadow | §4.1 |
 | Navigation | Bottom tabs on phone · 260px left rail on desktop | §4.1, §4.2 |
 | Theme | Light only; no dark branch anywhere | §8 |
+| Performance | PPR shell · compiled reference data · client islands · CI budget | `docs/PERFORMANCE.md` |
 
 Phase 0 and Phase 1 are done — the app deploys, and the Thinner Bench is real. Phase 1's
 catalogue script did catch the XF-83/XF-84 gap this plan predicted (§2.2), confirming both

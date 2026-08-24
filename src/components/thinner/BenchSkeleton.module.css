@@ -1,0 +1,33 @@
+/*
+ * Placeholders that borrow the real components' classes, so the reserved box
+ * is the height the real card will be rather than a guess. `.block` only
+ * hides the text inside an element that is otherwise styled and measured
+ * exactly like its counterpart.
+ */
+.block {
+  background: var(--card-sunken);
+  border-radius: 6px;
+  color: transparent;
+  display: inline-block;
+  max-width: 100%;
+}
+
+.swatch {
+  background: var(--card-sunken);
+}
+
+.bar {
+  background: var(--card-sunken);
+  border-radius: var(--radius-pill);
+  height: 100%;
+}
+
+/* A single placeholder line inside an element that is already carrying the
+   real component's font metrics. */
+.line {
+  display: block;
+  background: var(--card-sunken);
+  border-radius: 6px;
+  color: transparent;
+  max-width: 100%;
+}

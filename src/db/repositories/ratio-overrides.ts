@@ -1,12 +1,34 @@
 import { desc, eq } from "drizzle-orm";
+import { cacheLife, cacheTag } from "next/cache";
+import { connection } from "next/server";
 
 import { db } from "@/db/client";
 import { ratioOverride } from "@/db/schema";
 
 export type RatioOverrideRow = typeof ratioOverride.$inferSelect;
 
-/** The most recent correction for this exact paint code, if any. */
+/** One tag per paint code, so saving a correction for XF-64 doesn't evict TS-8's. */
+export function overrideTag(paintCode: string): string {
+  return `ratio-override:${paintCode}`;
+}
+
+/**
+ * The most recent correction for this exact paint code, if any.
+ *
+ * `connection()` then `use cache`, for the reasons in `./airbrush.ts`:
+ * request-time only so the build stays database-free, cached so a screen that
+ * has already been looked at costs nothing to look at again.
+ */
 export async function getOverrideForPaint(code: string): Promise<RatioOverrideRow | undefined> {
+  await connection();
+  return queryOverrideForPaint(code);
+}
+
+async function queryOverrideForPaint(code: string): Promise<RatioOverrideRow | undefined> {
+  "use cache";
+  cacheLife("bench");
+  cacheTag(overrideTag(code));
+
   const rows = await db
     .select()
     .from(ratioOverride)

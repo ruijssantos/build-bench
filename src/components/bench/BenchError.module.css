@@ -1,0 +1,48 @@
+.card {
+  grid-column: 1 / -1;
+  background: var(--card);
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius-card);
+  padding: 24px 20px;
+  margin: 0 20px;
+}
+
+@media (min-width: 900px) {
+  .card {
+    margin: 0;
+  }
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--alert);
+  margin: 0;
+}
+
+.detail {
+  font-family: var(--font-ui);
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--muted);
+  margin: 6px 0 0;
+}
+
+.retry {
+  margin-top: 14px;
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--accent);
+  cursor: pointer;
+}
+
+.retry:hover {
+  color: #14294c;
+}

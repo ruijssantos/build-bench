@@ -10,18 +10,25 @@ const barlowCondensed = Barlow_Condensed({
   display: "swap",
 });
 
+// No `weight` on purpose: Plus Jakarta Sans is a variable font, so one file
+// covers 400–800. Pinning the five weights the design uses made next/font ship
+// five static instances and preload all of them.
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
   variable: "--font-plus-jakarta-sans",
   display: "swap",
 });
 
+// Not preloaded: DM Mono only sets small secondary labels (paint codes, the
+// psi line, search hits) and never the largest text on any screen, so it has
+// no business competing for bandwidth with the display and body faces during
+// first paint. It still loads, just off the critical path.
 const dmMono = DM_Mono({
   subsets: ["latin"],
   weight: ["400", "500"],
   variable: "--font-dm-mono",
   display: "swap",
+  preload: false,
 });
 
 export const metadata: Metadata = {

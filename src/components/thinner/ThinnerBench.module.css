@@ -122,7 +122,11 @@
   }
 }
 
-.lineButton {
+/* Links, not buttons: the acrylic/enamel choice is part of the URL now, so
+   each option is a real destination the router can prefetch. */
+.lineButton,
+.lineButton:hover {
+  display: inline-block;
   background: transparent;
   border: 1px solid var(--line-strong);
   color: var(--muted);
@@ -132,17 +136,21 @@
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
+  text-decoration: none;
   padding: 8px 13px;
   cursor: pointer;
 }
 
-.lineButtonActive {
+.lineButtonActive,
+.lineButtonActive:hover {
   border-color: var(--accent);
   color: var(--accent);
   background: var(--accent-tint);
 }
 
 .notice {
+  /* Lives inside .grid now that the bench content streams into it. */
+  grid-column: 1 / -1;
   margin: 20px;
   background: var(--card);
   border: 1px dashed var(--line-strong);
