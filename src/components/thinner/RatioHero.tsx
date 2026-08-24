@@ -224,6 +224,20 @@ export function RatioHero({
         <div className={styles.divider} />
 
         <div>
+          <div className={styles.sliderRow}>
+            <input
+              className={styles.slider}
+              type="range"
+              min={5}
+              max={80}
+              step={1}
+              value={drops}
+              onChange={(e) => onDropsChange(Number(e.target.value))}
+              aria-label="Drops of paint"
+            />
+            <span className={styles.sliderLabel}>drops of paint</span>
+          </div>
+
           <div className={styles.cupHeader}>
             <span className={styles.cupHeaderLeft}>
               {cupFill.paintDrops} drops paint <span className={styles.plus}>+</span>{" "}
@@ -249,20 +263,6 @@ export function RatioHero({
           <div className={`${styles.cupCaption} ${cupFill.overCapacity ? styles.overCapacity : ""}`}>
             {Math.round(cupFill.pctOfCup)}% of the {cupCc} cc cup
             {cupFill.overCapacity ? " — over capacity, mix in two batches" : ""}
-          </div>
-
-          <div className={styles.sliderRow}>
-            <input
-              className={styles.slider}
-              type="range"
-              min={5}
-              max={80}
-              step={1}
-              value={drops}
-              onChange={(e) => onDropsChange(Number(e.target.value))}
-              aria-label="Drops of paint"
-            />
-            <span className={styles.sliderLabel}>drops of paint</span>
           </div>
         </div>
       </div>

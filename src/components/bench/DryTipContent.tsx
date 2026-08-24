@@ -1,17 +1,14 @@
-"use client";
-
-import { useState } from "react";
-
-import { ChevronDownIcon } from "@/components/icons";
 import type { AirbrushRow } from "@/db/repositories/airbrush";
 
-import styles from "./DryTipPanel.module.css";
-import { shortRigLabel } from "./rig-label";
+import styles from "./DryTipContent.module.css";
 
 /**
- * The 74540's dry-tip/clogging guidance, ported from the prototype's
- * <details> phases — every rig fact (nozzle size, cup capacity, model name)
- * is interpolated from the `airbrush` row, never hard-coded (§2.3).
+ * The rig's dry-tip/clogging guidance, ported from the prototype's <details>
+ * phases — every rig fact (nozzle size, cup capacity, model name) is
+ * interpolated from the `airbrush` row, never hard-coded (§2.3). Lives in a
+ * Modal triggered from the Current Rig chrome (desktop rail / phone header
+ * pill) rather than on the Thinner Bench screen — it's a fact about the
+ * airbrush, not about whichever paint happens to be loaded.
  */
 function phasesFor(airbrush: AirbrushRow) {
   const nozzle = airbrush.nozzleMm != null ? `${airbrush.nozzleMm} mm` : "the needle";
@@ -52,44 +49,24 @@ function phasesFor(airbrush: AirbrushRow) {
   ];
 }
 
-export function DryTipPanel({ airbrush }: { airbrush: AirbrushRow }) {
-  const [open, setOpen] = useState(false);
+export function DryTipContent({ airbrush }: { airbrush: AirbrushRow }) {
   const phases = phasesFor(airbrush);
 
   return (
-    <div className={styles.card}>
-      <button
-        type="button"
-        className={styles.summary}
-        onClick={() => setOpen((v) => !v)}
-        aria-expanded={open}
-      >
-        <span>
-          <div className={styles.summaryText}>
-            {shortRigLabel(airbrush.model ?? "Rig")} · dry tip &amp; clogging
-          </div>
-          <div className={styles.summaryHint}>Before / during / after</div>
-        </span>
-        <ChevronDownIcon size={18} className={`${styles.chevron} ${open ? styles.chevronOpen : ""}`} />
-      </button>
-
-      {open ? (
-        <div className={styles.phases}>
-          {phases.map((phase) => (
-            <div className={styles.phase} key={phase.key}>
-              <div className={styles.phaseTitle}>{phase.title}</div>
-              <div className={styles.list}>
-                {phase.items.map((item) => (
-                  <div className={styles.item} key={item}>
-                    <span className={styles.dot} />
-                    <span className={styles.text}>{item}</span>
-                  </div>
-                ))}
+    <div className={styles.phases}>
+      {phases.map((phase) => (
+        <div className={styles.phase} key={phase.key}>
+          <div className={styles.phaseTitle}>{phase.title}</div>
+          <div className={styles.list}>
+            {phase.items.map((item) => (
+              <div className={styles.item} key={item}>
+                <span className={styles.dot} />
+                <span className={styles.text}>{item}</span>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      ) : null}
+      ))}
     </div>
   );
 }

@@ -2,7 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 
+import { DryTipContent } from "@/components/bench/DryTipContent";
+import { Modal } from "@/components/bench/Modal";
+import { shortRigLabel } from "@/components/bench/rig-label";
 import { SignOutButton } from "@/components/bench/SignOutButton";
 import { ThinnerIcon } from "@/components/icons";
 import type { AirbrushRow } from "@/db/repositories/airbrush";
@@ -12,6 +16,7 @@ import { NAV_ITEMS } from "./nav-items";
 
 export function NavRail({ airbrush }: { airbrush: AirbrushRow | null }) {
   const pathname = usePathname();
+  const [dryTipOpen, setDryTipOpen] = useState(false);
 
   return (
     <nav className={styles.rail} aria-label="Primary">
@@ -66,12 +71,21 @@ export function NavRail({ airbrush }: { airbrush: AirbrushRow | null }) {
               <span className={styles.rigChip}>{airbrush.cupCc} cc</span>
             ) : null}
           </div>
+          <button type="button" className={styles.rigLink} onClick={() => setDryTipOpen(true)}>
+            Dry tip &amp; clogging guide
+          </button>
         </div>
       ) : null}
 
       <div className={styles.signOut}>
         <SignOutButton />
       </div>
+
+      {dryTipOpen && airbrush ? (
+        <Modal title={`${shortRigLabel(airbrush.model ?? "Rig")} · Dry tip & clogging`} onClose={() => setDryTipOpen(false)}>
+          <DryTipContent airbrush={airbrush} />
+        </Modal>
+      ) : null}
     </nav>
   );
 }
