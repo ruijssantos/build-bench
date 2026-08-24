@@ -3,9 +3,12 @@
 A companion app for 1:24 scale model car building, centred on a Tamiya 74540 HG Trigger
 airbrush workflow and pre-build kit research.
 
-**Status:** revision 4 — **locked, ready to build**. No implementation code written yet.
+**Status:** revision 5 — **locked, ready to build**. No implementation code written yet.
 **Planning pass:** Opus. **Implementation:** Sonnet, phase by phase.
 
+> **Changed in r5** — Repository renamed to `build-bench`; `main` is the default branch.
+> Paths and setup steps updated to match.
+>
 > **Changed in r4** — Visual design settled and folded in: §4.1 is now the complete token
 > spec (palette, type ramp, geometry, livery) replacing the prototype's dark palette. Dark
 > theme dropped from scope. Everything needed for Phase 0 and Phase 1 is now decided.
@@ -394,7 +397,7 @@ Deliberately last in the build order — but modelling it now means nothing need
 ## 4. Application structure
 
 ```
-scale-model-bench/
+build-bench/
 ├── docs/PLAN.md                    ← this file
 ├── docs/decisions/                 ← short ADRs as things change
 ├── drizzle/                        ← generated migrations
@@ -795,13 +798,14 @@ in a table in that Postgres, and the app reads and writes it. That's the whole c
 ### 9.2 Your steps — about ten minutes, once
 
 1. **Import the repo.** Vercel dashboard → **Add New → Project** → import
-   `ruijssantos/scale-model-bench`. Accept the Next.js defaults. The first deploy will fail
-   or render nothing until Phase 0 lands — that's expected.
+   `ruijssantos/build-bench`. Accept the Next.js defaults; Vercel picks up `main` as the
+   production branch on its own, and every other branch deploys as a preview. The first
+   deploy will render nothing until Phase 0 lands — that's expected.
 2. **Add the database.** In the project → **Storage** tab → **Create Database** → choose
    **Neon** from the Marketplace → **Free** plan → pick an **EU region** (Frankfurt is
-   normally the closest to Portugal) → name it `bench-build`.
+   normally the closest to Portugal) → name it `build-bench`.
 3. **Connect it.** Still in Storage → the new database → **Connect Project** → select
-   `scale-model-bench` → tick **Development, Preview and Production**.
+   `build-bench` → tick **Development, Preview and Production**.
    `DATABASE_URL` now exists in all three environments. Nothing else to do.
 4. **Add the Blob store** (needed from Phase 4, fine to do now). Storage → **Create** →
    **Blob** → connect to the same project. That sets `BLOB_READ_WRITE_TOKEN`.
