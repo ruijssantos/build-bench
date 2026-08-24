@@ -6,7 +6,6 @@ import { PencilIcon } from "@/components/icons";
 import {
   calculateCupFill,
   formatRatioNumber,
-  windowPosition,
   WINDOW_BAND_LEFT_PCT,
   WINDOW_BAND_WIDTH_PCT,
   type EffectiveRatio,
@@ -47,7 +46,6 @@ export function RatioHero({
   const [error, setError] = useState<string | null>(null);
 
   const cupFill = calculateCupFill(drops, ratio, cupCc);
-  const dotPct = windowPosition(ratio);
 
   function startEdit() {
     setPaintPartsInput(String(ratio.paintParts));
@@ -122,9 +120,7 @@ export function RatioHero({
           <div className={styles.ratioNumbers}>
             <span className={styles.num}>{formatRatioNumber(ratio.paintParts)}</span>
             <span className={styles.colon}>:</span>
-            <span className={`${styles.num} ${styles.numAccent}`}>
-              {formatRatioNumber(ratio.thinnerParts)}
-            </span>
+            <span className={styles.num}>{formatRatioNumber(ratio.thinnerParts)}</span>
           </div>
           {ratio.isOverridden ? (
             <div className={styles.overriddenNote}>
@@ -209,9 +205,6 @@ export function RatioHero({
                 className={styles.trackFill}
                 style={{ left: `${WINDOW_BAND_LEFT_PCT}%`, width: `${WINDOW_BAND_WIDTH_PCT}%` }}
               />
-              {dotPct != null ? (
-                <div className={styles.trackDot} style={{ left: `${dotPct}%` }} />
-              ) : null}
             </div>
             <div className={styles.windowLabels}>
               <span className={styles.windowLabel}>Drier {formatRatioNumber(ratio.windowLo)}</span>

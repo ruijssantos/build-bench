@@ -242,10 +242,6 @@
   }
 }
 
-.numAccent {
-  color: var(--accent);
-}
-
 .overriddenNote {
   font-family: var(--font-ui);
   font-size: 11.5px;
@@ -288,27 +284,6 @@
 @media (min-width: 900px) {
   .trackFill {
     height: 10px;
-  }
-}
-
-/* A plain position marker, not a control — no thumb-style border/shadow,
-   which read as "drag me" even though nothing here is interactive. */
-.trackDot {
-  position: absolute;
-  top: -2px;
-  width: 10px;
-  height: 10px;
-  margin-left: -5px;
-  border-radius: 50%;
-  background: var(--accent);
-}
-
-@media (min-width: 900px) {
-  .trackDot {
-    top: -3px;
-    width: 12px;
-    height: 12px;
-    margin-left: -6px;
   }
 }
 

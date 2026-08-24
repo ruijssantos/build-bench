@@ -1,6 +1,6 @@
 /**
- * Ratio, cup-fill and thinner-warning maths — ported from the prototype's
- * `R{}` table and its render()/paintNumbers() logic (docs/reference/
+ * Ratio and cup-fill maths — ported from the prototype's `R{}` table and its
+ * render()/paintNumbers() logic (docs/reference/
  * tamiya-thinner-bench-prototype.html). Pure functions only; no I/O.
  */
 
@@ -75,23 +75,12 @@ export function formatRatioNumber(n: number): string {
 
 /**
  * The workable-window band is always drawn at the same fixed position on the
- * track (25%–60%) regardless of family — only the dot moves, mapped
- * proportionally onto that band from where the current ratio sits relative
- * to [windowLo, windowHi]. A ratio outside the window (e.g. after an
- * override) can push the dot past the band's edges.
+ * track (25%–60%) regardless of family — the numbers above and the "Drier /
+ * Wetter" labels either side already say where the current ratio sits, so
+ * the band alone is enough here.
  */
 export const WINDOW_BAND_LEFT_PCT = 25;
 export const WINDOW_BAND_WIDTH_PCT = 35;
-
-/** 0–100% position for the track dot, or null when the family has no window. */
-export function windowPosition(ratio: EffectiveRatio): number | null {
-  if (ratio.windowLo == null || ratio.windowHi == null) return null;
-  const span = ratio.windowHi - ratio.windowLo;
-  if (span <= 0) return null;
-  const fraction = (ratio.thinnerParts - ratio.windowLo) / span;
-  const pct = WINDOW_BAND_LEFT_PCT + fraction * WINDOW_BAND_WIDTH_PCT;
-  return Math.min(100, Math.max(0, pct));
-}
 
 export interface CupFill {
   paintDrops: number;
@@ -108,7 +97,7 @@ export function calculateCupFill(
   ratio: Pick<EffectiveRatio, "paintParts" | "thinnerParts">,
   cupCc: number,
 ): CupFill {
-  const thinnerDrops = Math.round(paintDrops * (ratio.thinnerParts / ratio.paintParts) * 10) / 10;
+  const thinnerDrops = Math.round(paintDrops * (ratio.thinnerParts / ratio.paintParts));
   const totalMl = (paintDrops + thinnerDrops) * ML_PER_DROP;
   const pctOfCup = cupCc > 0 ? (totalMl / cupCc) * 100 : 0;
   return {
@@ -118,26 +107,5 @@ export function calculateCupFill(
     totalMlText: totalMl.toFixed(2).replace(/0$/, "").replace(/\.$/, ""),
     pctOfCup,
     overCapacity: totalMl > cupCc,
-  };
-}
-
-export interface ThinnerWarning {
-  title: string;
-  message: string;
-}
-
-/**
- * The lacquer-vs-acrylic mismatch warning, keyed off `ratio_rule.thinner_type`
- * rather than a hardcoded family list, so a new lacquer-side family added
- * later gets the warning for free. Only a genuine mismatch (your acrylic
- * retarder bottle curdling a lacquer paint) is worth interrupting for —
- * the enamel and plain-acrylic "note" tiers were cut for being noise.
- */
-export function thinnerWarningFor(thinnerType: string | null): ThinnerWarning | null {
-  if (thinnerType !== "lacquer_retarder") return null;
-  return {
-    title: "Wrong thinner on the bench",
-    message:
-      "Your acrylic retarder will curdle this one. It needs Tamiya Lacquer Thinner, retarder type, for the same slow flash.",
   };
 }
