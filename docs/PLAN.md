@@ -14,6 +14,12 @@ airbrush workflow and pre-build kit research.
 > shipped (PRs #6 and #9, plus three Phase 1 follow-ups) rather than still describing a
 > plan nothing had been built against yet.
 >
+> **Changed in r7** — §4.1 type ramp collapsed after building Phase 1: the separate
+> "section label" / "tile label" roles became one **Module title**, and the "tile value" /
+> "body / value" range became one **Body copy** size. Added the rule that labels are never
+> coloured decoratively, and a desktop content width floor and ceiling under *Geometry*.
+> These are rules for every module built from here, not just the Thinner Bench.
+>
 > **Changed in r6** — Product name is now **The Build Bench** (was "Bench & Build"),
 > updated in the README, this file, and everywhere the app names itself — page titles, the
 > PWA manifest, the sign-in screen. The repo and package stay `build-bench`; only the
@@ -534,13 +540,32 @@ Three faces, one job each. All from Google Fonts, each with a fallback stack.
 |---|---|
 | Screen title | Display 700 · 40px phone / 38px desktop · uppercase · ls .005em · lh .98 |
 | Hero numeral | Display 700 · 66px phone / 86px desktop · ls −.01em |
-| Section label | Display 600 · 13–15px · uppercase · ls .14em · `--muted-2` |
-| Tile label | Display 600 · 12.5px · uppercase · ls .12em · `--muted-2` |
-| Tile value | Display 700 · 24px (19px desktop tiles) |
+| Module title | Display 600 · 13px phone / 15px desktop · uppercase · ls .14em · `--muted` |
+| Body copy | UI · 13.5px · lh 1.5 · `--ink-soft` |
 | Row title | UI 700 · 14.5px · ls −.01em |
-| Body / value | UI 500–700 · 12.5–16px |
+| Field label | Display 600 · 12.5px · uppercase · ls .12em · `--muted-2` |
 | Caption | UI 500 · 11.5px · `--muted-2` |
 | Paint code | Mono 500 · 12px · ls .02em · `--muted-2` |
+
+**One module title, one body size.** These two rows replaced a per-module sprawl (a
+separate smaller "tile label", a bold 24px "tile value", a 12.5–16px body range) that made
+sibling modules on the same screen read as unrelated systems.
+
+- **Module title** is the same treatment whatever the module's physical size. A four-across
+  spec tile gets the identical title style as a full-width notes card — a module title is a
+  module title. Do not shrink it to "fit" a small tile; if a title truncates, the layout is
+  too narrow (see the width floor in *Geometry*), not the type.
+- **Body copy** is one size for everything read as secondary or reference text: tile values,
+  notes lists, modal paragraphs. Do not introduce a second body size for a new module
+  without a reason that survives being asked out loud.
+- **Labels are never coloured decoratively.** A label takes `--muted` (module title) or
+  `--muted-2` (caption). Reach for `--ok` / `--alert` / `--accent` only when the colour
+  carries the meaning defined in *Colour* above — a label that merely sits near a status bar
+  is not itself a status.
+- **Field label** is the one label role that is deliberately *not* a module title: it names a
+  form input, so it stays smaller and quieter than the title of the module containing it.
+- Emphasis inside these roles is **weight, not size or colour** (e.g. a bold `--muted-2`
+  caption to mark the mid-point of a range).
 
 Barlow Condensed is what gives the app its automotive voice. It does that through type, not
 through ornament — which is why it survives on screens (Paints, Shopping) that have nothing
@@ -549,6 +574,12 @@ to do with instruments.
 #### Geometry
 
 - **Spacing:** 4px scale. Screen gutter 20px phone / 40px desktop.
+- **Desktop content width:** bounded at both ends — `max-width: 1600px` (centred) so an
+  ultra-wide window does not strand the content in empty page, and `min-width: 1100px` so a
+  narrow desktop window never squeezes modules to the point of truncating their titles. Below
+  the floor the content area scrolls horizontally (`overflow-x: auto` on the scroll parent, so
+  the scrollbar is real rather than clipped by the global `overflow-x: hidden`). Both bounds
+  apply above the 900px breakpoint only; phone is fluid.
 - **Radii:** card 20 (22 desktop) · tile, input 14 · chip 6–12 · pill 999.
 - **Borders:** 1px `--line`. Hairlines do the separating.
 - **Elevation:** exactly one shadow in the whole app, on the hero card —
