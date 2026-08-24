@@ -7,25 +7,6 @@
   align-items: flex-start;
 }
 
-/* "info" severity is a workshop tip, not a mismatch — the locked palette
-   (docs/PLAN.md §4.1) has no fourth "caution" colour, so it gets the same
-   neutral treatment as any other note rather than borrowing --alert. */
-.bannerInfo {
-  background: var(--card-sunken);
-}
-
-.bannerInfo .icon {
-  color: var(--muted);
-}
-
-.bannerInfo .title {
-  color: var(--ink);
-}
-
-.bannerInfo .message {
-  color: var(--ink-soft);
-}
-
 @media (min-width: 900px) {
   .banner {
     border-radius: 16px;

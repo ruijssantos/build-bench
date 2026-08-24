@@ -5,7 +5,7 @@ import styles from "./ThinnerWarningBanner.module.css";
 
 export function ThinnerWarningBanner({ warning }: { warning: ThinnerWarning }) {
   return (
-    <div className={`${styles.banner} ${warning.severity === "info" ? styles.bannerInfo : ""}`}>
+    <div className={styles.banner}>
       <AlertIcon size={18} className={styles.icon} />
       <div>
         <div className={styles.title}>{warning.title}</div>

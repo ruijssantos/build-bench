@@ -64,6 +64,7 @@
   border-radius: var(--radius-pill);
   padding: 7px 12px;
   margin-bottom: 3px;
+  cursor: pointer;
 }
 
 .rigDot {

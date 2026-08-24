@@ -7,9 +7,7 @@ import type { PaintLine, ThinnerBenchBundle } from "@/lib/thinner-bench";
 
 import { AdditiveCard } from "./AdditiveCard";
 import { BenchNotes } from "./BenchNotes";
-import { DryTipPanel } from "./DryTipPanel";
 import { RatioHero, type OverrideInput } from "./RatioHero";
-import { shortRigLabel } from "./rig-label";
 import { SearchBox, type SearchResult } from "./SearchBox";
 import { SpecGrid } from "./SpecGrid";
 import styles from "./ThinnerBench.module.css";
@@ -95,15 +93,12 @@ export function ThinnerBench({ initialBundle }: { initialBundle: ThinnerBenchBun
     onSelect,
   };
 
-  const rigLabel = bundle.airbrush?.model ? shortRigLabel(bundle.airbrush.model) : undefined;
-
   return (
     <>
-      <PhoneHeader title="Thinner Bench" rigLabel={rigLabel} />
+      <PhoneHeader title="Thinner Bench" airbrush={bundle.airbrush} />
 
       <div className={styles.desktopHeader}>
         <div className={styles.desktopTitle}>Thinner Bench</div>
-        <SearchBox scope="desktop" {...searchProps} />
       </div>
 
       <div className={styles.phoneSearchBlock}>
@@ -135,58 +130,57 @@ export function ThinnerBench({ initialBundle }: { initialBundle: ThinnerBenchBun
             No airbrush rig is seeded yet — run <code>npm run db:seed</code> to load the catalogue,
             ratio rules and rig facts.
           </div>
-        ) : !bundle.paint ? (
-          <div className={styles.grid}>
-            <div className={styles.emptyCard}>
-              No match. Tamiya codes look like <b>X-7</b>, <b>XF-64</b>, <b>LP-2</b>, <b>TS-8</b> or{" "}
-              <b>AS-12</b>.
-            </div>
-          </div>
-        ) : bundle.isAdditive ? (
-          <div className={styles.grid}>
-            <div className={styles.heroArea}>
-              <AdditiveCard paint={bundle.paint} notes={bundle.ratioRule?.notes ?? []} />
-            </div>
-            <div className={styles.drytipArea}>
-              <DryTipPanel airbrush={bundle.airbrush} />
-            </div>
-          </div>
-        ) : bundle.effectiveRatio ? (
-          <div className={styles.grid}>
-            <div className={styles.heroArea}>
-              <RatioHero
-                paint={bundle.paint}
-                ratio={bundle.effectiveRatio}
-                cupCc={bundle.airbrush.cupCc ?? 7}
-                drops={drops}
-                onDropsChange={setDrops}
-                canOverride={bundle.paint.known}
-                onSaveOverride={saveOverride}
-              />
-            </div>
-            <div className={styles.specsArea}>
-              <SpecGrid
-                psiText={bundle.effectiveRatio.psiText}
-                distanceText={bundle.effectiveRatio.distanceText}
-                coatsText={bundle.effectiveRatio.coatsText}
-                thinnerType={bundle.ratioRule?.thinnerType ?? null}
-              />
-            </div>
-            {bundle.thinnerWarning ? (
-              <div className={styles.warningArea}>
-                <ThinnerWarningBanner warning={bundle.thinnerWarning} />
-              </div>
-            ) : null}
-            <div className={styles.notesArea}>
-              <BenchNotes notes={bundle.effectiveRatio.notes} />
-            </div>
-            <div className={styles.drytipArea}>
-              <DryTipPanel airbrush={bundle.airbrush} />
-            </div>
-          </div>
         ) : (
           <div className={styles.grid}>
-            <div className={styles.emptyCard}>No ratio rule is seeded for this family yet.</div>
+            {/* Single, stable mount point regardless of which branch below is
+                active — selecting a result changes `bundle`, which would
+                otherwise remount this mid-click if it lived inside a branch. */}
+            <div className={styles.searchArea}>
+              <SearchBox scope="desktop" {...searchProps} />
+            </div>
+
+            {!bundle.paint ? (
+              <div className={styles.emptyCard}>
+                No match. Tamiya codes look like <b>X-7</b>, <b>XF-64</b>, <b>LP-2</b>, <b>TS-8</b> or{" "}
+                <b>AS-12</b>.
+              </div>
+            ) : bundle.isAdditive ? (
+              <div className={styles.heroArea}>
+                <AdditiveCard paint={bundle.paint} notes={bundle.ratioRule?.notes ?? []} />
+              </div>
+            ) : bundle.effectiveRatio ? (
+              <>
+                <div className={styles.heroArea}>
+                  <RatioHero
+                    paint={bundle.paint}
+                    ratio={bundle.effectiveRatio}
+                    cupCc={bundle.airbrush.cupCc ?? 7}
+                    drops={drops}
+                    onDropsChange={setDrops}
+                    canOverride={bundle.paint.known}
+                    onSaveOverride={saveOverride}
+                  />
+                </div>
+                <div className={styles.specsArea}>
+                  <SpecGrid
+                    psiText={bundle.effectiveRatio.psiText}
+                    distanceText={bundle.effectiveRatio.distanceText}
+                    coatsText={bundle.effectiveRatio.coatsText}
+                    thinnerType={bundle.ratioRule?.thinnerType ?? null}
+                  />
+                </div>
+                {bundle.thinnerWarning ? (
+                  <div className={styles.warningArea}>
+                    <ThinnerWarningBanner warning={bundle.thinnerWarning} />
+                  </div>
+                ) : null}
+                <div className={styles.notesArea}>
+                  <BenchNotes notes={bundle.effectiveRatio.notes} />
+                </div>
+              </>
+            ) : (
+              <div className={styles.emptyCard}>No ratio rule is seeded for this family yet.</div>
+            )}
           </div>
         )}
       </div>

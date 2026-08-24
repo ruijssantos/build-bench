@@ -121,43 +121,23 @@ export function calculateCupFill(
   };
 }
 
-export type ThinnerWarningSeverity = "stop" | "info";
-
 export interface ThinnerWarning {
-  severity: ThinnerWarningSeverity;
   title: string;
   message: string;
 }
 
 /**
- * The lacquer-vs-acrylic warning (and the enamel / plain-acrylic notes), keyed off
- * `ratio_rule.thinner_type` rather than a hardcoded family list, so a new lacquer-side
- * family added later gets the warning for free. Matches the prototype's `LACFAM` /
- * `res.fam==="enamel"` branch exactly — only the lacquer case is a "stop".
+ * The lacquer-vs-acrylic mismatch warning, keyed off `ratio_rule.thinner_type`
+ * rather than a hardcoded family list, so a new lacquer-side family added
+ * later gets the warning for free. Only a genuine mismatch (your acrylic
+ * retarder bottle curdling a lacquer paint) is worth interrupting for —
+ * the enamel and plain-acrylic "note" tiers were cut for being noise.
  */
 export function thinnerWarningFor(thinnerType: string | null): ThinnerWarning | null {
-  switch (thinnerType) {
-    case "lacquer_retarder":
-      return {
-        severity: "stop",
-        title: "Wrong thinner on the bench",
-        message:
-          "Your acrylic retarder will curdle this one. It needs Tamiya Lacquer Thinner, retarder type, for the same slow flash.",
-      };
-    case "enamel_x20":
-      return {
-        severity: "info",
-        title: "Enamel thinner, not acrylic",
-        message: "Enamel takes X-20 enamel thinner, not the acrylic retarder bottle.",
-      };
-    case "acrylic_retarder":
-      return {
-        severity: "info",
-        title: "Retarder note",
-        message:
-          "Retarder thinner runs slightly richer than plain X-20A here, and it is what keeps a 0.3 mm nozzle from drying out mid-panel. In a cold or damp room, back off to the drier end of the window.",
-      };
-    default:
-      return null;
-  }
+  if (thinnerType !== "lacquer_retarder") return null;
+  return {
+    title: "Wrong thinner on the bench",
+    message:
+      "Your acrylic retarder will curdle this one. It needs Tamiya Lacquer Thinner, retarder type, for the same slow flash.",
+  };
 }

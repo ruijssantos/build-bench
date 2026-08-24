@@ -15,9 +15,7 @@
 @media (min-width: 900px) {
   .onlyDesktop {
     display: block;
-    flex: 1;
-    max-width: 380px;
-    margin-left: auto;
+    width: 100%;
   }
 }
 
@@ -70,9 +68,24 @@
   font-size: 15px;
 }
 
-.chevron {
+.clearButton {
   flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  border: none;
+  background: none;
+  padding: 0;
   color: var(--faint);
+  cursor: pointer;
+}
+
+.clearButton:hover {
+  color: var(--muted);
+  background: var(--card-sunken);
 }
 
 .hits {

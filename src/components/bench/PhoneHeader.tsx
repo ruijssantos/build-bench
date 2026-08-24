@@ -1,13 +1,24 @@
-import { SignOutButton } from "./SignOutButton";
+"use client";
+
+import { useState } from "react";
+
+import type { AirbrushRow } from "@/db/repositories/airbrush";
+
+import { DryTipContent } from "./DryTipContent";
+import { Modal } from "./Modal";
 import styles from "./PhoneHeader.module.css";
+import { shortRigLabel } from "./rig-label";
+import { SignOutButton } from "./SignOutButton";
 
 export function PhoneHeader({
   title,
-  rigLabel,
+  airbrush,
 }: {
   title: string;
-  rigLabel?: string | null;
+  airbrush?: AirbrushRow | null;
 }) {
+  const [dryTipOpen, setDryTipOpen] = useState(false);
+
   return (
     <div className={styles.header}>
       <svg className={styles.sweep} width="230" height="230" viewBox="0 0 230 230" aria-hidden="true">
@@ -28,13 +39,27 @@ export function PhoneHeader({
           <div className={styles.eyebrow}>The Build Bench</div>
           <div className={styles.title}>{title}</div>
         </div>
-        {rigLabel ? (
-          <div className={styles.rigPill}>
+        {airbrush ? (
+          <button
+            type="button"
+            className={styles.rigPill}
+            onClick={() => setDryTipOpen(true)}
+            aria-label="Dry tip & clogging guide for the current rig"
+          >
             <span className={styles.rigDot} />
-            <span className={styles.rigLabel}>{rigLabel}</span>
-          </div>
+            <span className={styles.rigLabel}>{shortRigLabel(airbrush.model ?? "Rig")}</span>
+          </button>
         ) : null}
       </div>
+
+      {dryTipOpen && airbrush ? (
+        <Modal
+          title={`${shortRigLabel(airbrush.model ?? "Rig")} · Dry tip & clogging`}
+          onClose={() => setDryTipOpen(false)}
+        >
+          <DryTipContent airbrush={airbrush} />
+        </Modal>
+      ) : null}
     </div>
   );
 }
