@@ -14,6 +14,10 @@ import { airbrush, paint, ratioRule } from "../src/db/schema";
  * screen has nothing to read. Safe to re-run — paints and ratio rules
  * upsert by their natural key; the airbrush row is only inserted if none
  * exists yet.
+ *
+ * .mts, not .ts: this uses top-level await, which CommonJS can't represent.
+ * package.json has no "type": "module", so tsx compiles a plain .ts file to
+ * CJS by default — the .mts extension forces it to run as a real ES module.
  */
 
 const databaseUrl = process.env.DATABASE_URL;
