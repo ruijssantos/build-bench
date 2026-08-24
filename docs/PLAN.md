@@ -3,9 +3,17 @@
 A companion app for 1:24 scale model car building, centred on a Tamiya 74540 HG Trigger
 airbrush workflow and pre-build kit research.
 
-**Status:** revision 6 — **locked, ready to build**.
+**Status:** revision 7 — **locked, ready to build**. Phase 0 and Phase 1 are shipped.
 **Planning pass:** Opus. **Implementation:** Sonnet, phase by phase.
 
+> **Changed in r7** — §6 reordered: **Paint inventory is now Phase 2** and **Cross-brand
+> equivalence is now Phase 3** (swapped from the original order). Inventory has no
+> dependency on equivalence or vice versa, so nothing else in the plan needed to change
+> beyond the cross-references that named them by number. §7 and §9.1's illustrations
+> updated to match, and the status block now reflects that Phase 0 and Phase 1 actually
+> shipped (PRs #6 and #9, plus three Phase 1 follow-ups) rather than still describing a
+> plan nothing had been built against yet.
+>
 > **Changed in r6** — Product name is now **The Build Bench** (was "Bench & Build"),
 > updated in the README, this file, and everywhere the app names itself — page titles, the
 > PWA manifest, the sign-in screen. The repo and package stay `build-bench`; only the
@@ -122,7 +130,7 @@ Two things it hides:
 
 ### 2.1 Your inventory as imported
 
-From the Google Sheet — 33 paints. This is the Phase 3 seed.
+From the Google Sheet — 33 paints. This is the Phase 2 seed.
 
 - **Gloss (18):** X-2, X-3, X-6, X-7, X-8, X-9, X-10, X-11, X-12, X-13, X-14, X-18, X-19,
   X-21, X-22, X-24, X-26, X-27
@@ -707,14 +715,14 @@ warning, the 74540 dry-tip panel — all reading rig facts from the `airbrush` r
 `ratio_override` editing. Phone layout done properly.
 **Ships:** the MVP, complete, persistent, and genuinely usable on your phone.
 
-### Phase 2 — Cross-brand equivalence
-Cybermodeler import, `paint_equivalent`, foreign → Tamiya lookup. Self-contained and useful
-on its own the next time you pick up a non-Tamiya kit.
-
-### Phase 3 — Paint inventory *(feature 4a)*
+### Phase 2 — Paint inventory *(feature 4a)*
 Import the Google Sheet. CRUD with decanted-vs-stock, bottle state, location. "Do I own
 this?" on the Thinner Bench result card.
 **Ships:** the standing-in-a-shop question answered.
+
+### Phase 3 — Cross-brand equivalence
+Cybermodeler import, `paint_equivalent`, foreign → Tamiya lookup. Self-contained and useful
+on its own the next time you pick up a non-Tamiya kit.
 
 ### Phase 4 — Kit stash + manual upload & viewer *(feature 4b + §4.3)*
 Kit CRUD with wishlist / owned / in-progress / built. PDF upload to Blob, desktop viewer,
@@ -722,7 +730,7 @@ Kit CRUD with wishlist / owned / in-progress / built. PDF upload to Blob, deskto
 **Ships:** your manuals, in the app, on the desktop where you build.
 
 ### Phase 5 — Paint shopping *(feature 3)*
-Requirements → inventory → buy list, with Phase 2's equivalents offered as substitutes.
+Requirements → inventory → buy list, with Phase 3's equivalents offered as substitutes.
 Persisted list with ordered/bought status. Input comes from Phase 4's extraction, with
 hand-entry as fallback.
 **Ships:** a real buy list you can take to KitMania.
@@ -761,11 +769,15 @@ Nothing outstanding. Everything needed to start building is decided.
 | Navigation | Bottom tabs on phone · 260px left rail on desktop | §4.1, §4.2 |
 | Theme | Light only; no dark branch anywhere | §8 |
 
-Two values still need filling in during Phase 1, both flagged at the point of use: the real
-hexes for **XF-83** and **XF-84** (§2.2 — mine are estimates), and one parser pass against
-Cybermodeler's actual HTML (§2.2 — the page was unreachable from the planning sandbox).
+Phase 0 and Phase 1 are done — the app deploys, and the Thinner Bench is real. Phase 1's
+catalogue script did catch the XF-83/XF-84 gap this plan predicted (§2.2), confirming both
+codes and names by search; their hex values are still unverified estimates, flagged as such
+in `scripts/build-catalogue.ts`'s own comments — fix them by eye against a real bottle
+whenever convenient, no phase attached. The other open item, a parser pass against
+Cybermodeler's actual HTML (§2.2 — the page was unreachable from the planning sandbox), is
+Phase 3 scope now.
 
-**Start at Phase 0** (§6), with the Vercel setup in §9.2 done in parallel.
+**Start at Phase 2** (§6) — building the app itself is well underway.
 
 ---
 
@@ -799,7 +811,7 @@ app's environment automatically. **You will never type or copy that string**, an
 the only thing that reads it. It sleeps when unused and wakes on the next query in well under
 a second.
 
-Concretely: today your paint list lives in a Google Sheet. After Phase 3 the same data lives
+Concretely: today your paint list lives in a Google Sheet. After Phase 2 the same data lives
 in a table in that Postgres, and the app reads and writes it. That's the whole change.
 
 ### 9.2 Your steps — about ten minutes, once
