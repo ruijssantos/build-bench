@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thinner Bench — Tamiya ratios for 1:24</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#14161a; --panel:#1c1f24; --line:#2e333a; --paper:#e8e4da;
+    --dim:#8d8a82; --red:#c8202a; --thin:#5d9dc4; --amber:#d9a441;
+    --pad:clamp(16px,4vw,32px);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--ink);
+    background-image:repeating-linear-gradient(90deg,rgba(255,255,255,.018) 0 1px,transparent 1px 4px);
+    color:var(--paper);
+    font-family:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+    font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:720px;margin:0 auto;padding:var(--pad) var(--pad) 64px}
+
+  header{border-bottom:2px solid var(--red);padding-bottom:14px;margin-bottom:18px}
+  .eyebrow{font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--dim);
+    display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  h1{font-family:"Archivo Narrow","Arial Narrow",sans-serif;font-weight:700;
+    font-size:clamp(34px,10vw,60px);line-height:.94;letter-spacing:-.01em;
+    text-transform:uppercase;margin:10px 0 6px}
+  h1 em{font-style:normal;color:var(--red)}
+  .sub{color:var(--dim);font-size:12.5px;max-width:48ch;margin:0}
+
+  .rig{display:flex;flex-wrap:wrap;gap:0;border:1px solid var(--line);background:var(--panel);margin-bottom:26px}
+  .rig div{flex:1 1 140px;padding:10px 13px;border-right:1px solid var(--line)}
+  .rig div:last-child{border-right:0}
+  .rig h4{margin:0 0 3px;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);font-weight:500}
+  .rig p{margin:0;font-size:12.5px}
+
+  .session{border:1px solid var(--line);background:var(--panel);margin-bottom:26px}
+  .session summary{list-style:none;cursor:pointer;padding:14px 16px;display:flex;justify-content:space-between;
+    align-items:center;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--paper)}
+  .session summary::-webkit-details-marker{display:none}
+  .session summary .arw{color:var(--dim);font-size:14px;transition:transform .2s}
+  .session[open] summary .arw{transform:rotate(90deg)}
+  .session summary span.n{color:var(--dim);letter-spacing:.1em;text-transform:none;font-size:11px}
+  .phases{border-top:1px solid var(--line);padding:16px}
+  .phase{margin-bottom:18px}
+  .phase:last-child{margin-bottom:0}
+  .phase h4{margin:0 0 9px;font-size:10px;letter-spacing:.22em;text-transform:uppercase;color:var(--thin);
+    display:flex;align-items:center;gap:8px}
+  .phase h4::before{content:"";width:14px;height:1px;background:var(--thin)}
+  .phase ul{margin:0;padding:0;list-style:none}
+  .phase li{display:flex;gap:10px;font-size:12.5px;color:#cfcbc2;padding:5px 0}
+  .phase li::before{content:"—";color:var(--red);flex:none}
+  .phase li b{color:var(--paper);font-weight:600}
+
+  label{display:block;font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--dim);margin-bottom:8px}
+  .field{position:relative}
+  input[type=text]{width:100%;background:var(--panel);border:1px solid var(--line);border-radius:2px;
+    color:var(--paper);font-family:inherit;font-size:26px;font-weight:600;letter-spacing:.06em;
+    padding:16px 18px;text-transform:uppercase}
+  input[type=text]::placeholder{color:#4d525a}
+  input:focus-visible,button:focus-visible{outline:2px solid var(--thin);outline-offset:2px}
+  .hits{list-style:none;margin:4px 0 0;padding:0;position:absolute;z-index:5;left:0;right:0;
+    background:#22262c;border:1px solid var(--line);max-height:260px;overflow:auto}
+  .hits li{display:flex;align-items:center;gap:12px;padding:10px 14px;cursor:pointer;border-bottom:1px solid #2a2e34}
+  .hits li:last-child{border-bottom:0}
+  .hits li:hover{background:#2c313a}
+  .hits code{color:var(--paper);font-weight:600;min-width:62px}
+  .hits span{color:var(--dim);font-size:12px}
+  .dot{width:15px;height:15px;border-radius:50%;border:1px solid #00000055;flex:none}
+
+  .lines{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+  .lines button{background:transparent;border:1px solid var(--line);color:var(--dim);border-radius:2px;
+    font-family:inherit;font-size:11px;letter-spacing:.14em;text-transform:uppercase;padding:8px 13px;cursor:pointer}
+  .lines button[aria-pressed=true]{border-color:var(--paper);color:var(--paper);background:#262b31}
+
+  .card{margin-top:30px;border:1px solid var(--line);background:var(--panel)}
+  .card.empty{border-style:dashed;color:var(--dim);padding:28px;font-size:13px}
+  .chip{display:flex;align-items:stretch;border-bottom:1px solid var(--line)}
+  .chip .swatch{width:96px;flex:none;border-right:1px solid var(--line)}
+  .chip .id{padding:16px 18px}
+  .chip .code{font-family:"Archivo Narrow","Arial Narrow",sans-serif;font-size:30px;font-weight:700;line-height:1}
+  .chip .name{font-size:13px;margin-top:5px}
+  .chip .fam{color:var(--dim);font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;margin-top:7px}
+
+  .body{padding:20px 18px}
+  .headline{font-family:"Archivo Narrow","Arial Narrow",sans-serif;font-size:clamp(26px,7vw,38px);
+    font-weight:700;line-height:1;margin:0 0 4px}
+  .headline .t{color:var(--thin)}
+  .headline small{font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:400;color:var(--dim);
+    letter-spacing:.18em;text-transform:uppercase;display:block;margin-bottom:10px}
+  .range{color:var(--dim);font-size:12px;margin-bottom:18px}
+
+  .cup{border:1px solid var(--line);background:#15181c;padding:12px 12px 8px}
+  .bar{display:flex;height:46px;overflow:hidden}
+  .bar .paint{background:#888;flex-grow:0;flex-shrink:0}
+  .bar .thinner{flex-grow:0;flex-shrink:0;background:repeating-linear-gradient(135deg,#2b3d49 0 5px,#22303a 5px 10px)}
+  .ticks{display:flex;margin-top:6px}
+  .ticks div{flex:1;border-left:1px solid #333940;height:6px}
+  .ticks div:first-child{border-left:0}
+  .cuplegend{display:flex;justify-content:space-between;font-size:10px;letter-spacing:.18em;
+    text-transform:uppercase;color:var(--dim);margin-top:6px}
+  .cuplegend b{font-weight:500;color:var(--paper)}
+  .cuplegend .tl b{color:var(--thin)}
+
+  .drops{display:flex;align-items:center;gap:14px;margin-top:16px;flex-wrap:wrap}
+  .drops input[type=range]{flex:1;min-width:190px;accent-color:var(--red);height:26px;touch-action:none}
+  .drops .read{font-size:12px;color:var(--dim);white-space:nowrap}
+  .drops .read b{color:var(--paper);font-weight:600}
+  .fill{font-size:11px;color:var(--dim);margin-top:6px}
+  .fill.over{color:var(--amber)}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;
+    background:var(--line);margin-top:20px;border:1px solid var(--line)}
+  .cell{background:var(--panel);padding:13px 14px}
+  .cell h3{margin:0 0 5px;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);font-weight:500}
+  .cell p{margin:0;font-size:13px}
+
+  .notes{margin-top:20px;border-top:1px solid var(--line);padding-top:16px}
+  .notes h3{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim);margin:0 0 10px;font-weight:500}
+  .notes ul{margin:0;padding:0;list-style:none}
+  .notes li{display:flex;gap:10px;font-size:12.5px;color:#cfcbc2;padding:5px 0}
+  .notes li::before{content:"—";color:var(--red);flex:none}
+
+  .flag{background:#2a2118;border-left:2px solid var(--amber);padding:11px 14px;font-size:12.5px;margin-top:18px;color:#e6d9c2}
+  .flag.stop{background:#2a1618;border-left-color:var(--red);color:#f0cdcd}
+
+  footer{margin-top:34px;border-top:1px solid var(--line);padding-top:14px;color:var(--dim);font-size:11.5px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow"><span>Airbrush reference · 1:24 cars</span><span>Ratios by volume</span></div>
+    <h1>Thinner <em>Bench</em></h1>
+    <p class="sub">Type a Tamiya code. Get the ratio, the pressure and the passes for your rig.</p>
+  </header>
+
+  <div class="rig">
+    <div><h4>Airbrush</h4><p>Tamiya 74540 HG Trigger</p></div>
+    <div><h4>Nozzle</h4><p>0.3 mm, double action</p></div>
+    <div><h4>Cup</h4><p>7 cc integrated</p></div>
+    <div><h4>Thinner</h4><p>Tamiya Retarder Type</p></div>
+  </div>
+
+  <details class="session">
+    <summary><span>74540 · dry tip &amp; clogging</span><span class="n">Before / during / after <span class="arw">▸</span></span></summary>
+    <div class="phases">
+      <div class="phase">
+        <h4>Before</h4>
+        <ul>
+          <li>Test-spray on scrap card first. If it spits a blob or stutters before it ever touches the model, the mix or the needle is off — fix it there.</li>
+          <li><b>Trigger order matters on this airbrush:</b> press straight down for air, then ease back for paint. Pulling back before the air is flowing dumps a wet blob right at the start of the pass.</li>
+          <li>Check the needle stopper — the small preset screw at the back that caps how far the trigger pulls. Wound in tight from last session's fine work, it starves a coverage pass and that starvation is what dries paint at the tip.</li>
+          <li>Load the 7 cc cup half full at most. It's fixed to the body, not a swap-off jar, so there's no topping up mid-pass without breaking your rhythm — and a fuller cup skins across the surface faster with retarder in the mix.</li>
+        </ul>
+      </div>
+      <div class="phase">
+        <h4>During</h4>
+        <ul>
+          <li>Wipe the needle tip with a barely damp cotton bud every few minutes on flats and metallics — before a crust forms, not after you notice it.</li>
+          <li>Ragged edges or needing more trigger pull for the same coverage is tip dry starting. Stop and wipe rather than pushing more air through it.</li>
+          <li>On a long metallic pass, back-flush every 30–40 seconds: cover the nozzle with a cloth-wrapped fingertip and pulse the trigger, pushing paint back into the cup instead of forward. Keeps flake from caking at the 0.3 mm tip.</li>
+          <li>Changing colour mid-session: this cup doesn't detach and swap like a bottle-feed gun. Flush with thinner and dry-fire a few times before the next fill, not just a quick rinse.</li>
+        </ul>
+      </div>
+      <div class="phase">
+        <h4>After</h4>
+        <ul>
+          <li>Flush with thinner until it sprays clear, then dry-fire air only for a few seconds to clear the passage.</li>
+          <li>Wipe the integrated cup out with a cotton bud rather than just tipping it — retarder mixes leave a film in the corners a rinse alone won't shift.</li>
+          <li>Back the needle stopper off before you put it down. A tight preset from tonight is a mystery starvation problem next session.</li>
+          <li>Cap the nozzle or lay it tip-up. A knock on a bare 0.3 mm tip is the most common way a needle ends up bent.</li>
+        </ul>
+      </div>
+    </div>
+  </details>
+
+  <div class="field">
+    <label for="code">Paint code</label>
+    <input id="code" type="text" placeholder="XF-1, X-11, LP-2, TS-8…" autocomplete="off" spellcheck="false">
+    <ul class="hits" id="hits" hidden></ul>
+  </div>
+
+  <div class="lines" id="lines" hidden>
+    <button type="button" data-line="acrylic">Acrylic (bottle)</button>
+    <button type="button" data-line="enamel">Enamel (bottle)</button>
+  </div>
+
+  <div id="out"><div class="card empty">Nothing loaded yet. Try <b>XF-1</b>, <b>X-11</b>, <b>LP-2</b> or <b>TS-8</b>.</div></div>
+
+  <footer>Ratios are parts paint : parts thinner, by volume, tuned for retarder-type thinner through a 0.3 mm needle. Retarder keeps the film open longer, so these run slightly richer than the plain X-20A numbers. The bench test that never lies: off the stirrer like whole milk.</footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var ACR = "Tamiya Thinner, Retarder Type";
+  var LAC = "Tamiya Lacquer Thinner, Retarder Type";
+
+  var R = {
+    gloss:{thinner:ACR,p:1,t:1,lo:0.75,hi:1.25,psi:"15–18 psi",coat:"3 light coats, then 1 levelling coat",dist:"12–15 cm",
+      notes:[
+        "On a 1:24 shell, coverage comes from three light coats — one heavy pass floods the door shuts and drowns the panel lines.",
+        "Retarder keeps the film open, so give each coat 25–30 min before the next or solvent gets trapped under the gloss.",
+        "Acrylic gloss almost never leaves the needle glass-smooth at this scale. Plan on clear over the top, then compound."
+      ]},
+    flat:{thinner:ACR,p:1,t:1.25,lo:1,hi:1.5,psi:"14–17 psi",coat:"2 light coats",dist:"12–15 cm",
+      notes:[
+        "This is interior tub, floorpan, rollcage and engine-bay territory. Two light coats is plenty; flats bury fine moulded detail fast.",
+        "Hold back a little further on a floorpan so the sheen stays even across the whole panel.",
+        "Retarder helps here more than anywhere — flats are what clog a 0.3 mm nozzle mid-panel."
+      ]},
+    semi:{thinner:ACR,p:1,t:1,lo:0.75,hi:1.25,psi:"15–18 psi",coat:"2–3 medium coats",dist:"12–15 cm",
+      notes:[
+        "Semi-gloss is the right sheen for a 1:24 dashboard, wiper arms and window surrounds — flat reads chalky at this scale.",
+        "Sits between gloss and flat: thin a touch more than a gloss, a touch less than a flat."
+      ]},
+    metallic:{thinner:ACR,p:1,t:1.25,lo:1,hi:1.5,psi:"12–15 psi",coat:"3 light passes, never flooded",dist:"8–12 cm",
+      notes:[
+        "Wheels, calipers, engine block, suspension: lay metallic over gloss black and the flake reads as polished metal instead of grey.",
+        "Drop the pressure and move in closer. High pressure scatters flake and it looks coarse against a 1:24 wheel face.",
+        "Stir, never shake. Shaking whips air in and the 0.3 mm nozzle spits it straight onto the part.",
+        "Metallics are fragile — mask over them with tape you've de-tacked on your sleeve first."
+      ]},
+    clear:{thinner:ACR,p:1,t:1.75,lo:1.5,hi:2,psi:"18–20 psi",coat:"1 mist, then 2 wet coats",dist:"15 cm",
+      notes:[
+        "Over decals: mist coat first, leave it overnight, then go wet. A wet first pass on fresh decals silvers or lifts them.",
+        "For a 1:24 body, three thin clear coats beats one thick one — thick clear pools along the rocker panels and around mirrors.",
+        "Leave acrylic clear a full week before compounding. It feels hard long before it is."
+      ]},
+    lacquer:{thinner:LAC,p:1,t:1.25,lo:1,hi:1.75,psi:"15–20 psi",coat:"Mist coat, then 2 wet coats",dist:"15 cm",
+      notes:[
+        "Mist the first coat onto bare styrene. Wet lacquer straight onto raw plastic crazes fine detail like door shuts and badge outlines.",
+        "Over Tamiya lacquer primer it's very forgiving — that's the usual route to a polished 1:24 body colour.",
+        "Ventilate properly and wear a respirator; this is not the same risk level as the acrylics."
+      ]},
+    sprayDecant:{thinner:LAC,p:1,t:0.4,lo:0.25,hi:0.6,psi:"18–22 psi",coat:"Mist coat, then 2 wet coats",dist:"15–20 cm",
+      notes:[
+        "Decant into an open jar and wait 15–20 min until it stops fizzing, or propellant spits through the nozzle.",
+        "Rattle-can paint is already thinned to spray, so it only needs a small top-up to flow through a 0.3 mm needle.",
+        "Decanting is the standard trick for a 1:24 body: you get TS depth with airbrush control around the A-pillars and mirrors."
+      ]},
+    polycarb:{thinner:LAC,p:1,t:1,lo:0.75,hi:1.25,psi:"15–20 psi",coat:"Light coats from inside the shell",dist:"15 cm",
+      notes:[
+        "PS is made for flexible RC polycarbonate bodies and sprays on the inside of the shell.",
+        "It will craze the hard styrene of a 1:24 kit body. Wrong paint for this build unless you're doing an RC shell."
+      ]},
+    enamel:{thinner:"Tamiya X-20 Enamel Thinner",p:1,t:1.5,lo:1.25,hi:2,psi:"12–15 psi",coat:"2 light coats, 24 h to cure",dist:"12–15 cm",
+      notes:[
+        "On a car build enamel usually earns its place as a panel-line wash or engine-bay detail rather than a sprayed colour.",
+        "Leave it a full day before masking — enamel skins over long before it's hard underneath.",
+        "Keep enamel and its thinner away from stressed clear parts; windscreens craze."
+      ]},
+    primer:{thinner:LAC,p:1,t:1,lo:1,hi:1.5,psi:"18–20 psi",coat:"2 thin coats",dist:"15 cm",
+      notes:[
+        "Two thin coats on a 1:24 shell. Primer fills scribed panel lines faster than you'd expect.",
+        "Stir it hard — the filler settles into a solid plug at the bottom of the jar.",
+        "White primer shows every dust nib and sanding scratch, which is the point. Fix them now, not under the colour."
+      ]},
+    additive:{additive:true}
+  };
+
+  function P(code,name,hex,fam){return{code:code,name:name,hex:hex,fam:fam};}
+  var LIB = [
+    P("X-1","Black","#111214","gloss"),P("X-2","White","#f6f5f1","gloss"),P("X-3","Royal Blue","#173a86","gloss"),
+    P("X-4","Blue","#1d4fa0","gloss"),P("X-5","Green","#0f6b3f","gloss"),P("X-6","Orange","#e2620f","gloss"),
+    P("X-7","Red","#c1272d","gloss"),P("X-8","Lemon Yellow","#f0c419","gloss"),P("X-9","Brown","#6a3a22","gloss"),
+    P("X-10","Gun Metal","#3b3f45","metallic"),P("X-11","Chrome Silver","#c6c9cc","metallic"),P("X-12","Gold Leaf","#c8a12b","metallic"),
+    P("X-13","Metallic Blue","#20518f","metallic"),P("X-14","Sky Blue","#49a2d6","gloss"),P("X-15","Light Green","#8dc63f","gloss"),
+    P("X-16","Purple","#6a3d9a","gloss"),P("X-17","Pink","#e5788f","gloss"),P("X-18","Semi-Gloss Black","#191a1d","semi"),
+    P("X-19","Smoke","#493f36","clear"),P("X-20A","Acrylic Thinner","#dcdcd6","additive"),P("X-21","Flat Base","#d8d5cc","additive"),
+    P("X-22","Clear","#e9e7df","clear"),P("X-23","Clear Blue","#2f74c0","clear"),P("X-24","Clear Yellow","#e8c22a","clear"),
+    P("X-25","Clear Green","#2f9c4a","clear"),P("X-26","Clear Orange","#dd7a1a","clear"),P("X-27","Clear Red","#c02028","clear"),
+    P("X-28","Park Green","#3f6b3b","gloss"),P("X-31","Titanium Gold","#b8963f","metallic"),P("X-32","Titanium Silver","#b9bcbd","metallic"),
+    P("X-33","Bronze","#8a5a2b","metallic"),P("X-34","Metallic Brown","#6b4630","metallic"),
+
+    P("XF-1","Flat Black","#1a1b1d","flat"),P("XF-2","Flat White","#f1efe9","flat"),P("XF-3","Flat Yellow","#e8bf22","flat"),
+    P("XF-4","Yellow Green","#a5b13a","flat"),P("XF-5","Flat Green","#2f6b34","flat"),P("XF-6","Copper","#96562c","metallic"),
+    P("XF-7","Flat Red","#a92f28","flat"),P("XF-8","Flat Blue","#28518c","flat"),P("XF-9","Hull Red","#7a3b32","flat"),
+    P("XF-10","Flat Brown","#5b4030","flat"),P("XF-11","J.N. Green","#33463a","flat"),P("XF-12","J.N. Grey","#8e9490","flat"),
+    P("XF-13","J.A. Green","#4a4b2b","flat"),P("XF-14","J.A. Grey","#8c8d7c","flat"),P("XF-15","Flat Flesh","#d9a986","flat"),
+    P("XF-16","Flat Aluminium","#a8abad","metallic"),P("XF-17","Sea Blue","#1f4468","flat"),P("XF-18","Medium Blue","#2b5680","flat"),
+    P("XF-19","Sky Grey","#b3b6ae","flat"),P("XF-20","Medium Grey","#8b8d8c","flat"),P("XF-21","Sky","#a8ad8a","flat"),
+    P("XF-22","RLM Grey","#767a72","flat"),P("XF-23","Light Blue","#6d8fae","flat"),P("XF-24","Dark Grey","#4d5254","flat"),
+    P("XF-25","Light Sea Grey","#9aa1a3","flat"),P("XF-26","Deep Green","#2c4231","flat"),P("XF-27","Black Green","#2a352f","flat"),
+    P("XF-28","Dark Copper","#7a4526","metallic"),
+    P("XF-49","Khaki","#6f6a4b","flat"),P("XF-50","Field Blue","#38506b","flat"),P("XF-51","Khaki Drab","#736b45","flat"),
+    P("XF-52","Flat Earth","#7b6247","flat"),P("XF-53","Neutral Grey","#6d7275","flat"),P("XF-54","Dark Sea Grey","#606a6c","flat"),
+    P("XF-55","Deck Tan","#c2b393","flat"),P("XF-56","Metallic Grey","#7d8285","metallic"),P("XF-57","Buff","#c0a878","flat"),
+    P("XF-58","Olive Green","#4b5535","flat"),P("XF-59","Desert Yellow","#c2ab74","flat"),P("XF-60","Dark Yellow","#b09a5f","flat"),
+    P("XF-61","Dark Green","#3f4c33","flat"),P("XF-62","Olive Drab","#5b5b40","flat"),P("XF-63","German Grey","#3c4145","flat"),
+    P("XF-64","Red Brown","#6b4239","flat"),P("XF-65","Field Grey","#565b48","flat"),P("XF-66","Light Grey","#9c9f9b","flat"),
+    P("XF-67","NATO Green","#4a4f36","flat"),P("XF-68","NATO Brown","#5c4a35","flat"),P("XF-69","NATO Black","#26292a","flat"),
+
+    P("LP-1","Black","#111214","lacquer"),P("LP-2","White","#f6f5f1","lacquer"),P("LP-5","Semi Gloss Black","#191a1d","lacquer"),
+    P("LP-7","Pure Red","#c8121f","lacquer"),P("LP-9","Clear","#e9e7df","lacquer"),P("LP-11","Silver","#c3c6c9","lacquer"),
+    P("LP-38","Flat Aluminium","#a8abad","lacquer"),P("LP-48","Sparkling Silver","#cccfd2","lacquer"),
+
+    P("TS-1","Red Brown","#7a4530","sprayDecant"),P("TS-2","Dark Green","#35452e","sprayDecant"),P("TS-3","Dark Yellow","#b6a05e","sprayDecant"),
+    P("TS-4","German Grey","#4b4e4c","sprayDecant"),P("TS-5","Olive Drab","#5c5c3f","sprayDecant"),P("TS-6","Matt Black","#17181a","sprayDecant"),
+    P("TS-7","Racing White","#f5f4ef","sprayDecant"),P("TS-8","Italian Red","#c2101c","sprayDecant"),P("TS-9","British Green","#1d3d2a","sprayDecant"),
+    P("TS-10","French Blue","#274a86","sprayDecant"),P("TS-11","Maroon","#5c2028","sprayDecant"),P("TS-12","Orange","#e0651c","sprayDecant"),
+    P("TS-13","Clear","#e9e7df","sprayDecant"),P("TS-14","Black","#111214","sprayDecant"),P("TS-15","Blue","#1d4a9a","sprayDecant"),
+    P("TS-16","Yellow","#f0c623","sprayDecant"),P("TS-17","Gloss Aluminum","#b9bcbe","sprayDecant"),P("TS-18","Metallic Red","#8a1f24","sprayDecant"),
+    P("TS-19","Metallic Blue","#234a7a","sprayDecant"),P("TS-20","Metallic Green","#274d33","sprayDecant"),P("TS-21","Gold","#b98f2e","sprayDecant"),
+    P("TS-22","Light Green","#7cbb4a","sprayDecant"),P("TS-23","Light Blue","#5f9fd6","sprayDecant"),P("TS-24","Purple","#653788","sprayDecant"),
+    P("TS-25","Pink","#e587a0","sprayDecant"),P("TS-26","Pure White","#f7f6f2","sprayDecant"),P("TS-27","Matt White","#efeee8","sprayDecant"),
+    P("TS-28","Olive Drab 2","#4f5138","sprayDecant"),P("TS-29","Semi-Gloss Black","#191a1d","sprayDecant"),P("TS-30","Silver Leaf","#c9ccce","sprayDecant"),
+    P("TS-31","Bright Orange","#e8560f","sprayDecant"),P("TS-32","Haze Grey","#9aa19f","sprayDecant"),P("TS-33","Dull Red","#8a2a26","sprayDecant"),
+    P("TS-34","Camel Yellow","#cdaa4e","sprayDecant"),P("TS-35","Park Green","#3f6b3b","sprayDecant"),P("TS-36","Fluorescent Red","#ff3b30","sprayDecant"),
+    P("TS-37","Lavender","#9a89c4","sprayDecant"),P("TS-38","Gun Metal","#3b3f45","sprayDecant"),P("TS-39","Mica Red","#7a1e22","sprayDecant"),
+    P("TS-40","Metallic Black","#232527","sprayDecant"),P("TS-41","Coral Blue","#2f7fae","sprayDecant"),P("TS-42","Light Gun Metal","#5a5e62","sprayDecant"),
+    P("TS-43","Racing Green","#1c3d29","sprayDecant"),P("TS-44","Brilliant Blue","#1a63c4","sprayDecant"),P("TS-45","Pearl White","#efeee6","sprayDecant"),
+    P("TS-46","Light Sand","#cdbb8e","sprayDecant"),P("TS-47","Chrome Yellow","#f0c000","sprayDecant"),P("TS-48","Gunship Grey","#6a6f6c","sprayDecant"),
+    P("TS-49","Bright Red","#cc1f24","sprayDecant"),P("TS-50","Mica Blue","#274a86","sprayDecant"),P("TS-51","Racing Blue","#143c78","sprayDecant"),
+    P("TS-52","Candy Lime Green","#9ecb3c","sprayDecant"),P("TS-53","Deep Metallic Blue","#17335c","sprayDecant"),P("TS-54","Light Metallic Blue","#3f7fc0","sprayDecant"),
+    P("TS-55","Dark Blue","#16294f","sprayDecant"),P("TS-56","Brilliant Orange","#ee5a1a","sprayDecant"),P("TS-57","Blue Violet","#5947a0","sprayDecant"),
+    P("TS-58","Pearl Light Blue","#a9cbe8","sprayDecant"),P("TS-59","Pearl Light Red","#e8a2ab","sprayDecant"),P("TS-60","Pearl Green","#8fcf9e","sprayDecant"),
+    P("TS-61","NATO Green","#4a4f36","sprayDecant"),P("TS-62","NATO Brown","#5c4a35","sprayDecant"),P("TS-63","NATO Black","#26292a","sprayDecant"),
+    P("TS-64","Dark Mica Blue","#16305c","sprayDecant"),P("TS-65","Pearl Clear","#e9e7df","sprayDecant"),P("TS-66","IJN Gray (Kure Arsenal)","#7d8175","sprayDecant"),
+    P("TS-67","IJN Gray (Sasebo Arsenal)","#83877a","sprayDecant"),P("TS-68","Wooden Deck Tan","#b39a6d","sprayDecant"),P("TS-69","Linoleum Deck Brown","#5a4230","sprayDecant"),
+    P("TS-70","Olive Drab (JGSDF)","#56583c","sprayDecant"),P("TS-71","Smoke","#493f36","sprayDecant"),P("TS-72","Clear Blue","#2f74c0","sprayDecant"),
+    P("TS-73","Clear Orange","#dd7a1a","sprayDecant"),P("TS-74","Clear Red","#c02028","sprayDecant"),P("TS-75","Champagne Gold","#c9a86a","sprayDecant"),
+    P("TS-76","Mica Silver","#c7cacd","sprayDecant"),P("TS-77","Flat Flesh","#d9a986","sprayDecant"),P("TS-78","Field Grey","#565b48","sprayDecant"),
+    P("TS-79","Semi Gloss Clear","#e9e7df","sprayDecant"),P("TS-80","Flat Clear","#e9e7df","sprayDecant"),P("TS-81","Royal Light Gray","#8f9799","sprayDecant"),
+    P("TS-82","Rubber Black","#212223","sprayDecant"),P("TS-83","Metallic Silver","#c3c6c9","sprayDecant"),P("TS-84","Metallic Gold","#b3922f","sprayDecant"),
+    P("TS-85","Bright Mica Red","#a8171f","sprayDecant"),P("TS-86","Pure Red","#d0121f","sprayDecant"),P("TS-87","Titanium Gold","#b8963f","sprayDecant"),
+    P("TS-88","Titanium Silver","#b9bcbd","sprayDecant"),P("TS-89","Pearl Blue","#a9c8e8","sprayDecant"),P("TS-90","Brown (JGSDF)","#5a4530","sprayDecant"),
+    P("TS-91","Dark Green (JGSDF)","#3a4a30","sprayDecant"),P("TS-92","Metallic Orange","#d1621a","sprayDecant"),P("TS-93","Pure Blue","#1447a8","sprayDecant"),
+    P("TS-94","Metallic Gray","#6c7073","sprayDecant"),P("TS-95","Pure Metallic Red","#a8121f","sprayDecant"),P("TS-96","Fluorescent Orange","#ff6a1a","sprayDecant"),
+    P("TS-97","Pearl Yellow","#f0d98a","sprayDecant"),P("TS-98","Pure Orange","#e8600f","sprayDecant"),P("TS-99","IJN Gray (Maizuru Arsenal)","#7d8175","sprayDecant"),
+    P("TS-100","Semi-Gloss Bright Gun Metal","#4c4f52","sprayDecant"),P("TS-101","Base White","#f5f4ef","sprayDecant"),P("TS-102","Cobalt Green","#1f6e52","sprayDecant")
+  ];
+
+  var FAMLABEL = {
+    gloss:"Acrylic · gloss",flat:"Acrylic · flat",semi:"Acrylic · semi-gloss",metallic:"Acrylic · metallic",
+    clear:"Acrylic · clear",lacquer:"Lacquer · bottle",sprayDecant:"Lacquer · spray can, decanted",
+    polycarb:"Lacquer · polycarbonate spray",enamel:"Enamel · bottle",primer:"Lacquer · primer",additive:"Additive"
+  };
+  var LACFAM = {lacquer:1,sprayDecant:1,polycarb:1,primer:1};
+
+  var byCode = {}; LIB.forEach(function(p){byCode[p.code]=p;});
+
+  function norm(s){
+    s = s.toUpperCase().replace(/\s+/g,"");
+    var m = s.match(/^([A-Z]+)-?(\d+[A-Z]?)$/);
+    return m ? m[1]+"-"+m[2] : s;
+  }
+  function familyFromPrefix(code){
+    var pre = (code.match(/^[A-Z]+/)||[""])[0];
+    if(pre==="LP") return "lacquer";
+    if(pre==="TS"||pre==="AS") return "sprayDecant";
+    if(pre==="PS") return "polycarb";
+    if(pre==="XF") return "flat";
+    if(pre==="X") return "gloss";
+    return null;
+  }
+  function resolve(raw,line){
+    var code = norm(raw);
+    if(/PRIMER|SURFACE/.test(code)) return {code:"Surface Primer",name:"Tamiya Liquid / Fine Surface Primer",hex:"#d6d3cb",fam:"primer",known:true};
+    var hit = byCode[code];
+    var bottle = hit ? /^(gloss|flat|semi|metallic|clear)$/.test(hit.fam)
+                     : /^(gloss|flat)$/.test(familyFromPrefix(code)||"");
+    if(hit){
+      var fam = (line==="enamel" && bottle) ? "enamel" : hit.fam;
+      return {code:hit.code,name:hit.name,hex:hit.hex,fam:fam,known:true,ambiguous:bottle};
+    }
+    var f = familyFromPrefix(code);
+    if(!f) return null;
+    if(line==="enamel" && bottle) f = "enamel";
+    return {code:code,name:"Not in the library — ratio from the "+(code.match(/^[A-Z]+/)||[""])[0]+" range",
+            hex:"#5a5f66",fam:f,known:false,ambiguous:bottle};
+  }
+
+  var out=document.getElementById("out"), input=document.getElementById("code"),
+      hits=document.getElementById("hits"), lines=document.getElementById("lines");
+  var line="acrylic", drops=20, current=null, r=null;
+  var elPaint,elThin,elPaintPct,elThinPct,elRead,elFill;
+
+  function rt(n){ return Math.abs(n-Math.round(n))<0.01 ? String(Math.round(n)) : n.toFixed(2).replace(/0$/,"").replace(/\.$/,""); }
+
+  /* slider updates touch only the numbers — no re-render */
+  function paintNumbers(){
+    var thinDrops = Math.round(drops*(r.t/r.p)*10)/10;
+    var ml = (drops+thinDrops)*0.05;
+    elRead.innerHTML = "<b>"+drops+"</b> drops paint → <b>"+thinDrops+"</b> drops thinner";
+    var pct = Math.round(ml/7*100);
+    elFill.textContent = "≈ "+ml.toFixed(2)+" ml mixed · "+pct+"% of the 7 cc cup";
+    elFill.className = "fill"+(ml>7?" over":"");
+    if(ml>7) elFill.textContent += " — over capacity, mix in two batches";
+  }
+
+  function render(res){
+    current = res;
+    if(!res){
+      out.innerHTML = '<div class="card empty">No match. Tamiya codes look like <b>X-7</b>, <b>XF-64</b>, <b>LP-2</b>, <b>TS-8</b> or <b>AS-12</b>.</div>';
+      lines.hidden = true; return;
+    }
+    lines.hidden = !res.ambiguous;
+    Array.prototype.forEach.call(lines.children,function(b){b.setAttribute("aria-pressed", b.dataset.line===line);});
+
+    r = R[res.fam];
+    if(r.additive){
+      out.innerHTML =
+        '<div class="card"><div class="chip"><div class="swatch" style="background:'+res.hex+'"></div>'+
+        '<div class="id"><div class="code">'+res.code+'</div><div class="name">'+res.name+'</div>'+
+        '<div class="fam">Additive · not sprayed alone</div></div></div>'+
+        '<div class="body"><p class="headline"><small>How to use it</small></p><div class="notes"><ul>'+
+        (res.code==="X-20A"
+          ? '<li>This is a thinner, not a paint. Yours is the retarder-type bottle, which does the same job while keeping the film open longer.</li><li>Roughly 1:1 into a gloss, 1:1.25 into a flat.</li>'
+          : '<li>X-21 knocks the sheen off a gloss or clear. Useful for seat fabric and dashboard tops on a 1:24 interior.</li><li>Start at 1 part flat base to 8–10 parts paint, then thin the mix as normal. Past about 20% it goes chalky and fragile.</li><li>Stir it hard — it settles into a solid plug.</li>')+
+        '</ul></div></div></div>';
+      return;
+    }
+
+    var pct = (r.p/(r.p+r.t))*100;
+    var noteList = r.notes.map(function(n){return "<li>"+n+"</li>";}).join("");
+    if(!res.known) noteList += "<li>This code isn't in the library, so the ratio comes from the family rule. Swatch unavailable.</li>";
+
+    var flag = LACFAM[res.fam]
+      ? '<div class="flag stop">Your acrylic retarder thinner will curdle this one. It needs the lacquer-side bottle — Tamiya Lacquer Thinner, retarder type if you want the same slow flash.</div>'
+      : (res.fam==="enamel"
+        ? '<div class="flag">Enamel takes X-20 enamel thinner, not the acrylic retarder bottle.</div>'
+        : '<div class="flag">Retarder thinner runs slightly richer than plain X-20A here, and it is what keeps a 0.3 mm nozzle from drying out mid-panel. In a cold or damp room, back off to the drier end of the window.</div>');
+
+    out.innerHTML =
+      '<div class="card">'+
+        '<div class="chip"><div class="swatch" style="background:'+res.hex+'"></div>'+
+          '<div class="id"><div class="code">'+res.code+'</div><div class="name">'+res.name+'</div>'+
+          '<div class="fam">'+FAMLABEL[res.fam]+'</div></div></div>'+
+        '<div class="body">'+
+          '<p class="headline"><small>Starting ratio, by volume</small>'+rt(r.p)+' paint : <span class="t">'+rt(r.t)+' thinner</span></p>'+
+          '<p class="range">Window '+rt(r.p)+':'+rt(r.lo)+' to '+rt(r.p)+':'+rt(r.hi)+'. Wetter for gloss and coverage, drier for control around mirrors and pillars.</p>'+
+          '<div class="cup">'+
+            '<div class="bar"><div class="paint" id="pb" style="flex-basis:'+pct+'%;background:'+(res.known?res.hex:"#6c7176")+'"></div>'+
+            '<div class="thinner" id="tb" style="flex-basis:'+(100-pct)+'%"></div></div>'+
+            '<div class="ticks">'+Array(11).join("<div></div>")+'</div>'+
+            '<div class="cuplegend"><span>Paint <b id="pp">'+Math.round(pct)+'%</b></span><span class="tl">Thinner <b id="tp">'+Math.round(100-pct)+'%</b></span></div>'+
+          '</div>'+
+          '<div class="drops">'+
+            '<input type="range" id="dr" min="5" max="80" step="1" value="'+drops+'" aria-label="Drops of paint">'+
+            '<span class="read" id="rd"></span>'+
+          '</div><div class="fill" id="fl"></div>'+
+          '<div class="grid">'+
+            '<div class="cell"><h3>Thinner</h3><p>'+r.thinner+'</p></div>'+
+            '<div class="cell"><h3>Pressure</h3><p>'+r.psi+'</p></div>'+
+            '<div class="cell"><h3>Distance</h3><p>'+r.dist+'</p></div>'+
+            '<div class="cell"><h3>Coats</h3><p>'+r.coat+'</p></div>'+
+          '</div>'+
+          flag+
+          '<div class="notes"><h3>On the bench · 1:24</h3><ul>'+noteList+'</ul></div>'+
+        '</div>'+
+      '</div>';
+
+    elPaint=document.getElementById("pb"); elThin=document.getElementById("tb");
+    elRead=document.getElementById("rd"); elFill=document.getElementById("fl");
+    paintNumbers();
+    var dr=document.getElementById("dr");
+    dr.addEventListener("input",function(){ drops=+dr.value; paintNumbers(); });
+  }
+
+  function suggest(q){
+    q = q.trim().toUpperCase();
+    hits.innerHTML="";
+    if(!q){hits.hidden=true;return;}
+    var nq=norm(q);
+    var list=LIB.filter(function(p){
+      return p.code.indexOf(nq)===0 || p.code.replace("-","").indexOf(q.replace(/[\s-]/g,""))===0 || p.name.toUpperCase().indexOf(q)>-1;
+    }).slice(0,8);
+    if(!list.length){hits.hidden=true;return;}
+    list.forEach(function(p){
+      var li=document.createElement("li");
+      li.innerHTML='<span class="dot" style="background:'+p.hex+'"></span><code>'+p.code+'</code><span>'+p.name+'</span>';
+      li.addEventListener("mousedown",function(e){
+        e.preventDefault(); input.value=p.code; hits.hidden=true; render(resolve(p.code,line));
+      });
+      hits.appendChild(li);
+    });
+    hits.hidden=false;
+  }
+
+  input.addEventListener("input",function(){ suggest(input.value); if(input.value.trim()) render(resolve(input.value,line)); });
+  input.addEventListener("blur",function(){ setTimeout(function(){hits.hidden=true;},120); });
+  input.addEventListener("keydown",function(e){ if(e.key==="Enter"){hits.hidden=true;render(resolve(input.value,line));} if(e.key==="Escape"){hits.hidden=true;} });
+  lines.addEventListener("click",function(e){ var b=e.target.closest("button"); if(!b)return; line=b.dataset.line; render(resolve(input.value,line)); });
+})();
+</script>
+</body>
+</html>

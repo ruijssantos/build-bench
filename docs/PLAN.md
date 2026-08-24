@@ -100,8 +100,10 @@ almost entirely idle waiting on the API. Long calls are cheap here.
 
 ## 2. What the MVP proved, and what it hid
 
-`tamiyathinnerbench.html` is a good reference and its visual language carries over wholesale.
-Three things worth keeping:
+[`docs/reference/tamiya-thinner-bench-prototype.html`](reference/tamiya-thinner-bench-prototype.html)
+is the original single-file MVP — the source for the ratio rules (§3.1's `ratio_rule`
+table) and the paint codes it already knows about. Its visual language does **not** carry
+over; that was superseded in §4.1. Three things worth keeping from its logic:
 
 1. **The ratio model is right.** Family-based rules, with a starting ratio *plus a workable
    window*, not a single number.
