@@ -5,6 +5,7 @@ import { eq, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/neon-http";
 
 import { airbrush, paint, ratioRule } from "../src/db/schema";
+import { loadLocalEnv } from "./load-env.mts";
 
 /**
  * Loads seed/paints.tamiya.json and seed/ratio-rules.json into `paint` and
@@ -19,6 +20,8 @@ import { airbrush, paint, ratioRule } from "../src/db/schema";
  * package.json has no "type": "module", so tsx compiles a plain .ts file to
  * CJS by default — the .mts extension forces it to run as a real ES module.
  */
+
+loadLocalEnv();
 
 const databaseUrl = process.env.DATABASE_URL;
 if (!databaseUrl) {
