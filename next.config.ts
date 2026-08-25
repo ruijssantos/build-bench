@@ -38,6 +38,14 @@ const nextConfig: NextConfig = {
      * the same sub-five-minute `expire` keeping it out of the prerender.
      */
     inventory: { stale: 30, revalidate: 60, expire: 240 },
+
+    /**
+     * The wishlist — saved `kit` rows and `wishlist_item` rows. Same shape as
+     * `inventory`: written from the UI (search-and-save, manual entry, ticking
+     * bought), so it lives on tag invalidation with the same sub-five-minute
+     * `expire`.
+     */
+    wishlist: { stale: 30, revalidate: 60, expire: 240 },
   },
 
   // Deliberately NOT set: `experimental.inlineCss`. Measured on this app, it

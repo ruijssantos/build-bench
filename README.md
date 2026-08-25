@@ -12,12 +12,15 @@ allowed to touch the database — are in
 
 ## Status
 
-Shipped so far: the foundations (Phase 0), the Thinner Bench (Phase 1) and the
+Shipped so far: the foundations (Phase 0), the Thinner Bench (Phase 1), the
 paint shelf (Phase 2) — the Google Sheet imported, CRUD over form and state,
-one-tap running low, and "do I own this?" on the Thinner Bench result card.
+one-tap running low, and "do I own this?" on the Thinner Bench result card —
+and the wishlist (Phase 3): kits searched by number or name and resolved
+through Claude with web search, saved with box art and a Scalemates link, plus
+a free-text list for tools and supplies. Both tick over to bought.
 
-Next is Phase 3, the wishlist: kits you plan to buy, searched by kit number or
-name, plus a free-text list for tools and supplies. Then Phase 4, the stash.
+Next is Phase 4, the stash: the kits you own, manual PDF upload, and a
+per-kit paint list checked against the shelf.
 
 ## Stack
 
@@ -52,4 +55,7 @@ Open [http://localhost:3000](http://localhost:3000).
 
 See `.env.example`. `DATABASE_URL` and `BLOB_READ_WRITE_TOKEN` come from the
 Vercel project's Storage tab (Neon + Blob integrations); `AUTH_SECRET` and
-`APP_PASSPHRASE` are set by hand — see `docs/PLAN.md` §9.2.
+`APP_PASSPHRASE` are set by hand — see `docs/PLAN.md` §9.2. `ANTHROPIC_API_KEY`
+is your own Anthropic API key, billed to your own account — needed from Phase 3
+onwards, where kit search on the Wishlist screen resolves a query through
+Claude with web search (`docs/PLAN.md` §5.1 stage A).
