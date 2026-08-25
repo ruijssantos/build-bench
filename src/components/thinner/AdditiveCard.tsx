@@ -1,13 +1,18 @@
-import type { ResolvedPaintIdentity } from "@/lib/thinner-bench";
+import type { PaintOwnership, ResolvedPaintIdentity } from "@/lib/thinner-bench";
 
+import { StashChip } from "./StashChip";
 import styles from "./AdditiveCard.module.css";
 
+/** An additive is a result card too, so it answers the same shop question the
+ * ratio hero does. */
 export function AdditiveCard({
   paint,
   notes,
+  ownership,
 }: {
   paint: ResolvedPaintIdentity;
   notes: string[];
+  ownership: PaintOwnership;
 }) {
   return (
     <div className={styles.card}>
@@ -25,6 +30,12 @@ export function AdditiveCard({
             <div className={styles.tag}>Additive · not sprayed alone</div>
           </div>
         </div>
+
+        {paint.known ? (
+          <div className={styles.stashRow}>
+            <StashChip ownership={ownership} />
+          </div>
+        ) : null}
 
         <div className={styles.divider} />
 

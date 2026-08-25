@@ -553,3 +553,14 @@
   font-weight: 600;
   color: var(--alert);
 }
+
+/* The "do I own this?" chip, under the identity row. */
+.stashRow {
+  margin-top: 14px;
+}
+
+@media (min-width: 900px) {
+  .stashRow {
+    margin-top: 18px;
+  }
+}

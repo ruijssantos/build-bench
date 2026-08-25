@@ -132,3 +132,13 @@
   line-height: 1.5;
   color: var(--ink-soft);
 }
+
+.stashRow {
+  margin-top: 14px;
+}
+
+@media (min-width: 900px) {
+  .stashRow {
+    margin-top: 16px;
+  }
+}

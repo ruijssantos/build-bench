@@ -4,7 +4,7 @@ import { neon } from "@neondatabase/serverless";
 import { eq, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/neon-http";
 
-import { airbrush, paint, ratioRule } from "../src/db/schema";
+import { airbrush, inventoryItem, paint, ratioRule } from "../src/db/schema";
 import { loadLocalEnv } from "./load-env.mts";
 
 /**
@@ -15,6 +15,15 @@ import { loadLocalEnv } from "./load-env.mts";
  * screen has nothing to read. Safe to re-run — paints and ratio rules
  * upsert by their natural key; the airbrush row is only inserted if none
  * exists yet.
+ *
+ * §4.1's file tree names a separate `scripts/import-sheet.ts` for the paint
+ * inventory. It lives here instead: what that script would do is load a
+ * committed JSON file into a table behind the same connection, the same env
+ * loading and the same "safe to re-run" rule this file already implements
+ * three times over, and `inventory_item.paint_code` is a foreign key into
+ * `paint`, so it has to run after the catalogue anyway. A second entry point
+ * would have duplicated the plumbing to enforce an ordering the single one
+ * gets for free.
  *
  * .mts, not .ts: this uses top-level await, which CommonJS can't represent.
  * package.json has no "type": "module", so tsx compiles a plain .ts file to
@@ -55,6 +64,15 @@ interface RatioRuleSeed {
   coats_text: string | null;
   distance_text: string | null;
   notes: string[];
+}
+
+interface InventorySeed {
+  paint_code: string;
+  form: string;
+  state: string | null;
+  quantity: number;
+  location: string | null;
+  notes: string | null;
 }
 
 function loadJson<T>(path: string): T {
@@ -151,8 +169,50 @@ async function seedAirbrush() {
   console.log("Seeded the 74540 airbrush row.");
 }
 
+/**
+ * The Google Sheet, imported once — docs/PLAN.md §2.1, §6 Phase 2.
+ *
+ * Insert-only, keyed on the paint code: `inventory_item` is *your* data from
+ * the moment it lands, and re-running the seed must never undo a bottle you
+ * marked low or a location you typed in. So a code that already has a row is
+ * left completely alone, and only codes missing from the shelf are added.
+ *
+ * `purchased_from` stays null: nothing in §2.1 carries vendor data, and the
+ * `vendor` table isn't seeded yet either.
+ */
+async function seedInventory() {
+  const items = loadJson<InventorySeed[]>("seed/inventory.initial.json");
+
+  const existing = await db
+    .select({ paintCode: inventoryItem.paintCode })
+    .from(inventoryItem);
+  const owned = new Set(existing.map((row) => row.paintCode));
+
+  const missing = items.filter((item) => !owned.has(item.paint_code));
+  if (missing.length === 0) {
+    console.log(`Inventory already holds all ${items.length} seeded codes — left as-is.`);
+    return;
+  }
+
+  await db.insert(inventoryItem).values(
+    missing.map((item) => ({
+      paintCode: item.paint_code,
+      form: item.form,
+      state: item.state,
+      quantity: item.quantity,
+      location: item.location,
+      notes: item.notes,
+    })),
+  );
+  console.log(
+    `Seeded ${missing.length} inventory item(s)` +
+      (missing.length === items.length ? "." : ` (${items.length - missing.length} already present).`),
+  );
+}
+
 await seedRatioRules();
 await seedPaints();
 await seedAirbrush();
+await seedInventory();
 
 console.log("Seed complete.");

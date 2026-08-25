@@ -27,7 +27,7 @@ export default function ThinnerPage(props: PageProps<"/thinner">) {
     <>
       <PhoneHeader
         title="Thinner Bench"
-        rigPill={
+        trailing={
           <QuietError>
             <Suspense fallback={null}>
               <PhoneHeaderRigPill />

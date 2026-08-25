@@ -8,9 +8,14 @@ import { readFileSync } from "node:fs";
  * "Codes the app needs" today means: every code in the owner's real
  * inventory (§2.1 — the exact list that exposed the XF-83/XF-84 bug in the
  * prototype this catalogue replaces) and every `family` a paint references
- * must have a matching `ratio_rule`. Phases 3/4 will extend this to also
- * check `inventory_item` and `kit_paint_requirement` once those tables have
- * real rows — there's nothing to check there yet.
+ * must have a matching `ratio_rule`. Phase 4 will extend this to
+ * `kit_paint_requirement` once that table has real rows — there's nothing to
+ * check there yet.
+ *
+ * The inventory codes are read from `seed/inventory.initial.json` (Phase 2)
+ * rather than repeated here: that file is now what the `inventory_item` table
+ * is seeded from, so a code added to the shelf is checked against the
+ * catalogue without anyone remembering to update this script too.
  */
 
 interface CataloguePaint {
@@ -24,17 +29,9 @@ interface RatioRule {
   family: string;
 }
 
-// docs/PLAN.md §2.1 — the owner's real inventory as imported from the Google
-// Sheet. This is the exact list that would have caught XF-83/XF-84 being
-// missing from the prototype's paint library before it shipped.
-const KNOWN_INVENTORY_CODES = [
-  "X-2", "X-3", "X-6", "X-7", "X-8", "X-9", "X-10", "X-11", "X-12", "X-13",
-  "X-14", "X-18", "X-19", "X-21", "X-22", "X-24", "X-26", "X-27",
-  "XF-1", "XF-2", "XF-7", "XF-16", "XF-24", "XF-53", "XF-56", "XF-60",
-  "XF-64", "XF-83", "XF-84",
-  "TS-7", "TS-8",
-  "PRIMER-LIQUID-GREY", "PRIMER-LIQUID-WHITE",
-];
+interface InventorySeed {
+  paint_code: string;
+}
 
 function loadJson<T>(path: string): T {
   return JSON.parse(readFileSync(path, "utf-8")) as T;
@@ -42,6 +39,9 @@ function loadJson<T>(path: string): T {
 
 const catalogue = loadJson<CataloguePaint[]>("seed/paints.tamiya.json");
 const ratioRules = loadJson<RatioRule[]>("seed/ratio-rules.json");
+const KNOWN_INVENTORY_CODES = loadJson<InventorySeed[]>("seed/inventory.initial.json").map(
+  (item) => item.paint_code,
+);
 
 const catalogueCodes = new Set(catalogue.map((p) => p.code));
 const ratioFamilies = new Set(ratioRules.map((r) => r.family));
@@ -55,7 +55,7 @@ const missingInventory = KNOWN_INVENTORY_CODES.filter((code) => !catalogueCodes.
 if (missingInventory.length > 0) {
   failed = true;
   console.error(
-    `\n✗ ${missingInventory.length} code(s) from the real inventory (docs/PLAN.md §2.1) are missing from the catalogue:`,
+    `\n✗ ${missingInventory.length} code(s) from seed/inventory.initial.json (docs/PLAN.md §2.1) are missing from the catalogue:`,
   );
   for (const code of missingInventory) console.error(`  - ${code}`);
 }

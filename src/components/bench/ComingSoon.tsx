@@ -24,7 +24,7 @@ export function ComingSoon({
     <>
       <PhoneHeader
         title={title}
-        rigPill={
+        trailing={
           <QuietError>
             <Suspense fallback={null}>
               <PhoneHeaderRigPill />

@@ -41,7 +41,11 @@ export async function BenchContent({ searchParams }: { searchParams: Promise<Ben
   if (bundle.isAdditive) {
     return (
       <div className={styles.heroArea}>
-        <AdditiveCard paint={bundle.paint} notes={bundle.ratioRule?.notes ?? []} />
+        <AdditiveCard
+          paint={bundle.paint}
+          notes={bundle.ratioRule?.notes ?? []}
+          ownership={bundle.ownership}
+        />
       </div>
     );
   }
@@ -57,6 +61,7 @@ export async function BenchContent({ searchParams }: { searchParams: Promise<Ben
           paint={bundle.paint}
           ratio={bundle.effectiveRatio}
           cupCc={bundle.airbrush.cupCc ?? 7}
+          ownership={bundle.ownership}
         />
       </div>
       <div className={styles.specsArea}>
