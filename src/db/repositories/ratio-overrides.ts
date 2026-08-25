@@ -15,9 +15,10 @@ export function overrideTag(paintCode: string): string {
 /**
  * The most recent correction for this exact paint code, if any.
  *
- * `connection()` then `use cache`, for the reasons in `./airbrush.ts`:
- * request-time only so the build stays database-free, cached so a screen that
- * has already been looked at costs nothing to look at again.
+ * `connection()` then `use cache`: request-time only, so `next build` never
+ * opens a database (CI has no DATABASE_URL), and cached, so a screen that has
+ * already been looked at costs nothing to look at again. Callers must sit
+ * inside a <Suspense> boundary.
  */
 export async function getOverrideForPaint(code: string): Promise<RatioOverrideRow | undefined> {
   await connection();

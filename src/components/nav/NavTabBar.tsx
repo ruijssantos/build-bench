@@ -11,7 +11,7 @@ export function NavTabBar() {
 
   return (
     <nav className={styles.bar} aria-label="Primary">
-      {NAV_ITEMS.filter((item) => !item.railOnly).map((item) => {
+      {NAV_ITEMS.map((item) => {
         const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
         const Icon = item.icon;
         return (

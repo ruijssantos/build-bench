@@ -1,19 +1,19 @@
-import type { AirbrushRow } from "@/db/repositories/airbrush";
+import { RIG } from "@/catalogue/rig";
 
 import styles from "./DryTipContent.module.css";
 
 /**
  * The rig's dry-tip/clogging guidance, ported from the prototype's <details>
  * phases — every rig fact (nozzle size, cup capacity, model name) is
- * interpolated from the `airbrush` row, never hard-coded (§2.3). Lives in a
+ * interpolated from the compiled rig, never hard-coded (§2.3). Lives in a
  * Modal triggered from the Current Rig chrome (desktop rail / phone header
  * pill) rather than on the Thinner Bench screen — it's a fact about the
  * airbrush, not about whichever paint happens to be loaded.
  */
-function phasesFor(airbrush: AirbrushRow) {
-  const nozzle = airbrush.nozzleMm != null ? `${airbrush.nozzleMm} mm` : "the needle";
-  const cup = airbrush.cupCc != null ? `${airbrush.cupCc} cc` : "the";
-  const model = airbrush.model ?? "this airbrush";
+function phasesFor() {
+  const nozzle = `${RIG.nozzleMm} mm`;
+  const cup = `${RIG.cupCc} cc`;
+  const model = RIG.model;
 
   return [
     {
@@ -49,8 +49,8 @@ function phasesFor(airbrush: AirbrushRow) {
   ];
 }
 
-export function DryTipContent({ airbrush }: { airbrush: AirbrushRow }) {
-  const phases = phasesFor(airbrush);
+export function DryTipContent() {
+  const phases = phasesFor();
 
   return (
     <div className={styles.phases}>

@@ -15,6 +15,20 @@
       "when": 1787650318707,
       "tag": "0001_drop_inventory_location",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1787680081815,
+      "tag": "0002_drop_airbrush_and_shopping",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1787680102465,
+      "tag": "0003_wishlist_and_stash",
+      "breakpoints": true
     }
   ]
 }

@@ -114,15 +114,7 @@ if (leaked.length > 0) {
 const appDir = join(BUILD_DIR, "server/app");
 const prerendered = readdirSync(appDir).filter((f) => f.endsWith(".html"));
 
-const ROUTES_THAT_MUST_PRERENDER = [
-  "thinner",
-  "inventory",
-  "kits",
-  "shopping",
-  "log",
-  "airbrush",
-  "login",
-];
+const ROUTES_THAT_MUST_PRERENDER = ["thinner", "inventory", "kits", "wishlist", "log", "login"];
 
 for (const route of ROUTES_THAT_MUST_PRERENDER) {
   if (!prerendered.includes(`${route}.html`)) {

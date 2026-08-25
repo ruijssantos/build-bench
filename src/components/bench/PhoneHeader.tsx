@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-import { getActiveAirbrush } from "@/db/repositories/airbrush";
+import { RIG } from "@/catalogue/rig";
 
 import { DryTipContent } from "./DryTipContent";
 import { DryTipTrigger } from "./DryTipTrigger";
@@ -13,10 +13,9 @@ import { SignOutButton } from "./SignOutButton";
  * element, so nothing about it should wait on a query or on hydration.
  *
  * `trailing` is a slot rather than a prop, so whatever sits opposite the title
- * can resolve on its own terms: the Thinner Bench streams the rig pill into it
- * behind a <Suspense> boundary, Paints puts its Add button there. Either is
- * shorter than the title block beside it and the row is `align-items:
- * flex-end`, so it lands without moving anything.
+ * can resolve on its own terms: the Thinner Bench puts the rig pill there,
+ * Paints puts its Add button there. Either is shorter than the title block
+ * beside it and the row is `align-items: flex-end`.
  */
 export function PhoneHeader({ title, trailing }: { title: string; trailing?: ReactNode }) {
   return (
@@ -45,24 +44,21 @@ export function PhoneHeader({ title, trailing }: { title: string; trailing?: Rea
   );
 }
 
-/** The rig pill on its own, so it can stream in behind its own boundary. */
-export async function PhoneHeaderRigPill() {
-  const airbrush = await getActiveAirbrush();
-  if (!airbrush) return null;
-
+/** The rig pill on its own — synchronous, since the rig is compiled in. */
+export function PhoneHeaderRigPill() {
   return (
     <DryTipTrigger
-      title={`${airbrush.model ?? "Rig"} · Tips & Guide`}
+      title={`${RIG.model} · Tips & Guide`}
       className={styles.rigPill}
       ariaLabel="Tips & guide for the current rig"
       trigger={
         <>
           <span className={styles.rigDot} />
-          <span className={styles.rigLabel}>{shortRigLabel(airbrush.model ?? "Rig")}</span>
+          <span className={styles.rigLabel}>{shortRigLabel(RIG.model)}</span>
         </>
       }
     >
-      <DryTipContent airbrush={airbrush} />
+      <DryTipContent />
     </DryTipTrigger>
   );
 }

@@ -8,10 +8,11 @@ import styles from "./ThinnerBench.module.css";
 import { resolveThinnerBench } from "@/lib/thinner-bench";
 
 /**
- * The part of the bench that needs the database — the rig row and any saved
- * correction — and nothing else. A Server Component, so the spec tiles, the
- * bench notes and the additive card render on the server and never reach the
- * client bundle; only the ratio hero, which owns the drops slider, is an island.
+ * The part of the bench that needs the database — any saved correction, and
+ * what's on the shelf — and nothing else. A Server Component, so the spec
+ * tiles, the bench notes and the additive card render on the server and never
+ * reach the client bundle; only the ratio hero, which owns the drops slider,
+ * is an island.
  *
  * Everything above this in the tree is prerendered, so this streaming in is
  * the only thing a first paint waits for, and both of its reads are cached.
@@ -19,15 +20,6 @@ import { resolveThinnerBench } from "@/lib/thinner-bench";
 export async function BenchContent({ searchParams }: { searchParams: Promise<BenchSearchParams> }) {
   const { code, line } = await resolveBenchParams(searchParams);
   const bundle = await resolveThinnerBench(code, line);
-
-  if (!bundle.airbrush) {
-    return (
-      <div className={styles.notice}>
-        No airbrush rig is seeded yet — run <code>npm run db:seed</code> to load the catalogue,
-        ratio rules and rig facts.
-      </div>
-    );
-  }
 
   if (!bundle.paint) {
     return (
@@ -60,7 +52,7 @@ export async function BenchContent({ searchParams }: { searchParams: Promise<Ben
         <RatioHero
           paint={bundle.paint}
           ratio={bundle.effectiveRatio}
-          cupCc={bundle.airbrush.cupCc ?? 7}
+          cupCc={bundle.rig.cupCc}
           ownership={bundle.ownership}
         />
       </div>

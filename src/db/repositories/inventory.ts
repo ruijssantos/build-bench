@@ -9,7 +9,7 @@ import type { InventoryForm, InventoryState } from "@/domain/inventory";
 /**
  * The paint half of feature 4 — docs/PLAN.md §3.2.
  *
- * Same two-layer shape as `./airbrush.ts` and `./ratio-overrides.ts`:
+ * Same two-layer shape as `./ratio-overrides.ts`:
  * `connection()` pins every read to request time so `next build` never opens a
  * database (CI has no DATABASE_URL), and `use cache` then means a screen that
  * has already been looked at costs nothing to look at again. Callers must sit

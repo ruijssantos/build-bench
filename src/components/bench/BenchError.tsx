@@ -29,12 +29,3 @@ function BenchErrorFallback({ label }: { label: string }, { retry }: ErrorInfo) 
 }
 
 export const BenchError = catchError(BenchErrorFallback);
-
-/**
- * For chrome that is a convenience rather than the point of the screen — the
- * rig pill, the rail's Current Rig block. If the query fails these render as
- * they do before they arrive: absent. The screen's own content boundary is
- * what tells the user something is wrong; two more error cards in the chrome
- * would only bury it.
- */
-export const QuietError = catchError(() => null);
