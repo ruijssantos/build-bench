@@ -45,13 +45,15 @@
 }
 
 .title {
+  /* Zeroes the UA default <h1> margin before reapplying just the 3px this
+     row actually wants. */
+  margin: 3px 0 0;
   font-family: var(--font-display);
   font-size: 40px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.005em;
   line-height: 0.98;
-  margin-top: 3px;
 }
 
 .rigPill {

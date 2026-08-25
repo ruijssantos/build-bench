@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 
 import { BenchError } from "@/components/bench/BenchError";
+import { DesktopHeader } from "@/components/bench/DesktopHeader";
 import { PhoneHeader } from "@/components/bench/PhoneHeader";
 import { AddPaintTrigger } from "@/components/inventory/AddPaintTrigger";
 import { InventoryContent } from "@/components/inventory/InventoryContent";
@@ -26,11 +27,7 @@ export default function InventoryPage(props: PageProps<"/inventory">) {
     <>
       <PhoneHeader title="Paints" trailing={<AddPaintTrigger />} />
 
-      <div className={styles.desktopHeader}>
-        <div className={styles.desktopTitle}>Paints</div>
-        <div className={styles.desktopHeaderSpacer} />
-        <AddPaintTrigger />
-      </div>
+      <DesktopHeader title="Paints" trailing={<AddPaintTrigger />} />
 
       <div className={styles.scrollArea}>
         <div className={styles.grid}>

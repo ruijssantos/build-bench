@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import type { IconProps } from "@/components/icons";
 
 import { QuietError } from "./BenchError";
+import { DesktopHeader } from "./DesktopHeader";
 import { PhoneHeader, PhoneHeaderRigPill } from "./PhoneHeader";
 import styles from "./ComingSoon.module.css";
 
@@ -32,7 +33,7 @@ export function ComingSoon({
           </QuietError>
         }
       />
-      <div className={styles.desktopHeader}>{title}</div>
+      <DesktopHeader title={title} />
       <div className={styles.body}>
         <div className={styles.card}>
           <Icon size={28} className={styles.icon} />

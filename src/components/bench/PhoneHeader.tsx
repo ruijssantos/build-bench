@@ -37,7 +37,7 @@ export function PhoneHeader({ title, trailing }: { title: string; trailing?: Rea
       <div className={styles.row}>
         <div>
           <div className={styles.eyebrow}>The Build Bench</div>
-          <div className={styles.title}>{title}</div>
+          <h1 className={styles.title}>{title}</h1>
         </div>
         {trailing}
       </div>

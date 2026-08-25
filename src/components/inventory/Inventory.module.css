@@ -9,33 +9,8 @@
  * have to act on. §4.1's colour rule, at its most literal.
  */
 
-/* ---------------------------------------------------------------- headings */
-
-.desktopHeader {
-  display: none;
-}
-
-@media (min-width: 900px) {
-  .desktopHeader {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    margin-bottom: 26px;
-  }
-}
-
-.desktopTitle {
-  font-family: var(--font-display);
-  font-size: 38px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.005em;
-  line-height: 1;
-}
-
-.desktopHeaderSpacer {
-  flex: 1;
-}
+/* Desktop title row is `DesktopHeader`, shared with every other bench
+   screen — not a copy here. */
 
 /* ----------------------------------------------------------------- layout */
 
