@@ -107,7 +107,7 @@ export function FilterPills({
       <Link
         href={inventoryHref(params, { low: !params.low })}
         scroll={false}
-        aria-pressed={params.low}
+        aria-current={params.low ? "page" : undefined}
         className={`${styles.filterPillAlert} ${params.low ? styles.filterPillAlertActive : ""}`}
       >
         Running low ({lowCount})
