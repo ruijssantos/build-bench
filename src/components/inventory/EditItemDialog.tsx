@@ -18,7 +18,6 @@ export interface EditableItem {
   form: InventoryForm;
   state: InventoryState | null;
   quantity: number;
-  location: string;
   notes: string;
 }
 
@@ -28,7 +27,6 @@ export function EditItemDialog({ item, onClose }: { item: EditableItem; onClose:
     form: item.form,
     state: item.state,
     quantity: String(item.quantity),
-    location: item.location,
     notes: item.notes,
   });
   const [saving, setSaving] = useState(false);
@@ -44,7 +42,6 @@ export function EditItemDialog({ item, onClose }: { item: EditableItem; onClose:
         form: fields.form,
         state: fields.state,
         quantity: Number(fields.quantity),
-        location: fields.location,
         notes: fields.notes,
       });
       if (!result.ok) {

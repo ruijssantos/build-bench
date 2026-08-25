@@ -31,10 +31,14 @@ export function ThinnerIcon(props: IconProps) {
   );
 }
 
+/** A small screw-lid paint pot — the Tamiya mini bottle shape — rather than
+ * a tall narrow-neck bottle. Lid, jar body, label band. */
 export function PaintsIcon(props: IconProps) {
   return (
     <svg {...base(props)}>
-      <path d="M10 2h4v4l2 3v11a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V9l2-3V2z" />
+      <rect x="8.5" y="3" width="7" height="3.5" rx="1.2" />
+      <rect x="6" y="6.5" width="12" height="14.5" rx="3" />
+      <path d="M6 13.2h12" />
     </svg>
   );
 }

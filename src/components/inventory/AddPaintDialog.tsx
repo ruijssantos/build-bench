@@ -20,7 +20,6 @@ const EMPTY: ItemFieldsValue = {
   form: "bottle",
   state: null,
   quantity: "1",
-  location: "",
   notes: "",
 };
 
@@ -53,7 +52,6 @@ export function AddPaintDialog({ onClose }: { onClose: () => void }) {
         form: fields.form,
         state: fields.state,
         quantity: Number(fields.quantity),
-        location: fields.location,
         notes: fields.notes,
       });
       if (!result.ok) {

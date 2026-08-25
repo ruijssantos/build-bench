@@ -1,30 +1,23 @@
 import styles from "./Inventory.module.css";
 
 /**
- * What the CDN hands over while the shelf streams in.
+ * The Suspense fallback for /inventory.
  *
- * Built from the real components' own grid areas and card heights, so the
- * layout the prerendered shell paints is the layout the data lands into —
- * docs/PERFORMANCE.md §11.3.
+ * One neutral block, not five section-shaped ones. The real result is one of
+ * two unrelated shapes: a populated shelf (a two-column grid of independent
+ * modules) or a genuinely empty one (a single centered card) — and which one
+ * is coming isn't knowable before the query resolves, so a fallback that
+ * commits to the populated shape collapses jarringly on an empty shelf.
+ *
+ * It was wrong more often than that, too: "Running low" renders nothing at
+ * all when nothing is low (the common case), so a skeleton that always shows
+ * a low-list block was flashing and disappearing on most ordinary loads, not
+ * just the empty one.
  */
 export function InventorySkeleton() {
   return (
-    <>
-      <div className={styles.shelfArea}>
-        <div className={`${styles.skeletonBlock} ${styles.skeletonShelf}`} />
-      </div>
-      <div className={styles.filtersArea}>
-        <div className={`${styles.skeletonBlock} ${styles.skeletonFilters}`} />
-      </div>
-      <div className={styles.lowArea}>
-        <div className={`${styles.skeletonBlock} ${styles.skeletonLow}`} />
-      </div>
-      <div className={styles.recentArea}>
-        <div className={`${styles.skeletonBlock} ${styles.skeletonRecent}`} />
-      </div>
-      <div className={styles.tableArea}>
-        <div className={`${styles.skeletonBlock} ${styles.skeletonTable}`} />
-      </div>
-    </>
+    <div className={styles.skeletonSingle}>
+      <div className={`${styles.skeletonBlock} ${styles.skeletonGeneric}`} />
+    </div>
   );
 }

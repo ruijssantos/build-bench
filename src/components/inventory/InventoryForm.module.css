@@ -41,16 +41,6 @@
   border-color: var(--accent);
 }
 
-.row {
-  display: flex;
-  gap: 12px;
-}
-
-.row > .field {
-  flex: 1;
-  min-width: 0;
-}
-
 .segmented {
   display: flex;
   flex-wrap: wrap;

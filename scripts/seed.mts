@@ -71,7 +71,6 @@ interface InventorySeed {
   form: string;
   state: string | null;
   quantity: number;
-  location: string | null;
   notes: string | null;
 }
 
@@ -174,8 +173,8 @@ async function seedAirbrush() {
  *
  * Insert-only, keyed on the paint code: `inventory_item` is *your* data from
  * the moment it lands, and re-running the seed must never undo a bottle you
- * marked low or a location you typed in. So a code that already has a row is
- * left completely alone, and only codes missing from the shelf are added.
+ * marked low. So a code that already has a row is left completely alone, and
+ * only codes missing from the shelf are added.
  *
  * `purchased_from` stays null: nothing in §2.1 carries vendor data, and the
  * `vendor` table isn't seeded yet either.
@@ -200,7 +199,6 @@ async function seedInventory() {
       form: item.form,
       state: item.state,
       quantity: item.quantity,
-      location: item.location,
       notes: item.notes,
     })),
   );

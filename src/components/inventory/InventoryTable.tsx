@@ -21,9 +21,9 @@ import styles from "./Inventory.module.css";
  *
  * A real `<table>` rather than a stack of divs: it is a table, it is read by
  * scanning down one column, and the header row is what makes the scan work.
- * The two columns that only earn their place on a desk — family and location
- * (§4.2) — drop out below 900px; what stays is the paint, its state, and the
- * three things you tap.
+ * Family — the one column that only earns its place on a desk (§4.2) — drops
+ * out below 900px; what stays is the paint, its state, and the three things
+ * you tap.
  *
  * A Server Component. The only client code in a row is the pencil, which owns
  * an open/closed boolean; the running-low toggle is a form, and the find-a-shop
@@ -40,9 +40,6 @@ export function InventoryTable({ items }: { items: InventoryItemRow[] }) {
             </th>
             <th className={`${styles.colFamily} ${styles.deskColumn}`} scope="col">
               Family
-            </th>
-            <th className={`${styles.colLocation} ${styles.deskColumn}`} scope="col">
-              Location
             </th>
             <th className={`${styles.colState} ${styles.deskColumn}`} scope="col">
               State
@@ -88,14 +85,6 @@ export function InventoryTable({ items }: { items: InventoryItemRow[] }) {
                   <span className={styles.cellMuted}>{familyChipLabel(item.paintFamily)}</span>
                 </td>
 
-                <td className={`${styles.colLocation} ${styles.deskColumn}`}>
-                  <span
-                    className={`${styles.cellMuted} ${item.location ? "" : styles.cellFaint}`}
-                  >
-                    {item.location ?? "—"}
-                  </span>
-                </td>
-
                 <td className={`${styles.colState} ${styles.deskColumn}`}>
                   <span
                     className={`${styles.stateChip} ${
@@ -132,7 +121,6 @@ export function InventoryTable({ items }: { items: InventoryItemRow[] }) {
                         form: isInventoryForm(item.form) ? item.form : "bottle",
                         state: isInventoryState(item.state) ? item.state : null,
                         quantity: item.quantity ?? 1,
-                        location: item.location ?? "",
                         notes: item.notes ?? "",
                       }}
                     />

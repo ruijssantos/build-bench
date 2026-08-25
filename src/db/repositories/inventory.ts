@@ -33,7 +33,6 @@ export interface InventoryItemRow {
   decantedFrom: string | null;
   state: string | null;
   quantity: number | null;
-  location: string | null;
   notes: string | null;
   updatedAt: Date | null;
   paintName: string | null;
@@ -71,7 +70,6 @@ const ITEM_COLUMNS = {
   decantedFrom: inventoryItem.decantedFrom,
   state: inventoryItem.state,
   quantity: inventoryItem.quantity,
-  location: inventoryItem.location,
   notes: inventoryItem.notes,
   updatedAt: inventoryItem.updatedAt,
   paintName: paint.name,
@@ -175,7 +173,6 @@ export interface CreateInventoryItemInput {
   form: InventoryForm;
   state: InventoryState | null;
   quantity: number;
-  location: string | null;
   notes: string | null;
 }
 
@@ -189,7 +186,6 @@ export async function createInventoryItem(
       form: input.form,
       state: input.state,
       quantity: input.quantity,
-      location: input.location,
       notes: input.notes,
       updatedAt: new Date(),
     })
@@ -202,7 +198,6 @@ export interface UpdateInventoryItemInput {
   form?: InventoryForm;
   state?: InventoryState | null;
   quantity?: number;
-  location?: string | null;
   notes?: string | null;
 }
 

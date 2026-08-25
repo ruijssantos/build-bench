@@ -55,7 +55,6 @@ export interface AddInventoryItemInput {
   form: string;
   state?: string | null;
   quantity?: number;
-  location?: string | null;
   notes?: string | null;
 }
 
@@ -93,7 +92,6 @@ export async function addInventoryItem(input: AddInventoryItemInput): Promise<In
     form: input.form as InventoryForm,
     state: (input.state as InventoryState | null) ?? null,
     quantity,
-    location: readText(input.location),
     notes: readText(input.notes),
   });
 
@@ -106,7 +104,6 @@ export interface EditInventoryItemInput {
   form: string;
   state?: string | null;
   quantity?: number;
-  location?: string | null;
   notes?: string | null;
 }
 
@@ -128,7 +125,6 @@ export async function editInventoryItem(input: EditInventoryItemInput): Promise<
     form: input.form as InventoryForm,
     state: (input.state as InventoryState | null) ?? null,
     quantity,
-    location: readText(input.location),
     notes: readText(input.notes),
   });
   if (!updated) return { ok: false, error: "That shelf entry is gone." };

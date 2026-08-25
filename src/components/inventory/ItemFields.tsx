@@ -3,7 +3,7 @@
 import {
   INVENTORY_FORMS,
   INVENTORY_STATES,
-  formLabel,
+  formLabelTitleCase,
   stateLabel,
   type InventoryForm,
   type InventoryState,
@@ -12,20 +12,21 @@ import {
 import styles from "./InventoryForm.module.css";
 
 /**
- * The fields Add and Edit have in common — §6's "decanted-vs-stock, bottle
- * state, location", plus how many of them there are.
+ * The fields Add and Edit have in common — decanted-vs-stock, bottle state,
+ * how many.
  *
  * Deliberately not here: a picker for `decanted_from`. The column exists and
  * keeps the lineage of a jar back to its can, but §6 doesn't say what the UI
  * does with it and the design reference doesn't draw it, so choosing
- * "decanted jar" as the form is as far as this goes for now.
+ * "decanted jar" as the form is as far as this goes for now. Also not here,
+ * on request: `location` — the owner doesn't track shelf position, so the
+ * column and the field were dropped rather than left unused.
  */
 
 export interface ItemFieldsValue {
   form: InventoryForm;
   state: InventoryState | null;
   quantity: string;
-  location: string;
   notes: string;
 }
 
@@ -56,7 +57,7 @@ export function ItemFields({
               className={`${styles.segment} ${value.form === form ? styles.segmentActive : ""}`}
               onClick={() => set("form", form)}
             >
-              {formLabel(form)}
+              {formLabelTitleCase(form)}
             </button>
           ))}
         </div>
@@ -89,37 +90,21 @@ export function ItemFields({
         </div>
       </div>
 
-      <div className={styles.row}>
-        <div className={styles.field}>
-          <label className={styles.label} htmlFor="inventory-quantity">
-            How many
-          </label>
-          <input
-            id="inventory-quantity"
-            className={styles.input}
-            type="number"
-            inputMode="numeric"
-            min="1"
-            step="1"
-            disabled={disabled}
-            value={value.quantity}
-            onChange={(e) => set("quantity", e.target.value)}
-          />
-        </div>
-        <div className={styles.field}>
-          <label className={styles.label} htmlFor="inventory-location">
-            Location
-          </label>
-          <input
-            id="inventory-location"
-            className={styles.input}
-            type="text"
-            placeholder="Rack A, drawer 2…"
-            disabled={disabled}
-            value={value.location}
-            onChange={(e) => set("location", e.target.value)}
-          />
-        </div>
+      <div className={styles.field}>
+        <label className={styles.label} htmlFor="inventory-quantity">
+          How many
+        </label>
+        <input
+          id="inventory-quantity"
+          className={styles.input}
+          type="number"
+          inputMode="numeric"
+          min="1"
+          step="1"
+          disabled={disabled}
+          value={value.quantity}
+          onChange={(e) => set("quantity", e.target.value)}
+        />
       </div>
 
       <div className={styles.field}>

@@ -379,9 +379,9 @@ a.rowTitle:hover {
   border-bottom: none;
 }
 
-/* Family and Location earn their columns on a desk, not in one hand at the
-   bench — §4.2. On a phone the row keeps the paint, its state and the three
-   things you actually tap. */
+/* Family earns its own column on a desk, not in one hand at the bench — §4.2.
+   On a phone the row keeps the paint, its state and the three things you
+   actually tap. */
 .deskColumn {
   display: none;
 }
@@ -392,10 +392,10 @@ a.rowTitle:hover {
   }
 }
 
-/* Percentages, not pixels, under `table-layout: fixed`: the four fixed-width
-   columns would otherwise take the same room whatever the window is doing and
-   leave the paint name — the column anyone actually scans — squeezed into
-   whatever was left. */
+/* Percentages, not pixels, under `table-layout: fixed`: fixed-width columns
+   would otherwise take the same room whatever the window is doing and leave
+   the paint name — the column anyone actually scans — squeezed into whatever
+   was left. */
 .colPaint {
   width: auto;
 }
@@ -406,16 +406,13 @@ a.rowTitle:hover {
 
 @media (min-width: 900px) {
   .colPaint {
-    width: 34%;
+    width: 44%;
   }
   .colFamily {
-    width: 13%;
-  }
-  .colLocation {
-    width: 17%;
+    width: 16%;
   }
   .colState {
-    width: 14%;
+    width: 18%;
   }
   .colActions {
     width: 22%;
@@ -459,10 +456,6 @@ a.rowTitle:hover {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.cellFaint {
-  color: var(--faint);
 }
 
 .stateChip {
@@ -653,33 +646,20 @@ a.iconButton:hover {
 
 /* --------------------------------------------------------------- skeleton */
 
+.skeletonSingle {
+  grid-column: 1 / -1;
+}
+
 .skeletonBlock {
   background: var(--card);
   border: 1px solid var(--line);
-  border-radius: 16px;
+  border-radius: var(--radius-card);
 }
 
-.skeletonShelf {
-  height: 168px;
-  border-radius: 18px;
-}
-
-.skeletonFilters {
-  height: 34px;
-  border: none;
-  background: none;
-}
-
-.skeletonLow {
-  height: 122px;
-}
-
-.skeletonRecent {
-  height: 122px;
-}
-
-.skeletonTable {
-  height: 420px;
+/* Tall enough to read as "content is coming", short enough that landing on
+   the one-card empty state isn't a violent collapse. */
+.skeletonGeneric {
+  height: 220px;
 }
 
 .srOnly {
