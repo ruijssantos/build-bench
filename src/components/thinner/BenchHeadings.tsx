@@ -3,7 +3,7 @@ import Link from "next/link";
 import { resolvePaintIdentity } from "@/lib/thinner-bench";
 
 import { SearchBox } from "./SearchBox";
-import { readBenchParams, type BenchSearchParams } from "./bench-params";
+import { resolveBenchParams, type BenchSearchParams } from "./bench-params";
 import styles from "./ThinnerBench.module.css";
 
 /**
@@ -22,7 +22,7 @@ export async function SearchArea({
   scope: "phone" | "desktop";
   searchParams: Promise<BenchSearchParams>;
 }) {
-  const { code, line } = readBenchParams(await searchParams);
+  const { code, line } = await resolveBenchParams(searchParams);
   const { paint } = resolvePaintIdentity(code, line);
   const label = paint?.known ? `${paint.code} ${paint.name}` : code;
 
@@ -31,7 +31,7 @@ export async function SearchArea({
 
 /** Only shown for a code sold as both an acrylic and an enamel bottle. */
 export async function LineToggle({ searchParams }: { searchParams: Promise<BenchSearchParams> }) {
-  const { code, line } = readBenchParams(await searchParams);
+  const { code, line } = await resolveBenchParams(searchParams);
   const { paint } = resolvePaintIdentity(code, line);
   if (!paint?.ambiguous) return null;
 

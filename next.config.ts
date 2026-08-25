@@ -24,13 +24,18 @@ const nextConfig: NextConfig = {
      * (the `airbrush` rig row). `expire` deliberately sits under five minutes:
      * that keeps the value out of the *prerender* so `next build` never needs
      * DATABASE_URL — CI has none — while still caching it at runtime.
+     *
+     * `stale` is the client's reuse window: how long the router will re-show
+     * an already-rendered screen without going back to the server. Three
+     * minutes suits data that changes when you buy a new airbrush.
      */
-    rig: { stale: 60, revalidate: 120, expire: 240 },
+    rig: { stale: 180, revalidate: 120, expire: 240 },
 
     /**
      * Per-paint bench data the user can correct from the UI (`ratio_override`).
-     * Short-lived on top of tag invalidation, which is what actually makes a
-     * saved correction show up immediately.
+     * Short-lived on the server, on top of the tag invalidation that is what
+     * actually makes a saved correction show up immediately — so the client
+     * can afford the same three-minute reuse window as the rig row.
      */
     bench: { stale: 30, revalidate: 60, expire: 240 },
 
