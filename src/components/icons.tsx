@@ -105,6 +105,17 @@ export function ChevronDownIcon(props: IconProps) {
   );
 }
 
+/** The unsorted state of a sortable column header — both directions, quiet,
+ * signalling "click to sort" without claiming a direction. */
+export function SortIcon(props: IconProps) {
+  return (
+    <svg {...base(props, 1.8)}>
+      <path d="M8 10l4-4 4 4" />
+      <path d="M8 14l4 4 4-4" />
+    </svg>
+  );
+}
+
 export function AlertIcon(props: IconProps) {
   return (
     <svg {...base(props, 2)}>

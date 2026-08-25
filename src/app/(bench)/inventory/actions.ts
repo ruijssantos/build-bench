@@ -161,3 +161,17 @@ export async function toggleRunningLow(formData: FormData): Promise<void> {
   const updated = await updateInventoryItem(id, { state: toggledLowState(item.state) });
   if (updated) invalidate(updated.paintCode);
 }
+
+/**
+ * The one-click remove icon in the table row. Same shape as
+ * `toggleRunningLow` above — a plain form action, no client JavaScript, no
+ * confirmation step. `EditItemDialog`'s own two-tap Remove is the deliberate
+ * path for when you want to double-check first; this is the fast one.
+ */
+export async function removeInventoryItemAction(formData: FormData): Promise<void> {
+  const id = Number(formData.get("id"));
+  if (!Number.isInteger(id)) return;
+
+  const removed = await deleteInventoryItem(id);
+  if (removed) invalidate(removed.paintCode);
+}

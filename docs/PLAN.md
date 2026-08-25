@@ -3,9 +3,32 @@
 A companion app for 1:24 scale model car building, centred on a Tamiya 74540 HG Trigger
 airbrush workflow and pre-build kit research.
 
-**Status:** revision 7 — **locked, ready to build**. Phase 0 and Phase 1 are shipped.
+**Status:** revision 8 — **locked, ready to build**. Phase 0, Phase 1 and Phase 2 are shipped.
 **Planning pass:** Opus. **Implementation:** Sonnet, phase by phase.
 
+> **Changed in r8** — §3.2's `inventory_item` and §6's Phase 2 entry updated to match what
+> actually shipped (PR #19 plus review follow-ups), rather than the pre-build guess. Three
+> real deviations, all made during review rather than re-litigated here:
+>
+> - **`location` dropped**, column and all — a real migration
+>   (`drizzle/0001_drop_inventory_location.sql`), not just a UI change. The owner doesn't
+>   track shelf position; the field was cut rather than left to sit unused.
+> - **`state` trimmed from four values to two** — `open` and `low`, plus the unset default,
+>   which reads as "In Stock". `sealed` added nothing over the default; `empty` added
+>   nothing over removing the row.
+> - **"Recently sprayed" is cut from the Paints screen entirely** — not deferred, not
+>   waiting on Phase 8, gone. `spray_session` (§3.3) stays in the schema for Phase 8's own
+>   feature, but nothing on this screen reads it. "Running low" is a filter pill on the same
+>   table rather than a separate always-visible module, styled with the alert colour instead
+>   of accent so it still reads as "act on this" rather than just another slice.
+>
+> Two additions past the original one-sentence scope, both small enough not to need their
+> own review: sortable columns (paint / family / state, three-state cycle via the URL) and a
+> one-click remove icon in the row, alongside the existing two-tap confirm inside Edit. The
+> screen is single-column, full width, at every size now too — the two-column desktop split
+> was carried over from the Thinner Bench as a first guess and didn't hold up once the
+> modules it was built around (Running low, Recently sprayed) were gone.
+>
 > **Changed in r7** — §6 reordered: **Paint inventory is now Phase 2** and **Cross-brand
 > equivalence is now Phase 3** (swapped from the original order). Inventory has no
 > dependency on equivalence or vice versa, so nothing else in the plan needed to change
@@ -283,13 +306,13 @@ inventory_item                     -- feature 4, paint half
   paint_code      text FK paint
   form            text             -- bottle | spray_can | decanted_jar
   decanted_from   text NULL FK     -- TS-8 can → decanted jar, keeps the lineage
-  state           text             -- sealed | open | low | empty
+  state           text             -- open | low (unset reads as "In Stock") — r8
   quantity        integer
-  location        text
   purchased_from  integer NULL FK vendor
   purchased_at    date
   notes           text
   updated_at      timestamptz
+                                    -- `location` dropped in r8 — see the changelog
 
 kit                                -- feature 4, stash half
   id              serial PK
@@ -755,8 +778,10 @@ warning, the 74540 dry-tip panel — all reading rig facts from the `airbrush` r
 **Ships:** the MVP, complete, persistent, and genuinely usable on your phone.
 
 ### Phase 2 — Paint inventory *(feature 4a)*
-Import the Google Sheet. CRUD with decanted-vs-stock, bottle state, location. "Do I own
-this?" on the Thinner Bench result card.
+Import the Google Sheet. CRUD with decanted-vs-stock and bottle state (`open` / `low`,
+`location` dropped — r8). Sortable, single-column shelf table with a one-click remove
+alongside Edit's own confirm step, and "Running low" as a filter pill rather than a
+standing module. "Do I own this?" on the Thinner Bench result card.
 **Ships:** the standing-in-a-shop question answered.
 
 ### Phase 3 — Cross-brand equivalence
@@ -809,7 +834,8 @@ Nothing outstanding. Everything needed to start building is decided.
 | Theme | Light only; no dark branch anywhere | §8 |
 | Performance | PPR shell · compiled reference data · client islands · CI budget | `docs/PERFORMANCE.md` |
 
-Phase 0 and Phase 1 are done — the app deploys, and the Thinner Bench is real. Phase 1's
+Phase 0, Phase 1 and Phase 2 are done — the app deploys, the Thinner Bench is real, and the
+shelf answers "do I own this?" both on its own screen and on the bench result card. Phase 1's
 catalogue script did catch the XF-83/XF-84 gap this plan predicted (§2.2), confirming both
 codes and names by search; their hex values are still unverified estimates, flagged as such
 in `scripts/build-catalogue.ts`'s own comments — fix them by eye against a real bottle
@@ -817,7 +843,7 @@ whenever convenient, no phase attached. The other open item, a parser pass again
 Cybermodeler's actual HTML (§2.2 — the page was unreachable from the planning sandbox), is
 Phase 3 scope now.
 
-**Start at Phase 2** (§6) — building the app itself is well underway.
+**Start at Phase 3** (§6) — building the app itself is well underway.
 
 ---
 

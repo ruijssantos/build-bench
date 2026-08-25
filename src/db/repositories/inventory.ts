@@ -1,9 +1,9 @@
-import { and, desc, eq, sql } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { cacheLife, cacheTag } from "next/cache";
 import { connection } from "next/server";
 
 import { db } from "@/db/client";
-import { inventoryItem, paint, spraySession } from "@/db/schema";
+import { inventoryItem, paint } from "@/db/schema";
 import type { InventoryForm, InventoryState } from "@/domain/inventory";
 
 /**
@@ -42,15 +42,6 @@ export interface InventoryItemRow {
   paintSizeMl: number | null;
 }
 
-export interface SpraySessionRow {
-  id: number;
-  paintCode: string;
-  sprayedAt: Date | null;
-  outcome: number | null;
-  paintName: string | null;
-  paintHex: string | null;
-}
-
 /** Invalidated by every inventory write — the grid, the shelf and the counts
  * all come from one list. */
 export const INVENTORY_TAG = "inventory";
@@ -60,8 +51,6 @@ export const INVENTORY_TAG = "inventory";
 export function inventoryPaintTag(paintCode: string): string {
   return `inventory:${paintCode}`;
 }
-
-export const SPRAY_SESSION_TAG = "spray-session";
 
 const ITEM_COLUMNS = {
   id: inventoryItem.id,
@@ -132,40 +121,6 @@ async function queryInventoryForPaint(paintCode: string): Promise<InventoryItemR
     .leftJoin(paint, eq(paint.code, inventoryItem.paintCode))
     .where(eq(inventoryItem.paintCode, paintCode))
     .orderBy(inventoryItem.id);
-}
-
-/**
- * The Recently sprayed strip.
- *
- * Sourced from `spray_session`, which is the table that means what the section
- * says. One-tap logging into it is Phase 8 (§6), so this is empty until then
- * and the UI says so — deriving "sprayed" from `inventory_item.updated_at`
- * would make marking a bottle low read as having sprayed it, which is a
- * different claim.
- */
-export async function listRecentSpraySessions(limit = 3): Promise<SpraySessionRow[]> {
-  await connection();
-  return queryRecentSpraySessions(limit);
-}
-
-async function queryRecentSpraySessions(limit: number): Promise<SpraySessionRow[]> {
-  "use cache";
-  cacheLife("inventory");
-  cacheTag(SPRAY_SESSION_TAG);
-
-  return db
-    .select({
-      id: spraySession.id,
-      paintCode: spraySession.paintCode,
-      sprayedAt: spraySession.sprayedAt,
-      outcome: spraySession.outcome,
-      paintName: paint.name,
-      paintHex: paint.hex,
-    })
-    .from(spraySession)
-    .leftJoin(paint, eq(paint.code, spraySession.paintCode))
-    .orderBy(desc(spraySession.sprayedAt))
-    .limit(limit);
 }
 
 export interface CreateInventoryItemInput {

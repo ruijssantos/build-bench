@@ -102,21 +102,6 @@ export function familyChipLabel(family: string | null): string {
 }
 
 /**
- * "2 days ago", "Last week" — the design reference's own phrasing for the
- * Recently sprayed strip. Takes `now` as an argument rather than reading the
- * clock, so it stays pure and testable.
- */
-export function relativeDayLabel(when: Date, now: Date): string {
-  const days = Math.floor((now.getTime() - when.getTime()) / 86_400_000);
-  if (days <= 0) return "Today";
-  if (days === 1) return "Yesterday";
-  if (days < 7) return `${days} days ago`;
-  if (days < 14) return "Last week";
-  if (days < 60) return `${Math.floor(days / 7)} weeks ago`;
-  return when.toISOString().slice(0, 10);
-}
-
-/**
  * The "find somewhere that sells this" link.
  *
  * A plain Google search rather than a vendor deep-link on purpose: the app

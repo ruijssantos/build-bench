@@ -3,7 +3,7 @@ import Link from "next/link";
 import type { InventoryItemRow } from "@/db/repositories/inventory";
 import { familyChipLabel } from "@/domain/inventory";
 
-import { inventoryHref } from "./inventory-params";
+import { inventoryHref, type InventoryParams } from "./inventory-params";
 import styles from "./Inventory.module.css";
 
 /**
@@ -23,20 +23,21 @@ import styles from "./Inventory.module.css";
 export function ShelfPalette({
   items,
   visible,
-  family,
+  params,
 }: {
   items: InventoryItemRow[];
   visible: InventoryItemRow[];
-  family: string | null;
+  params: InventoryParams;
 }) {
   const shown = new Set(visible.map((item) => item.id));
+  const filtered = params.family !== null || params.low;
 
   return (
     <div className={styles.shelfCard}>
       <div className={styles.shelfHead}>
         <span className={styles.moduleTitle}>Your shelf</span>
         <span className={styles.shelfCount}>
-          {family ? `${visible.length} of ${items.length}` : `${items.length} paints`}
+          {filtered ? `${visible.length} of ${items.length}` : `${items.length} paints`}
         </span>
       </div>
 
@@ -62,47 +63,65 @@ export interface FamilyCount {
 }
 
 /**
- * Filter pills, by ratio family.
+ * The pill row: All, Running low, then the family breakdown.
  *
- * The design reference draws these as "Gloss 18 · Flat 11 · Spray 2" — which
- * are the Google Sheet's own column headings, i.e. line prefixes. §2.1 is
- * explicit that the importer files paints by catalogue family instead, so
- * X-19 and the clears land under Clear and X-21 under Additive, and these
- * counts don't match the mockup's. That is the plan working, not drifting
- * from it: the family is what decides the ratio, so it's what the shelf
- * should be sliceable by.
+ * The design reference draws family counts as "Gloss 18 · Flat 11 · Spray 2"
+ * — which are the Google Sheet's own column headings, i.e. line prefixes.
+ * §2.1 is explicit that the importer files paints by catalogue family
+ * instead, so X-19 and the clears land under Clear and X-21 under Additive,
+ * and these counts don't match the mockup's. That is the plan working, not
+ * drifting from it: the family is what decides the ratio, so it's what the
+ * shelf should be sliceable by.
  *
- * Links, not buttons — the filter is in the URL, so it's prefetchable,
+ * "Running low" used to be its own module, always visible whether or not
+ * anything was low. As a pill it's just another slice of the same table —
+ * consistent with every other filter here — and it earns the one different
+ * treatment on this row (alert colour, not accent) because it's the one
+ * filter that means "something needs attention," not just "a subset."
+ *
+ * Links, not buttons — every filter is in the URL, so it's prefetchable,
  * shareable and back-button-able (docs/PERFORMANCE.md §6).
  */
-export function FamilyFilters({
+export function FilterPills({
   total,
+  lowCount,
   counts,
-  active,
+  params,
 }: {
   total: number;
+  lowCount: number;
   counts: FamilyCount[];
-  active: string | null;
+  params: InventoryParams;
 }) {
   return (
-    <nav className={styles.filters} aria-label="Filter by family">
+    <nav className={styles.filters} aria-label="Filter the shelf">
       <Link
-        href={inventoryHref(null)}
+        href={inventoryHref(params, { family: null })}
         scroll={false}
-        aria-current={active === null ? "page" : undefined}
-        className={`${styles.filterPill} ${active === null ? styles.filterPillActive : ""}`}
+        aria-current={params.family === null ? "page" : undefined}
+        className={`${styles.filterPill} ${params.family === null ? styles.filterPillActive : ""}`}
       >
-        All {total}
+        All ({total})
       </Link>
+
+      <Link
+        href={inventoryHref(params, { low: !params.low })}
+        scroll={false}
+        aria-pressed={params.low}
+        className={`${styles.filterPillAlert} ${params.low ? styles.filterPillAlertActive : ""}`}
+      >
+        Running low ({lowCount})
+      </Link>
+
       {counts.map(({ family, count }) => (
         <Link
           key={family}
-          href={inventoryHref(family)}
+          href={inventoryHref(params, { family })}
           scroll={false}
-          aria-current={active === family ? "page" : undefined}
-          className={`${styles.filterPill} ${active === family ? styles.filterPillActive : ""}`}
+          aria-current={params.family === family ? "page" : undefined}
+          className={`${styles.filterPill} ${params.family === family ? styles.filterPillActive : ""}`}
         >
-          {familyChipLabel(family)} {count}
+          {familyChipLabel(family)} ({count})
         </Link>
       ))}
     </nav>

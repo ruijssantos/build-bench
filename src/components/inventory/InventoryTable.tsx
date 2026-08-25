@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { ExternalLinkIcon } from "@/components/icons";
+import { ChevronDownIcon, ExternalLinkIcon, SortIcon } from "@/components/icons";
 import type { InventoryItemRow } from "@/db/repositories/inventory";
 import {
   familyChipLabel,
@@ -14,6 +14,8 @@ import {
 
 import { EditItemTrigger } from "./EditItemTrigger";
 import { LowToggle } from "./LowToggle";
+import { RemoveButton } from "./RemoveButton";
+import { inventoryHref, nextSortState, type InventoryParams, type SortColumn } from "./inventory-params";
 import styles from "./Inventory.module.css";
 
 /**
@@ -22,27 +24,33 @@ import styles from "./Inventory.module.css";
  * A real `<table>` rather than a stack of divs: it is a table, it is read by
  * scanning down one column, and the header row is what makes the scan work.
  * Family — the one column that only earns its place on a desk (§4.2) — drops
- * out below 900px; what stays is the paint, its state, and the three things
+ * out below 900px; what stays is the paint, its state, and the four things
  * you tap.
  *
  * A Server Component. The only client code in a row is the pencil, which owns
- * an open/closed boolean; the running-low toggle is a form, and the find-a-shop
- * link is a link.
+ * an open/closed boolean; the sort headers are links, the running-low and
+ * remove controls are forms, and the find-a-shop link is a link.
  */
-export function InventoryTable({ items }: { items: InventoryItemRow[] }) {
+export function InventoryTable({
+  items,
+  params,
+}: {
+  items: InventoryItemRow[];
+  params: InventoryParams;
+}) {
   return (
     <div className={styles.tableCard}>
       <table className={styles.table}>
         <thead>
           <tr>
             <th className={styles.colPaint} scope="col">
-              Paint
+              <SortableHeader label="Paint" column="paint" params={params} />
             </th>
             <th className={`${styles.colFamily} ${styles.deskColumn}`} scope="col">
-              Family
+              <SortableHeader label="Family" column="family" params={params} />
             </th>
             <th className={`${styles.colState} ${styles.deskColumn}`} scope="col">
-              State
+              <SortableHeader label="State" column="state" params={params} />
             </th>
             <th className={styles.colActions} scope="col">
               <span className={styles.srOnly}>Actions</span>
@@ -99,19 +107,6 @@ export function InventoryTable({ items }: { items: InventoryItemRow[] }) {
                   <div className={styles.actions}>
                     <LowToggle id={item.id} state={item.state} paintCode={item.paintCode} />
 
-                    {/* Deliberately a search, not a shop: the app carries no
-                        pricing (§8) and the right shop differs per paint. */}
-                    <a
-                      className={styles.iconButton}
-                      href={paintSearchUrl(item.paintCode, item.paintName)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      title={`Search the web for ${item.paintCode}`}
-                      aria-label={`Search the web for ${item.paintCode} ${name}`}
-                    >
-                      <ExternalLinkIcon size={16} />
-                    </a>
-
                     <EditItemTrigger
                       item={{
                         id: item.id,
@@ -124,6 +119,21 @@ export function InventoryTable({ items }: { items: InventoryItemRow[] }) {
                         notes: item.notes ?? "",
                       }}
                     />
+
+                    <RemoveButton id={item.id} paintCode={item.paintCode} />
+
+                    {/* Deliberately a search, not a shop: the app carries no
+                        pricing (§8) and the right shop differs per paint. */}
+                    <a
+                      className={styles.iconButton}
+                      href={paintSearchUrl(item.paintCode, item.paintName)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      title={`Search the web for ${item.paintCode}`}
+                      aria-label={`Search the web for ${item.paintCode} ${name}`}
+                    >
+                      <ExternalLinkIcon size={16} />
+                    </a>
                   </div>
                 </td>
               </tr>
@@ -132,5 +142,47 @@ export function InventoryTable({ items }: { items: InventoryItemRow[] }) {
         </tbody>
       </table>
     </div>
+  );
+}
+
+/**
+ * A column header that sorts on click — unsorted → ascending → descending →
+ * unsorted, per `nextSortState`. Every state is a real URL (docs/PERFORMANCE.md
+ * §6), so the router can prefetch the next sort while the header is merely
+ * hovered.
+ */
+function SortableHeader({
+  label,
+  column,
+  params,
+}: {
+  label: string;
+  column: SortColumn;
+  params: InventoryParams;
+}) {
+  const active = params.sort === column;
+  const nextLabel = !active
+    ? "ascending"
+    : params.dir === "asc"
+      ? "descending"
+      : "unsorted";
+
+  return (
+    <Link
+      href={inventoryHref(params, nextSortState(params, column))}
+      scroll={false}
+      className={styles.sortHeader}
+      aria-label={`Sort by ${label}, ${nextLabel}`}
+    >
+      <span>{label}</span>
+      {active ? (
+        <ChevronDownIcon
+          size={13}
+          className={`${styles.sortIconActive} ${params.dir === "asc" ? styles.sortIconAsc : ""}`}
+        />
+      ) : (
+        <SortIcon size={13} className={styles.sortIconIdle} />
+      )}
+    </Link>
   );
 }

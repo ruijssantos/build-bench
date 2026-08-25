@@ -51,61 +51,20 @@
   }
 }
 
+/* Single column, full width, at every size — the shelf, then the filter
+   pills, then the table, in that order. No desktop two-column split: the
+   table is the thing worth the room, and it gets all of it. */
 .grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  grid-template-areas:
-    "shelf"
-    "filters"
-    "low"
-    "recent"
-    "table";
-  gap: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
   padding: 0 var(--gutter) 28px;
 }
 
 @media (min-width: 900px) {
   .grid {
-    /* Phase 1's desktop shape — a fixed-width column of cards beside a
-       flexible one — with the roles swapped: on the Thinner Bench the hero
-       is the wide thing, here the shelf table is, so the fixed column holds
-       the summaries and the table takes the room it needs. */
-    grid-template-columns: 360px minmax(0, 1fr);
-    grid-template-areas:
-      "shelf  filters"
-      "low    table"
-      "recent table"
-      ".      table";
-    column-gap: 24px;
-    row-gap: 16px;
     padding: 0 0 8px;
-    align-items: start;
   }
-}
-
-.shelfArea {
-  grid-area: shelf;
-  min-width: 0;
-}
-
-.filtersArea {
-  grid-area: filters;
-  min-width: 0;
-}
-
-.lowArea {
-  grid-area: low;
-  min-width: 0;
-}
-
-.recentArea {
-  grid-area: recent;
-  min-width: 0;
-}
-
-.tableArea {
-  grid-area: table;
-  min-width: 0;
 }
 
 /* ------------------------------------------------------------ shelf block */
@@ -150,14 +109,20 @@
   white-space: nowrap;
 }
 
+/* Fixed chip size at every viewport, on purpose — `auto-fill` with a real
+   pixel size wraps to more columns on a wide screen instead of stretching
+   each swatch to fill the row. A `1fr` track here would blow the chips up
+   to inch-square blocks on the desktop's much wider shelf card, which is
+   exactly the bug this replaced. */
 .chipGrid {
   display: grid;
-  grid-template-columns: repeat(11, minmax(0, 1fr));
-  gap: 5px;
+  grid-template-columns: repeat(auto-fill, 28px);
+  gap: 6px;
 }
 
 .chip {
-  aspect-ratio: 1;
+  width: 28px;
+  height: 28px;
   border-radius: 6px;
   display: block;
   box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
@@ -234,60 +199,36 @@
   font-weight: 700;
 }
 
-/* ------------------------------------------------------- section headings */
-
-.sectionHead {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 0 2px 8px;
-}
-
-.sectionBadge {
-  background: var(--alert-tint);
-  color: var(--alert);
-  font-family: var(--font-ui);
-  font-size: 11px;
-  font-weight: 700;
-  border-radius: var(--radius-pill);
-  padding: 2px 8px;
-}
-
-/* ------------------------------------------------------------- list cards */
-
-.listCard {
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  overflow: hidden;
-}
-
-.listRow {
-  display: flex;
-  align-items: center;
-  gap: 13px;
-  padding: 12px 14px;
-  border-bottom: 1px solid var(--card-sunken);
-}
-
-.listRow:last-child {
-  border-bottom: none;
-}
-
-.listSwatch {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
+/* "Running low" — the one pill that means "act on this" rather than "a
+   slice of the shelf", so it gets the alert treatment instead of accent, at
+   rest as well as active — §4.1's rule that colour carries meaning. */
+.filterPillAlert,
+.filterPillAlert:hover {
   flex: none;
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+  display: inline-flex;
+  align-items: center;
+  height: 34px;
+  padding: 0 14px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--alert);
+  background: var(--card);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--alert);
+  text-decoration: none;
+  white-space: nowrap;
 }
 
-.listText {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-  min-width: 0;
+.filterPillAlertActive,
+.filterPillAlertActive:hover {
+  background: var(--alert);
+  border-color: var(--alert);
+  color: var(--bg);
+  font-weight: 700;
 }
+
+/* ------------------------------------------------------------- the table */
 
 .rowTitle {
   font-family: var(--font-ui);
@@ -315,33 +256,6 @@ a.rowTitle:hover {
   text-overflow: ellipsis;
 }
 
-.listTrailing {
-  margin-left: auto;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex: none;
-}
-
-.rowNote {
-  font-family: var(--font-ui);
-  font-size: 11.5px;
-  font-weight: 600;
-  color: var(--muted-2);
-  white-space: nowrap;
-}
-
-.emptyNote {
-  font-family: var(--font-ui);
-  font-size: 13.5px;
-  line-height: 1.5;
-  color: var(--muted);
-  margin: 0;
-  padding: 16px 14px;
-}
-
-/* ------------------------------------------------------------- the table */
-
 .tableCard {
   background: var(--card);
   border: 1px solid var(--line);
@@ -367,6 +281,41 @@ a.rowTitle:hover {
   border-bottom: 1px solid var(--line);
   background: var(--card-sunken);
   white-space: nowrap;
+}
+
+/* A sortable column header — same label styling as a plain `<th>`, plus a
+   small icon that shows sort state and doubles as the click target. */
+.sortHeader {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: inherit;
+  font: inherit;
+  text-transform: inherit;
+  letter-spacing: inherit;
+  text-decoration: none;
+}
+
+.sortHeader:hover {
+  color: var(--ink);
+}
+
+.sortIconIdle {
+  flex: none;
+  color: var(--faint);
+}
+
+.sortHeader:hover .sortIconIdle {
+  color: var(--muted);
+}
+
+.sortIconActive {
+  flex: none;
+  color: var(--accent);
+}
+
+.sortIconAsc {
+  transform: rotate(180deg);
 }
 
 .table td {
@@ -400,22 +349,24 @@ a.rowTitle:hover {
   width: auto;
 }
 
+/* Four controls now (low, edit, remove, search) — a touch wider than the
+   original three needed. */
 .colActions {
-  width: 128px;
+  width: 152px;
 }
 
 @media (min-width: 900px) {
   .colPaint {
-    width: 44%;
+    width: 40%;
   }
   .colFamily {
-    width: 16%;
+    width: 14%;
   }
   .colState {
-    width: 18%;
+    width: 16%;
   }
   .colActions {
-    width: 22%;
+    width: 30%;
   }
 }
 
@@ -579,11 +530,10 @@ a.iconButton:hover {
 
 /* ------------------------------------------------------------- empty state */
 
-/* The true empty-shelf state — spans the full grid on desktop (there is
-   nothing to put in the fixed 360px column when there is nothing to show),
-   and centers a single card the way ComingSoon does for a whole screen. */
+/* The true empty-shelf state — the only thing on the screen when there's
+   nothing on the shelf, centering a single card the way ComingSoon does for
+   a whole screen. */
 .emptyState {
-  grid-column: 1 / -1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -645,10 +595,6 @@ a.iconButton:hover {
 }
 
 /* --------------------------------------------------------------- skeleton */
-
-.skeletonSingle {
-  grid-column: 1 / -1;
-}
 
 .skeletonBlock {
   background: var(--card);
