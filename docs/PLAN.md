@@ -617,10 +617,11 @@ in `research_job`.
   "24345" or "Tamiya Nissan GT-R"
         │
    [A] /api/research/resolve          ~10–20 s   ← Phase 3, the wishlist's search
-        │   Claude, effort medium, web_search max_uses 2
-        │   → { brand, kit_number, name, scale, category,
-        │       scalemates_url, image_url, year }
-        │   Returns candidates; the user picks. Hand entry always available.
+        │   Sonnet 5, effort medium, web_search max_uses 2
+        │   → { candidates: [{ brand, kit_number, name, scale, category,
+        │                      scalemates_url, image_url, confidence }, …] }
+        │   Structured output, no citations needed — it's extracting facts,
+        │   not synthesising claims. Hand entry always available.
         ▼
    [B] /api/research/investigate      ~60–180 s  ← Phase 6, the expensive one
         │   Claude Opus 5, effort high, streaming
@@ -638,16 +639,31 @@ for the whole job; the UI gets a real three-step progress indicator. Stage B is 
 watch — if it approaches the ceiling, drop `max_uses` or split "find sources" from "read
 sources."
 
-**Why two passes.** Structured outputs (`output_config.format`) are incompatible with
+**Why two passes (B → C).** Structured outputs (`output_config.format`) are incompatible with
 citations, and citations are what make the output trustworthy — a source URL next to every
-claim. Splitting cited free-form research from cheap typed extraction gets both.
+claim. Splitting cited free-form research from cheap typed extraction gets both. Stage A
+skips this problem rather than solving it: resolving "what kit is this" carries no claims
+that need a source, so it goes straight to structured output in one call.
+
+**Stage A's UX.** The schema caps `candidates` at 5, ranked. A kit-number query usually
+resolves to one confident match; free text ("Tamiya Nissan GT-R") can genuinely mean several
+real kits — different scales, different boxings — so the wishlist screen renders whatever
+comes back as cards (box art, brand + name + number, scale, category) and the user picks one,
+or none. An empty `candidates` array is a normal response, not an error: the screen says no
+matches, try different terms, with manual entry sitting right there either way — it was never
+gated behind search failing. This has to be a submit-triggered search (a button, not
+type-ahead): unlike paint search (`PERFORMANCE.md` §3), there is no free local index behind
+it — every search is a real, paid, ~10–20s call, so the UI needs an explicit trigger and a
+loading state, not a fetch per keystroke.
 
 ### 5.2 API shapes to use
 
 Verified against current API documentation, not recalled:
 
-- Model `claude-opus-5`; thinking `{ type: "adaptive" }` — `budget_tokens` is rejected with a
-  400 on this model
+- Model: `claude-sonnet-5` for stage A, `claude-opus-5` for stages B and C. Stage A is entity
+  resolution against a couple of search results, not synthesis — Sonnet is fully capable of
+  it at under half Opus's per-token cost. Thinking `{ type: "adaptive" }` on both —
+  `budget_tokens` is rejected with a 400 on either model
 - Effort via `output_config: { effort: "medium" | "high" }`
 - Web tools `web_search_20260209` / `web_fetch_20260209` (dynamic-filtering variants). Don't
   additionally declare `code_execution` — these run it internally
@@ -663,9 +679,25 @@ Verified against current API documentation, not recalled:
 
 ### 5.3 Cost
 
-Roughly €0.20–0.45 per newly researched kit (Opus 5 at $5/$25 per MTok; search results
-dominate input tokens). Cached in `kit_research`, re-run only on an explicit Refresh. Every
-call records its own token counts.
+Two different costs, an order of magnitude apart, because they're different jobs on different
+models:
+
+- **Stage A (Phase 3, every kit search).** ~5K input tokens (search snippets, tool overhead)
+  and ~1–1.5K output tokens (a short candidate list plus some thinking) on Sonnet 5 ($2/$10
+  per MTok) comes to roughly **$0.02–0.05 per search**. Not cached — every search is a fresh
+  call, since the query itself changes each time.
+- **Stages B+C (Phase 6, per kit researched).** Roughly **€0.20–0.45 per newly researched
+  kit** (Opus 5 at $5/$25 per MTok; search results dominate input tokens, and stage B's long
+  cited synthesis dominates output). Cached in `kit_research`, re-run only on an explicit
+  Refresh.
+
+Every call records its own token counts regardless of stage. At personal-hobby volumes —
+searching a handful of kits a week, plus retries for typos — stage A alone is pocket change;
+even a month of active kit research through stages B/C stays well under what the Vercel and
+Neon bills already are.
+
+**Billed to your own Anthropic account**, pay-as-you-go, through the `ANTHROPIC_API_KEY` set
+in Vercel's env vars (§9.2) — the app has no billing of its own, no markup, no bundling.
 
 ### 5.4 Trust
 
