@@ -131,22 +131,21 @@ export interface CreateInventoryItemInput {
   notes: string | null;
 }
 
-export async function createInventoryItem(
-  input: CreateInventoryItemInput,
-): Promise<InventoryItemRow | undefined> {
-  const rows = await db
-    .insert(inventoryItem)
-    .values({
-      paintCode: input.paintCode,
-      form: input.form,
-      state: input.state,
-      quantity: input.quantity,
-      notes: input.notes,
-      updatedAt: new Date(),
-    })
-    .returning({ id: inventoryItem.id });
-  const id = rows[0]?.id;
-  return id === undefined ? undefined : getInventoryItemById(id);
+/**
+ * A plain INSERT, one round trip. Every caller already knows the paint code
+ * it just wrote (it's the thing they were adding) — this used to fetch the
+ * row straight back with a second SELECT purely to hand that code back,
+ * which no caller needed since they already had it.
+ */
+export async function createInventoryItem(input: CreateInventoryItemInput): Promise<void> {
+  await db.insert(inventoryItem).values({
+    paintCode: input.paintCode,
+    form: input.form,
+    state: input.state,
+    quantity: input.quantity,
+    notes: input.notes,
+    updatedAt: new Date(),
+  });
 }
 
 export interface UpdateInventoryItemInput {
@@ -157,39 +156,31 @@ export interface UpdateInventoryItemInput {
 }
 
 /**
- * Returns the updated row, so the caller knows which paint code's tag to
- * invalidate without having to look it up first.
+ * A plain UPDATE, one round trip — see `createInventoryItem`'s note. This
+ * used to follow the UPDATE with a full SELECT + `paint` join just to return
+ * `paintCode` for cache invalidation; every caller already has it (it's on
+ * the row being edited), so that second round trip was pure overhead on
+ * every single "mark running low" tap.
  */
-export async function updateInventoryItem(
-  id: number,
-  patch: UpdateInventoryItemInput,
-): Promise<InventoryItemRow | undefined> {
+export async function updateInventoryItem(id: number, patch: UpdateInventoryItemInput): Promise<void> {
   await db
     .update(inventoryItem)
     .set({ ...patch, updatedAt: new Date() })
     .where(eq(inventoryItem.id, id));
-  return getInventoryItemById(id);
-}
-
-export async function deleteInventoryItem(id: number): Promise<InventoryItemRow | undefined> {
-  const existing = await getInventoryItemById(id);
-  if (!existing) return undefined;
-  await db.delete(inventoryItem).where(eq(inventoryItem.id, id));
-  return existing;
 }
 
 /**
- * Uncached on purpose: the only callers are mutations, which need the row as
- * it is right now — before they change it, or straight after.
+ * A DELETE with `returning()`, still one round trip — this is the one
+ * mutation that has a real reason to ask the database something (did a row
+ * actually exist to delete?), and Postgres's own RETURNING clause answers
+ * that in the same statement rather than costing a separate pre-read.
  */
-export async function getInventoryItemById(id: number): Promise<InventoryItemRow | undefined> {
+export async function deleteInventoryItem(id: number): Promise<boolean> {
   const rows = await db
-    .select(ITEM_COLUMNS)
-    .from(inventoryItem)
-    .leftJoin(paint, eq(paint.code, inventoryItem.paintCode))
+    .delete(inventoryItem)
     .where(eq(inventoryItem.id, id))
-    .limit(1);
-  return rows[0];
+    .returning({ id: inventoryItem.id });
+  return rows.length > 0;
 }
 
 /** Guards the Add flow against a second row for the same code in the same

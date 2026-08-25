@@ -15,6 +15,7 @@ export function RemoveButton({ id, paintCode }: { id: number; paintCode: string 
   return (
     <form action={removeInventoryItemAction}>
       <input type="hidden" name="id" value={id} />
+      <input type="hidden" name="paintCode" value={paintCode} />
       <button
         type="submit"
         className={styles.iconButton}

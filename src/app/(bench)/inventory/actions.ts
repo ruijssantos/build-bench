@@ -7,7 +7,6 @@ import {
   createInventoryItem,
   deleteInventoryItem,
   findInventoryItem,
-  getInventoryItemById,
   inventoryPaintTag,
   INVENTORY_TAG,
   updateInventoryItem,
@@ -101,6 +100,7 @@ export async function addInventoryItem(input: AddInventoryItemInput): Promise<In
 
 export interface EditInventoryItemInput {
   id: number;
+  paintCode: string;
   form: string;
   state?: string | null;
   quantity?: number;
@@ -121,25 +121,24 @@ export async function editInventoryItem(input: EditInventoryItemInput): Promise<
     return { ok: false, error: "Quantity has to be a whole number, 1 or more." };
   }
 
-  const updated = await updateInventoryItem(input.id, {
+  await updateInventoryItem(input.id, {
     form: input.form as InventoryForm,
     state: (input.state as InventoryState | null) ?? null,
     quantity,
     notes: readText(input.notes),
   });
-  if (!updated) return { ok: false, error: "That shelf entry is gone." };
 
-  invalidate(updated.paintCode);
+  invalidate(input.paintCode);
   return { ok: true };
 }
 
-export async function removeInventoryItem(id: number): Promise<InventoryResult> {
+export async function removeInventoryItem(id: number, paintCode: string): Promise<InventoryResult> {
   if (!Number.isInteger(id)) return { ok: false, error: "Unknown shelf entry." };
 
   const removed = await deleteInventoryItem(id);
   if (!removed) return { ok: false, error: "That shelf entry is gone." };
 
-  invalidate(removed.paintCode);
+  invalidate(paintCode);
   return { ok: true };
 }
 
@@ -150,28 +149,38 @@ export async function removeInventoryItem(id: number): Promise<InventoryResult> 
  * the shelf grid ships no client JavaScript at all: the button is server-
  * rendered, the toggle works before (and without) hydration, and the response
  * is the re-rendered row.
+ *
+ * `id`, `paintCode` and the row's current `state` all travel in as hidden
+ * fields rather than being looked up here — `LowToggle` already has all
+ * three (they're what it just rendered), so reading them back off the row
+ * would cost a full SELECT + `paint` join to relearn something already on
+ * screen. One UPDATE is now the entire cost of a tap.
  */
 export async function toggleRunningLow(formData: FormData): Promise<void> {
   const id = Number(formData.get("id"));
-  if (!Number.isInteger(id)) return;
+  const paintCode = String(formData.get("paintCode") ?? "");
+  if (!Number.isInteger(id) || !paintCode) return;
 
-  const item = await getInventoryItemById(id);
-  if (!item) return;
+  const rawState = formData.get("state");
+  const currentState = typeof rawState === "string" && rawState ? rawState : null;
 
-  const updated = await updateInventoryItem(id, { state: toggledLowState(item.state) });
-  if (updated) invalidate(updated.paintCode);
+  await updateInventoryItem(id, { state: toggledLowState(currentState) });
+  invalidate(paintCode);
 }
 
 /**
  * The one-click remove icon in the table row. Same shape as
  * `toggleRunningLow` above — a plain form action, no client JavaScript, no
- * confirmation step. `EditItemDialog`'s own two-tap Remove is the deliberate
- * path for when you want to double-check first; this is the fast one.
+ * confirmation step, and `paintCode` travels in as a hidden field rather
+ * than being re-derived from a pre-delete lookup. `EditItemDialog`'s own
+ * two-tap Remove is the deliberate path for when you want to double-check
+ * first; this is the fast one.
  */
 export async function removeInventoryItemAction(formData: FormData): Promise<void> {
   const id = Number(formData.get("id"));
-  if (!Number.isInteger(id)) return;
+  const paintCode = String(formData.get("paintCode") ?? "");
+  if (!Number.isInteger(id) || !paintCode) return;
 
-  const removed = await deleteInventoryItem(id);
-  if (removed) invalidate(removed.paintCode);
+  await deleteInventoryItem(id);
+  invalidate(paintCode);
 }
