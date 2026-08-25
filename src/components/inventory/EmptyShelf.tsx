@@ -17,7 +17,7 @@ export function EmptyShelf() {
         <PaintsIcon size={28} className={styles.emptyStateIcon} />
         <p className={styles.emptyStateTitle}>Your shelf is empty</p>
         <p className={styles.emptyStateDescription}>
-          Use Add, above, to put your first paint on the shelf.
+          Use Add to put your first paint on the shelf.
         </p>
       </div>
     </div>
