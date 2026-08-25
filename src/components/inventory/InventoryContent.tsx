@@ -1,6 +1,7 @@
 import { listInventory, listRecentSpraySessions } from "@/db/repositories/inventory";
 import { isRunningLow } from "@/domain/inventory";
 
+import { EmptyShelf } from "./EmptyShelf";
 import { InventoryTable } from "./InventoryTable";
 import { RecentlySprayed, RunningLow } from "./InventoryLists";
 import { FamilyFilters, ShelfPalette, type FamilyCount } from "./ShelfSections";
@@ -34,19 +35,7 @@ export async function InventoryContent({
   const low = items.filter((item) => isRunningLow(item.state));
 
   if (items.length === 0) {
-    return (
-      <>
-        <div className={styles.shelfArea}>
-          <ShelfPalette items={items} visible={visible} family={family} />
-        </div>
-        <div className={styles.tableArea}>
-          <div className={styles.emptyCard}>
-            The shelf is empty. <code>npm run db:seed</code> imports the 33 paints from
-            docs/PLAN.md §2.1; <b>Add</b> puts anything else on it.
-          </div>
-        </div>
-      </>
-    );
+    return <EmptyShelf />;
   }
 
   return (

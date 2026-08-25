@@ -586,6 +586,51 @@ a.iconButton:hover {
 
 /* ------------------------------------------------------------- empty state */
 
+/* The true empty-shelf state — spans the full grid on desktop (there is
+   nothing to put in the fixed 360px column when there is nothing to show),
+   and centers a single card the way ComingSoon does for a whole screen. */
+.emptyState {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 0 8px;
+}
+
+.emptyStateCard {
+  width: 100%;
+  max-width: 420px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  padding: 28px 22px;
+  text-align: center;
+  box-shadow: var(--shadow-hero);
+}
+
+.emptyStateIcon {
+  color: var(--icon-idle);
+  margin-bottom: 12px;
+}
+
+.emptyStateTitle {
+  font-family: var(--font-ui);
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0 0 6px;
+}
+
+.emptyStateDescription {
+  font-family: var(--font-ui);
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--muted);
+  margin: 0;
+}
+
+/* The filtered-empty state — a family filter with nothing in it. Different
+   from .emptyState: the shelf isn't empty, just this slice of it, so this
+   stays a quiet inline note rather than a full centered card. */
 .emptyCard {
   background: var(--card);
   border: 1px dashed var(--line-strong);

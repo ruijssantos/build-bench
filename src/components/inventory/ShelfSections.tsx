@@ -16,6 +16,9 @@ import styles from "./Inventory.module.css";
  *
  * A filter dims the chips it excludes rather than removing them: the shelf is
  * the whole shelf, and seeing what a filter leaves out is half of reading it.
+ *
+ * Only called once the caller knows `items` isn't empty — see `EmptyShelf`
+ * for the true empty state.
  */
 export function ShelfPalette({
   items,
@@ -37,25 +40,18 @@ export function ShelfPalette({
         </span>
       </div>
 
-      {items.length === 0 ? (
-        <p className={styles.chipEmpty}>
-          Nothing on the shelf yet — run <code>npm run db:seed</code> to import the sheet, or add a
-          paint by hand.
-        </p>
-      ) : (
-        <div className={styles.chipGrid}>
-          {items.map((item) => (
-            <Link
-              key={item.id}
-              className={`${styles.chip} ${shown.has(item.id) ? "" : styles.chipMuted}`}
-              style={{ background: item.paintHex ?? "#c7c9d1" }}
-              href={`/thinner?code=${encodeURIComponent(item.paintCode)}`}
-              title={`${item.paintCode} ${item.paintName ?? ""}`.trim()}
-              aria-label={`${item.paintCode} ${item.paintName ?? ""}`.trim()}
-            />
-          ))}
-        </div>
-      )}
+      <div className={styles.chipGrid}>
+        {items.map((item) => (
+          <Link
+            key={item.id}
+            className={`${styles.chip} ${shown.has(item.id) ? "" : styles.chipMuted}`}
+            style={{ background: item.paintHex ?? "#c7c9d1" }}
+            href={`/thinner?code=${encodeURIComponent(item.paintCode)}`}
+            title={`${item.paintCode} ${item.paintName ?? ""}`.trim()}
+            aria-label={`${item.paintCode} ${item.paintName ?? ""}`.trim()}
+          />
+        ))}
+      </div>
     </div>
   );
 }
