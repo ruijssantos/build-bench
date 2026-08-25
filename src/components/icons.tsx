@@ -53,12 +53,10 @@ export function KitsIcon(props: IconProps) {
   );
 }
 
-export function ShoppingIcon(props: IconProps) {
+export function WishlistIcon(props: IconProps) {
   return (
     <svg {...base(props)}>
-      <path d="M3 6h2l2.5 10h10L20 8H6" />
-      <circle cx="10" cy="19.5" r="1.4" />
-      <circle cx="17" cy="19.5" r="1.4" />
+      <path d="M12 20s-7.5-4.8-7.5-10.3A4.2 4.2 0 0 1 12 7.2a4.2 4.2 0 0 1 7.5 2.5C19.5 15.2 12 20 12 20z" />
     </svg>
   );
 }
@@ -68,14 +66,6 @@ export function LogIcon(props: IconProps) {
     <svg {...base(props)}>
       <path d="M5 4h11a2 2 0 0 1 2 2v14H7a2 2 0 0 1-2-2V4z" />
       <path d="M9 8h6M9 12h4" />
-    </svg>
-  );
-}
-
-export function AirbrushIcon(props: IconProps) {
-  return (
-    <svg {...base(props)}>
-      <path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L4 17v3h3l5.3-5.3a4 4 0 0 0 5.4-5.4l-2.4 2.4-2.1-2.1z" />
     </svg>
   );
 }

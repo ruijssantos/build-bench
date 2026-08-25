@@ -51,10 +51,14 @@ The `paint` and `ratio_rule` tables stay exactly as they are: they are the seed
 target and the foreign key every user-owned table hangs off. Only the *read*
 path for catalogue identity moved.
 
-Phases 3 and 5 bring `equivalents.json`, `brands.json` and `vendors.json` —
-already planned as generated-and-committed files. They belong in
-`src/catalogue/` on the same terms. Inventory, kits, overrides and build log
-entries are yours to edit at runtime and stay in Postgres.
+`seed/rig.json` (PLAN §2.3) is the rule taken to its end: nothing joins against
+the rig, so it has no table at all — only `src/catalogue/rig.ts`. When reference
+data carries no foreign keys, the table is pure overhead.
+
+Phase 5 brings `equivalents.json` and `brands.json`, already planned as
+generated-and-committed files. They belong in `src/catalogue/` on the same
+terms. Inventory, kits, wishlist, overrides and build log entries are yours to
+edit at runtime and stay in Postgres.
 
 ## 3. Search runs where the typing happens
 
@@ -104,15 +108,15 @@ Rarely-used interactive UI is lazy: the modal and the ratio-correction form are
 Both repositories that still query follow one shape:
 
 ```ts
-export async function getActiveAirbrush() {
+export async function getOverrideForPaint(code: string) {
   await connection();          // never during a prerender
-  return queryActiveAirbrush();
+  return queryOverrideForPaint(code);
 }
 
-async function queryActiveAirbrush() {
+async function queryOverrideForPaint(code: string) {
   "use cache";
-  cacheLife("rig");
-  cacheTag(AIRBRUSH_TAG);
+  cacheLife("bench");
+  cacheTag(overrideTag(code));
   return db.select()…;
 }
 ```
@@ -122,10 +126,10 @@ database. `use cache` then means the query runs about as often as the data
 changes rather than once per screen per visit. Callers must sit inside a
 `<Suspense>` boundary.
 
-Cache lifetimes are named profiles in `next.config.ts`. Both have an `expire`
-under five minutes **on purpose** — that is the threshold at which Next.js
-keeps a cached value out of the prerender, which is what keeps the build
-database-free. Raising it past five minutes will break CI.
+Cache lifetimes are named profiles in `next.config.ts`. Every one has an
+`expire` under five minutes **on purpose** — that is the threshold at which
+Next.js keeps a cached value out of the prerender, which is what keeps the
+build database-free. Raising it past five minutes will break CI.
 
 Mutations use a Server Action plus `updateTag`, not a POST route: one round
 trip for the write and the re-render together, and read-your-own-writes on the
@@ -137,11 +141,13 @@ Streaming changes what a failed query looks like. Before, a database error
 happened before anything rendered and produced a clean error page; now the
 shell has already painted. `BenchError` (`catchError`) keeps the failure inside
 the box it belongs to and offers a retry that re-runs the query without
-reloading the page. Chrome that is a convenience rather than the point of the
-screen — the rig pill, the rail's Current Rig block — uses `QuietError` and
-simply stays absent.
+reloading the page.
 
-**The rule: every streamed boundary needs an error boundary too.**
+**The rule: every streamed boundary needs an error boundary too.** The converse
+matters just as much — when a boundary stops querying, both boundaries go with
+it. Moving the rig into the build (PLAN §2.3) deleted a `<Suspense>`, an error
+boundary and a "not seeded yet" branch from every screen that showed the rig
+pill, because none of the three had anything left to guard.
 
 ## 6. Navigation is URL-driven
 

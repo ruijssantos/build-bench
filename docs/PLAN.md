@@ -4,9 +4,9 @@ A companion app for 1:24 scale model car building, centred on a Tamiya 74540 HG 
 airbrush workflow and pre-build kit research.
 
 **Status:** Phases 0–2 shipped (foundations, Thinner Bench, paint inventory). Phase 3
-(cross-brand equivalence) is next. This file is the standing architecture and technical
-approach — how the app is hosted, how data and screens are structured, and the rules any new
-phase builds against. It is not a decision log; for that, `git log docs/PLAN.md`.
+(wishlist) is next. This file is the standing architecture and technical approach — how the
+app is hosted, how data and screens are structured, and the rules any new phase builds
+against. It is not a decision log; for that, `git log docs/PLAN.md`.
 
 Section numbers below are stable and cited from code (`schema.ts`, `PERFORMANCE.md`,
 `README.md` all reference specific `§N`s) — sections get edited, not renumbered.
@@ -66,11 +66,13 @@ mostly-idle-waiting-on-an-API call is cheap regardless of how it's staged.
 
 ## 2. Domain reference data
 
-Two pieces of reference data don't come from a live API and won't ever need to: the Tamiya
-paint catalogue (shipped, §2.2) and its cross-brand equivalents (Phase 3, not yet built).
-Both follow the same shape — generated once, committed, verified in CI — covered generically
-in §4's "Reference data rule" and in `PERFORMANCE.md` §2. This section has only the
-domain-specific facts a future phase needs that live nowhere else.
+Several things this app needs don't come from a live API and never will: the Tamiya paint
+catalogue and its ratio rules (shipped, §2.2), the airbrush it's all stated for (§2.3), and
+the cross-brand equivalence chart (Phase 5, not yet built). They all follow one shape —
+generated once, committed, read from the file rather than a table — covered generically in
+§4's "Reference data rule" and in `PERFORMANCE.md` §2. Kits are the exception and §2.4 says
+why. This section has only the domain-specific facts a future phase needs that live nowhere
+else.
 
 ### 2.1 Your inventory as imported
 
@@ -120,14 +122,44 @@ Mig, Hataka, Lifecolor and Mission Models.
   `source = 'claude-research'` and a lower `match_quality` so it stays visibly distinct from
   chart-sourced data.
 
-### 2.3 Single-rig, and the cheap hedge
+### 2.3 The rig
 
 The app is built for the Tamiya 74540 HG Trigger alone. Every ratio, pressure and distance is
 stated for a 0.3 mm needle, a 7 cc fixed cup and retarder thinner, and `ratio_rule` gets no
 rig dimension. A second airbrush (a Harder & Steenbeck Ultra, currently unused) is owned but
-out of scope — noted only because it justifies one standing discipline: **rig facts are read
-from the `airbrush` row, never hard-coded into copy.** If a second rig ever joins, that's a
-new row and a review of the ratio windows, not a hunt through JSX for a model name.
+out of scope.
+
+The rig lives in `seed/rig.json`, compiled into the build by `src/catalogue/rig.ts`. It was a
+Postgres row until it wasn't: three fields that never change, read by the nav rail and the
+phone header, which render on *every* screen — so every screen in the app paid a Neon round
+trip for it. Moving it to a file removed that read from the whole app and let the rail, the
+rig pill and three placeholder screens go back to being fully static.
+
+The discipline that row was protecting is unchanged and still holds: **rig facts are read
+from the rig, never hard-coded into copy.** If a second rig ever joins, or the app grows a
+screen for describing a tool's characteristics, that's a shape change here and a review of
+the ratio windows — not a hunt through JSX for a model name.
+
+Deliberately *not* modelled: maintenance history (last deep clean, needle changes) and
+per-session spray logging. Both were planned, neither is wanted — see §8.
+
+### 2.4 Kits, and why they aren't compiled in
+
+Kits are the one domain where the reference data can't be a committed file. There is no
+bounded catalogue to generate: the interesting set is "any kit, any manufacturer, any
+subject", it changes as manufacturers release, and the shape of a query is free text
+("Tamiya Nissan GT-R") or a kit number ("24345") rather than a lookup key.
+
+[Scalemates](https://www.scalemates.com) is the most complete reference on the web, and it is
+bot-hostile by design — no API, and scrapers unwelcome. So the app does not scrape it. It
+resolves a query through Claude with web search (§5.1 stage A), stores what comes back on the
+`kit` row, and keeps a `scalemates_url` as the human's way through to the full reference.
+Box art is fetched once at add-time into Vercel Blob and served from there; the app never
+hotlinks someone else's image.
+
+Everything about a kit is therefore *user data that happened to be machine-assisted*, and
+lives in Postgres like the rest of it. Resolution is a one-off cost per kit added, not a
+per-render one.
 
 ---
 
@@ -190,12 +222,16 @@ paint_equivalent                   -- cross-brand, both directions
   INDEX (brand, foreign_code)      -- foreign → Tamiya, the lookup that's actually made
   INDEX (tamiya_code)              -- Tamiya → foreign
 
-vendor
-  id, name, country, url, notes, sort
+rig                                -- seed/rig.json → src/catalogue/rig.ts, §2.3
+  model           text             -- "Tamiya 74540 HG Trigger"
+  nozzle_mm       real             -- 0.3
+  cup_cc          real             -- 7
 ```
 
-`vendor` seeds with Scalemates (research), Spot Model, KitMania (PT), Hobby Sector (PT),
-Super Hobby (PT), El Taller del Modelista (ES). No pricing — see §8.
+`rig` is listed here for completeness and is **not a table** — it is a committed JSON file
+compiled into the build (§2.3). There is no `vendor` table either: "where did I buy this" is
+a shop name, so it's plain text on the row that needs it. A table of shops would only earn
+its place alongside pricing, which is a non-goal (§8).
 
 ### 3.2 User data — read/write
 
@@ -207,19 +243,33 @@ inventory_item                     -- the paint shelf
   decanted_from   text NULL FK     -- TS-8 can → decanted jar, keeps the lineage
   state           text             -- open | low (unset reads as "In Stock")
   quantity        integer
-  purchased_from  integer NULL FK vendor
+  purchased_from  text             -- a shop name, free text
   purchased_at    date
   notes           text
   updated_at      timestamptz
 
-kit                                -- the stash
+kit                                -- wishlist AND stash, one table — §3.3
   id              serial PK
-  brand, kit_number, name, scale
-  status          text             -- wishlist | owned | in_progress | built | shelved
-  purchased_from  integer NULL FK vendor
-  purchased_price numeric, currency text, purchased_at date
+  brand, kit_number, name text
+  scale           text             -- "1:24"
+  category        text             -- cars | motorcycles | aircraft | armour | ships |
+                                   -- figures | other
+  status          text NOT NULL    -- wishlist | stash | building | built
+  scalemates_url  text             -- the reference page, §2.4
+  image_url       text             -- Vercel Blob — sourced once, never hotlinked
+  purchased_from  text             -- a shop name, free text
+  purchased_at    date
   notes           text
   created_at      timestamptz
+  INDEX (status)                   -- every screen filters on it
+
+wishlist_item                      -- the wishlist's "Other Items": tools, supplies
+  id              serial PK
+  title           text NOT NULL    -- free text, the whole point
+  url             text
+  notes           text
+  status          text NOT NULL    -- wanted | bought
+  added_at        timestamptz
 
 kit_manual                         -- user-uploaded, §4.3 — never auto-downloaded
   id              serial PK
@@ -267,16 +317,6 @@ kit_paint_requirement              -- the manual's paint callouts
   source          text             -- manual_pdf | research | manual_entry
   confidence      real
 
-shopping_list_item                 -- persisted so it can be ticked off
-  id              serial PK
-  paint_code      text FK paint
-  kit_id          integer NULL FK
-  reason          text
-  substitute_for  text NULL        -- set when this is a cross-brand equivalent
-  status          text             -- needed | ordered | bought | skipped
-  vendor_id       integer NULL FK  -- a note, not a price
-  added_at        timestamptz
-
 build_log_entry
   id              serial PK
   kit_id          integer FK
@@ -293,45 +333,27 @@ build_photo
   blob_url        text
   caption         text
   sort            integer
-
-airbrush                           -- one row today: the 74540. §2.3
-  id              serial PK
-  model           text             -- "Tamiya 74540 HG Trigger"
-  nozzle_mm       real             -- 0.3
-  cup_cc          real             -- 7
-  is_active       boolean
-  acquired_at     date
-
-maintenance_log
-  id              serial PK
-  airbrush_id     integer FK
-  type            text             -- session_flush | deep_clean | needle_replace |
-                                   -- oring_replace | lube | repair
-  performed_on    date
-  notes, parts_used text
-
-spray_session                      -- closes the loop, §3.3
-  id              serial PK
-  kit_id          integer NULL FK
-  paint_code      text FK
-  ratio_paint, ratio_thinner real
-  thinner_type    text
-  psi             real
-  coats           integer
-  ambient_temp, humidity real
-  outcome         integer          -- 1–5
-  notes           text             -- "orange peel, needed more thinner"
-  sprayed_at      timestamptz
 ```
 
-### 3.3 Why `spray_session` exists before anything reads it
+### 3.3 Why the wishlist and the stash are one table
 
-It's the table that closes a loop across three otherwise-separate features: log what was
-actually mixed and how it turned out, and the Thinner Bench can surface "last three times you
-sprayed this you went wetter than the rule" next to the starting ratio, offering to promote
-that into a `ratio_override`. It also feeds `maintenance_log` (sessions since last deep
-clean) and `build_log_entry` (what was sprayed on which kit, dated). Modelled now so nothing
-needs reshaping when Phase 8 builds against it.
+A kit you want and a kit you own are the same object. Same brand, same number, same scale,
+same category, same box art, same Scalemates page — the only thing that differs is whether
+you've bought it. So buying one is `status: wishlist → stash`, a single column write, not a
+copy into a second table.
+
+That matters more than it looks. The wishlist is where you do the thinking — you found the
+kit, resolved it, sourced its art, maybe left yourself a note about which boxing to get.
+Copying rows on purchase would either lose all of that or force a merge, and the two tables
+would drift apart field by field as each phase added to one of them.
+
+The **product** separation the user sees is real and stays: two nav entries, two screens,
+built in two phases (§6). It just doesn't need two tables to hold it up — it needs an index
+on `status`, which is one line.
+
+`wishlist_item` is genuinely separate, and that's the test working rather than failing: a
+tool or a bottle of glue has no brand, no scale, no kit number and no reference page, and it
+never graduates into a stash. Nothing about it is a `kit` with empty columns.
 
 ---
 
@@ -345,11 +367,12 @@ build-bench/
 │   ├── decisions/                  ← short ADRs as things change
 │   └── reference/                  ← historical inputs (the original prototype)
 ├── drizzle/                        ← generated migrations
-├── seed/                           ← generated + committed, loaded by scripts/seed.mts
-│   ├── paints.tamiya.json
-│   ├── ratio-rules.json
-│   ├── inventory.initial.json
-│   └── equivalents.json, brands.json, vendors.json   ← Phase 3+
+├── seed/                           ← generated + committed
+│   ├── paints.tamiya.json          ← loaded into Postgres by scripts/seed.mts
+│   ├── ratio-rules.json            ← "
+│   ├── inventory.initial.json      ← "
+│   ├── rig.json                    ← compiled in only, never seeded — §2.3
+│   └── equivalents.json, brands.json                 ← Phase 5
 ├── scripts/
 │   ├── build-catalogue.ts          ← generates seed/paints.tamiya.json, §2.2
 │   ├── verify-catalogue.ts         ← runs in CI, fails the build on a missing code
@@ -359,12 +382,11 @@ build-bench/
 │   ├── app/
 │   │   ├── (bench)/                ← the authenticated app shell (nav rail + tab bar)
 │   │   │   ├── layout.tsx
-│   │   │   ├── thinner/            ← feature 1, page.tsx + actions.ts
-│   │   │   ├── inventory/          ← feature 4a, page.tsx + actions.ts
-│   │   │   ├── kits/                ← feature 4b (Phase 4)
-│   │   │   ├── shopping/           ← feature 3 (Phase 5)
-│   │   │   ├── log/                ← feature 5 (Phase 7)
-│   │   │   └── airbrush/           ← feature 6 (Phase 8)
+│   │   │   ├── thinner/            ← page.tsx + actions.ts
+│   │   │   ├── inventory/          ← the paint shelf, page.tsx + actions.ts
+│   │   │   ├── wishlist/           ← Phase 3
+│   │   │   ├── kits/               ← the stash, Phase 4
+│   │   │   └── log/                ← Phase 7
 │   │   ├── api/                    ← only where a Server Action doesn't fit (search,
 │   │   │                             external callbacks, kit research's staged calls)
 │   │   ├── login/  ·  page.tsx  ·  layout.tsx  ·  manifest.ts
@@ -374,12 +396,13 @@ build-bench/
 │   │                                 plus bench/ for shared chrome and nav/ for the shell
 │   ├── db/
 │   │   ├── schema.ts  ·  client.ts        ← Neon serverless driver
-│   │   └── repositories/                  ← only truly runtime-mutable tables: airbrush,
-│   │                                         inventory, ratio-overrides, and their future
-│   │                                         siblings. Reference tables live in catalogue/.
+│   │   └── repositories/                  ← only truly runtime-mutable tables: inventory,
+│   │                                         ratio-overrides, and their future siblings
+│   │                                         (kits, wishlist). Reference data lives in
+│   │                                         catalogue/.
 │   ├── domain/                     ← pure functions: ratio.ts, paint-code.ts,
 │   │                                 paint-search.ts, inventory.ts, and their future
-│   │                                 siblings (equivalence.ts, shopping.ts, ...)
+│   │                                 siblings (kit.ts, equivalence.ts, ...)
 │   ├── lib/                        ← cross-cutting: session, passphrase, small per-feature
 │   │                                 server helpers
 │   ├── proxy.ts                    ← auth gate + the bench-memory cookie (§6 in
@@ -403,12 +426,17 @@ components never import the Drizzle client directly.
 **Reference data rule.** Reference data seeded from a committed, CI-verified file and only
 changed on deploy is *read* from that file, not queried — `src/catalogue/*` imports
 `seed/*.json` at module scope and builds a lookup once per process. The database tables
-(`paint`, `ratio_rule`, and Phase 3's `paint_equivalent`) stay: they're the seed target and
+(`paint`, `ratio_rule`, and Phase 5's `paint_equivalent`) stay: they're the seed target and
 the foreign key every user-owned row hangs off. Only the *read* path for identity moves.
 This is what lets a screen prerender, keeps type-ahead off the network, and keeps `next
 build` from needing a database — the full reasoning is `PERFORMANCE.md` §2. Any phase adding
-its own generated-and-committed reference data (Phase 3's `equivalents.json`, Phase 5's
-`vendors.json`) follows the same shape.
+its own generated-and-committed reference data (Phase 5's `equivalents.json`) follows the
+same shape.
+
+The rig (§2.3) is the strictest case: it isn't seeded into Postgres at all, because nothing
+joins against it. When reference data has no foreign keys pointing at it, the table is pure
+overhead and the file is the whole story. Apply that test before adding a table for anything
+that only ever gets read.
 
 ### 4.1 Design system
 
@@ -561,17 +589,24 @@ never fetches it.
 
 ## 5. Kit research pipeline design
 
-Design for Phase 6, not yet built. Three findings that shaped it:
+Three findings shaped this:
 
-1. **Scalemates is bot-hostile.** Best kit database on the web, doesn't want scrapers.
+1. **Scalemates is bot-hostile.** Best kit database on the web, doesn't want scrapers (§2.4).
 2. **"Difficulty and fit-issue notes from reviews and forums" is a synthesis job.** No API
    returns it; it's prose scattered across build threads and review blogs — exactly what an
    LLM with web search is for.
 3. **No YouTube Data API needed.** ~100 free searches/day, plus a key and quota to manage.
    Claude's web search finds the build video in the same call.
 
-With manuals uploaded by the user (§4.3), this feature's job narrows to: difficulty, fit
+With manuals uploaded by the user (§4.3), the deep-research job narrows to: difficulty, fit
 issues, and a build video. It's no longer the pipe paint lists arrive through.
+
+**The stages ship in two different phases.** Stage A — turning "24345" or "Tamiya Nissan
+GT-R" into a real brand, number, name, scale, category and box art — is how a kit gets onto
+the wishlist at all, so it lands in Phase 3 and is the only part of this the app needs early.
+Stages B and C are the expensive, optional enhancement and wait for Phase 6. They're
+documented together because they share `research_job`, the 300s budget and the API notes
+below; they don't share a phase.
 
 ### 5.1 The staged pipeline
 
@@ -581,11 +616,13 @@ in `research_job`.
 ```
   "24345" or "Tamiya Nissan GT-R"
         │
-   [A] /api/research/resolve          ~10–20 s
+   [A] /api/research/resolve          ~10–20 s   ← Phase 3, the wishlist's search
         │   Claude, effort medium, web_search max_uses 2
-        │   → { brand, kit_number, name, scale, year }
+        │   → { brand, kit_number, name, scale, category,
+        │       scalemates_url, image_url, year }
+        │   Returns candidates; the user picks. Hand entry always available.
         ▼
-   [B] /api/research/investigate      ~60–180 s  ← the expensive one
+   [B] /api/research/investigate      ~60–180 s  ← Phase 6, the expensive one
         │   Claude Opus 5, effort high, streaming
         │   web_search_20260209 (max_uses 6) + web_fetch_20260209
         │   Free-form, WITH citations. Finds: difficulty consensus,
@@ -643,43 +680,49 @@ Research output is synthesised from forum posts by a language model:
 
 ## 6. Build phases
 
-Uploading manuals (§4.3) changed this order: the shopping list needs either a hand-typed
-paint list or the whole research pipeline to exist — an uploaded PDF feeds it directly, so
-**shopping ships before research**, and research is an optional enhancement rather than a
-blocking dependency.
+Each phase ships one screen that is useful on its own. The ordering rule: **want it, own it,
+build it** — the wishlist comes before the stash because that's the order a kit passes
+through in real life, and because resolving a kit (§5.1 stage A) is the machinery the stash
+then inherits for free.
 
 ### Phase 0 — Foundations ✅
 Next.js scaffold, Neon + Blob via Vercel, Drizzle schema and first migration, cookie auth,
 `tokens.css`, PWA manifest, CI.
 
-### Phase 1 — Thinner Bench *(feature 1)* ✅
+### Phase 1 — Thinner Bench ✅
 The full Tamiya catalogue with generation and CI verification. Paint lookup, family ratio
 rules, cup-fill visualiser, `ratio_override` editing, the 74540 dry-tip panel.
 
-### Phase 2 — Paint inventory *(feature 4a)* ✅
+### Phase 2 — Paint inventory ✅
 The paint shelf: CRUD over form/state (`open`/`low`), sortable table, one-tap running low,
 "do I own this?" on the Thinner Bench card.
 
-### Phase 3 — Cross-brand equivalence
-Cybermodeler import (§2.2), `paint_equivalent`, foreign → Tamiya lookup. Self-contained.
+### Phase 3 — Wishlist
+Two sections on one screen. **Kits:** search by kit number or free text via §5.1 stage A,
+pick from candidates, save with brand, scale, category and box art (fetched once into Blob)
+plus a `scalemates_url` through to the full reference. Hand entry always available for
+anything the search can't place. **Other items:** free-text `wishlist_item` rows for tools
+and supplies. Both tick over to bought. Needs `ANTHROPIC_API_KEY` — this is the phase that
+first uses it.
 
-### Phase 4 — Kit stash + manual upload & viewer *(feature 4b + §4.3)*
-Kit CRUD (wishlist / owned / in-progress / built). PDF upload to Blob, desktop viewer,
-**Extract paint list** → `kit_paint_requirement`.
+### Phase 4 — Stash
+The kits you own: `status` of `stash`, `building` or `built`, promoted from the wishlist with
+one tap or added directly. Manual PDF upload to Blob and a desktop viewer (§4.3), **Extract
+paint list** → `kit_paint_requirement`, and the per-kit paint list checked against the shelf
+— what this kit calls for, what you already have, what's missing.
 
-### Phase 5 — Paint shopping *(feature 3)*
-Requirements → inventory → buy list, with Phase 3's equivalents as substitutes. Persisted,
-ordered/bought status. Input from Phase 4's extraction, with hand-entry as fallback.
+### Phase 5 — Cross-brand equivalence
+Cybermodeler import (§2.2), `paint_equivalent`, foreign → Tamiya lookup. Sits here rather
+than earlier because this is what makes Phase 4's paint list work for Japanese kits, whose
+manuals call out Mr. Color throughout. Standalone lookup screen too.
 
-### Phase 6 — Kit research *(feature 2)*
-The staged pipeline in §5: difficulty, fit issues with sources, build video, manual link.
+### Phase 6 — Kit research
+§5.1 stages B and C against a stash kit: difficulty, fit issues with sources, build video,
+manual link. Optional enhancement — nothing depends on it.
 
-### Phase 7 — Build log *(feature 5)*
-Per-kit dated journal by stage, photos to Blob, research and manual attached to the kit.
-
-### Phase 8 — Airbrush maintenance & the feedback loop *(feature 6)*
-`maintenance_log` against the 74540. One-tap `spray_session` logging from the Thinner Bench.
-"Your last three XF-64 mixes" next to the starting ratio, promotable into a `ratio_override`.
+### Phase 7 — Build log
+Per-kit dated journal by stage, photos to Blob, research and manual attached to the kit. To
+be detailed when we get there.
 
 ---
 
@@ -688,11 +731,14 @@ Per-kit dated journal by stage, photos to Blob, research and manual attached to 
 Phase 1's catalogue script caught the XF-83/XF-84 gap the original prototype missed,
 confirming both codes and names by search; their hex values are still unverified estimates,
 flagged as such in `scripts/build-catalogue.ts`'s own comments — fix by eye against a real
-bottle whenever convenient, no phase attached. Phase 2 shipped with three deviations from the
-original one-line spec, all made during review: `inventory_item.location` was dropped
-entirely (a real migration, not just UI); `state` trimmed to two values (`open`/`low`, unset
-reads as "In Stock"); the Paints screen carries no "recently sprayed" module — `spray_session`
-stays in the schema for Phase 8, nothing on this screen reads it yet.
+bottle whenever convenient, no phase attached. Phase 2 shipped with two deviations from the
+original one-line spec, both made during review: `inventory_item.location` was dropped
+entirely (a real migration, not just UI), and `state` was trimmed to two values
+(`open`/`low`, unset reads as "In Stock").
+
+After Phase 2, the airbrush feature was cut (§8) and the plan re-cut around the wishlist and
+the stash. That removed four tables — `airbrush`, `maintenance_log`, `spray_session`,
+`shopping_list_item` — plus `vendor`, and moved the rig to a committed file (§2.3).
 
 ---
 
@@ -703,11 +749,16 @@ stays in the schema for Phase 8, nothing on this screen reads it yet.
   nothing in the build should assume or prepare for it.
 - **No Supabase**, for the pause behaviour in §1.1 — not a worse product, just wrong for a
   bursty single-user app. Revisit if this ever goes multi-user.
-- **No vendor price tracking.** Would mean hand-entering prices or scraping shops that don't
-  want it, and would bloat the screen that has to be fast in a shop. `vendor_id` stays a note.
+- **No price tracking.** Would mean hand-entering prices or scraping shops that don't want it,
+  and would bloat the screen that has to be fast in a shop. `purchased_from` stays a note.
+- **No airbrush maintenance log.** No last-deep-clean tracking, no needle or O-ring history.
+- **No spray-session logging or feedback loop.** The Thinner Bench states the rule; it does
+  not learn from what you actually mixed. Both this and the line above were planned once and
+  cut — see §2.3 for what remains of the rig.
 - **No automatic manual downloading.** Users upload; research links (§4.3).
 - **No two-way Google Sheets sync.** One-time import, then the app owns the data.
-- **No runtime scraping** of Scalemates, Cybermodeler, or shops.
+- **No runtime scraping** of Scalemates, Cybermodeler, or shops. Kit data is resolved through
+  Claude and stored once (§2.4); box art is copied into Blob, never hotlinked.
 - **No YouTube Data API.**
 - **No queue, cron, or background worker.** The staged pipeline (§1.2, §5.1) removes the need.
 - **No multi-user support, roles, or sharing.** One person, one passphrase.
@@ -735,16 +786,17 @@ PDFs, build photos — that don't belong in Postgres rows.
    - `APP_PASSPHRASE` — whatever you want to type in to sign in.
 
 `DATABASE_URL` and `BLOB_READ_WRITE_TOKEN` come from steps 2–3 automatically — you never type
-them. `ANTHROPIC_API_KEY` is a fifth variable, needed only once Phase 6 (kit research) lands.
+them. `ANTHROPIC_API_KEY` is a fifth variable, needed from Phase 3 onwards: that's when kit
+search starts resolving queries through Claude (§5.1 stage A).
 
 ### 9.3 What I do
 
 Schema and migrations live in `src/db/schema.ts` / `drizzle-kit`, wired to Neon's HTTP driver
 (`drizzle-orm/neon-http` — no connection pool to configure; it's stateless HTTP per query).
 `npm run db:migrate` applies pending migrations; `npm run db:seed` (`scripts/seed.mts`) loads
-the committed catalogue and ratio rules into `paint` and `ratio_rule`, plus the single
-`airbrush` row (§2.3), using credentials pulled locally via `vercel env pull`. Full script
-reference: `README.md`.
+the committed catalogue and ratio rules into `paint` and `ratio_rule` and the initial paint
+shelf into `inventory_item`, using credentials pulled locally via `vercel env pull`. The rig
+is not seeded — it's compiled in (§2.3). Full script reference: `README.md`.
 
 ### 9.4 What I never need from you
 

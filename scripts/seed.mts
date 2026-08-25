@@ -1,29 +1,27 @@
 import { readFileSync } from "node:fs";
 
 import { neon } from "@neondatabase/serverless";
-import { eq, sql } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/neon-http";
 
-import { airbrush, inventoryItem, paint, ratioRule } from "../src/db/schema";
+import { inventoryItem, paint, ratioRule } from "../src/db/schema";
 import { loadLocalEnv } from "./load-env.mts";
 
 /**
  * Loads seed/paints.tamiya.json and seed/ratio-rules.json into `paint` and
- * `ratio_rule` — docs/PLAN.md §9.3. Also seeds the single `airbrush` row
- * (the Tamiya 74540 HG Trigger, §2.3): the Thinner Bench reads every rig
- * fact from that row rather than hard-coding it, so without a row here the
- * screen has nothing to read. Safe to re-run — paints and ratio rules
- * upsert by their natural key; the airbrush row is only inserted if none
- * exists yet.
+ * `ratio_rule` — docs/PLAN.md §9.3. Safe to re-run: both upsert by their
+ * natural key.
  *
- * §4.1's file tree names a separate `scripts/import-sheet.ts` for the paint
- * inventory. It lives here instead: what that script would do is load a
- * committed JSON file into a table behind the same connection, the same env
- * loading and the same "safe to re-run" rule this file already implements
- * three times over, and `inventory_item.paint_code` is a foreign key into
- * `paint`, so it has to run after the catalogue anyway. A second entry point
- * would have duplicated the plumbing to enforce an ordering the single one
- * gets for free.
+ * The rig (§2.3) is not seeded here. It lives in `seed/rig.json` and is
+ * compiled into the build by `src/catalogue/rig.ts` — it was a row once, and
+ * that row cost a query on every screen to return three fields that never
+ * changed.
+ *
+ * The paint shelf is imported here too rather than from a second script:
+ * `inventory_item.paint_code` is a foreign key into `paint`, so it has to run
+ * after the catalogue anyway, and a separate entry point would have duplicated
+ * the connection, the env loading and the "safe to re-run" rule to enforce an
+ * ordering this file gets for free.
  *
  * .mts, not .ts: this uses top-level await, which CommonJS can't represent.
  * package.json has no "type": "module", so tsx compiles a plain .ts file to
@@ -153,21 +151,6 @@ async function seedPaints() {
   console.log(`Seeded ${paints.length} paints.`);
 }
 
-async function seedAirbrush() {
-  const existing = await db.select().from(airbrush).where(eq(airbrush.isActive, true)).limit(1);
-  if (existing.length > 0) {
-    console.log("Airbrush row already exists — left as-is.");
-    return;
-  }
-  await db.insert(airbrush).values({
-    model: "Tamiya 74540 HG Trigger",
-    nozzleMm: 0.3,
-    cupCc: 7,
-    isActive: true,
-  });
-  console.log("Seeded the 74540 airbrush row.");
-}
-
 /**
  * The Google Sheet, imported once — docs/PLAN.md §2.1, §6 Phase 2.
  *
@@ -176,8 +159,7 @@ async function seedAirbrush() {
  * marked low. So a code that already has a row is left completely alone, and
  * only codes missing from the shelf are added.
  *
- * `purchased_from` stays null: nothing in §2.1 carries vendor data, and the
- * `vendor` table isn't seeded yet either.
+ * `purchased_from` stays null: nothing in §2.1 carries shop data.
  */
 async function seedInventory() {
   const items = loadJson<InventorySeed[]>("seed/inventory.initial.json");
@@ -210,7 +192,6 @@ async function seedInventory() {
 
 await seedRatioRules();
 await seedPaints();
-await seedAirbrush();
 await seedInventory();
 
 console.log("Seed complete.");

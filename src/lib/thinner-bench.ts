@@ -1,6 +1,6 @@
 import { getCataloguePaint, type CataloguePaint } from "@/catalogue/paints";
 import { getCatalogueRatioRule, type CatalogueRatioRule } from "@/catalogue/ratio-rules";
-import { getActiveAirbrush, type AirbrushRow } from "@/db/repositories/airbrush";
+import { RIG, type Rig } from "@/catalogue/rig";
 import { getInventoryForPaint } from "@/db/repositories/inventory";
 import { getOverrideForPaint, type RatioOverrideRow } from "@/db/repositories/ratio-overrides";
 import { formLabel } from "@/domain/inventory";
@@ -46,7 +46,7 @@ export interface ThinnerBenchBundle {
   override: RatioOverrideRow | null;
   effectiveRatio: EffectiveRatio | null;
   isAdditive: boolean;
-  airbrush: AirbrushRow | null;
+  rig: Rig;
   ownership: PaintOwnership;
 }
 
@@ -117,9 +117,9 @@ export function resolvePaintIdentity(
  * needs: identity, the family's ratio rule (with any override applied), and
  * the rig facts.
  *
- * Identity and the rule are compiled in; only the correction, the rig row and
- * what's on the shelf are queried, and all three run in parallel — one round
- * trip's worth of latency for the whole screen, all of them cached.
+ * Identity, the rule and the rig are all compiled in; only the correction and
+ * what's on the shelf are queried, and both run in parallel — one round trip's
+ * worth of latency for the whole screen, both cached.
  */
 export async function resolveThinnerBench(
   rawCode: string,
@@ -127,9 +127,8 @@ export async function resolveThinnerBench(
 ): Promise<ThinnerBenchBundle> {
   const { paint, ratioRule } = resolvePaintIdentity(rawCode, line);
 
-  const [override, airbrush, stash] = await Promise.all([
+  const [override, stash] = await Promise.all([
     paint?.known ? getOverrideForPaint(paint.code) : Promise.resolve(undefined),
-    getActiveAirbrush(),
     // An uncatalogued code can't be a foreign key, so it can't be on the
     // shelf — don't spend a round trip proving it.
     paint?.known ? getInventoryForPaint(paint.code) : Promise.resolve([]),
@@ -146,7 +145,7 @@ export async function resolveThinnerBench(
     override: override ?? null,
     effectiveRatio,
     isAdditive,
-    airbrush: airbrush ?? null,
+    rig: RIG,
     ownership: summariseOwnership(stash),
   };
 }

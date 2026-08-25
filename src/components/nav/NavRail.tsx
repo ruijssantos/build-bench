@@ -13,8 +13,8 @@ import { NAV_ITEMS } from "./nav-items";
 /**
  * Client only for `usePathname` — the active-link highlight is the one thing
  * on this rail that has to react to navigation. `rig` arrives as an already
- * rendered Server Component (see NavRailRig), so the rig row's query and the
- * Tips & Guide text stay off the client entirely.
+ * rendered Server Component (see NavRailRig), so the Tips & Guide text stays
+ * off the client entirely.
  */
 export function NavRail({ rig }: { rig: ReactNode }) {
   const pathname = usePathname();

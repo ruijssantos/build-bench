@@ -1,16 +1,14 @@
 import type { ComponentType } from "react";
-import { Suspense } from "react";
 
 import type { IconProps } from "@/components/icons";
 
-import { QuietError } from "./BenchError";
 import { DesktopHeader } from "./DesktopHeader";
 import { PhoneHeader, PhoneHeaderRigPill } from "./PhoneHeader";
 import styles from "./ComingSoon.module.css";
 
 /**
- * Fully static apart from the rig pill: these screens have nothing to fetch,
- * so they prerender whole and a tab-bar tap into one is instant.
+ * Fully static: these screens have nothing to fetch, so they prerender whole
+ * and a tab-bar tap into one is instant.
  */
 export function ComingSoon({
   title,
@@ -23,16 +21,7 @@ export function ComingSoon({
 }) {
   return (
     <>
-      <PhoneHeader
-        title={title}
-        trailing={
-          <QuietError>
-            <Suspense fallback={null}>
-              <PhoneHeaderRigPill />
-            </Suspense>
-          </QuietError>
-        }
-      />
+      <PhoneHeader title={title} trailing={<PhoneHeaderRigPill />} />
       <DesktopHeader title={title} />
       <div className={styles.body}>
         <div className={styles.card}>

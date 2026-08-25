@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 
-import { BenchError, QuietError } from "@/components/bench/BenchError";
+import { BenchError } from "@/components/bench/BenchError";
 import { DesktopHeader } from "@/components/bench/DesktopHeader";
 import { PhoneHeader, PhoneHeaderRigPill } from "@/components/bench/PhoneHeader";
 import { SearchIcon } from "@/components/icons";
@@ -18,24 +18,16 @@ export const metadata = { title: "Thinner Bench" };
  * serves it. Each boundary underneath resolves at its own cost:
  *
  *   SearchArea / LineToggle  URL + compiled catalogue, no I/O — first flush
- *   PhoneHeaderRigPill       the rig row, cached — streams
- *   BenchContent             the rig row + any correction, cached — streams
+ *   BenchContent             any correction + what's on the shelf — streams
  *
- * See docs/PERFORMANCE.md for why the boundaries sit where they do.
+ * The rig pill needs no boundary at all: the rig is compiled in, so it
+ * prerenders with the header. See docs/PERFORMANCE.md for why the boundaries
+ * sit where they do.
  */
 export default function ThinnerPage(props: PageProps<"/thinner">) {
   return (
     <>
-      <PhoneHeader
-        title="Thinner Bench"
-        trailing={
-          <QuietError>
-            <Suspense fallback={null}>
-              <PhoneHeaderRigPill />
-            </Suspense>
-          </QuietError>
-        }
-      />
+      <PhoneHeader title="Thinner Bench" trailing={<PhoneHeaderRigPill />} />
 
       <DesktopHeader title="Thinner Bench" />
 

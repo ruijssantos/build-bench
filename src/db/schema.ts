@@ -4,7 +4,6 @@ import {
   index,
   integer,
   jsonb,
-  numeric,
   pgTable,
   real,
   serial,
@@ -97,15 +96,6 @@ export const paintEquivalent = pgTable(
   ],
 );
 
-export const vendor = pgTable("vendor", {
-  id: serial("id").primaryKey(),
-  name: text("name").notNull(),
-  country: text("country"),
-  url: text("url"),
-  notes: text("notes"),
-  sort: integer("sort"),
-});
-
 // ---------------------------------------------------------------------------
 // 3.2 Your data — read/write
 // ---------------------------------------------------------------------------
@@ -119,25 +109,50 @@ export const inventoryItem = pgTable("inventory_item", {
   decantedFrom: text("decanted_from").references(() => paint.code), // TS-8 can → decanted jar
   state: text("state"), // open | low (null reads as "in stock")
   quantity: integer("quantity"),
-  purchasedFrom: integer("purchased_from").references(() => vendor.id),
+  purchasedFrom: text("purchased_from"), // a shop name, free text — §8, no pricing
   purchasedAt: date("purchased_at"),
   notes: text("notes"),
   updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
 });
 
-export const kit = pgTable("kit", {
+/**
+ * One table for the wishlist and the stash both — §6, Phases 3 and 4. A kit
+ * you want and a kit you own are the same object with the same fields; buying
+ * one is a `status` change, not a copy into a second table, which is what
+ * keeps the research you did before buying attached to it afterwards.
+ */
+export const kit = pgTable(
+  "kit",
+  {
+    id: serial("id").primaryKey(),
+    brand: text("brand"),
+    kitNumber: text("kit_number"),
+    name: text("name"),
+    scale: text("scale"), // "1:24"
+    category: text("category"), // cars | motorcycles | aircraft | armour | ships | figures | other
+    status: text("status").notNull().default("wishlist"), // wishlist | stash | building | built
+    scalematesUrl: text("scalemates_url"), // the reference page, §2.4
+    imageUrl: text("image_url"), // Vercel Blob — sourced once, never hotlinked
+    purchasedFrom: text("purchased_from"), // a shop name, free text
+    purchasedAt: date("purchased_at"),
+    notes: text("notes"),
+    createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+  },
+  (table) => [index("kit_status_idx").on(table.status)],
+);
+
+/**
+ * The wishlist's "Other Items" section — tools, consumables, anything that
+ * isn't a kit. Deliberately not a `kit` row with empty columns: it has no
+ * brand, no scale and no Scalemates page, and it never graduates into a stash.
+ */
+export const wishlistItem = pgTable("wishlist_item", {
   id: serial("id").primaryKey(),
-  brand: text("brand"),
-  kitNumber: text("kit_number"),
-  name: text("name"),
-  scale: text("scale"),
-  status: text("status"), // wishlist | owned | in_progress | built | shelved
-  purchasedFrom: integer("purchased_from").references(() => vendor.id),
-  purchasedPrice: numeric("purchased_price"),
-  currency: text("currency"),
-  purchasedAt: date("purchased_at"),
+  title: text("title").notNull(),
+  url: text("url"),
   notes: text("notes"),
-  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+  status: text("status").notNull().default("wanted"), // wanted | bought
+  addedAt: timestamp("added_at", { withTimezone: true }).defaultNow(),
 });
 
 export const kitManual = pgTable("kit_manual", {
@@ -209,20 +224,6 @@ export const kitPaintRequirement = pgTable("kit_paint_requirement", {
   confidence: real("confidence"),
 });
 
-export const shoppingListItem = pgTable("shopping_list_item", {
-  // feature 3 output, persisted so you can tick it off
-  id: serial("id").primaryKey(),
-  paintCode: text("paint_code")
-    .notNull()
-    .references(() => paint.code),
-  kitId: integer("kit_id").references(() => kit.id),
-  reason: text("reason"),
-  substituteFor: text("substitute_for"), // set when this is a cross-brand equivalent
-  status: text("status"), // needed | ordered | bought | skipped
-  vendorId: integer("vendor_id").references(() => vendor.id), // a note, not a price
-  addedAt: timestamp("added_at", { withTimezone: true }).defaultNow(),
-});
-
 export const buildLogEntry = pgTable("build_log_entry", {
   id: serial("id").primaryKey(),
   kitId: integer("kit_id")
@@ -244,45 +245,4 @@ export const buildPhoto = pgTable("build_photo", {
   blobUrl: text("blob_url").notNull(),
   caption: text("caption"),
   sort: integer("sort"),
-});
-
-export const airbrush = pgTable("airbrush", {
-  // one row today: the 74540 — §2.3. Modelled for more; nothing assumes single-rig.
-  id: serial("id").primaryKey(),
-  model: text("model"), // "Tamiya 74540 HG Trigger"
-  nozzleMm: real("nozzle_mm"), // 0.3
-  cupCc: real("cup_cc"), // 7
-  isActive: boolean("is_active").default(true),
-  acquiredAt: date("acquired_at"),
-});
-
-export const maintenanceLog = pgTable("maintenance_log", {
-  id: serial("id").primaryKey(),
-  airbrushId: integer("airbrush_id")
-    .notNull()
-    .references(() => airbrush.id),
-  type: text("type"), // session_flush | deep_clean | needle_replace | oring_replace |
-  // lube | repair
-  performedOn: date("performed_on"),
-  notes: text("notes"),
-  partsUsed: text("parts_used"),
-});
-
-export const spraySession = pgTable("spray_session", {
-  // the loop that makes feature 1 learn — §3.3
-  id: serial("id").primaryKey(),
-  kitId: integer("kit_id").references(() => kit.id),
-  paintCode: text("paint_code")
-    .notNull()
-    .references(() => paint.code),
-  ratioPaint: real("ratio_paint"),
-  ratioThinner: real("ratio_thinner"),
-  thinnerType: text("thinner_type"),
-  psi: real("psi"),
-  coats: integer("coats"),
-  ambientTemp: real("ambient_temp"),
-  humidity: real("humidity"),
-  outcome: integer("outcome"), // 1–5
-  notes: text("notes"), // "orange peel, needed more thinner"
-  sprayedAt: timestamp("sprayed_at", { withTimezone: true }).defaultNow(),
 });
