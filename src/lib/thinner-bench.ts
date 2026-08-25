@@ -1,7 +1,9 @@
 import { getCataloguePaint, type CataloguePaint } from "@/catalogue/paints";
 import { getCatalogueRatioRule, type CatalogueRatioRule } from "@/catalogue/ratio-rules";
 import { getActiveAirbrush, type AirbrushRow } from "@/db/repositories/airbrush";
+import { getInventoryForPaint } from "@/db/repositories/inventory";
 import { getOverrideForPaint, type RatioOverrideRow } from "@/db/repositories/ratio-overrides";
+import { formLabel } from "@/domain/inventory";
 import {
   familyFromLinePrefix,
   normalizePaintCode,
@@ -25,6 +27,17 @@ export interface ResolvedPaintIdentity {
   ambiguous: boolean;
 }
 
+/**
+ * "Do I own this?" — §6, Phase 2. The question you ask standing in a shop,
+ * which is why it travels with the ratio rather than living only on the
+ * Paints screen.
+ */
+export interface PaintOwnership {
+  owned: boolean;
+  /** What of it you have — "10 ml bottle", "spray can · decanted jar". */
+  detail: string | null;
+}
+
 export interface ThinnerBenchBundle {
   query: string;
   /** null when the query doesn't even look like a Tamiya code (unknown line prefix). */
@@ -34,6 +47,7 @@ export interface ThinnerBenchBundle {
   effectiveRatio: EffectiveRatio | null;
   isAdditive: boolean;
   airbrush: AirbrushRow | null;
+  ownership: PaintOwnership;
 }
 
 function bottleFamily(family: string): boolean {
@@ -103,9 +117,9 @@ export function resolvePaintIdentity(
  * needs: identity, the family's ratio rule (with any override applied), and
  * the rig facts.
  *
- * Identity and the rule are compiled in; only the correction and the rig row
- * are queried, and those two run in parallel — one round trip's worth of
- * latency for the whole screen, both of them cached.
+ * Identity and the rule are compiled in; only the correction, the rig row and
+ * what's on the shelf are queried, and all three run in parallel — one round
+ * trip's worth of latency for the whole screen, all of them cached.
  */
 export async function resolveThinnerBench(
   rawCode: string,
@@ -113,9 +127,12 @@ export async function resolveThinnerBench(
 ): Promise<ThinnerBenchBundle> {
   const { paint, ratioRule } = resolvePaintIdentity(rawCode, line);
 
-  const [override, airbrush] = await Promise.all([
+  const [override, airbrush, stash] = await Promise.all([
     paint?.known ? getOverrideForPaint(paint.code) : Promise.resolve(undefined),
     getActiveAirbrush(),
+    // An uncatalogued code can't be a foreign key, so it can't be on the
+    // shelf — don't spend a round trip proving it.
+    paint?.known ? getInventoryForPaint(paint.code) : Promise.resolve([]),
   ]);
 
   const isAdditive = ratioRule ? isAdditiveFamily(ratioRule) : false;
@@ -130,5 +147,23 @@ export async function resolveThinnerBench(
     effectiveRatio,
     isAdditive,
     airbrush: airbrush ?? null,
+    ownership: summariseOwnership(stash),
   };
+}
+
+/**
+ * Every row for the code, not just the first: a spray can and the jar decanted
+ * from it are two shelf entries, and "do I own TS-8?" is about the code.
+ */
+function summariseOwnership(
+  stash: { form: string | null; paintSizeMl: number | null }[],
+): PaintOwnership {
+  if (stash.length === 0) return { owned: false, detail: null };
+
+  const forms = [...new Set(stash.map((item) => formLabel(item.form)))];
+  const sizeMl = stash[0].paintSizeMl;
+  const detail =
+    forms.length === 1 && sizeMl ? `${sizeMl} ml ${forms[0]}` : forms.join(" · ");
+
+  return { owned: true, detail };
 }

@@ -37,7 +37,14 @@ const nextConfig: NextConfig = {
      * actually makes a saved correction show up immediately — so the client
      * can afford the same three-minute reuse window as the rig row.
      */
-    bench: { stale: 180, revalidate: 60, expire: 240 },
+    bench: { stale: 30, revalidate: 60, expire: 240 },
+
+    /**
+     * The paint shelf (`inventory_item`). Written from the UI — a tap on
+     * "Running low", an Add, an edit — so it lives on tag invalidation, with
+     * the same sub-five-minute `expire` keeping it out of the prerender.
+     */
+    inventory: { stale: 30, revalidate: 60, expire: 240 },
   },
 
   // Deliberately NOT set: `experimental.inlineCss`. Measured on this app, it

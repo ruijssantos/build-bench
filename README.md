@@ -12,8 +12,11 @@ allowed to touch the database — are in
 
 ## Status
 
-**Phase 0 — Foundations.** Next.js scaffold, database schema, auth, PWA shell.
-No feature screens yet — those start at Phase 1.
+**Phase 2 — Paint inventory.** Shipped so far: the foundations (Phase 0), the
+Thinner Bench (Phase 1) and the paint shelf (Phase 2) — the Google Sheet
+imported, CRUD over form/state/location, one-tap running low, and "do I own
+this?" on the Thinner Bench result card. Next is Phase 3, cross-brand
+equivalence.
 
 ## Stack
 
@@ -40,6 +43,9 @@ Open [http://localhost:3000](http://localhost:3000).
 | `npm run perf:budget` | Check a finished build against the budget in `docs/PERFORMANCE.md` |
 | `npm run db:generate` | Generate a Drizzle migration from `src/db/schema.ts` |
 | `npm run db:migrate` | Apply pending migrations to `DATABASE_URL` |
+| `npm run db:seed` | Load `seed/*.json` — catalogue, ratio rules, the rig, and the paint shelf |
+| `npm run catalogue:build` | Regenerate `seed/paints.tamiya.json` |
+| `npm run catalogue:verify` | CI gate: every code the app needs is in the catalogue |
 
 ### Environment variables
 

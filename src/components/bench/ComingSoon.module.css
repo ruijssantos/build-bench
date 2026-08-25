@@ -1,19 +1,5 @@
-.desktopHeader {
-  display: none;
-}
-
-@media (min-width: 900px) {
-  .desktopHeader {
-    display: block;
-    font-family: var(--font-display);
-    font-size: 38px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.005em;
-    line-height: 1;
-    margin-bottom: 26px;
-  }
-}
+/* Desktop title row is `DesktopHeader`, shared with every other bench
+   screen — not a copy here. */
 
 .body {
   flex: 1;

@@ -12,12 +12,13 @@ import { SignOutButton } from "./SignOutButton";
  * The phone header. A Server Component: the title is usually this screen's LCP
  * element, so nothing about it should wait on a query or on hydration.
  *
- * `rigPill` is a slot rather than a prop, so the rig row can be fetched inside
- * its own <Suspense> boundary further down. The pill is shorter than the title
- * block it sits beside, and the row is `align-items: flex-end`, so it lands
- * without moving anything.
+ * `trailing` is a slot rather than a prop, so whatever sits opposite the title
+ * can resolve on its own terms: the Thinner Bench streams the rig pill into it
+ * behind a <Suspense> boundary, Paints puts its Add button there. Either is
+ * shorter than the title block beside it and the row is `align-items:
+ * flex-end`, so it lands without moving anything.
  */
-export function PhoneHeader({ title, rigPill }: { title: string; rigPill?: ReactNode }) {
+export function PhoneHeader({ title, trailing }: { title: string; trailing?: ReactNode }) {
   return (
     <div className={styles.header}>
       <svg className={styles.sweep} width="230" height="230" viewBox="0 0 230 230" aria-hidden="true">
@@ -36,9 +37,9 @@ export function PhoneHeader({ title, rigPill }: { title: string; rigPill?: React
       <div className={styles.row}>
         <div>
           <div className={styles.eyebrow}>The Build Bench</div>
-          <div className={styles.title}>{title}</div>
+          <h1 className={styles.title}>{title}</h1>
         </div>
-        {rigPill}
+        {trailing}
       </div>
     </div>
   );

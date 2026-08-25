@@ -117,9 +117,8 @@ export const inventoryItem = pgTable("inventory_item", {
     .references(() => paint.code),
   form: text("form"), // bottle | spray_can | decanted_jar
   decantedFrom: text("decanted_from").references(() => paint.code), // TS-8 can → decanted jar
-  state: text("state"), // sealed | open | low | empty
+  state: text("state"), // open | low (null reads as "in stock")
   quantity: integer("quantity"),
-  location: text("location"),
   purchasedFrom: integer("purchased_from").references(() => vendor.id),
   purchasedAt: date("purchased_at"),
   notes: text("notes"),

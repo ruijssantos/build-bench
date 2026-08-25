@@ -3,6 +3,7 @@
 import { lazy, Suspense, useState } from "react";
 
 import { PencilIcon } from "@/components/icons";
+import { StashChip } from "@/components/thinner/StashChip";
 import {
   calculateCupFill,
   formatRatioNumber,
@@ -10,7 +11,7 @@ import {
   WINDOW_BAND_WIDTH_PCT,
   type EffectiveRatio,
 } from "@/domain/ratio";
-import type { ResolvedPaintIdentity } from "@/lib/thinner-bench";
+import type { PaintOwnership, ResolvedPaintIdentity } from "@/lib/thinner-bench";
 
 import { familyLabel } from "./family-label";
 import styles from "./RatioHero.module.css";
@@ -28,10 +29,12 @@ export function RatioHero({
   paint,
   ratio,
   cupCc,
+  ownership,
 }: {
   paint: ResolvedPaintIdentity;
   ratio: EffectiveRatio;
   cupCc: number;
+  ownership: PaintOwnership;
 }) {
   const [drops, setDrops] = useState(20);
   const [editing, setEditing] = useState(false);
@@ -61,6 +64,14 @@ export function RatioHero({
           </div>
           <div className={styles.familyLabelDesktop}>{familyLabel(paint.family)}</div>
         </div>
+
+        {/* "Do I own this?" — the shop question, answered next to the paint it
+            is about rather than somewhere else on the screen. */}
+        {paint.known ? (
+          <div className={styles.stashRow}>
+            <StashChip ownership={ownership} />
+          </div>
+        ) : null}
 
         <div className={styles.ratioSection}>
           <div className={styles.ratioHeader}>

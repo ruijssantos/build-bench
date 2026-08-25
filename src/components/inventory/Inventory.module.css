@@ -1,0 +1,593 @@
+/*
+ * The Paints screen — design reference: Paints.dc.html (phone) and
+ * Desktop.dc.html (the two-column rail layout) on the canvas linked from
+ * docs/PLAN.md §4.1.
+ *
+ * The only saturated colour on this screen comes from `paint.hex`: the shelf
+ * chips and the row swatches. Everything else is the cream/ink family plus
+ * --alert, which appears on exactly one thing — running low, the thing you
+ * have to act on. §4.1's colour rule, at its most literal.
+ */
+
+/* Desktop title row is `DesktopHeader`, shared with every other bench
+   screen — not a copy here. */
+
+/* ----------------------------------------------------------------- layout */
+
+.scrollArea {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+@media (min-width: 900px) {
+  .scrollArea {
+    overflow: visible;
+  }
+}
+
+/* Single column, full width, at every size — the shelf, then the filter
+   pills, then the table, in that order. No desktop two-column split: the
+   table is the thing worth the room, and it gets all of it. */
+.grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 0 var(--gutter) 28px;
+}
+
+@media (min-width: 900px) {
+  .grid {
+    padding: 0 0 8px;
+  }
+}
+
+/* ------------------------------------------------------------ shelf block */
+
+.shelfCard {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 15px 16px 16px;
+  box-shadow: var(--shadow-hero);
+}
+
+.shelfHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: 11px;
+}
+
+/* Module title — §4.1. */
+.moduleTitle {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+}
+
+@media (min-width: 900px) {
+  .moduleTitle {
+    font-size: 15px;
+  }
+}
+
+.shelfCount {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* Fixed chip size at every viewport, on purpose — `auto-fill` with a real
+   pixel size wraps to more columns on a wide screen instead of stretching
+   each swatch to fill the row. A `1fr` track here would blow the chips up
+   to inch-square blocks on the desktop's much wider shelf card, which is
+   exactly the bug this replaced. */
+.chipGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 28px);
+  gap: 6px;
+}
+
+.chip {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  display: block;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+}
+
+/* Dimmed rather than removed while a filter is on: the shelf is the whole
+   shelf, and seeing what the filter leaves out is half the point of it. */
+.chipMuted {
+  opacity: 0.22;
+}
+
+.chipEmpty {
+  font-family: var(--font-ui);
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--muted);
+  margin: 0;
+}
+
+.chipEmpty code {
+  font-family: var(--font-mono);
+  background: var(--card-sunken);
+  padding: 2px 6px;
+  border-radius: 6px;
+  color: var(--ink);
+}
+
+/* ---------------------------------------------------------------- filters */
+
+.filters {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  /* Room for the pills' focus ring, and for the scrollbar the row grows on a
+     narrow phone. */
+  padding-bottom: 2px;
+  scrollbar-width: none;
+}
+
+.filters::-webkit-scrollbar {
+  display: none;
+}
+
+@media (min-width: 900px) {
+  .filters {
+    flex-wrap: wrap;
+    overflow-x: visible;
+  }
+}
+
+.filterPill,
+.filterPill:hover {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  height: 34px;
+  padding: 0 14px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--line);
+  background: var(--card);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 600;
+  color: #6b6456;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.filterPillActive,
+.filterPillActive:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg);
+  font-weight: 700;
+}
+
+/* "Running low" — the one pill that means "act on this" rather than "a
+   slice of the shelf", so it gets the alert treatment instead of accent, at
+   rest as well as active — §4.1's rule that colour carries meaning. */
+.filterPillAlert,
+.filterPillAlert:hover {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  height: 34px;
+  padding: 0 14px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--alert);
+  background: var(--card);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--alert);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.filterPillAlertActive,
+.filterPillAlertActive:hover {
+  background: var(--alert);
+  border-color: var(--alert);
+  color: var(--bg);
+  font-weight: 700;
+}
+
+/* ------------------------------------------------------------- the table */
+
+.rowTitle {
+  font-family: var(--font-ui);
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  text-decoration: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+a.rowTitle:hover {
+  color: var(--accent);
+  text-decoration: underline;
+}
+
+.rowCode {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--muted-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tableCard {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.table th {
+  text-align: left;
+  font-family: var(--font-display);
+  font-size: 12.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted-2);
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--line);
+  background: var(--card-sunken);
+  white-space: nowrap;
+}
+
+/* A sortable column header — same label styling as a plain `<th>`, plus a
+   small icon that shows sort state and doubles as the click target. */
+.sortHeader {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: inherit;
+  font: inherit;
+  text-transform: inherit;
+  letter-spacing: inherit;
+  text-decoration: none;
+}
+
+.sortHeader:hover {
+  color: var(--ink);
+}
+
+.sortIconIdle {
+  flex: none;
+  color: var(--faint);
+}
+
+.sortHeader:hover .sortIconIdle {
+  color: var(--muted);
+}
+
+.sortIconActive {
+  flex: none;
+  color: var(--accent);
+}
+
+.sortIconAsc {
+  transform: rotate(180deg);
+}
+
+.table td {
+  padding: 9px 14px;
+  border-bottom: 1px solid var(--card-sunken);
+  vertical-align: middle;
+}
+
+.table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Family earns its own column on a desk, not in one hand at the bench — §4.2.
+   On a phone the row keeps the paint, its state and the three things you
+   actually tap. */
+.deskColumn {
+  display: none;
+}
+
+@media (min-width: 900px) {
+  .deskColumn {
+    display: table-cell;
+  }
+}
+
+/* Percentages, not pixels, under `table-layout: fixed`: fixed-width columns
+   would otherwise take the same room whatever the window is doing and leave
+   the paint name — the column anyone actually scans — squeezed into whatever
+   was left. */
+.colPaint {
+  width: auto;
+}
+
+/* Four controls now (low, edit, remove, search) — a touch wider than the
+   original three needed. */
+.colActions {
+  width: 152px;
+}
+
+@media (min-width: 900px) {
+  .colPaint {
+    width: 40%;
+  }
+  .colFamily {
+    width: 14%;
+  }
+  .colState {
+    width: 16%;
+  }
+  .colActions {
+    width: 30%;
+  }
+}
+
+.paintCell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.cellSwatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  flex: none;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+}
+
+@media (min-width: 900px) {
+  .cellSwatch {
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
+  }
+}
+
+.cellText {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.cellMuted {
+  font-family: var(--font-ui);
+  font-size: 13.5px;
+  color: var(--ink-soft);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.stateChip {
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--radius-pill);
+  padding: 3px 9px;
+  font-family: var(--font-ui);
+  font-size: 11.5px;
+  font-weight: 600;
+  background: var(--card-sunken);
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.stateChipLow {
+  background: var(--alert-tint);
+  color: var(--alert);
+  font-weight: 700;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+}
+
+/* ≥44px touch target (§4.1) without a 44px-looking button: the glyph is 32px,
+   the padding around it carries the rest. */
+.iconButton,
+a.iconButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  margin: 6px 0;
+  border: none;
+  background: none;
+  border-radius: 10px;
+  color: var(--icon-idle);
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.iconButton:hover,
+a.iconButton:hover {
+  background: var(--card-sunken);
+  color: var(--ink);
+}
+
+.lowButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 32px;
+  padding: 0 8px;
+  border: 1px solid var(--line-strong);
+  background: var(--card);
+  border-radius: 10px;
+  color: var(--muted);
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.lowButton:hover {
+  border-color: var(--alert);
+  color: var(--alert);
+}
+
+.lowButtonActive {
+  border-color: var(--alert);
+  background: var(--alert-tint);
+  color: var(--alert);
+  font-weight: 700;
+}
+
+.lowButtonLabel {
+  display: none;
+}
+
+@media (min-width: 900px) {
+  .lowButtonLabel {
+    display: inline;
+  }
+}
+
+/* -------------------------------------------------------------- add button */
+
+.addButton {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 40px;
+  padding: 0 16px;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+  color: var(--bg);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-bottom: 4px;
+}
+
+.addButton:hover {
+  background: #14294c;
+}
+
+@media (min-width: 900px) {
+  .addButton {
+    height: 42px;
+    margin-bottom: 0;
+  }
+}
+
+/* ------------------------------------------------------------- empty state */
+
+/* The true empty-shelf state — the only thing on the screen when there's
+   nothing on the shelf, centering a single card the way ComingSoon does for
+   a whole screen. */
+.emptyState {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 0 8px;
+}
+
+.emptyStateCard {
+  width: 100%;
+  max-width: 420px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  padding: 28px 22px;
+  text-align: center;
+  box-shadow: var(--shadow-hero);
+}
+
+.emptyStateIcon {
+  color: var(--icon-idle);
+  margin-bottom: 12px;
+}
+
+.emptyStateTitle {
+  font-family: var(--font-ui);
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0 0 6px;
+}
+
+.emptyStateDescription {
+  font-family: var(--font-ui);
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--muted);
+  margin: 0;
+}
+
+/* The filtered-empty state — a family filter with nothing in it. Different
+   from .emptyState: the shelf isn't empty, just this slice of it, so this
+   stays a quiet inline note rather than a full centered card. */
+.emptyCard {
+  background: var(--card);
+  border: 1px dashed var(--line-strong);
+  border-radius: var(--radius-card);
+  padding: 28px 20px;
+  text-align: center;
+  font-family: var(--font-ui);
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.emptyCard code {
+  font-family: var(--font-mono);
+  background: var(--card-sunken);
+  padding: 2px 6px;
+  border-radius: 6px;
+  color: var(--ink);
+}
+
+/* --------------------------------------------------------------- skeleton */
+
+.skeletonBlock {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+}
+
+/* Tall enough to read as "content is coming", short enough that landing on
+   the one-card empty state isn't a violent collapse. */
+.skeletonGeneric {
+  height: 220px;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}

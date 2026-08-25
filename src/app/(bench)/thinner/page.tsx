@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 
 import { BenchError, QuietError } from "@/components/bench/BenchError";
+import { DesktopHeader } from "@/components/bench/DesktopHeader";
 import { PhoneHeader, PhoneHeaderRigPill } from "@/components/bench/PhoneHeader";
 import { SearchIcon } from "@/components/icons";
 import { BenchContent } from "@/components/thinner/BenchContent";
@@ -27,7 +28,7 @@ export default function ThinnerPage(props: PageProps<"/thinner">) {
     <>
       <PhoneHeader
         title="Thinner Bench"
-        rigPill={
+        trailing={
           <QuietError>
             <Suspense fallback={null}>
               <PhoneHeaderRigPill />
@@ -36,9 +37,7 @@ export default function ThinnerPage(props: PageProps<"/thinner">) {
         }
       />
 
-      <div className={styles.desktopHeader}>
-        <div className={styles.desktopTitle}>Thinner Bench</div>
-      </div>
+      <DesktopHeader title="Thinner Bench" />
 
       <div className={styles.phoneSearchBlock}>
         <Suspense fallback={<SearchBoxFallback scope="phone" />}>

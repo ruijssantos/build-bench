@@ -1,0 +1,302 @@
+/* The Add and Edit dialogs. Loaded on click, so none of this reaches a
+   browser that never opens one. */
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* Field label — §4.1: deliberately quieter than a module title, because it
+   names an input inside a module rather than the module itself. */
+.label {
+  font-family: var(--font-display);
+  font-size: 12.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted-2);
+}
+
+.input {
+  width: 100%;
+  height: 42px;
+  padding: 0 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-tile);
+  background: var(--card);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  color: var(--ink);
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.segmented {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.segment {
+  flex: none;
+  height: 38px;
+  padding: 0 13px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-tile);
+  background: var(--card);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.segmentActive {
+  border-color: var(--accent);
+  background: var(--accent-tint);
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.hint {
+  font-family: var(--font-ui);
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--muted-2);
+}
+
+.error {
+  font-family: var(--font-ui);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--alert);
+  background: var(--alert-tint);
+  border-radius: 10px;
+  padding: 9px 12px;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 2px;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.ghostButton {
+  height: 42px;
+  padding: 0 16px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-tile);
+  background: none;
+  font-family: var(--font-ui);
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.primaryButton {
+  height: 42px;
+  padding: 0 18px;
+  border: none;
+  border-radius: var(--radius-tile);
+  background: var(--accent);
+  color: var(--bg);
+  font-family: var(--font-ui);
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.primaryButton:disabled,
+.ghostButton:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.deleteButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 42px;
+  padding: 0 13px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-tile);
+  background: none;
+  font-family: var(--font-ui);
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.deleteButton:hover {
+  border-color: var(--alert);
+  color: var(--alert);
+}
+
+.deleteArmed {
+  border-color: var(--alert);
+  background: var(--alert-tint);
+  color: var(--alert);
+  font-weight: 700;
+}
+
+/* ------------------------------------------------------------ paint picker */
+
+.pickerWrap {
+  position: relative;
+}
+
+.pickerBox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 42px;
+  padding: 0 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-tile);
+  background: var(--card);
+}
+
+.pickerBox:focus-within {
+  border-color: var(--accent);
+}
+
+.pickerIcon {
+  flex: none;
+  color: var(--muted-2);
+}
+
+.pickerInput {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  background: none;
+  outline: none;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  color: var(--ink);
+}
+
+.pickerHits {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  right: 0;
+  z-index: 5;
+  margin: 0;
+  padding: 4px;
+  list-style: none;
+  max-height: 240px;
+  overflow-y: auto;
+  background: var(--card);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-tile);
+  box-shadow: var(--shadow-hero);
+}
+
+.pickerHit {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 9px;
+  border-radius: 9px;
+  cursor: pointer;
+}
+
+.pickerHit:hover {
+  background: var(--accent-tint);
+}
+
+.pickerEmpty {
+  padding: 10px;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.pickerDot {
+  width: 16px;
+  height: 16px;
+  border-radius: 5px;
+  flex: none;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+}
+
+.pickerHitCode {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted-2);
+  flex: none;
+}
+
+.pickerHitName {
+  font-family: var(--font-ui);
+  font-size: 13.5px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.picked {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 42px;
+  padding: 0 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-tile);
+  background: var(--card-sunken);
+}
+
+.pickedSwatch {
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+  flex: none;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+}
+
+.pickedCode {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted-2);
+  flex: none;
+}
+
+.pickedName {
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pickedChange {
+  margin-left: auto;
+  flex: none;
+  border: none;
+  background: none;
+  font-family: var(--font-ui);
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--accent);
+  cursor: pointer;
+}

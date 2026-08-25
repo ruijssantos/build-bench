@@ -31,10 +31,14 @@ export function ThinnerIcon(props: IconProps) {
   );
 }
 
+/** A small screw-lid paint pot — the Tamiya mini bottle shape — rather than
+ * a tall narrow-neck bottle. Lid, jar body, label band. */
 export function PaintsIcon(props: IconProps) {
   return (
     <svg {...base(props)}>
-      <path d="M10 2h4v4l2 3v11a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V9l2-3V2z" />
+      <rect x="8.5" y="3" width="7" height="3.5" rx="1.2" />
+      <rect x="6" y="6.5" width="12" height="14.5" rx="3" />
+      <path d="M6 13.2h12" />
     </svg>
   );
 }
@@ -101,6 +105,17 @@ export function ChevronDownIcon(props: IconProps) {
   );
 }
 
+/** The unsorted state of a sortable column header — both directions, quiet,
+ * signalling "click to sort" without claiming a direction. */
+export function SortIcon(props: IconProps) {
+  return (
+    <svg {...base(props, 1.8)}>
+      <path d="M8 10l4-4 4 4" />
+      <path d="M8 14l4 4 4-4" />
+    </svg>
+  );
+}
+
 export function AlertIcon(props: IconProps) {
   return (
     <svg {...base(props, 2)}>
@@ -132,6 +147,45 @@ export function CheckIcon(props: IconProps) {
   return (
     <svg {...base(props, 2.6)}>
       <path d="M5 13l4 4L19 7" />
+    </svg>
+  );
+}
+
+export function PlusIcon(props: IconProps) {
+  return (
+    <svg {...base(props, 2.6)}>
+      <path d="M12 5v14M5 12h14" />
+    </svg>
+  );
+}
+
+/** "Look this up somewhere else" — the shelf's find-a-shop link. */
+export function ExternalLinkIcon(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      <path d="M14 4h6v6" />
+      <path d="M20 4l-8.5 8.5" />
+      <path d="M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5" />
+    </svg>
+  );
+}
+
+/** A part-empty bottle: the running-low mark. */
+export function LowBottleIcon(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      <path d="M10 2h4v4l2 3v11a2 2 0 0 1-2 2h-4a2 2 0 0 1-2-2V9l2-3V2z" />
+      <path d="M8 16h8" />
+    </svg>
+  );
+}
+
+export function TrashIcon(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      <path d="M4 7h16" />
+      <path d="M9 7V5a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+      <path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12" />
     </svg>
   );
 }
