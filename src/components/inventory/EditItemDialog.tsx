@@ -39,6 +39,7 @@ export function EditItemDialog({ item, onClose }: { item: EditableItem; onClose:
     try {
       const result = await editInventoryItem({
         id: item.id,
+        paintCode: item.paintCode,
         form: fields.form,
         state: fields.state,
         quantity: Number(fields.quantity),
@@ -66,7 +67,7 @@ export function EditItemDialog({ item, onClose }: { item: EditableItem; onClose:
     setSaving(true);
     setError(null);
     try {
-      const result = await removeInventoryItem(item.id);
+      const result = await removeInventoryItem(item.id, item.paintCode);
       if (!result.ok) {
         setError(result.error);
         return;

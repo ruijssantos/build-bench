@@ -11,6 +11,11 @@ import styles from "./Inventory.module.css";
  * handler: the whole shelf grid therefore ships no client JavaScript, the tap
  * works before hydration has finished (which on a phone at the bench is most
  * of the taps that matter), and what comes back is the re-rendered row.
+ *
+ * `paintCode` and `state` ride along as hidden fields so the action never
+ * has to re-fetch this row just to relearn what it already rendered — see
+ * the comment on `toggleRunningLow` for why that used to be the whole reason
+ * this felt slow.
  */
 export function LowToggle({
   id,
@@ -26,6 +31,8 @@ export function LowToggle({
   return (
     <form action={toggleRunningLow}>
       <input type="hidden" name="id" value={id} />
+      <input type="hidden" name="paintCode" value={paintCode} />
+      <input type="hidden" name="state" value={state ?? ""} />
       <button
         type="submit"
         className={`${styles.lowButton} ${low ? styles.lowButtonActive : ""}`}
