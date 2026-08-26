@@ -17,6 +17,11 @@ import styles from "./Wishlist.module.css";
  * reaches Blob — plenty for a card thumbnail (see `resizeImage`). */
 const MAX_PHOTO_EDGE = 2000;
 
+/** Bounds the Blob upload so a stalled request surfaces as an error instead
+ * of leaving the dialog on "Uploading…" forever — the client SDK has no
+ * timeout of its own. */
+const UPLOAD_TIMEOUT_MS = 30_000;
+
 /**
  * Manual kit entry — always available (docs/PLAN.md §6 Phase 3), for
  * anything the search can't place. Its own chunk, fetched only once "Add a
@@ -37,7 +42,10 @@ export function ManualKitDialog({ kit, onClose }: { kit?: KitRow; onClose: () =>
   const [category, setCategory] = useState<string>(kit?.category ?? "cars");
   const [scalematesUrl, setScalematesUrl] = useState(kit?.scalematesUrl ?? "");
   const [notes, setNotes] = useState(kit?.notes ?? "");
-  const [saving, setSaving] = useState(false);
+  /** Split from a single `saving` boolean so a stuck save is visible as
+   * "Uploading…" vs "Saving…" rather than one undifferentiated state. */
+  const [phase, setPhase] = useState<"idle" | "uploading" | "saving">("idle");
+  const saving = phase !== "idle";
   const [error, setError] = useState<string | null>(null);
 
   const [photoFile, setPhotoFile] = useState<File | null>(null);
@@ -70,24 +78,29 @@ export function ManualKitDialog({ kit, onClose }: { kit?: KitRow; onClose: () =>
       setError("Give it at least a brand and a name.");
       return;
     }
-    setSaving(true);
     setError(null);
     try {
       let imageUrl: string | undefined;
       if (photoFile) {
+        setPhase("uploading");
         try {
           const blob = await upload(`kits/${crypto.randomUUID()}.jpg`, photoFile, {
             access: "public",
             handleUploadUrl: "/api/kits/upload",
             contentType: photoFile.type,
+            abortSignal: AbortSignal.timeout(UPLOAD_TIMEOUT_MS),
           });
           imageUrl = blob.url;
-        } catch {
+        } catch (uploadError) {
+          // The only way to see why a client-side Blob upload failed — this
+          // dialog has no server log to check instead.
+          console.error("Kit photo upload failed:", uploadError);
           setError("Couldn't upload that photo — try again.");
           return;
         }
       }
 
+      setPhase("saving");
       const result =
         editing && kit
           ? await updateManualKit({ id: kit.id, brand, kitNumber, name, scale, category, scalematesUrl, notes, imageUrl })
@@ -98,10 +111,11 @@ export function ManualKitDialog({ kit, onClose }: { kit?: KitRow; onClose: () =>
         return;
       }
       onClose();
-    } catch {
+    } catch (saveError) {
+      console.error("Kit save failed:", saveError);
       setError("Couldn't save that — try again.");
     } finally {
-      setSaving(false);
+      setPhase("idle");
     }
   }
 
@@ -261,7 +275,15 @@ export function ManualKitDialog({ kit, onClose }: { kit?: KitRow; onClose: () =>
             Cancel
           </button>
           <button type="button" className={formStyles.primaryButton} onClick={() => void save()} disabled={saving}>
-            {saving ? (editing ? "Saving…" : "Adding…") : editing ? "Save changes" : "Add kit"}
+            {phase === "uploading"
+              ? "Uploading photo…"
+              : phase === "saving"
+                ? editing
+                  ? "Saving…"
+                  : "Adding…"
+                : editing
+                  ? "Save changes"
+                  : "Add kit"}
           </button>
         </div>
       </div>

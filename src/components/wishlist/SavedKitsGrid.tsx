@@ -22,8 +22,7 @@ export async function SavedKitsGrid() {
   return (
     <>
       <div className={styles.subHead}>
-        <span className={styles.moduleTitle}>Saved kits</span>
-        <span className={styles.moduleMeta}>{kits.length} on the wishlist</span>
+        <span className={styles.moduleTitle}>Saved kits ({kits.length})</span>
       </div>
       <div className={styles.cardGrid}>
         {kits.map((kit) => (
