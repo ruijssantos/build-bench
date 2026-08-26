@@ -787,6 +787,18 @@ the spec named exactly three fields (title, URL, notes), all of them one tap awa
 "remove and re-add," so a fourth interaction pattern for the same three inputs didn't earn its
 place.
 
+Phase 3 also turned up a migration bug predating it: `0002_drop_airbrush_and_shopping` dropped
+`vendor` with `CASCADE` — which takes the foreign keys pointing at it along with it — and then
+tried to drop those same constraints by name, so it failed on every database it was ever run
+against. Nothing after 0001 had actually been applied anywhere, which is why the first real
+wishlist deploy came up with no `wishlist_item` table. Compounding it, drizzle's migrator writes
+its bookkeeping rows only after every pending migration has run, and Neon's HTTP driver has no
+transactions (§9.3), so the failure left *nothing* recorded and the next run replayed the
+already-applied half. 0001–0003 are now written replay-safe (`IF EXISTS` / `IF NOT EXISTS`
+throughout, an explicit `USING` on the one type change); the reasoning and the rule for future
+migrations are in `scripts/migrate.mts`. Editing them rather than adding a 0004 is safe because
+the migrator selects by the journal's timestamp and never compares the hash it stored.
+
 Two more, both found in review rather than decided up front. `confidence` is listed on stage A's
 candidate payload in §5.1 and is **not** implemented: the screen ranks candidates by the order
 they come back in and shows no score, so the field would have been collected and never rendered.
