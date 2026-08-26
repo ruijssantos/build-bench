@@ -1,1 +1,1 @@
-ALTER TABLE "inventory_item" DROP COLUMN "location";
+ALTER TABLE "inventory_item" DROP COLUMN IF EXISTS "location";
