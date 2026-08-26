@@ -1,9 +1,14 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import { NextResponse, type NextRequest } from "next/server";
-import { z } from "zod";
 
 import { KIT_CATEGORIES } from "@/domain/kit";
+import {
+  MAX_CANDIDATES,
+  normalizeCandidates,
+  ResolveResultSchema,
+  type KitCandidate,
+} from "@/domain/kit-candidate";
 
 /**
  * Kit resolve — docs/PLAN.md §5.1 stage A, §2.4, §5.2.
@@ -22,45 +27,34 @@ import { KIT_CATEGORIES } from "@/domain/kit";
  * nothing to accumulate between requests.
  */
 
-export const maxDuration = 60;
-
-const CandidateSchema = z.object({
-  brand: z.string(),
-  kitNumber: z.string(),
-  name: z.string(),
-  scale: z.string(),
-  category: z.enum(KIT_CATEGORIES),
-  scalematesUrl: z.string().nullable(),
-  imageUrl: z.string().nullable(),
-});
-
 /**
- * Capped at 10, not the 5 docs/PLAN.md §5.1 originally specified — the brief
- * for this phase asked for up to 10 ranked candidates, so the schema and
- * this comment both moved; see the PR description for the note on PLAN.md.
+ * §1.2's ceiling, not a smaller guess: this handler can make up to four
+ * sequential model calls (the first, plus `MAX_RESUMES` pause resumes) at
+ * ~10–20s each, so a 60s cap could kill a turn the user has already been
+ * billed for. §5.1 budgets each stage the full 300s.
  */
-const ResolveResultSchema = z.object({
-  candidates: z.array(CandidateSchema).max(10),
-});
+export const maxDuration = 300;
+
+/** Each resume is another paid call; three is enough for a genuinely long
+ * search turn and short of anything that could spin. */
+const MAX_RESUMES = 3;
 
 const SYSTEM_PROMPT = `You resolve a scale-model kit search into real, purchasable kit records for a hobbyist's wishlist app. The query is either a kit number ("24345") or free text ("Tamiya Nissan GT-R").
 
 Use web search to find real kits. Scalemates (scalemates.com) is the best single reference for brand, kit number, name, scale and category — prefer it as a source when you find a matching page there and use its URL as scalematesUrl. A clear box art photo from another retailer or the manufacturer's own site is fine for imageUrl if you can't confirm one on Scalemates.
 
-Return up to 10 candidates, most likely match first. Only include kits you found real evidence for — never invent a kit number or name to pad the list. If nothing plausible turns up, return an empty candidates array; that is a normal, expected result, not a failure.
+Return at most ${MAX_CANDIDATES} candidates, most likely match first. Only include kits you found real evidence for — never invent a kit number or name to pad the list. If nothing plausible turns up, return an empty candidates array; that is a normal, expected result, not a failure.
 
 For each candidate:
 - brand: the manufacturer, e.g. "Tamiya"
 - kitNumber: the kit's model/box number as printed, e.g. "24345"
 - name: the kit's subject, e.g. "Nissan Skyline GT-R (R34) V-Spec II"
 - scale: e.g. "1:24" — this app is built around 1:24 scale car kits, so when a query is ambiguous about scale weight 1:24 releases higher, but report whatever scale the real kit you found actually is
-- category: one of cars, motorcycles, aircraft, armour, ships, figures, other
+- category: exactly one of ${KIT_CATEGORIES.join(", ")} — use these spellings verbatim
 - scalematesUrl: the kit's Scalemates page if you found one, else null
 - imageUrl: a direct URL to a box art image if you found one, else null`;
 
-type ResolveResponse =
-  | { ok: true; candidates: z.infer<typeof ResolveResultSchema>["candidates"] }
-  | { ok: false; error: string };
+type ResolveResponse = { ok: true; candidates: KitCandidate[] } | { ok: false; error: string };
 
 function jsonError(error: string, status = 200) {
   return NextResponse.json<ResolveResponse>({ ok: false, error }, { status });
@@ -88,31 +82,32 @@ export async function POST(request: NextRequest) {
   }
 
   const client = new Anthropic();
-  const format = zodOutputFormat(ResolveResultSchema);
-  const tools = [{ type: "web_search_20260209" as const, name: "web_search" as const, max_uses: 2 }];
 
+  // `messages.parse` + `zodOutputFormat` is the shape docs/PLAN.md §5.2
+  // specifies for this pipeline: the SDK validates the model's JSON against
+  // the schema and hands back `parsed_output`, so there is no hand-rolled
+  // JSON.parse here to drift from what stages B and C will do in Phase 6.
   const requestParams = {
     model: "claude-sonnet-5",
     max_tokens: 16000,
     thinking: { type: "adaptive" as const },
-    output_config: { effort: "medium" as const, format },
+    output_config: { effort: "medium" as const, format: zodOutputFormat(ResolveResultSchema) },
     system: SYSTEM_PROMPT,
-    tools,
+    tools: [{ type: "web_search_20260209" as const, name: "web_search" as const, max_uses: 2 }],
   };
 
   let messages: Anthropic.MessageParam[] = [{ role: "user", content: query }];
 
   try {
-    let response = await client.messages.create({ ...requestParams, messages });
+    let response = await client.messages.parse({ ...requestParams, messages });
 
     // A long server-tool turn can pause rather than finish; an unhandled
     // pause silently truncates the answer (docs/PLAN.md §5.2). Resume by
-    // feeding the paused assistant turn back, capped so a run that somehow
-    // never settles can't loop forever.
+    // feeding the paused assistant turn back.
     let resumes = 0;
-    while (response.stop_reason === "pause_turn" && resumes < 3) {
+    while (response.stop_reason === "pause_turn" && resumes < MAX_RESUMES) {
       messages = [...messages, { role: "assistant", content: response.content }];
-      response = await client.messages.create({ ...requestParams, messages });
+      response = await client.messages.parse({ ...requestParams, messages });
       resumes++;
     }
 
@@ -120,37 +115,42 @@ export async function POST(request: NextRequest) {
       return jsonError("That search couldn't be completed — try rephrasing it, or add the kit by hand.");
     }
 
+    // Both of these leave the answer knowingly incomplete, and both used to
+    // fall through to the parse and surface as "returned something
+    // unexpected" — indistinguishable from a genuinely malformed reply, in
+    // the logs as well as the UI.
+    if (response.stop_reason === "pause_turn") {
+      return jsonError("That search ran long and didn't finish — try again, or add the kit by hand.");
+    }
+    if (response.stop_reason === "max_tokens") {
+      return jsonError("That search returned more than it could fit — try a more specific query.");
+    }
+
     // Web search errors return HTTP 200 with an error object in the result
     // block rather than throwing (docs/PLAN.md §5.2) — a success `content`
     // is an array, an error `content` is an object, so branch before
     // indexing. Not fatal on its own: Claude still answers with whatever it
-    // found, which the empty-candidates path below already covers.
+    // found, which the empty-candidates path already covers.
     const searchToolErrored = response.content.some(
       (block) => block.type === "web_search_tool_result" && !Array.isArray(block.content),
     );
 
-    const textBlock = response.content.find((block) => block.type === "text");
-    if (!textBlock) {
+    if (!response.parsed_output) {
       return jsonError(
         searchToolErrored
           ? "Search hit a problem partway through — try again, or add the kit by hand."
-          : "That search didn't return a result — try again.",
+          : "Search returned something unexpected — try again.",
       );
     }
 
-    let parsedJson: unknown;
-    try {
-      parsedJson = JSON.parse(textBlock.text);
-    } catch {
-      return jsonError("Search returned something unexpected — try again.");
-    }
-
-    const result = ResolveResultSchema.safeParse(parsedJson);
-    if (!result.success) {
-      return jsonError("Search returned something unexpected — try again.");
-    }
-
-    return NextResponse.json<ResolveResponse>({ ok: true, candidates: result.data.candidates });
+    // Coercion, not rejection: the API enforces neither the category enum nor
+    // the candidate cap, so `normalizeCandidates` does — see the note in
+    // `src/domain/kit-candidate.ts` for why rejecting here threw away whole
+    // paid searches over one off-vocabulary word.
+    return NextResponse.json<ResolveResponse>({
+      ok: true,
+      candidates: normalizeCandidates(response.parsed_output),
+    });
   } catch (error) {
     if (error instanceof Anthropic.AuthenticationError) {
       return jsonError("Kit search isn't set up correctly — check the ANTHROPIC_API_KEY value.");

@@ -787,6 +787,15 @@ the spec named exactly three fields (title, URL, notes), all of them one tap awa
 "remove and re-add," so a fourth interaction pattern for the same three inputs didn't earn its
 place.
 
+Two more, both found in review rather than decided up front. `confidence` is listed on stage A's
+candidate payload in §5.1 and is **not** implemented: the screen ranks candidates by the order
+they come back in and shows no score, so the field would have been collected and never rendered.
+Add it in Phase 6 if stage B's trust surface (§5.4) turns out to want it. And the wire schema the
+resolve route validates against is deliberately looser than §5.1's shape — `zodOutputFormat` sends
+neither the category enum nor the candidate cap to the API (both are demoted to prose), so both are
+enforced by coercion after the fact rather than by rejecting the response; a strict schema threw
+away whole paid searches over one off-vocabulary word.
+
 ---
 
 ## 8. Non-goals

@@ -4,9 +4,9 @@ import { useState } from "react";
 
 import { saveKitCandidate } from "@/app/(bench)/wishlist/actions";
 import { CheckIcon } from "@/components/icons";
+import type { KitCandidate } from "@/domain/kit-candidate";
 
 import { KitCardBody } from "./KitCardBody";
-import type { KitCandidate } from "./kit-candidate";
 import styles from "./Wishlist.module.css";
 
 /** One search result, with the button that saves it — docs/PLAN.md §5.1.

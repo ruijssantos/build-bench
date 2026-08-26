@@ -3,24 +3,22 @@
 import { lazy, Suspense, useState, type FormEvent } from "react";
 
 import { PlusIcon, SearchIcon } from "@/components/icons";
+import type { KitCandidate } from "@/domain/kit-candidate";
 
 import { KitCandidateCard } from "./KitCandidateCard";
-import type { KitCandidate } from "./kit-candidate";
 import styles from "./Wishlist.module.css";
 
 const ManualKitDialog = lazy(() => import("./ManualKitDialog").then((m) => ({ default: m.ManualKitDialog })));
 
-interface ResolveResponse {
-  ok: boolean;
-  candidates?: KitCandidate[];
-  error?: string;
-}
+type ResolveResponse = { ok: true; candidates: KitCandidate[] } | { ok: false; error: string };
 
 type SearchState =
   | { status: "idle" }
   | { status: "loading" }
   | { status: "error"; message: string }
-  | { status: "done"; query: string; candidates: KitCandidate[] };
+  /** `run` is a per-search sequence number, used only to key the card grid —
+   * see the note where it's rendered. */
+  | { status: "done"; run: number; query: string; candidates: KitCandidate[] };
 
 /**
  * The kit search — docs/PLAN.md §5.1 stage A, §6 Phase 3.
@@ -34,6 +32,7 @@ type SearchState =
 export function KitSearch() {
   const [query, setQuery] = useState("");
   const [state, setState] = useState<SearchState>({ status: "idle" });
+  const [runs, setRuns] = useState(0);
   const [manualOpen, setManualOpen] = useState(false);
 
   async function search(e: FormEvent<HTMLFormElement>) {
@@ -41,6 +40,8 @@ export function KitSearch() {
     const trimmed = query.trim();
     if (!trimmed || state.status === "loading") return;
 
+    const run = runs + 1;
+    setRuns(run);
     setState({ status: "loading" });
     try {
       const res = await fetch("/api/kits/resolve", {
@@ -50,10 +51,10 @@ export function KitSearch() {
       });
       const data = (await res.json()) as ResolveResponse;
       if (!data.ok) {
-        setState({ status: "error", message: data.error ?? "Search hit a problem — try again." });
+        setState({ status: "error", message: data.error });
         return;
       }
-      setState({ status: "done", query: trimmed, candidates: data.candidates ?? [] });
+      setState({ status: "done", run, query: trimmed, candidates: data.candidates });
     } catch {
       setState({ status: "error", message: "Search hit a problem — try again." });
     }
@@ -64,12 +65,17 @@ export function KitSearch() {
   return (
     <div className={styles.searchCard}>
       <form className={styles.searchRow} onSubmit={(e) => void search(e)}>
+        <label className={styles.srOnly} htmlFor="kit-search-input">
+          Search for a kit by number or name
+        </label>
         <div className={styles.searchBox}>
           <SearchIcon size={16} className={styles.searchIcon} />
           <input
+            id="kit-search-input"
             className={styles.searchInput}
             type="text"
             placeholder="Kit number or name — “24345”, “Tamiya Nissan GT-R”…"
+            autoComplete="off"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             disabled={loading}
@@ -89,23 +95,37 @@ export function KitSearch() {
         </button>
       </div>
 
-      {state.status === "loading" ? (
-        <div className={styles.status}>
-          <span className={styles.spinner} aria-hidden="true" />
-          <span>Searching Scalemates and the web…</span>
-        </div>
-      ) : null}
+      {/* One live region for all three outcomes: a submit whose result takes
+          20s to arrive is exactly the case a screen reader has to be told
+          about, since nothing about the page moves in the meantime. */}
+      <div role="status" aria-live="polite">
+        {state.status === "loading" ? (
+          <div className={styles.status}>
+            <span className={styles.spinner} aria-hidden="true" />
+            <span>Searching Scalemates and the web…</span>
+          </div>
+        ) : null}
 
-      {state.status === "error" ? <div className={`${styles.status} ${styles.statusError}`}>{state.message}</div> : null}
+        {state.status === "error" ? (
+          <div className={`${styles.status} ${styles.statusError}`}>{state.message}</div>
+        ) : null}
 
-      {state.status === "done" && state.candidates.length === 0 ? (
-        <div className={styles.status}>No matches for &ldquo;{state.query}&rdquo;. Try different terms, or add it by hand.</div>
-      ) : null}
+        {state.status === "done" && state.candidates.length === 0 ? (
+          <div className={styles.status}>
+            No matches for &ldquo;{state.query}&rdquo;. Try different terms, or add it by hand.
+          </div>
+        ) : null}
+      </div>
 
       {state.status === "done" && state.candidates.length > 0 ? (
+        // Keyed by search run, not by candidate content. Two searches for the
+        // same kit produce the same brand and number, so a content key let
+        // React reuse the previous card instance — and with it that card's
+        // "Saved" state, showing a fresh result as already saved with no way
+        // to save it.
         <div className={styles.cardGrid}>
           {state.candidates.map((candidate, i) => (
-            <KitCandidateCard key={`${candidate.brand}-${candidate.kitNumber}-${i}`} candidate={candidate} />
+            <KitCandidateCard key={`${state.run}-${i}`} candidate={candidate} />
           ))}
         </div>
       ) : null}

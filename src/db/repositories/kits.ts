@@ -1,4 +1,4 @@
-import { desc, eq } from "drizzle-orm";
+import { and, desc, eq, sql } from "drizzle-orm";
 import { cacheLife, cacheTag } from "next/cache";
 import { connection } from "next/server";
 
@@ -63,18 +63,74 @@ export interface CreateKitInput {
   notes: string | null;
 }
 
-export async function createKit(input: CreateKitInput): Promise<void> {
-  await db.insert(kit).values({ ...input, createdAt: new Date() });
+/** Returns the new row's id so the caller can patch `image_url` in later —
+ * box art is fetched after the response, not inside the save (see
+ * `saveKitCandidate`). */
+export async function createKit(input: CreateKitInput): Promise<number> {
+  const rows = await db
+    .insert(kit)
+    .values({ ...input, createdAt: new Date() })
+    .returning({ id: kit.id });
+  return rows[0].id;
 }
 
-/** The one-tap "mark bought" on a wishlist kit card — `status: wishlist →
- * stash`, the single-column write §3.3 designs the whole table around. */
-export async function updateKitStatus(id: number, status: KitStatus): Promise<boolean> {
-  const rows = await db.update(kit).set({ status }).where(eq(kit.id, id)).returning({ id: kit.id });
+/**
+ * Every mutation below is scoped by `status` as well as `id`.
+ *
+ * The wishlist and the stash share this table (§3.3), so an id alone is not
+ * an authorisation to touch a row: without the status predicate a stale tab,
+ * a replayed form post or an id typo on the wishlist screen would happily
+ * delete a kit Phase 4 has already stashed, built, or hung manuals and
+ * research off. The screen may only act on rows the screen actually shows.
+ */
+export async function updateKitStatus(id: number, from: KitStatus, to: KitStatus): Promise<boolean> {
+  const rows = await db
+    .update(kit)
+    .set({ status: to })
+    .where(and(eq(kit.id, id), eq(kit.status, from)))
+    .returning({ id: kit.id });
   return rows.length > 0;
 }
 
-export async function deleteKit(id: number): Promise<boolean> {
-  const rows = await db.delete(kit).where(eq(kit.id, id)).returning({ id: kit.id });
-  return rows.length > 0;
+/** Deletes only within `status`, and returns the removed row's `image_url`
+ * so the caller can drop the blob it was the last reference to. */
+export async function deleteKit(id: number, status: KitStatus): Promise<{ imageUrl: string | null } | null> {
+  const rows = await db
+    .delete(kit)
+    .where(and(eq(kit.id, id), eq(kit.status, status)))
+    .returning({ imageUrl: kit.imageUrl });
+  return rows[0] ?? null;
+}
+
+export async function updateKitImage(id: number, imageUrl: string): Promise<void> {
+  await db.update(kit).set({ imageUrl }).where(eq(kit.id, id));
+}
+
+/**
+ * The duplicate guard behind saving a candidate — the wishlist equivalent of
+ * `findInventoryItem`. Brand plus kit number is a kit's identity, and saving
+ * the same one twice from two searches is the same mistake as adding a second
+ * shelf row for one bottle of XF-64.
+ *
+ * Case-insensitive: "tamiya" and "Tamiya" are one brand. Only meaningful
+ * where a kit number exists — two kits from one brand with no number between
+ * them aren't provably the same kit, so those are left alone.
+ *
+ * `lower(...)` rather than `ilike`: this is an equality test, and `ilike`
+ * would read `%` and `_` in a brand or kit number as wildcards — a false
+ * match there blocks a save that should have gone through.
+ */
+export async function findWishlistKit(brand: string, kitNumber: string): Promise<KitRow | undefined> {
+  const rows = await db
+    .select()
+    .from(kit)
+    .where(
+      and(
+        eq(kit.status, "wishlist"),
+        sql`lower(${kit.brand}) = ${brand.toLowerCase()}`,
+        sql`lower(${kit.kitNumber}) = ${kitNumber.toLowerCase()}`,
+      ),
+    )
+    .limit(1);
+  return rows[0];
 }

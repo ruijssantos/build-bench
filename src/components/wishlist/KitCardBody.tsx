@@ -16,6 +16,7 @@ export function KitCardBody({
   kitNumber,
   scale,
   category,
+  notes,
 }: {
   imageUrl: string | null;
   brand: string | null;
@@ -23,6 +24,11 @@ export function KitCardBody({
   kitNumber: string | null;
   scale: string | null;
   category: string | null;
+  /** Only a hand-entered kit has these — a resolved candidate carries none.
+   * Rendered here because `ManualKitDialog` collects the field, and §7
+   * rules out an Edit dialog this phase: unrendered, anything typed into it
+   * would be unreachable from the moment the dialog closed. */
+  notes?: string | null;
 }) {
   return (
     <>
@@ -37,6 +43,7 @@ export function KitCardBody({
             {category ? <span className={styles.chip}>{categoryLabel(category)}</span> : null}
           </div>
         ) : null}
+        {notes ? <span className={styles.cardNotes}>{notes}</span> : null}
       </div>
     </>
   );

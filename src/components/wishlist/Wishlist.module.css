@@ -304,6 +304,21 @@
   margin-top: 2px;
 }
 
+/* Hand-entered notes on a saved kit. Body copy, clamped — the card is a
+   grid tile, not a notes panel, and §4.1 keeps one body size for everything
+   read as secondary text. */
+.cardNotes {
+  font-family: var(--font-ui);
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--muted);
+  margin-top: 4px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
 .chip {
   display: inline-flex;
   align-items: center;

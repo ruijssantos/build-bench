@@ -21,6 +21,7 @@ export function SavedKitCard({ kit }: { kit: KitRow }) {
         kitNumber={kit.kitNumber}
         scale={kit.scale}
         category={kit.category}
+        notes={kit.notes}
       />
       <div className={styles.savedCardActions}>
         <MarkBoughtButton id={kit.id} />
