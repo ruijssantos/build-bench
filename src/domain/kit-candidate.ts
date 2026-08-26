@@ -59,6 +59,31 @@ function clean(value: string | null | undefined, maxLen: number): string | null 
 }
 
 /**
+ * Same as `clean`, plus: must parse as an absolute http(s) URL.
+ *
+ * `scalematesUrl` and `imageUrl` are the two fields the app actually acts on
+ * as links — one becomes an `<a href>`, the other an `<img src>` rendered
+ * straight from the model's answer, before a candidate is ever saved
+ * (`saveBoxArt`'s SSRF checks only run *after* Save is clicked). A model
+ * answering "the Scalemates page" instead of a real image file, or a bare
+ * filename with no host, would otherwise sail through `clean` as a non-empty
+ * string and hit the browser as a broken image or a dead link. Rejecting it
+ * here means a bad answer renders as "no box art" — the same fallback a kit
+ * with a genuinely unfound image already shows — rather than a visibly
+ * broken `<img>`.
+ */
+function cleanUrl(value: string | null | undefined, maxLen: number): string | null {
+  const candidate = clean(value, maxLen);
+  if (!candidate) return null;
+  try {
+    const parsed = new URL(candidate);
+    return parsed.protocol === "https:" || parsed.protocol === "http:" ? candidate : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
  * One raw candidate → the app's own shape, or `null` for a row too empty to
  * be worth showing. Brand and name are the identity a card leads with and the
  * minimum `saveKitCandidate` will accept, so a candidate missing either is
@@ -75,8 +100,8 @@ function normalizeCandidate(raw: z.infer<typeof CandidateWireSchema>): KitCandid
     name,
     scale: clean(raw.scale, 40),
     category: isKitCategory(raw.category) ? raw.category : "other",
-    scalematesUrl: clean(raw.scalematesUrl, 500),
-    imageUrl: clean(raw.imageUrl, 2000),
+    scalematesUrl: cleanUrl(raw.scalematesUrl, 500),
+    imageUrl: cleanUrl(raw.imageUrl, 2000),
   };
 }
 
