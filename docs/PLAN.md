@@ -3,8 +3,8 @@
 A companion app for 1:24 scale model car building, centred on a Tamiya 74540 HG Trigger
 airbrush workflow and pre-build kit research.
 
-**Status:** Phases 0–2 shipped (foundations, Thinner Bench, paint inventory). Phase 3
-(wishlist) is next. This file is the standing architecture and technical approach — how the
+**Status:** Phases 0–3 shipped (foundations, Thinner Bench, paint inventory, wishlist). Phase 4
+(stash) is next. This file is the standing architecture and technical approach — how the
 app is hosted, how data and screens are structured, and the rules any new phase builds
 against. It is not a decision log; for that, `git log docs/PLAN.md`.
 
@@ -645,7 +645,7 @@ claim. Splitting cited free-form research from cheap typed extraction gets both.
 skips this problem rather than solving it: resolving "what kit is this" carries no claims
 that need a source, so it goes straight to structured output in one call.
 
-**Stage A's UX.** The schema caps `candidates` at 5, ranked. A kit-number query usually
+**Stage A's UX.** The schema caps `candidates` at 10, ranked. A kit-number query usually
 resolves to one confident match; free text ("Tamiya Nissan GT-R") can genuinely mean several
 real kits — different scales, different boxings — so the wishlist screen renders whatever
 comes back as cards (box art, brand + name + number, scale, category) and the user picks one,
@@ -729,13 +729,15 @@ rules, cup-fill visualiser, `ratio_override` editing, the 74540 dry-tip panel.
 The paint shelf: CRUD over form/state (`open`/`low`), sortable table, one-tap running low,
 "do I own this?" on the Thinner Bench card.
 
-### Phase 3 — Wishlist
+### Phase 3 — Wishlist ✅
 Two sections on one screen. **Kits:** search by kit number or free text via §5.1 stage A,
-pick from candidates, save with brand, scale, category and box art (fetched once into Blob)
-plus a `scalemates_url` through to the full reference. Hand entry always available for
-anything the search can't place. **Other items:** free-text `wishlist_item` rows for tools
-and supplies. Both tick over to bought. Needs `ANTHROPIC_API_KEY` — this is the phase that
-first uses it.
+pick from up to 10 ranked candidates, save with brand, scale, category and box art (fetched
+once into Blob) plus a `scalemates_url` through to the full reference. Hand entry always
+available for anything the search can't place. **Other items:** free-text `wishlist_item`
+rows for tools and supplies. Kits tick over to the stash (`status: wishlist → stash`, §3.3,
+one-directional — Phase 4 picks the row up from there); other items tick between wanted and
+bought both ways, since there's no ownership record for a tool to move to. Needs
+`ANTHROPIC_API_KEY` — this is the phase that first uses it.
 
 ### Phase 4 — Stash
 The kits you own: `status` of `stash`, `building` or `built`, promoted from the wishlist with
@@ -771,6 +773,28 @@ entirely (a real migration, not just UI), and `state` was trimmed to two values
 After Phase 2, the airbrush feature was cut (§8) and the plan re-cut around the wishlist and
 the stash. That removed four tables — `airbrush`, `maintenance_log`, `spray_session`,
 `shopping_list_item` — plus `vendor`, and moved the rig to a committed file (§2.3).
+
+Phase 3 shipped with a few calls the one-line spec didn't settle, made during the build:
+`candidates` is capped at 10, not the 5 §5.1 originally specified — this phase's brief asked
+for up to 10 explicitly, so the schema, the route and this doc all moved together. Saved kits
+get a Remove action, not just Other items — not in the original spec, but the same one-tap
+pattern as everywhere else a mistaken add needs undoing, and a kit hasn't graduated to the
+stash yet so nothing else references the row. A wishlist kit's "mark bought" is one-directional
+(`status: wishlist → stash`, §3.3) with no undo from this screen — buying a kit is a real event,
+and the row it lands on is exactly where Phase 4 picks it up; an Other item's tick goes both
+ways instead, since a tool has no ownership record to move to. Other items got no Edit dialog —
+the spec named exactly three fields (title, URL, notes), all of them one tap away from
+"remove and re-add," so a fourth interaction pattern for the same three inputs didn't earn its
+place.
+
+Two more, both found in review rather than decided up front. `confidence` is listed on stage A's
+candidate payload in §5.1 and is **not** implemented: the screen ranks candidates by the order
+they come back in and shows no score, so the field would have been collected and never rendered.
+Add it in Phase 6 if stage B's trust surface (§5.4) turns out to want it. And the wire schema the
+resolve route validates against is deliberately looser than §5.1's shape — `zodOutputFormat` sends
+neither the category enum nor the candidate cap to the API (both are demoted to prose), so both are
+enforced by coercion after the fact rather than by rejecting the response; a strict schema threw
+away whole paid searches over one off-vocabulary word.
 
 ---
 
