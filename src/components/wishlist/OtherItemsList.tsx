@@ -1,5 +1,6 @@
 import { listWishlistItems } from "@/db/repositories/wishlist-items";
 
+import { EmptyOtherItems } from "./EmptyOtherItems";
 import { OtherItemRow } from "./OtherItemRow";
 import styles from "./Wishlist.module.css";
 
@@ -9,7 +10,7 @@ export async function OtherItemsList() {
   const items = await listWishlistItems();
 
   if (items.length === 0) {
-    return <div className={styles.emptyModule}>Nothing on the list yet — add a tool or supply above.</div>;
+    return <EmptyOtherItems />;
   }
 
   return (

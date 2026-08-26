@@ -133,15 +133,23 @@ export function KitSearch() {
       </div>
 
       {state.status === "done" && state.candidates.length > 0 ? (
-        // Keyed by search run, not by candidate content. Two searches for the
-        // same kit produce the same brand and number, so a content key let
-        // React reuse the previous card instance — and with it that card's
-        // "Saved" state, showing a fresh result as already saved with no way
-        // to save it.
-        <div className={styles.cardGrid}>
-          {state.candidates.map((candidate, i) => (
-            <KitCandidateCard key={`${state.run}-${i}`} candidate={candidate} />
-          ))}
+        <div className={styles.resultsBlock}>
+          <div className={styles.subHead}>
+            <span className={styles.moduleTitle}>Search results</span>
+            <span className={styles.moduleMeta}>
+              {state.candidates.length} found
+            </span>
+          </div>
+          {/* Keyed by search run, not by candidate content. Two searches for
+              the same kit produce the same brand and number, so a content
+              key let React reuse the previous card instance — and with it
+              that card's "Saved" state, showing a fresh result as already
+              saved with no way to save it. */}
+          <div className={styles.cardGrid}>
+            {state.candidates.map((candidate, i) => (
+              <KitCandidateCard key={`${state.run}-${i}`} candidate={candidate} />
+            ))}
+          </div>
         </div>
       ) : null}
 

@@ -1,7 +1,9 @@
 /*
- * The Wishlist screen — docs/PLAN.md §6 Phase 3. Two independent modules,
- * Kits and Other items, following the card language and module-title /
- * field-label treatments already set by `src/components/inventory/*`.
+ * The Wishlist screen — docs/PLAN.md §6 Phase 3. Two modules, Kits and Other
+ * items, stacked in one column — following the card language already set by
+ * `src/components/inventory/*`, plus a section-title tier documented in
+ * docs/PLAN.md §4.1 as a deliberate addition for screens with more than one
+ * top-level module.
  *
  * Box art is the only new source of saturated colour on this screen, same
  * rule as the paint swatches on the shelf (§4.1). The one semantic colour
@@ -24,19 +26,20 @@
   }
 }
 
+/* One column at every width — Other Items reads top to bottom below Kits,
+   not beside it, so it never strands as a mostly-empty side column. */
 .grid {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 32px;
   padding: 0 var(--gutter) 28px;
 }
 
 @media (min-width: 900px) {
   .grid {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 380px;
-    align-items: start;
-    gap: 24px;
+    /* Wider than the 14px rhythm inside a section — Other Items wants a
+       clearer break from Kits above it than from its own children. */
+    gap: 40px;
     padding: 0 0 8px;
   }
 }
@@ -48,14 +51,50 @@
   min-width: 0;
 }
 
-.moduleHead {
+/* Section title — docs/PLAN.md §4.1, the tier added for this screen: bigger
+   and darker than the locked module-title, for the handful of screens with
+   more than one top-level module. `sectionHead` is desktop-only adjacent
+   (title, then its trailing action right after with a plain gap); mobile
+   keeps the trailing action flush right, where a thumb reaches it. */
+.sectionHead {
   display: flex;
+  align-items: center;
   justify-content: space-between;
+  gap: 14px;
+}
+
+@media (min-width: 900px) {
+  .sectionHead {
+    justify-content: flex-start;
+  }
+}
+
+.sectionTitle {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+}
+
+@media (min-width: 900px) {
+  .sectionTitle {
+    font-size: 22px;
+  }
+}
+
+/* Module title — §4.1's locked tier: the same treatment whatever the
+   module's size. Used here one level down from a section title, for
+   "Search results" and "Saved kits". */
+.subHead {
+  display: flex;
   align-items: baseline;
+  justify-content: space-between;
   gap: 12px;
 }
 
-/* Module title — §4.1: the same treatment whatever the module's size. */
 .moduleTitle {
   font-family: var(--font-display);
   font-size: 13px;
@@ -79,7 +118,8 @@
   white-space: nowrap;
 }
 
-/* ------------------------------------------------------------- kit search */
+/* ------------------------------------------------- kit search, matched to
+   Thinner's SearchBox (src/components/thinner/SearchBox.module.css) */
 
 .searchCard {
   background: var(--card);
@@ -92,9 +132,26 @@
   gap: 12px;
 }
 
+@media (min-width: 900px) {
+  .searchCard {
+    padding: 18px;
+  }
+}
+
+/* Stacked on phone (full-width input, full-width Search button below);
+   side by side on desktop — a submit-triggered search needs a visible
+   button Thinner's type-ahead box doesn't, so this isn't a pure copy. */
 .searchRow {
   display: flex;
-  gap: 8px;
+  flex-direction: column;
+  gap: 12px;
+}
+
+@media (min-width: 900px) {
+  .searchRow {
+    flex-direction: row;
+    gap: 10px;
+  }
 }
 
 .searchBox {
@@ -102,17 +159,25 @@
   min-width: 0;
   display: flex;
   align-items: center;
-  gap: 10px;
-  height: 44px;
-  padding: 0 12px;
+  gap: 12px;
+  height: 52px;
+  padding: 0 16px;
   border: 1px solid var(--line-strong);
   border-radius: var(--radius-tile);
-  background: var(--card-sunken);
+  background: var(--card);
 }
 
 .searchBox:focus-within {
   border-color: var(--accent);
-  background: var(--card);
+}
+
+@media (min-width: 900px) {
+  .searchBox {
+    height: 46px;
+    border-radius: 12px;
+    gap: 11px;
+    padding: 0 15px;
+  }
 }
 
 .searchIcon {
@@ -127,25 +192,47 @@
   background: none;
   outline: none;
   font-family: var(--font-ui);
-  font-size: 14px;
+  font-size: 16px;
+  font-weight: 600;
   color: var(--ink);
+}
+
+.searchInput::placeholder {
+  color: var(--muted-2);
+  font-weight: 500;
+}
+
+@media (min-width: 900px) {
+  .searchInput {
+    font-size: 15px;
+  }
 }
 
 .searchButton {
   flex: none;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
-  height: 44px;
+  height: 52px;
   padding: 0 18px;
   border: none;
   border-radius: var(--radius-tile);
   background: var(--accent);
   color: var(--bg);
   font-family: var(--font-ui);
-  font-size: 13.5px;
+  font-size: 14px;
   font-weight: 700;
   cursor: pointer;
+}
+
+@media (min-width: 900px) {
+  .searchButton {
+    height: 46px;
+    border-radius: 12px;
+    font-size: 13.5px;
+    padding: 0 24px;
+  }
 }
 
 .searchButton:disabled {
@@ -159,10 +246,19 @@
 
 .searchFooter {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+@media (min-width: 900px) {
+  .searchFooter {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
 }
 
 .hint {
@@ -174,7 +270,7 @@
 
 .manualButton {
   flex: none;
-  height: 34px;
+  height: 36px;
   padding: 0 14px;
   border: 1px solid var(--line-strong);
   border-radius: var(--radius-tile);
@@ -223,12 +319,39 @@
   font-weight: 600;
 }
 
-/* --------------------------------------------------------------- candidates */
+/* Results live inside .searchCard once a search has run — a hairline break
+   from the controls above, "hairlines do the separating" (§4.1) — plus the
+   same padding as the rest of the card. Saved kits get the identical
+   .subHead + .cardGrid shape, just outside the search card, below it. */
+.resultsBlock {
+  border-top: 1px solid var(--line);
+  padding-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+@media (min-width: 900px) {
+  .resultsBlock {
+    padding-top: 16px;
+    gap: 14px;
+  }
+}
+
+/* --------------------------------------------------------------- cards:
+   fewer per row, bigger — box art, type and the Save button all scaled up
+   from the first pass. */
 
 .cardGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
-  gap: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+}
+
+@media (min-width: 900px) {
+  .cardGrid {
+    gap: 18px;
+  }
 }
 
 .card {
@@ -236,7 +359,7 @@
   flex-direction: column;
   background: var(--card);
   border: 1px solid var(--line);
-  border-radius: var(--radius-tile);
+  border-radius: 18px;
   overflow: hidden;
 }
 
@@ -264,23 +387,23 @@
 .cardBody {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  padding: 10px 11px 11px;
+  gap: 6px;
+  padding: 14px 16px 16px;
   flex: 1;
 }
 
 .cardBrand {
   font-family: var(--font-ui);
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--muted);
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.05em;
 }
 
 .cardName {
   font-family: var(--font-ui);
-  font-size: 13.5px;
+  font-size: 17px;
   font-weight: 700;
   letter-spacing: -0.01em;
   color: var(--ink);
@@ -293,14 +416,14 @@
 
 .cardNumber {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 12.5px;
   color: var(--muted-2);
 }
 
 .cardChips {
   display: flex;
   flex-wrap: wrap;
-  gap: 5px;
+  gap: 6px;
   margin-top: 2px;
 }
 
@@ -323,9 +446,9 @@
   display: inline-flex;
   align-items: center;
   border-radius: var(--radius-pill);
-  padding: 2px 8px;
+  padding: 4px 11px;
   font-family: var(--font-ui);
-  font-size: 10.5px;
+  font-size: 11.5px;
   font-weight: 600;
   background: var(--card-sunken);
   color: var(--muted);
@@ -336,19 +459,19 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  padding: 0 11px 11px;
+  padding: 4px 16px 16px;
   margin-top: auto;
 }
 
 .saveButton {
   flex: 1;
-  height: 32px;
+  height: 44px;
   border: none;
-  border-radius: 9px;
+  border-radius: 12px;
   background: var(--accent);
   color: var(--bg);
   font-family: var(--font-ui);
-  font-size: 12px;
+  font-size: 13.5px;
   font-weight: 700;
   cursor: pointer;
 }
@@ -364,21 +487,21 @@
 
 .savedLabel {
   flex: 1;
-  height: 32px;
+  height: 44px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 5px;
-  border-radius: 9px;
+  gap: 6px;
+  border-radius: 12px;
   background: var(--ok-tint);
   color: var(--ok);
   font-family: var(--font-ui);
-  font-size: 12px;
+  font-size: 13.5px;
   font-weight: 700;
 }
 
 .cardError {
-  padding: 0 11px 10px;
+  padding: 0 16px 14px;
   font-family: var(--font-ui);
   font-size: 11px;
   font-weight: 600;
@@ -390,8 +513,8 @@
 .savedCardActions {
   display: flex;
   align-items: center;
-  gap: 2px;
-  padding: 0 6px 8px;
+  gap: 4px;
+  padding: 6px 10px 12px;
   margin-top: auto;
 }
 
@@ -402,15 +525,15 @@
 .boughtButton {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  height: 30px;
-  padding: 0 9px;
+  gap: 6px;
+  height: 34px;
+  padding: 0 11px;
   border: 1px solid var(--line-strong);
   background: var(--card);
   border-radius: 9px;
   color: var(--muted);
   font-family: var(--font-ui);
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 700;
   cursor: pointer;
 }
@@ -421,15 +544,15 @@
   background: var(--ok-tint);
 }
 
-/* ≥44px touch target without a 44px-looking button — glyph 30–32px, padding
+/* ≥44px touch target without a 44px-looking button — glyph 32–34px, padding
    carries the rest, same approach as `Inventory.module.css` `.iconButton`. */
 .iconButton,
 a.iconButton {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   margin: 6px 0;
   border: none;
   background: none;
@@ -565,20 +688,6 @@ a.iconButton:hover {
   background: #14294c;
 }
 
-/* ------------------------------------------------------------- empty states */
-
-.emptyModule {
-  background: var(--card);
-  border: 1px dashed var(--line-strong);
-  border-radius: var(--radius-card);
-  padding: 24px 20px;
-  text-align: center;
-  font-family: var(--font-ui);
-  font-size: 13.5px;
-  line-height: 1.5;
-  color: var(--muted);
-}
-
 /* --------------------------------------------------------------- skeleton */
 
 .skeletonBlock {
@@ -588,11 +697,66 @@ a.iconButton:hover {
 }
 
 .skeletonKits {
-  height: 160px;
+  height: 220px;
 }
 
 .skeletonItems {
   height: 160px;
+}
+
+/* ------------------------------------------------------------- photo upload
+   (ManualKitDialog — only shown when a kit has no box art yet). */
+
+.photoField {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.photoPreview {
+  flex: none;
+  width: 72px;
+  height: 72px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--card-sunken);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--icon-idle);
+}
+
+.photoPreviewImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.photoUploadButton {
+  height: 40px;
+  padding: 0 16px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-tile);
+  background: none;
+  font-family: var(--font-ui);
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--accent);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.photoUploadButton:hover {
+  background: var(--accent-tint);
+}
+
+.photoHint {
+  font-family: var(--font-ui);
+  font-size: 11.5px;
+  color: var(--muted-2);
 }
 
 .srOnly {

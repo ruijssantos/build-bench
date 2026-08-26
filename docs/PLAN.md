@@ -503,6 +503,7 @@ Three faces, one job each. All from Google Fonts, each with a fallback stack.
 |---|---|
 | Screen title | Display 700 · 40px phone / 38px desktop · uppercase · ls .005em · lh .98 |
 | Hero numeral | Display 700 · 66px phone / 86px desktop · ls −.01em |
+| Section title | Display 700 · 20px phone / 22px desktop · uppercase · ls .02em · `--ink` |
 | Module title | Display 600 · 13px phone / 15px desktop · uppercase · ls .14em · `--muted` |
 | Body copy | UI · 13.5px · lh 1.5 · `--ink-soft` |
 | Row title | UI 700 · 14.5px · ls −.01em |
@@ -516,6 +517,10 @@ Rules for every module, regardless of screen:
   spec tile gets the identical title style as a full-width notes card. Don't shrink it to
   "fit"; if a title truncates, the layout is too narrow (the width floor under *Geometry*),
   not the type.
+- **Section title** is reserved for a screen built from more than one top-level module stacked
+  vertically — Wishlist's *Kits* and *Other items* — where each section needs its own heading
+  above the module content it contains. A screen with a single module (Paints, Thinner) has no
+  use for it; that module's own heading is a Module title, not a Section title.
 - **Body copy** is one size for everything read as secondary or reference text: tile values,
   notes lists, modal paragraphs. Don't introduce a second body size for a new module without
   a reason that survives being asked out loud.

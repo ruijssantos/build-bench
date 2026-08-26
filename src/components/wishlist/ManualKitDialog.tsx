@@ -1,27 +1,69 @@
 "use client";
 
-import { useState } from "react";
+import { upload } from "@vercel/blob/client";
+import { useEffect, useRef, useState, type ChangeEvent } from "react";
 
-import { addManualKit } from "@/app/(bench)/wishlist/actions";
+import { addManualKit, updateManualKit } from "@/app/(bench)/wishlist/actions";
 import { Modal } from "@/components/bench/Modal";
+import { KitsIcon } from "@/components/icons";
 import formStyles from "@/components/inventory/InventoryForm.module.css";
+import type { KitRow } from "@/db/repositories/kits";
 import { categoryLabel, KIT_CATEGORIES } from "@/domain/kit";
+import { resizeImage } from "@/lib/resize-image";
+
+import styles from "./Wishlist.module.css";
+
+/** Long edge, in pixels, an uploaded photo is resized down to before it
+ * reaches Blob — plenty for a card thumbnail (see `resizeImage`). */
+const MAX_PHOTO_EDGE = 2000;
 
 /**
  * Manual kit entry — always available (docs/PLAN.md §6 Phase 3), for
  * anything the search can't place. Its own chunk, fetched only once "Add a
- * kit by hand" is actually clicked.
+ * kit by hand" (or a saved kit's Edit) is actually clicked.
+ *
+ * The same form drives both add and edit: pass a `kit` to pre-fill it and
+ * save through `updateManualKit` instead of `addManualKit`. A photo picker
+ * only appears when the kit has no box art yet — a resolved or already
+ * hand-uploaded photo isn't replaced from here.
  */
-export function ManualKitDialog({ onClose }: { onClose: () => void }) {
-  const [brand, setBrand] = useState("");
-  const [kitNumber, setKitNumber] = useState("");
-  const [name, setName] = useState("");
-  const [scale, setScale] = useState("1:24");
-  const [category, setCategory] = useState<string>("cars");
-  const [scalematesUrl, setScalematesUrl] = useState("");
-  const [notes, setNotes] = useState("");
+export function ManualKitDialog({ kit, onClose }: { kit?: KitRow; onClose: () => void }) {
+  const editing = kit != null;
+
+  const [brand, setBrand] = useState(kit?.brand ?? "");
+  const [kitNumber, setKitNumber] = useState(kit?.kitNumber ?? "");
+  const [name, setName] = useState(kit?.name ?? "");
+  const [scale, setScale] = useState(kit?.scale ?? "1:24");
+  const [category, setCategory] = useState<string>(kit?.category ?? "cars");
+  const [scalematesUrl, setScalematesUrl] = useState(kit?.scalematesUrl ?? "");
+  const [notes, setNotes] = useState(kit?.notes ?? "");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const [photoFile, setPhotoFile] = useState<File | null>(null);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // The preview is an object URL — it needs releasing when replaced or when
+  // the dialog closes, or it outlives the file it points at.
+  useEffect(() => {
+    return () => {
+      if (photoPreview) URL.revokeObjectURL(photoPreview);
+    };
+  }, [photoPreview]);
+
+  async function onPhotoChosen(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    e.target.value = ""; // lets the same file be re-picked after an error
+    if (!file) return;
+    try {
+      const resized = await resizeImage(file, MAX_PHOTO_EDGE);
+      setPhotoFile(resized);
+      setPhotoPreview(URL.createObjectURL(resized));
+    } catch {
+      setError("Couldn't read that photo — try a different file.");
+    }
+  }
 
   async function save() {
     if (!brand.trim() || !name.trim()) {
@@ -31,7 +73,26 @@ export function ManualKitDialog({ onClose }: { onClose: () => void }) {
     setSaving(true);
     setError(null);
     try {
-      const result = await addManualKit({ brand, kitNumber, name, scale, category, scalematesUrl, notes });
+      let imageUrl: string | undefined;
+      if (photoFile) {
+        try {
+          const blob = await upload(`kits/${crypto.randomUUID()}.jpg`, photoFile, {
+            access: "public",
+            handleUploadUrl: "/api/kits/upload",
+            contentType: photoFile.type,
+          });
+          imageUrl = blob.url;
+        } catch {
+          setError("Couldn't upload that photo — try again.");
+          return;
+        }
+      }
+
+      const result =
+        editing && kit
+          ? await updateManualKit({ id: kit.id, brand, kitNumber, name, scale, category, scalematesUrl, notes, imageUrl })
+          : await addManualKit({ brand, kitNumber, name, scale, category, scalematesUrl, notes });
+
       if (!result.ok) {
         setError(result.error);
         return;
@@ -45,7 +106,7 @@ export function ManualKitDialog({ onClose }: { onClose: () => void }) {
   }
 
   return (
-    <Modal title="Add a kit by hand" onClose={onClose}>
+    <Modal title={editing ? "Edit kit" : "Add a kit by hand"} onClose={onClose}>
       <div className={formStyles.form}>
         <div className={formStyles.field}>
           <label className={formStyles.label} htmlFor="manual-kit-brand">
@@ -128,7 +189,7 @@ export function ManualKitDialog({ onClose }: { onClose: () => void }) {
 
         <div className={formStyles.field}>
           <label className={formStyles.label} htmlFor="manual-kit-scalemates">
-            Scalemates link
+            Link
           </label>
           <input
             id="manual-kit-scalemates"
@@ -156,6 +217,42 @@ export function ManualKitDialog({ onClose }: { onClose: () => void }) {
           />
         </div>
 
+        {!kit?.imageUrl ? (
+          <div className={formStyles.field}>
+            <label className={formStyles.label} htmlFor="manual-kit-photo">
+              Photo
+            </label>
+            <div className={styles.photoField}>
+              <div className={styles.photoPreview}>
+                {photoPreview ? (
+                  // eslint-disable-next-line @next/next/no-img-element -- a local object URL, not one next/image can optimise
+                  <img src={photoPreview} alt="" className={styles.photoPreviewImg} />
+                ) : (
+                  <KitsIcon size={22} />
+                )}
+              </div>
+              <button
+                type="button"
+                className={styles.photoUploadButton}
+                onClick={() => fileInputRef.current?.click()}
+                disabled={saving}
+              >
+                {photoFile ? "Choose a different photo" : "Choose a photo"}
+              </button>
+              <input
+                ref={fileInputRef}
+                id="manual-kit-photo"
+                className={styles.srOnly}
+                type="file"
+                accept="image/*"
+                onChange={(e) => void onPhotoChosen(e)}
+                disabled={saving}
+              />
+            </div>
+            <span className={styles.photoHint}>Optional — resized automatically from your computer.</span>
+          </div>
+        ) : null}
+
         {error ? <div className={formStyles.error}>{error}</div> : null}
 
         <div className={formStyles.actions}>
@@ -164,7 +261,7 @@ export function ManualKitDialog({ onClose }: { onClose: () => void }) {
             Cancel
           </button>
           <button type="button" className={formStyles.primaryButton} onClick={() => void save()} disabled={saving}>
-            {saving ? "Adding…" : "Add kit"}
+            {saving ? (editing ? "Saving…" : "Adding…") : editing ? "Save changes" : "Add kit"}
           </button>
         </div>
       </div>

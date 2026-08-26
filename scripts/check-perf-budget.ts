@@ -25,8 +25,11 @@ const BUDGETS = {
    * CDN hands over before anything streams. */
   documentGzip: 8 * 1024,
   /** Stylesheets are cached across navigations, so this can be generous —
-   * but not unbounded. */
-  cssGzip: 8 * 1024,
+   * but not unbounded. Raised from 8.0 kB alongside Phase 3 (Wishlist):
+   * search UI, bigger result cards and the manual-entry/photo-upload dialog
+   * pushed the shared `(bench)` stylesheet to ~8.0 kB — see docs/PERFORMANCE.md
+   * §10. */
+  cssGzip: 8.5 * 1024,
 };
 
 interface Failure {

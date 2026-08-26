@@ -225,7 +225,7 @@ shell and accept the gap.
 |---|---|---|
 | Initial JS, gzipped (framework included) | 150 kB | 143 kB |
 | `/thinner` static shell, gzipped | 8 kB | 2.7 kB |
-| `/thinner` CSS, gzipped | 8 kB | 7.0 kB |
+| `/thinner` CSS, gzipped | 8.5 kB | 8.0 kB |
 | Paint catalogue in an eagerly-loaded chunk | never | behind its dynamic import |
 | Every app route ships a static shell | all 7 | all 7 |
 
@@ -236,11 +236,13 @@ prerenderable. Move a budget only in the commit that needs it, and say why.
 **One stylesheet per route group.** The CSS number is measured on `/thinner`
 but is not `/thinner`'s alone: every route under `(bench)` shares one hashed
 stylesheet, so Phase 2's Paints screen moved it from 5.5 kB to 7.0 kB without
-touching the Thinner Bench. That is the deal the grouping makes — a navigation
-between bench screens fetches no new CSS at all — but it does mean the budget
-is a shared allowance, and Phases 3–8 each spend from it. The next screen to
-push past 8 kB is the one that has to decide whether to raise the number or
-split the group.
+touching the Thinner Bench, and Phase 3's Wishlist — search UI, bigger result
+cards, the manual-entry/photo-upload dialog — moved it again to 8.0 kB, past
+the original 8 kB budget, which is why that number is now 8.5 kB. That is the
+deal the grouping makes — a navigation between bench screens fetches no new
+CSS at all — but it does mean the budget is a shared allowance, and Phases
+4–8 each spend from it. The next screen to push past 8.5 kB is the one that
+has to decide whether to raise the number again or split the group.
 
 ## 11. Checklist for a new screen
 

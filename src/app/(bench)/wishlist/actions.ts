@@ -6,8 +6,10 @@ import { after } from "next/server";
 import {
   createKit,
   deleteKit,
+  findKitById,
   findWishlistKit,
   KIT_TAG,
+  updateKit,
   updateKitImage,
   updateKitStatus,
 } from "@/db/repositories/kits";
@@ -133,6 +135,70 @@ export async function addManualKit(input: AddManualKitInput): Promise<WishlistRe
   });
 
   updateTag(KIT_TAG);
+  return { ok: true };
+}
+
+export interface UpdateManualKitInput {
+  id: number;
+  brand: string;
+  kitNumber: string;
+  name: string;
+  scale: string;
+  category: string;
+  scalematesUrl: string;
+  notes: string;
+  /** Set only when the edit uploaded a new photo (`ManualKitDialog`'s upload
+   * runs before this action is called, same reasoning as `saveKitCandidate`
+   * not fetching box art inline — the row itself never blocks on Blob). */
+  imageUrl?: string;
+}
+
+/** Edits a kit already on the wishlist — the same fields `addManualKit`
+ * takes, plus the id and an optional new photo. Reuses `findWishlistKit`'s
+ * duplicate guard, excluding the kit being edited itself so saving with its
+ * own brand and number unchanged doesn't trip over its own row. */
+export async function updateManualKit(input: UpdateManualKitInput): Promise<WishlistResult> {
+  if (!Number.isInteger(input.id)) return { ok: false, error: "Unknown kit." };
+
+  const brand = readText(input.brand);
+  const name = readText(input.name);
+  if (!brand || !name) {
+    return { ok: false, error: "Give it at least a brand and a name." };
+  }
+
+  const existing = await findKitById(input.id, "wishlist");
+  if (!existing) return { ok: false, error: "That kit is no longer on the wishlist." };
+
+  const kitNumber = readText(input.kitNumber);
+  if (kitNumber) {
+    const duplicate = await findWishlistKit(brand, kitNumber);
+    if (duplicate && duplicate.id !== input.id) {
+      return { ok: false, error: `${brand} ${kitNumber} is already on the wishlist.` };
+    }
+  }
+
+  const newImageUrl = readText(input.imageUrl ?? "", 2000) ?? undefined;
+
+  const updated = await updateKit(input.id, "wishlist", {
+    brand,
+    kitNumber,
+    name,
+    scale: readText(input.scale, 40),
+    category: isKitCategory(input.category) ? input.category : "other",
+    scalematesUrl: readText(input.scalematesUrl, 500),
+    notes: readText(input.notes, 2000),
+    imageUrl: newImageUrl,
+  });
+  if (!updated) return { ok: false, error: "That kit is no longer on the wishlist." };
+
+  updateTag(KIT_TAG);
+
+  // A replaced photo orphans the old blob unless it's cleaned up — same rule
+  // as `removeKitAction`, just triggered by a swap instead of a delete.
+  if (newImageUrl && existing.imageUrl && existing.imageUrl !== newImageUrl) {
+    after(() => deleteBoxArt(existing.imageUrl));
+  }
+
   return { ok: true };
 }
 
