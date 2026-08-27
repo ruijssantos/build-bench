@@ -875,7 +875,13 @@ PDFs, build photos — that don't belong in Postgres rows.
 
 1. Import this repo into a new Vercel project.
 2. Storage tab → add a Postgres database (Neon) → connect it to the project.
-3. Storage tab → add a Blob store → connect it to the project.
+3. Storage tab → add a Blob store → connect it to the project. **Choose public access.**
+   Box art and build photos are displayed in `<img>` tags straight from Blob's CDN, which
+   needs a URL a browser can fetch on its own; a private store has no such URL — its objects
+   are readable only by streaming them back through a function, which costs an invocation per
+   image and gives up the CDN entirely. The store's access mode is fixed when it's created,
+   so a private one has to be replaced rather than switched. Nothing here is secret: the
+   filenames are random UUIDs, and the screen that lists them is behind the passphrase.
 4. Environment Variables → add two secrets by hand:
    - `AUTH_SECRET` — 32 random bytes: `openssl rand -base64 32`.
    - `APP_PASSPHRASE` — whatever you want to type in to sign in.

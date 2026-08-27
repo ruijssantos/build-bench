@@ -317,6 +317,11 @@ export function describeBlobError(error: unknown): string {
     if (error.message.includes("No read-write token found")) {
       return "No Blob token is configured. Connect a Blob store in Vercel → Storage, then redeploy so BLOB_READ_WRITE_TOKEN reaches the running deployment.";
     }
+    if (error.message.includes("private store")) {
+      // Access mode is fixed when a store is created, so this one can't be
+      // toggled — hence "create a new store" rather than "change the setting".
+      return "This Blob store is private, and box art has to be public to show in the app. Create a new store with public access in Vercel → Storage, connect it to the project, and redeploy. See docs/PLAN.md §9.2.";
+    }
     return error.message;
   }
 
