@@ -1,4 +1,10 @@
 .box {
+  /* Only matters inside a flex row (the Wishlist search form at desktop —
+     see Wishlist.module.css .searchForm); a block-level parent (Thinner's
+     phone/desktop wrappers) ignores flex properties entirely, so this is
+     free to be unconditional. */
+  flex: 1;
+  min-width: 0;
   background: var(--card);
   border: 1px solid var(--line-strong);
   border-radius: var(--radius-tile);

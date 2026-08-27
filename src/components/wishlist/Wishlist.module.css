@@ -138,18 +138,33 @@
   }
 }
 
-/* One box on its own row (the shared `SearchField`, `src/components/bench`),
-   then Search and Add by Hand paired below it — always side by side, phone
-   and desktop alike, rather than switching layout at the desktop breakpoint. */
+/* Phone: the box (shared `SearchField`, `src/components/bench`) on its own
+   row, Search and Add by Hand paired below it. Desktop: all three share one
+   row — the box gives up the width the stacked buttons no longer need, and
+   Search + Add by Hand sit to its right rather than under it. */
 .searchForm {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
+@media (min-width: 900px) {
+  .searchForm {
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+  }
+}
+
 .searchActions {
   display: flex;
   gap: 10px;
+}
+
+@media (min-width: 900px) {
+  .searchActions {
+    flex: none;
+  }
 }
 
 .searchButton {
