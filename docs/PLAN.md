@@ -787,10 +787,12 @@ pattern as everywhere else a mistaken add needs undoing, and a kit hasn't gradua
 stash yet so nothing else references the row. A wishlist kit's "mark bought" is one-directional
 (`status: wishlist → stash`, §3.3) with no undo from this screen — buying a kit is a real event,
 and the row it lands on is exactly where Phase 4 picks it up; an Other item's tick goes both
-ways instead, since a tool has no ownership record to move to. Other items got no Edit dialog —
-the spec named exactly three fields (title, URL, notes), all of them one tap away from
+ways instead, since a tool has no ownership record to move to. Other items shipped with no Edit
+dialog on the reasoning that three fields (title, URL, notes) were all one tap away from
 "remove and re-add," so a fourth interaction pattern for the same three inputs didn't earn its
-place.
+place — reversed on request once the screen was in real use: re-typing three fields to fix a
+typo reads as friction in practice, not restraint, so `EditWishlistItemDialog` exists after all,
+same shape as the kit-editing dialog Phase 3 already added for the same reason.
 
 Phase 3 also turned up a migration bug predating it: `0002_drop_airbrush_and_shopping` dropped
 `vendor` with `CASCADE` — which takes the foreign keys pointing at it along with it — and then

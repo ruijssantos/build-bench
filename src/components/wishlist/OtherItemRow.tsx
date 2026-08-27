@@ -2,12 +2,14 @@ import { removeWishlistItemAction, toggleWishlistItemBought } from "@/app/(bench
 import { CheckIcon, ExternalLinkIcon, TrashIcon } from "@/components/icons";
 import type { WishlistItemRow } from "@/db/repositories/wishlist-items";
 
+import { EditWishlistItemTrigger } from "./EditWishlistItemTrigger";
 import styles from "./Wishlist.module.css";
 
-/** One "Other items" row — a tick, the title (with its optional link), and
- * remove. A `<form action={…}>` around a server-rendered button for both
- * controls, same shape as inventory's `LowToggle`/`RemoveButton`: no client
- * JavaScript, works before hydration. */
+/** One "Other items" row — a tick, the title (with its optional link), edit,
+ * and remove. The tick and remove are `<form action={…}>`s around a
+ * server-rendered button, same shape as inventory's `LowToggle`/
+ * `RemoveButton`: no client JavaScript, works before hydration. Edit is the
+ * one client island in the row, its dialog fetched only on click. */
 export function OtherItemRow({ item }: { item: WishlistItemRow }) {
   const bought = item.status === "bought";
 
@@ -45,6 +47,8 @@ export function OtherItemRow({ item }: { item: WishlistItemRow }) {
         </div>
         {item.notes ? <span className={styles.itemNotes}>{item.notes}</span> : null}
       </div>
+
+      <EditWishlistItemTrigger item={item} />
 
       <form action={removeWishlistItemAction}>
         <input type="hidden" name="id" value={item.id} />

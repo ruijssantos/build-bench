@@ -50,6 +50,21 @@ export async function createWishlistItem(input: CreateWishlistItemInput): Promis
   await db.insert(wishlistItem).values({ ...input, status: "wanted", addedAt: new Date() });
 }
 
+export interface UpdateWishlistItemInput {
+  title: string;
+  url: string | null;
+  notes: string | null;
+}
+
+export async function updateWishlistItem(id: number, input: UpdateWishlistItemInput): Promise<boolean> {
+  const rows = await db
+    .update(wishlistItem)
+    .set(input)
+    .where(eq(wishlistItem.id, id))
+    .returning({ id: wishlistItem.id });
+  return rows.length > 0;
+}
+
 export async function updateWishlistItemStatus(id: number, status: WishlistItemStatus): Promise<boolean> {
   const rows = await db
     .update(wishlistItem)

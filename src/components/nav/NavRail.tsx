@@ -7,6 +7,7 @@ import type { ReactNode } from "react";
 import { SignOutButton } from "@/components/bench/SignOutButton";
 import { ThinnerIcon } from "@/components/icons";
 
+import { dispatchNavClick } from "./nav-events";
 import styles from "./NavRail.module.css";
 import { NAV_ITEMS } from "./nav-items";
 
@@ -50,6 +51,7 @@ export function NavRail({ rig }: { rig: ReactNode }) {
               key={item.key}
               href={item.href}
               className={`${styles.item} ${active ? styles.itemActive : ""}`}
+              onClick={() => dispatchNavClick(item.href)}
             >
               <Icon size={19} />
               <span className={styles.itemLabel}>{item.railLabel}</span>

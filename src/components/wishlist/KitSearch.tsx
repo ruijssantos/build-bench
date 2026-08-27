@@ -1,8 +1,10 @@
 "use client";
 
-import { lazy, Suspense, useState, type FormEvent } from "react";
+import { lazy, Suspense, useEffect, useState, type FormEvent } from "react";
 
-import { PlusIcon, SearchIcon } from "@/components/icons";
+import { SearchField } from "@/components/bench/SearchField";
+import { PlusIcon } from "@/components/icons";
+import { NAV_RECLICK_EVENT } from "@/components/nav/nav-events";
 import type { KitCandidate } from "@/domain/kit-candidate";
 
 import { KitCandidateCard } from "./KitCandidateCard";
@@ -35,6 +37,23 @@ export function KitSearch() {
   const [runs, setRuns] = useState(0);
   const [manualOpen, setManualOpen] = useState(false);
 
+  /** Back to a blank box — the search's own × clears it, and re-clicking the
+   * Wishlist nav tab (see `nav-events.ts`) does the same, since neither a
+   * saved candidate nor a dismissed error should linger once you're done
+   * with them. */
+  function reset() {
+    setQuery("");
+    setState({ status: "idle" });
+  }
+
+  useEffect(() => {
+    function onNavClick(e: Event) {
+      if ((e as CustomEvent<string>).detail === "/wishlist") reset();
+    }
+    window.addEventListener(NAV_RECLICK_EVENT, onNavClick);
+    return () => window.removeEventListener(NAV_RECLICK_EVENT, onNavClick);
+  }, []);
+
   async function search(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const trimmed = query.trim();
@@ -64,36 +83,25 @@ export function KitSearch() {
 
   return (
     <div className={styles.searchCard}>
-      <form className={styles.searchRow} onSubmit={(e) => void search(e)}>
-        <label className={styles.srOnly} htmlFor="kit-search-input">
-          Search for a kit by number or name
-        </label>
-        <div className={styles.searchBox}>
-          <SearchIcon size={16} className={styles.searchIcon} />
-          <input
-            id="kit-search-input"
-            className={styles.searchInput}
-            type="text"
-            placeholder="Kit number or name — “24345”, “Tamiya Nissan GT-R”…"
-            autoComplete="off"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            disabled={loading}
-          />
+      <form className={styles.searchForm} onSubmit={(e) => void search(e)}>
+        <SearchField
+          id="kit-search-input"
+          label="Search for a kit by number or name"
+          placeholder="Brand and kit number for accurate results"
+          value={query}
+          onChange={setQuery}
+          onClear={reset}
+          disabled={loading}
+        />
+        <div className={styles.searchActions}>
+          <button type="submit" className={styles.searchButton} disabled={loading || !query.trim()}>
+            {loading ? "Searching…" : "Search"}
+          </button>
+          <button type="button" className={styles.manualButton} onClick={() => setManualOpen(true)}>
+            <PlusIcon size={11} /> Add by Hand
+          </button>
         </div>
-        <button type="submit" className={styles.searchButton} disabled={loading || !query.trim()}>
-          {loading ? "Searching…" : "Search"}
-        </button>
       </form>
-
-      <div className={styles.searchFooter}>
-        <span className={styles.hint}>
-          Real kits only, found by web search — can take up to 20 seconds.
-        </span>
-        <button type="button" className={styles.manualButton} onClick={() => setManualOpen(true)}>
-          <PlusIcon size={11} /> Add a kit by hand
-        </button>
-      </div>
 
       {/* One live region for all three outcomes: a submit whose result takes
           20s to arrive is exactly the case a screen reader has to be told
