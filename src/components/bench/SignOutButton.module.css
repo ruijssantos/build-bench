@@ -17,17 +17,3 @@
 .button:hover {
   color: var(--ink);
 }
-
-.iconOnly {
-  height: 28px;
-  width: 28px;
-  padding: 0;
-  justify-content: center;
-  border-radius: 999px;
-  color: var(--icon-idle);
-}
-
-.iconOnly:hover {
-  color: var(--ink);
-  background: var(--card-sunken);
-}

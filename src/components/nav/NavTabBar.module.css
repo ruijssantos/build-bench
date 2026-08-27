@@ -1,5 +1,12 @@
+/* Sticky, not fixed: it keeps its own slot in the page's normal flow (no
+   compensating bottom padding needed anywhere else), but on a page tall
+   enough to scroll, it never leaves the bottom of the viewport — a long
+   screen used to mean scrolling all the way past the content to reach it. */
 .bar {
   flex: none;
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
   height: 84px;
   background: var(--card);
   border-top: 1px solid var(--line);
@@ -14,6 +21,10 @@
   }
 }
 
+/* Shared by the five <Link> tabs and the sign-out <button> — border/
+   background/padding/font/cursor are no-ops on an <a> (it has none of
+   these by default) but are what keep the button from showing native
+   button chrome instead of looking like its five siblings. */
 .item {
   flex: 1;
   display: flex;
@@ -22,8 +33,22 @@
   justify-content: center;
   gap: 5px;
   height: 52px;
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  cursor: pointer;
   text-decoration: none;
   color: var(--icon-idle);
+}
+
+/* Sign out's <form> sits where the other five items' <Link> does — this is
+   what actually claims its share of the row, since `.item` on the <button>
+   a level below only sizes within the form, not against its siblings. */
+.signOutItem {
+  flex: 1;
+  display: flex;
 }
 
 .itemLabel {

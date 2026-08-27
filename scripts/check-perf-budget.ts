@@ -27,9 +27,12 @@ const BUDGETS = {
   /** Stylesheets are cached across navigations, so this can be generous —
    * but not unbounded. Raised from 8.0 kB alongside Phase 3 (Wishlist):
    * search UI, bigger result cards and the manual-entry/photo-upload dialog
-   * pushed the shared `(bench)` stylesheet to ~8.0 kB — see docs/PERFORMANCE.md
+   * pushed the shared `(bench)` stylesheet to ~8.0 kB. Raised again, to 9.0 kB,
+   * for the sticky mobile tab bar and its sixth sign-out tab — global chrome
+   * every screen shares, not a phase-specific cost, and it left the previous
+   * ceiling with room for about one more CSS rule. See docs/PERFORMANCE.md
    * §10. */
-  cssGzip: 8.5 * 1024,
+  cssGzip: 9 * 1024,
 };
 
 interface Failure {
