@@ -21,8 +21,12 @@
   background: var(--card);
   border-top: 1px solid var(--line);
   display: flex;
-  align-items: flex-start;
-  padding-top: 10px;
+  /* Items sit near the bottom edge, not the top — matches a native tab bar's
+     rhythm (icons close to the home-indicator area, breathing room above
+     against the hairline) and keeps them close to Safari's own bottom
+     toolbar rather than stranded above a wide gap. */
+  align-items: flex-end;
+  padding-bottom: 10px;
 }
 
 @media (min-width: 900px) {
