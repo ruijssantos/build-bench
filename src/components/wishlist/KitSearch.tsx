@@ -98,7 +98,7 @@ export function KitSearch() {
             {loading ? "Searching…" : "Search"}
           </button>
           <button type="button" className={styles.manualButton} onClick={() => setManualOpen(true)}>
-            <PlusIcon size={11} /> Add by Hand
+            <PlusIcon size={11} /> Add Manually
           </button>
         </div>
       </form>
@@ -120,7 +120,7 @@ export function KitSearch() {
 
         {state.status === "done" && state.candidates.length === 0 ? (
           <div className={styles.status}>
-            No matches for &ldquo;{state.query}&rdquo;. Try different terms, or add it by hand.
+            No matches for &ldquo;{state.query}&rdquo;. Try different terms, or add it manually.
           </div>
         ) : null}
       </div>

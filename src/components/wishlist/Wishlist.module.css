@@ -139,9 +139,9 @@
 }
 
 /* Phone: the box (shared `SearchField`, `src/components/bench`) on its own
-   row, Search and Add by Hand paired below it. Desktop: all three share one
-   row — the box gives up the width the stacked buttons no longer need, and
-   Search + Add by Hand sit to its right rather than under it. */
+   row, Search and Add Manually paired below it. Desktop: all three share
+   one row — the box gives up the width the stacked buttons no longer need,
+   and Search + Add Manually sit to its right rather than under it. */
 .searchForm {
   display: flex;
   flex-direction: column;
