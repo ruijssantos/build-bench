@@ -8,10 +8,15 @@ import { CheckIcon } from "@/components/icons";
 import styles from "./Wishlist.module.css";
 
 /**
- * The saved kit card's "Bought" tick — `status: wishlist → stash` (§3.3).
+ * The saved kit card's "Stash" tick — `status: wishlist → stash` (§3.3).
  * Calls the Server Action directly rather than through a `<form>`: it takes
  * an id, not a `FormData`, and this is the one control on the card that
  * needs a pending state (the row leaves the grid once it lands).
+ *
+ * Labelled "Stash", not "Bought", even though the action it triggers is
+ * still the purchase event — the label names where the kit is going
+ * (Phase 4's Stash screen), which is what the person clicking it cares
+ * about in the moment, not the domain event that gets it there.
  */
 export function MarkBoughtButton({ id }: { id: number }) {
   const [pending, startTransition] = useTransition();
@@ -28,7 +33,7 @@ export function MarkBoughtButton({ id }: { id: number }) {
       }
     >
       <CheckIcon size={13} />
-      <span>{pending ? "Marking…" : "Bought"}</span>
+      <span>{pending ? "Stashing…" : "Stash"}</span>
     </button>
   );
 }

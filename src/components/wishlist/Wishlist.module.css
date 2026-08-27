@@ -138,78 +138,37 @@
   }
 }
 
-/* Stacked on phone (full-width input, full-width Search button below);
-   side by side on desktop — a submit-triggered search needs a visible
-   button Thinner's type-ahead box doesn't, so this isn't a pure copy. */
-.searchRow {
+/* Phone: the box (shared `SearchField`, `src/components/bench`) on its own
+   row, Search and Add Manually paired below it. Desktop: all three share
+   one row — the box gives up the width the stacked buttons no longer need,
+   and Search + Add Manually sit to its right rather than under it. */
+.searchForm {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
 @media (min-width: 900px) {
-  .searchRow {
+  .searchForm {
     flex-direction: row;
+    align-items: center;
     gap: 10px;
   }
 }
 
-.searchBox {
-  flex: 1;
-  min-width: 0;
+.searchActions {
   display: flex;
-  align-items: center;
-  gap: 12px;
-  height: 52px;
-  padding: 0 16px;
-  border: 1px solid var(--line-strong);
-  border-radius: var(--radius-tile);
-  background: var(--card);
-}
-
-.searchBox:focus-within {
-  border-color: var(--accent);
+  gap: 10px;
 }
 
 @media (min-width: 900px) {
-  .searchBox {
-    height: 46px;
-    border-radius: 12px;
-    gap: 11px;
-    padding: 0 15px;
-  }
-}
-
-.searchIcon {
-  flex: none;
-  color: var(--muted-2);
-}
-
-.searchInput {
-  flex: 1;
-  min-width: 0;
-  border: none;
-  background: none;
-  outline: none;
-  font-family: var(--font-ui);
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--ink);
-}
-
-.searchInput::placeholder {
-  color: var(--muted-2);
-  font-weight: 500;
-}
-
-@media (min-width: 900px) {
-  .searchInput {
-    font-size: 15px;
+  .searchActions {
+    flex: none;
   }
 }
 
 .searchButton {
-  flex: none;
+  flex: 1;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -244,42 +203,29 @@
   background: #14294c;
 }
 
-.searchFooter {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 10px;
-}
-
-@media (min-width: 900px) {
-  .searchFooter {
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-}
-
-.hint {
-  font-family: var(--font-ui);
-  font-size: 11.5px;
-  font-weight: 500;
-  color: var(--muted-2);
-}
-
 .manualButton {
   flex: none;
-  height: 36px;
-  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 52px;
+  padding: 0 16px;
   border: 1px solid var(--line-strong);
   border-radius: var(--radius-tile);
   background: none;
   font-family: var(--font-ui);
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 700;
   color: var(--accent);
   cursor: pointer;
+  white-space: nowrap;
+}
+
+@media (min-width: 900px) {
+  .manualButton {
+    height: 46px;
+    border-radius: 12px;
+  }
 }
 
 .manualButton:hover {

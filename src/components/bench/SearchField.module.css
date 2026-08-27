@@ -1,0 +1,94 @@
+.box {
+  /* flex-basis must stay `auto`, not the `0%` that the bare `flex: 1`
+     shorthand implies — Wishlist's search form is a column on phone, and
+     with a `0%` basis the column's main axis is height, so flex-basis
+     would override this rule's own `height: 52px` and collapse the box to
+     its content height instead. `auto` defers to `height` first and only
+     grows/shrinks from there, which is what actually happens: nothing else
+     in that column competes for vertical space, so it stays at 52px. In
+     the desktop row this same rule is what lets the box give up width to
+     `.searchActions` beside it. A block-level parent (Thinner's phone/
+     desktop wrappers) ignores flex properties entirely, so none of this
+     costs Thinner anything either way. */
+  flex: 1 1 auto;
+  min-width: 0;
+  background: var(--card);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-tile);
+  height: 52px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px;
+  box-shadow: 0 1px 2px rgba(28, 26, 23, 0.04);
+}
+
+.box:focus-within {
+  border-color: var(--accent);
+}
+
+@media (min-width: 900px) {
+  .box {
+    height: 46px;
+    border-radius: 12px;
+    gap: 11px;
+    padding: 0 15px;
+  }
+}
+
+.icon {
+  flex: none;
+  color: var(--muted-2);
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: none;
+  font-family: var(--font-ui);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.input::placeholder {
+  color: var(--muted-2);
+  font-weight: 500;
+}
+
+@media (min-width: 900px) {
+  .input {
+    font-size: 15px;
+  }
+}
+
+.clearButton {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  border: none;
+  background: none;
+  padding: 0;
+  color: var(--faint);
+  cursor: pointer;
+}
+
+.clearButton:hover {
+  color: var(--muted);
+  background: var(--card-sunken);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}

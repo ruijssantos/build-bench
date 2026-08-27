@@ -16,6 +16,7 @@ import {
 import {
   createWishlistItem,
   deleteWishlistItem,
+  updateWishlistItem as updateWishlistItemRow,
   updateWishlistItemStatus,
   WISHLIST_ITEMS_TAG,
 } from "@/db/repositories/wishlist-items";
@@ -342,6 +343,30 @@ export async function addWishlistItem(input: AddWishlistItemInput): Promise<Wish
     url: readText(input.url, 500),
     notes: readText(input.notes, 2000),
   });
+
+  updateTag(WISHLIST_ITEMS_TAG);
+  return { ok: true };
+}
+
+export interface UpdateWishlistItemInput {
+  id: number;
+  title: string;
+  url: string;
+  notes: string;
+}
+
+export async function updateWishlistItem(input: UpdateWishlistItemInput): Promise<WishlistResult> {
+  if (!Number.isInteger(input.id)) return { ok: false, error: "Unknown item." };
+
+  const title = readText(input.title);
+  if (!title) return { ok: false, error: "Give it a title." };
+
+  const updated = await updateWishlistItemRow(input.id, {
+    title,
+    url: readText(input.url, 500),
+    notes: readText(input.notes, 2000),
+  });
+  if (!updated) return { ok: false, error: "That item is no longer on the list." };
 
   updateTag(WISHLIST_ITEMS_TAG);
   return { ok: true };

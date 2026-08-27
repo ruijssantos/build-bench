@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useCallback, useRef, useState, useTransition } from "react";
 
-import { SearchIcon, XIcon } from "@/components/icons";
+import { SearchField } from "@/components/bench/SearchField";
 
 import type { PaintHit } from "./paint-search-index";
 import styles from "./SearchBox.module.css";
@@ -133,53 +133,30 @@ export function SearchBox({ scope, initialQuery }: { scope: "phone" | "desktop";
   return (
     <div className={wrapperClass}>
       <div className={styles.wrap}>
-        <div className={`${styles.box} ${scope === "desktop" ? styles.boxDesktop : ""}`}>
-          <SearchIcon size={scope === "desktop" ? 18 : 19} className={styles.icon} />
-          <label
-            htmlFor={inputId}
-            style={{ position: "absolute", width: 1, height: 1, overflow: "hidden", clip: "rect(0 0 0 0)" }}
-          >
-            Paint code
-          </label>
-          <input
-            ref={inputRef}
-            id={inputId}
-            className={styles.input}
-            type="text"
-            placeholder="XF-1, X-11, LP-2, TS-8…"
-            autoComplete="off"
-            spellCheck={false}
-            role="combobox"
-            aria-expanded={open}
-            aria-controls={`${inputId}-hits`}
-            aria-activedescendant={highlighted >= 0 ? `${inputId}-hit-${highlighted}` : undefined}
-            value={query}
-            onChange={(e) => onChange(e.target.value)}
-            onPointerEnter={primeSearch}
-            onFocus={() => {
-              primeSearch();
-              if (query.trim()) runQuery(query, search);
-            }}
-            onBlur={() => setTimeout(() => setOpen(false), 120)}
-            onKeyDown={onKeyDown}
-          />
-          {query ? (
-            <button
-              type="button"
-              className={styles.clearButton}
-              aria-label="Clear search"
-              onMouseDown={(e) => {
-                // preventDefault, not onClick: keeps focus on the input rather than
-                // blurring to the button, so the dropdown doesn't close first.
-                e.preventDefault();
-                onChange("");
-                inputRef.current?.focus();
-              }}
-            >
-              <XIcon size={scope === "desktop" ? 15 : 16} />
-            </button>
-          ) : null}
-        </div>
+        <SearchField
+          ref={inputRef}
+          id={inputId}
+          label="Paint code"
+          placeholder="XF-1, X-11, LP-2, TS-8…"
+          spellCheck={false}
+          role="combobox"
+          aria-expanded={open}
+          aria-controls={`${inputId}-hits`}
+          aria-activedescendant={highlighted >= 0 ? `${inputId}-hit-${highlighted}` : undefined}
+          value={query}
+          onChange={onChange}
+          onClear={() => {
+            onChange("");
+            inputRef.current?.focus();
+          }}
+          onPointerEnter={primeSearch}
+          onFocus={() => {
+            primeSearch();
+            if (query.trim()) runQuery(query, search);
+          }}
+          onBlur={() => setTimeout(() => setOpen(false), 120)}
+          onKeyDown={onKeyDown}
+        />
 
         {open ? (
           <ul className={styles.hits} id={`${inputId}-hits`} role="listbox">
