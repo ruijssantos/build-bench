@@ -78,7 +78,7 @@ export async function saveKitCandidate(input: KitCandidate): Promise<WishlistRes
   // name the kit's page, and `saveBoxArt` reads the art off that page's
   // Open Graph tag. Before this fallback existed a candidate with no
   // `imageUrl` saved with no art and no way to ever get any.
-  const artSource = readText(input.imageUrl, 2000) ?? readText(input.scalematesUrl, 2000);
+  const artSources = [readText(input.imageUrl, 2000), readText(input.scalematesUrl, 2000)];
 
   const id = await createKit({
     brand,
@@ -94,11 +94,11 @@ export async function saveKitCandidate(input: KitCandidate): Promise<WishlistRes
 
   updateTag(KIT_TAG);
 
-  if (artSource) {
+  if (artSources.some(Boolean)) {
     after(async () => {
-      const imageUrl = await saveBoxArt(artSource);
-      if (!imageUrl) return;
-      await updateKitImage(id, imageUrl);
+      const art = await saveBoxArt(artSources);
+      if (!art.ok) return;
+      await updateKitImage(id, art.url);
       updateTag(KIT_TAG);
     });
   }
@@ -146,9 +146,9 @@ export async function addManualKit(input: AddManualKitInput): Promise<WishlistRe
 
   if (scalematesUrl) {
     after(async () => {
-      const imageUrl = await saveBoxArt(scalematesUrl);
-      if (!imageUrl) return;
-      await updateKitImage(id, imageUrl);
+      const art = await saveBoxArt([scalematesUrl]);
+      if (!art.ok) return;
+      await updateKitImage(id, art.url);
       updateTag(KIT_TAG);
     });
   }
@@ -212,19 +212,11 @@ export async function updateManualKit(input: UpdateManualKitInput): Promise<Wish
 
   updateTag(KIT_TAG);
 
-  // Backfill for a kit that has no art and didn't just get a photo: re-read
-  // the link's Open Graph image. This is the recovery path for rows saved
-  // before box art worked — opening a blank kit, checking its link and
-  // saving is enough to fetch the picture it never got.
-  if (!newImageUrl && !existing.imageUrl && scalematesUrl) {
-    const id = input.id;
-    after(async () => {
-      const imageUrl = await saveBoxArt(scalematesUrl);
-      if (!imageUrl) return;
-      await updateKitImage(id, imageUrl);
-      updateTag(KIT_TAG);
-    });
-  }
+  // No silent art backfill here any more. Saving used to quietly re-read the
+  // link and hope, which is indistinguishable from doing nothing when the
+  // site refuses the request — the user saved, waited, saw no picture and had
+  // no way to learn why. `fetchKitArt` below does the same work on an
+  // explicit press and reports what actually happened.
 
   // A replaced photo orphans the old blob unless it's cleaned up — same rule
   // as `removeKitAction`, just triggered by a swap instead of a delete.
@@ -233,6 +225,51 @@ export async function updateManualKit(input: UpdateManualKitInput): Promise<Wish
   }
 
   return { ok: true };
+}
+
+export type FetchArtResult = { ok: true; imageUrl: string } | { ok: false; error: string };
+
+/**
+ * Fetches box art from a kit's link, on demand, and says what happened.
+ *
+ * Deliberately synchronous — the one place in this screen that waits on a
+ * third-party host rather than deferring to `after()`. Everywhere else art
+ * is a bonus arriving quietly behind a save; here it is the entire point of
+ * the press, so the user watches it work and gets the real reason when it
+ * doesn't. Sites that refuse server-side requests are the expected failure,
+ * not an exceptional one, and "Upload a photo instead" is only useful advice
+ * if it actually reaches them.
+ */
+export async function fetchKitArt(id: number, linkUrl: string): Promise<FetchArtResult> {
+  if (!Number.isInteger(id)) return { ok: false, error: "Unknown kit." };
+
+  const link = readText(linkUrl, 2000);
+  if (!link) return { ok: false, error: "Add a link first, then fetch." };
+
+  const existing = await findKitById(id, "wishlist");
+  if (!existing) return { ok: false, error: "That kit is no longer on the wishlist." };
+
+  const art = await saveBoxArt([link]);
+  if (!art.ok) return { ok: false, error: art.reason };
+
+  await updateKit(id, "wishlist", {
+    brand: existing.brand ?? "",
+    kitNumber: existing.kitNumber,
+    name: existing.name ?? "",
+    scale: existing.scale,
+    category: isKitCategory(existing.category) ? existing.category : "other",
+    scalematesUrl: existing.scalematesUrl,
+    notes: existing.notes,
+    imageUrl: art.url,
+  });
+  updateTag(KIT_TAG);
+
+  // The row it replaced, if any, is now unreferenced.
+  if (existing.imageUrl && existing.imageUrl !== art.url) {
+    after(() => deleteBoxArt(existing.imageUrl));
+  }
+
+  return { ok: true, imageUrl: art.url };
 }
 
 /** The kit card's "Mark bought" tick — `status: wishlist → stash` (§3.3).
