@@ -548,8 +548,8 @@ why it works on screens (Paints, Shopping) that have nothing to do with instrume
 - **Elevation:** exactly one shadow in the whole app, on the hero card —
   `0 1px 2px rgba(28,26,23,.04), 0 10px 28px rgba(28,26,23,.045)`. Everything else is a
   hairline. Don't add a second elevation level.
-- **Touch targets:** ≥44px everywhere; tab-bar items 52px.
-- **Tab bar:** 84px tall, hairline top, 5 items, active in `--accent`.
+- **Touch targets:** ≥44px everywhere; tab-bar items 44px.
+- **Tab bar:** 60px tall, hairline top, 6 items (5 routes + sign out), active in `--accent`.
 - **Left rail:** 260px, items 44px, active state is an `--accent-tint` pill at radius 12.
 - **Status bar:** leave the top 44px of a phone layout empty. Never draw fake chrome.
 

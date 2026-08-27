@@ -20,7 +20,7 @@
   /* Clearance for `NavTabBar`'s `.bar` — fixed, not sticky (see the note
      there), so it no longer reserves this space on its own. Reset by the
      desktop padding below, where the tab bar itself is `display: none`. */
-  padding-bottom: 84px;
+  padding-bottom: 60px;
 }
 
 @media (min-width: 900px) {
