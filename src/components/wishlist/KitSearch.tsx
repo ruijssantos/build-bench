@@ -6,20 +6,9 @@ import { PlusIcon, SearchIcon } from "@/components/icons";
 import type { KitCandidate } from "@/domain/kit-candidate";
 
 import { KitCandidateCard } from "./KitCandidateCard";
-import { MOCK_CANDIDATES } from "./mock-candidates";
 import styles from "./Wishlist.module.css";
 
 const ManualKitDialog = lazy(() => import("./ManualKitDialog").then((m) => ({ default: m.ManualKitDialog })));
-
-/**
- * TEMPORARY — shows `MOCK_CANDIDATES` on load instead of an empty search box,
- * so the Kits UI can be tweaked without paying for real `/api/kits/resolve`
- * calls. Flip to `false` to get the real empty state back, or delete this
- * line, the import above, and `mock-candidates.ts` once the visual pass is
- * done. A real search still works normally either way — it just overwrites
- * this initial state on submit.
- */
-const SHOW_MOCK_CANDIDATES = true;
 
 type ResolveResponse = { ok: true; candidates: KitCandidate[] } | { ok: false; error: string };
 
@@ -42,11 +31,7 @@ type SearchState =
  */
 export function KitSearch() {
   const [query, setQuery] = useState("");
-  const [state, setState] = useState<SearchState>(
-    SHOW_MOCK_CANDIDATES
-      ? { status: "done", run: 0, query: "mock data", candidates: MOCK_CANDIDATES }
-      : { status: "idle" },
-  );
+  const [state, setState] = useState<SearchState>({ status: "idle" });
   const [runs, setRuns] = useState(0);
   const [manualOpen, setManualOpen] = useState(false);
 
