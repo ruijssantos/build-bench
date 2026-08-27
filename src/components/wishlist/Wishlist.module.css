@@ -753,6 +753,20 @@ a.iconButton:hover {
   background: var(--accent-tint);
 }
 
+/* The paste-an-address row under the file picker. Input takes the space, the
+   Fetch button keeps its own width — same shape as the search row. */
+.photoUrlRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.photoUrlRow input {
+  flex: 1;
+  min-width: 0;
+}
+
 .photoHint {
   font-family: var(--font-ui);
   font-size: 11.5px;

@@ -114,13 +114,23 @@ export interface AddManualKitInput {
   category: string;
   scalematesUrl: string;
   notes: string;
+  /** Either a photo already uploaded to Blob by `/api/kits/upload`, or an
+   * image URL typed in by hand — the second gets copied into Blob after the
+   * response, the same as a searched kit's box art. */
+  imageUrl?: string;
 }
 
-/** Manual entry — always available, never gated behind a failed search
- * (docs/PLAN.md §6 Phase 3). If a link was filled in, the same Open Graph
- * read a searched kit gets runs against it after the response: typing a
- * retailer URL is enough to get the box art, with no photo to upload and
- * nothing else to do. Without one the card shows the fallback glyph. */
+/**
+ * Manual entry — always available, never gated behind a failed search
+ * (docs/PLAN.md §6 Phase 3).
+ *
+ * A photo uploaded through `/api/kits/upload` is already in Blob and is
+ * stored as-is. Anything else — an image URL typed by hand, or a link worth
+ * reading Open Graph off — is copied into Blob after the response, so the
+ * save never waits on a third-party host. The link is tried last and often
+ * won't work (Scalemates refuses server-side requests entirely), which is
+ * why the dialog offers a URL field and a file picker as well.
+ */
 export async function addManualKit(input: AddManualKitInput): Promise<WishlistResult> {
   const brand = readText(input.brand);
   const name = readText(input.name);
@@ -129,6 +139,8 @@ export async function addManualKit(input: AddManualKitInput): Promise<WishlistRe
   }
 
   const scalematesUrl = readText(input.scalematesUrl, 500);
+  const providedImage = readText(input.imageUrl ?? "", 2000);
+  const alreadyStored = providedImage?.includes(".blob.vercel-storage.com") ?? false;
 
   const id = await createKit({
     brand,
@@ -138,19 +150,22 @@ export async function addManualKit(input: AddManualKitInput): Promise<WishlistRe
     category: isKitCategory(input.category) ? input.category : "other",
     status: "wishlist",
     scalematesUrl,
-    imageUrl: null,
+    imageUrl: alreadyStored ? providedImage : null,
     notes: readText(input.notes, 2000),
   });
 
   updateTag(KIT_TAG);
 
-  if (scalematesUrl) {
-    after(async () => {
-      const art = await saveBoxArt([scalematesUrl]);
-      if (!art.ok) return;
-      await updateKitImage(id, art.url);
-      updateTag(KIT_TAG);
-    });
+  if (!alreadyStored) {
+    const sources = [providedImage, scalematesUrl].filter(Boolean);
+    if (sources.length > 0) {
+      after(async () => {
+        const art = await saveBoxArt(sources);
+        if (!art.ok) return;
+        await updateKitImage(id, art.url);
+        updateTag(KIT_TAG);
+      });
+    }
   }
 
   return { ok: true };

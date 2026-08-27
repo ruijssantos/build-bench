@@ -55,6 +55,7 @@ export function ManualKitDialog({ kit, onClose }: { kit?: KitRow; onClose: () =>
 
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [photoUrl, setPhotoUrl] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // The preview is an object URL — it needs releasing when replaced or when
@@ -78,15 +79,17 @@ export function ManualKitDialog({ kit, onClose }: { kit?: KitRow; onClose: () =>
     }
   }
 
-  /** Reads the art off the link now, rather than hoping a save does it
-   * quietly. Closes on success so the refreshed card shows the picture. */
-  async function fetchFromLink() {
-    if (!kit) return;
+  /** Fetches art from a URL now, rather than hoping a save does it quietly.
+   * Closes on success so the refreshed card shows the picture; on failure the
+   * reason stays under the field, which is the whole point of doing it here
+   * instead of in the background. */
+  async function fetchFromUrl(url: string) {
+    if (!kit || !url.trim()) return;
     setPhase("fetching");
     setError(null);
     setFetchNote(null);
     try {
-      const result = await fetchKitArt(kit.id, scalematesUrl);
+      const result = await fetchKitArt(kit.id, url);
       if (!result.ok) {
         setFetchNote(result.error);
         return;
@@ -131,15 +134,33 @@ export function ManualKitDialog({ kit, onClose }: { kit?: KitRow; onClose: () =>
       }
 
       setPhase("saving");
+      // A typed-in address is only used when no file was picked — the file is
+      // already in Blob by this point and is the more deliberate choice.
+      const art = imageUrl ?? (photoUrl.trim() || undefined);
+
       const result =
         editing && kit
           ? await updateManualKit({ id: kit.id, brand, kitNumber, name, scale, category, scalematesUrl, notes, imageUrl })
-          : await addManualKit({ brand, kitNumber, name, scale, category, scalematesUrl, notes });
+          : await addManualKit({ brand, kitNumber, name, scale, category, scalematesUrl, notes, imageUrl: art });
 
       if (!result.ok) {
         setError(result.error);
         return;
       }
+
+      // Editing with an address typed in but never fetched: do it now rather
+      // than discard it silently. The field edits above are already saved, so
+      // a failure here keeps the dialog open with the reason showing instead
+      // of losing anything.
+      if (editing && kit && !imageUrl && photoUrl.trim()) {
+        setPhase("fetching");
+        const fetched = await fetchKitArt(kit.id, photoUrl);
+        if (!fetched.ok) {
+          setFetchNote(fetched.error);
+          return;
+        }
+      }
+
       onClose();
     } catch (saveError) {
       console.error("Kit save failed:", saveError);
@@ -283,18 +304,6 @@ export function ManualKitDialog({ kit, onClose }: { kit?: KitRow; onClose: () =>
               >
                 {photoFile ? "Choose a different photo" : "Choose a photo"}
               </button>
-              {/* Only for a kit that already exists: fetching art writes
-                  straight to the row, so there has to be a row. */}
-              {editing && kit && scalematesUrl.trim() && !photoFile ? (
-                <button
-                  type="button"
-                  className={styles.photoUploadButton}
-                  onClick={() => void fetchFromLink()}
-                  disabled={saving}
-                >
-                  {phase === "fetching" ? "Fetching…" : "Fetch from link"}
-                </button>
-              ) : null}
               <input
                 ref={fileInputRef}
                 id="manual-kit-photo"
@@ -305,8 +314,37 @@ export function ManualKitDialog({ kit, onClose }: { kit?: KitRow; onClose: () =>
                 disabled={saving}
               />
             </div>
+
+            {/* The reliable route when a kit page won't be read automatically:
+                right-click the picture wherever you found it, copy its address,
+                paste it here. In edit mode it fetches on the spot so the result
+                is visible; on a new kit there's no row to write to yet, so it
+                rides along with the save. */}
+            <div className={styles.photoUrlRow}>
+              <input
+                className={formStyles.input}
+                type="url"
+                placeholder="…or paste an image address"
+                value={photoUrl}
+                onChange={(e) => setPhotoUrl(e.target.value)}
+                disabled={saving}
+                aria-label="Image address"
+              />
+              {editing && kit ? (
+                <button
+                  type="button"
+                  className={styles.photoUploadButton}
+                  onClick={() => void fetchFromUrl(photoUrl)}
+                  disabled={saving || !photoUrl.trim()}
+                >
+                  {phase === "fetching" ? "Fetching…" : "Fetch"}
+                </button>
+              ) : null}
+            </div>
+
             <span className={styles.photoHint}>
-              {fetchNote ?? "Optional — resized automatically from your computer."}
+              {fetchNote ??
+                "Optional — upload from your computer, or paste the address of a picture you found online."}
             </span>
           </div>
         ) : null}

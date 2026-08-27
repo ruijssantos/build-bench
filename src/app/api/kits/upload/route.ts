@@ -1,6 +1,8 @@
 import { put } from "@vercel/blob";
 import { NextResponse } from "next/server";
 
+import { describeBlobError } from "@/lib/box-art";
+
 /**
  * Photo upload behind `ManualKitDialog` — docs/PLAN.md §6 Phase 3.
  *
@@ -70,6 +72,18 @@ export async function POST(request: Request) {
     return jsonError("That file isn't a JPEG, PNG or WebP image.", 415);
   }
 
+  // Checked explicitly rather than left to `put` to discover: a store that was
+  // never connected, or connected after the last deploy, is the single most
+  // likely reason for an upload to fail here, and "the variable isn't set" is
+  // a different job from "the token was refused".
+  if (!process.env.BLOB_READ_WRITE_TOKEN) {
+    console.error("[upload] BLOB_READ_WRITE_TOKEN is not set in this environment");
+    return jsonError(
+      "Photo storage isn't configured — BLOB_READ_WRITE_TOKEN is missing. Connect a Blob store in Vercel → Storage, then redeploy.",
+      500,
+    );
+  }
+
   try {
     const blob = await put(`kits/${crypto.randomUUID()}${extension}`, file, {
       access: "public",
@@ -77,9 +91,16 @@ export async function POST(request: Request) {
       addRandomSuffix: false,
     });
     return NextResponse.json<UploadResponse>({ ok: true, url: blob.url });
-  } catch {
-    // The token is the one thing that plausibly fails here and the one thing
-    // that must never reach the client, so the message stays generic.
-    return jsonError("Couldn't store that photo — try again.", 502);
+  } catch (error) {
+    // The reason reaches the user, not just the log. This is a single-user app
+    // whose user administers its own Vercel project, and a generic "try again"
+    // on a store misconfiguration costs a whole debugging round trip for
+    // something the SDK already identified exactly. The token never appears in
+    // any of these — only whether it was accepted.
+    console.error(
+      "[upload] put failed:",
+      error instanceof Error ? `${error.constructor.name}: ${error.message}` : String(error),
+    );
+    return jsonError(describeBlobError(error), 502);
   }
 }
