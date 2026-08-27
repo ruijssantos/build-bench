@@ -6,7 +6,6 @@ import { DryTipContent } from "./DryTipContent";
 import { DryTipTrigger } from "./DryTipTrigger";
 import styles from "./PhoneHeader.module.css";
 import { shortRigLabel } from "./rig-label";
-import { SignOutButton } from "./SignOutButton";
 
 /**
  * The phone header. A Server Component: the title is usually this screen's LCP
@@ -16,6 +15,10 @@ import { SignOutButton } from "./SignOutButton";
  * can resolve on its own terms: the Thinner Bench puts the rig pill there,
  * Paints puts its Add button there. Either is shorter than the title block
  * beside it and the row is `align-items: flex-end`.
+ *
+ * Sign out lives in `NavTabBar` as its sixth tab, not up here — one control,
+ * reachable at a thumb's swipe on every screen, rather than a corner icon
+ * duplicated per header.
  */
 export function PhoneHeader({ title, trailing }: { title: string; trailing?: ReactNode }) {
   return (
@@ -28,10 +31,6 @@ export function PhoneHeader({ title, trailing }: { title: string; trailing?: Rea
       </svg>
 
       <div className={styles.statusBarSpace} />
-
-      <div className={styles.signOut}>
-        <SignOutButton iconOnly />
-      </div>
 
       <div className={styles.row}>
         <div>
