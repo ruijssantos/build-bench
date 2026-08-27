@@ -804,6 +804,28 @@ throughout, an explicit `USING` on the one type change); the reasoning and the r
 migrations are in `scripts/migrate.mts`. Editing them rather than adding a 0004 is safe because
 the migrator selects by the journal's timestamp and never compares the hash it stored.
 
+Box art needed rethinking after the first production run. §2.4 assumed stage A would return a
+direct image URL to copy into Blob; it almost never can — a web search reads page text and
+links, not image files, so the honest answer is usually `null` and every card rendered the
+fallback glyph. The kit's *page* is the thing a search does reliably find, and essentially every
+retailer and reference page declares an `og:image`: a real, direct, CDN-hosted URL that exists to
+be embedded elsewhere. `saveBoxArt` now reads that (`resolveBoxArtUrl`, single-hop, same SSRF
+checks on the extracted URL as on the original), the resolve route runs it across all candidates
+in parallel so search results show art before you save, and `scalematesUrl` is the fallback
+source everywhere `imageUrl` is absent — which also means a hand-entered kit gets art from
+nothing but a pasted link. The prompt was rewritten to match: the model is told to spend its
+effort on a good page URL and that a null `imageUrl` is expected, rather than being nudged toward
+guessing image links.
+
+Photo upload dropped Vercel Blob's client-upload pattern for a plain route handler that does a
+server-side `put`. The client pattern is built for large files — the browser PUTs straight to
+Vercel's API with a short-lived token — but that request is cross-origin, and in practice it came
+back 400 with no `Access-Control-Allow-Origin`, so the browser surfaced an opaque CORS failure
+with nothing readable underneath and the dialog hung on "Saving…". Since every photo is resized
+to a card thumbnail in the browser first, what actually needed uploading was a few hundred kB;
+streaming that through a function costs nothing, keeps the whole exchange same-origin, and drops
+`@vercel/blob/client` out of the browser bundle entirely.
+
 Two more, both found in review rather than decided up front. `confidence` is listed on stage A's
 candidate payload in §5.1 and is **not** implemented: the screen ranks candidates by the order
 they come back in and shows no score, so the field would have been collected and never rendered.

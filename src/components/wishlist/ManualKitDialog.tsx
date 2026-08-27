@@ -1,6 +1,5 @@
 "use client";
 
-import { upload } from "@vercel/blob/client";
 import { useEffect, useRef, useState, type ChangeEvent } from "react";
 
 import { addManualKit, updateManualKit } from "@/app/(bench)/wishlist/actions";
@@ -14,12 +13,14 @@ import { resizeImage } from "@/lib/resize-image";
 import styles from "./Wishlist.module.css";
 
 /** Long edge, in pixels, an uploaded photo is resized down to before it
- * reaches Blob — plenty for a card thumbnail (see `resizeImage`). */
-const MAX_PHOTO_EDGE = 2000;
+ * leaves the browser (see `resizeImage`). Generous for a card thumbnail,
+ * and it keeps a phone photo's several megabytes down to a few hundred kB —
+ * which is what lets `/api/kits/upload` take the file directly instead of
+ * needing Blob's large-file upload path. */
+const MAX_PHOTO_EDGE = 1600;
 
-/** Bounds the Blob upload so a stalled request surfaces as an error instead
- * of leaving the dialog on "Uploading…" forever — the client SDK has no
- * timeout of its own. */
+/** Bounds the upload so a stalled request surfaces as an error instead of
+ * leaving the dialog on "Uploading…" forever. */
 const UPLOAD_TIMEOUT_MS = 30_000;
 
 /**
@@ -84,16 +85,20 @@ export function ManualKitDialog({ kit, onClose }: { kit?: KitRow; onClose: () =>
       if (photoFile) {
         setPhase("uploading");
         try {
-          const blob = await upload(`kits/${crypto.randomUUID()}.jpg`, photoFile, {
-            access: "public",
-            handleUploadUrl: "/api/kits/upload",
-            contentType: photoFile.type,
-            abortSignal: AbortSignal.timeout(UPLOAD_TIMEOUT_MS),
+          const body = new FormData();
+          body.append("file", photoFile);
+          const res = await fetch("/api/kits/upload", {
+            method: "POST",
+            body,
+            signal: AbortSignal.timeout(UPLOAD_TIMEOUT_MS),
           });
-          imageUrl = blob.url;
+          const data = (await res.json()) as { ok: true; url: string } | { ok: false; error: string };
+          if (!data.ok) {
+            setError(data.error);
+            return;
+          }
+          imageUrl = data.url;
         } catch (uploadError) {
-          // The only way to see why a client-side Blob upload failed — this
-          // dialog has no server log to check instead.
           console.error("Kit photo upload failed:", uploadError);
           setError("Couldn't upload that photo — try again.");
           return;

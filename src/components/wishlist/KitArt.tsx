@@ -34,6 +34,12 @@ export function KitArt({ src, alt }: { src: string | null; alt: string }) {
           alt={alt}
           className={styles.cardArtImg}
           loading="lazy"
+          // A search candidate's art is still on whoever's host the kit page
+          // pointed at, and a good number of them refuse requests that carry
+          // a foreign Referer. Sending none reads as a direct visit and gets
+          // the image; a saved kit's art is on our own Blob and doesn't care
+          // either way.
+          referrerPolicy="no-referrer"
           onError={() => setFailedSrc(src)}
         />
       ) : (

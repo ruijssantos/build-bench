@@ -73,7 +73,12 @@ export async function saveKitCandidate(input: KitCandidate): Promise<WishlistRes
     }
   }
 
-  const sourceImageUrl = readText(input.imageUrl, 2000);
+  // The page URL is the fallback, and in practice the usual one: a web
+  // search can rarely name a direct image file, but it can almost always
+  // name the kit's page, and `saveBoxArt` reads the art off that page's
+  // Open Graph tag. Before this fallback existed a candidate with no
+  // `imageUrl` saved with no art and no way to ever get any.
+  const artSource = readText(input.imageUrl, 2000) ?? readText(input.scalematesUrl, 2000);
 
   const id = await createKit({
     brand,
@@ -89,9 +94,9 @@ export async function saveKitCandidate(input: KitCandidate): Promise<WishlistRes
 
   updateTag(KIT_TAG);
 
-  if (sourceImageUrl) {
+  if (artSource) {
     after(async () => {
-      const imageUrl = await saveBoxArt(sourceImageUrl);
+      const imageUrl = await saveBoxArt(artSource);
       if (!imageUrl) return;
       await updateKitImage(id, imageUrl);
       updateTag(KIT_TAG);
@@ -112,9 +117,10 @@ export interface AddManualKitInput {
 }
 
 /** Manual entry — always available, never gated behind a failed search
- * (docs/PLAN.md §6 Phase 3). No box art: nothing was resolved to fetch one
- * from, so the card shows the fallback glyph, same as any kit search missed
- * an image for. */
+ * (docs/PLAN.md §6 Phase 3). If a link was filled in, the same Open Graph
+ * read a searched kit gets runs against it after the response: typing a
+ * retailer URL is enough to get the box art, with no photo to upload and
+ * nothing else to do. Without one the card shows the fallback glyph. */
 export async function addManualKit(input: AddManualKitInput): Promise<WishlistResult> {
   const brand = readText(input.brand);
   const name = readText(input.name);
@@ -122,19 +128,31 @@ export async function addManualKit(input: AddManualKitInput): Promise<WishlistRe
     return { ok: false, error: "Give it at least a brand and a name." };
   }
 
-  await createKit({
+  const scalematesUrl = readText(input.scalematesUrl, 500);
+
+  const id = await createKit({
     brand,
     kitNumber: readText(input.kitNumber),
     name,
     scale: readText(input.scale, 40),
     category: isKitCategory(input.category) ? input.category : "other",
     status: "wishlist",
-    scalematesUrl: readText(input.scalematesUrl, 500),
+    scalematesUrl,
     imageUrl: null,
     notes: readText(input.notes, 2000),
   });
 
   updateTag(KIT_TAG);
+
+  if (scalematesUrl) {
+    after(async () => {
+      const imageUrl = await saveBoxArt(scalematesUrl);
+      if (!imageUrl) return;
+      await updateKitImage(id, imageUrl);
+      updateTag(KIT_TAG);
+    });
+  }
+
   return { ok: true };
 }
 
@@ -178,6 +196,7 @@ export async function updateManualKit(input: UpdateManualKitInput): Promise<Wish
   }
 
   const newImageUrl = readText(input.imageUrl ?? "", 2000) ?? undefined;
+  const scalematesUrl = readText(input.scalematesUrl, 500);
 
   const updated = await updateKit(input.id, "wishlist", {
     brand,
@@ -185,13 +204,27 @@ export async function updateManualKit(input: UpdateManualKitInput): Promise<Wish
     name,
     scale: readText(input.scale, 40),
     category: isKitCategory(input.category) ? input.category : "other",
-    scalematesUrl: readText(input.scalematesUrl, 500),
+    scalematesUrl,
     notes: readText(input.notes, 2000),
     imageUrl: newImageUrl,
   });
   if (!updated) return { ok: false, error: "That kit is no longer on the wishlist." };
 
   updateTag(KIT_TAG);
+
+  // Backfill for a kit that has no art and didn't just get a photo: re-read
+  // the link's Open Graph image. This is the recovery path for rows saved
+  // before box art worked — opening a blank kit, checking its link and
+  // saving is enough to fetch the picture it never got.
+  if (!newImageUrl && !existing.imageUrl && scalematesUrl) {
+    const id = input.id;
+    after(async () => {
+      const imageUrl = await saveBoxArt(scalematesUrl);
+      if (!imageUrl) return;
+      await updateKitImage(id, imageUrl);
+      updateTag(KIT_TAG);
+    });
+  }
 
   // A replaced photo orphans the old blob unless it's cleaned up — same rule
   // as `removeKitAction`, just triggered by a swap instead of a delete.

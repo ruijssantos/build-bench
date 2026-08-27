@@ -28,6 +28,9 @@ import { del, put } from "@vercel/blob";
  */
 
 const MAX_BYTES = 8 * 1024 * 1024;
+/** Enough of a page to reach the `<head>` on any real site; a page that
+ * hasn't declared its Open Graph image in the first megabyte isn't going to. */
+const MAX_HTML_BYTES = 1024 * 1024;
 const FETCH_TIMEOUT_MS = 10_000;
 const MAX_REDIRECTS = 3;
 
@@ -113,14 +116,61 @@ async function safeUrl(raw: string): Promise<URL | null> {
 }
 
 /**
+ * Fetches a URL with every hop re-checked against `safeUrl`.
+ *
+ * Redirects by hand: `fetch`'s own following would re-point at a host that
+ * never passed `safeUrl`, which is the standard way an allowlist on the
+ * first URL gets bypassed. Returns the final response and the URL it
+ * actually came from — the latter matters for resolving relative `og:image`
+ * values against the page that declared them.
+ */
+async function safeFetch(
+  rawUrl: string,
+  accept: string,
+  timeoutMs: number,
+): Promise<{ response: Response; url: URL } | null> {
+  let target = await safeUrl(rawUrl);
+  if (!target) return null;
+
+  for (let hop = 0; hop <= MAX_REDIRECTS; hop++) {
+    const response = await fetch(target, {
+      signal: AbortSignal.timeout(timeoutMs),
+      headers: {
+        Accept: accept,
+        // A plain `fetch` announces no user agent at all, which a fair number
+        // of hosts answer with a 403. Naming a real browser build is what
+        // gets a normal page back, and this only ever reads public pages.
+        "User-Agent":
+          "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36",
+      },
+      redirect: "manual",
+    });
+
+    if (response.status >= 300 && response.status < 400) {
+      const location = response.headers.get("location");
+      await response.body?.cancel();
+      if (!location) return null;
+      const next = await safeUrl(new URL(location, target).href);
+      if (!next) return null;
+      target = next;
+      continue;
+    }
+
+    return { response, url: target };
+  }
+
+  return null;
+}
+
+/**
  * Reads the body with a running byte count, stopping the moment it passes
  * the cap. Buffering first and measuring afterwards would let a host that
  * streams unbounded bytes under an image content-type OOM the function
  * before the check ever ran.
  */
-async function readCapped(response: Response): Promise<Buffer | null> {
+async function readCapped(response: Response, maxBytes: number): Promise<Buffer | null> {
   const declared = Number(response.headers.get("content-length"));
-  if (Number.isFinite(declared) && declared > MAX_BYTES) return null;
+  if (Number.isFinite(declared) && declared > maxBytes) return null;
 
   const body = response.body;
   if (!body) return null;
@@ -134,7 +184,7 @@ async function readCapped(response: Response): Promise<Buffer | null> {
       const { done, value } = await reader.read();
       if (done) break;
       total += value.byteLength;
-      if (total > MAX_BYTES) {
+      if (total > maxBytes) {
         await reader.cancel();
         return null;
       }
@@ -148,49 +198,139 @@ async function readCapped(response: Response): Promise<Buffer | null> {
   return Buffer.concat(chunks);
 }
 
-export async function saveBoxArt(sourceUrl: string | null): Promise<string | null> {
+/** Does this URL's path already name an image file? Lets an obvious direct
+ * image URL skip the round trip that would otherwise be needed just to read
+ * its content type. */
+function looksLikeImageUrl(url: string): boolean {
+  try {
+    return /\.(jpe?g|png|webp|gif|avif)$/i.test(new URL(url).pathname);
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Pulls the Open Graph image out of a page.
+ *
+ * This is the piece that makes box art actually work. Asking a web search to
+ * hand back a *direct image URL* doesn't survive contact with reality — the
+ * search sees page text and links, so the honest answer is usually "no image
+ * found", which is exactly the empty card this used to produce. What a search
+ * reliably does find is the kit's *page*, and essentially every product page
+ * on every retailer and reference site declares `og:image`: a real, direct,
+ * usually CDN-hosted image URL that exists precisely so other sites can
+ * display it. Reading that is far more dependable than hoping for a lucky
+ * direct link.
+ *
+ * Attribute-order tolerant (`content` before `property` is just as valid),
+ * and falls back through the Twitter card equivalents, which some sites set
+ * and others don't.
+ */
+function extractPageImage(html: string, pageUrl: URL): string | null {
+  const wanted = ["og:image:secure_url", "og:image:url", "og:image", "twitter:image", "twitter:image:src"];
+  const found = new Map<string, string>();
+
+  for (const tag of html.match(/<meta\b[^>]*>/gi) ?? []) {
+    const key = /\b(?:property|name)\s*=\s*["']([^"']+)["']/i.exec(tag)?.[1]?.toLowerCase();
+    const value = /\bcontent\s*=\s*["']([^"']*)["']/i.exec(tag)?.[1];
+    if (key && value && wanted.includes(key) && !found.has(key)) {
+      found.set(key, value);
+    }
+  }
+
+  for (const key of wanted) {
+    const value = found.get(key)?.trim();
+    if (!value) continue;
+    try {
+      // Relative values are legal and common — resolve against the page the
+      // tag was actually served from, redirects included.
+      return new URL(value, pageUrl).href;
+    } catch {
+      continue;
+    }
+  }
+  return null;
+}
+
+/**
+ * Turns whatever URL we have for a kit into a direct image URL, or `null`.
+ *
+ * Takes either a direct image URL or a page URL — the caller rarely knows
+ * which it has, and this is the one place that distinction gets resolved.
+ * Deliberately single-hop: a page's `og:image` is used as-is rather than
+ * being followed and re-parsed, so a site that points its Open Graph tag at
+ * another HTML page just fails instead of walking the web.
+ */
+export async function resolveBoxArtUrl(
+  sourceUrl: string | null,
+  timeoutMs = FETCH_TIMEOUT_MS,
+): Promise<string | null> {
   if (!sourceUrl) return null;
 
+  // An obvious image URL is taken at its word — fetching it here would mean
+  // downloading the whole image just to learn what we can already see.
+  if (looksLikeImageUrl(sourceUrl)) return sourceUrl;
+
   try {
-    let target = await safeUrl(sourceUrl);
-    if (!target) return null;
-
-    let response: Response | null = null;
-
-    // Redirects by hand: `fetch`'s own following would re-point at a host
-    // that never passed `safeUrl`, which is the standard way an allowlist on
-    // the first URL gets bypassed.
-    for (let hop = 0; hop <= MAX_REDIRECTS; hop++) {
-      const hopResponse = await fetch(target, {
-        signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
-        headers: { Accept: "image/*" },
-        redirect: "manual",
-      });
-
-      if (hopResponse.status >= 300 && hopResponse.status < 400) {
-        const location = hopResponse.headers.get("location");
-        await hopResponse.body?.cancel();
-        if (!location) return null;
-        const next = await safeUrl(new URL(location, target).href);
-        if (!next) return null;
-        target = next;
-        continue;
-      }
-
-      response = hopResponse;
-      break;
-    }
-
-    if (!response || !response.ok) return null;
-
-    const contentType = (response.headers.get("content-type") ?? "").split(";")[0].trim().toLowerCase();
-    const extension = EXTENSION_BY_CONTENT_TYPE.get(contentType);
-    if (!extension) {
-      await response.body?.cancel();
+    const fetched = await safeFetch(sourceUrl, "text/html,image/*", timeoutMs);
+    if (!fetched || !fetched.response.ok) {
+      await fetched?.response.body?.cancel();
       return null;
     }
 
-    const bytes = await readCapped(response);
+    const contentType = (fetched.response.headers.get("content-type") ?? "").split(";")[0].trim().toLowerCase();
+
+    // Already an image, just without a telling extension.
+    if (EXTENSION_BY_CONTENT_TYPE.has(contentType)) {
+      await fetched.response.body?.cancel();
+      return fetched.url.href;
+    }
+
+    if (!contentType.startsWith("text/html") && !contentType.startsWith("application/xhtml")) {
+      await fetched.response.body?.cancel();
+      return null;
+    }
+
+    const bytes = await readCapped(fetched.response, MAX_HTML_BYTES);
+    if (!bytes) return null;
+
+    const image = extractPageImage(bytes.toString("utf-8"), fetched.url);
+    if (!image) return null;
+
+    // The extracted URL is attacker-influenced in exactly the same way the
+    // original was, so it goes through the same check rather than being
+    // trusted for having come from a page we just read.
+    return (await safeUrl(image)) ? image : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Copies box art into Blob and returns the stored URL.
+ *
+ * Accepts a page URL as readily as a direct image URL — `resolveBoxArtUrl`
+ * sorts out which it was given.
+ */
+export async function saveBoxArt(sourceUrl: string | null): Promise<string | null> {
+  const imageUrl = await resolveBoxArtUrl(sourceUrl);
+  if (!imageUrl) return null;
+
+  try {
+    const fetched = await safeFetch(imageUrl, "image/*", FETCH_TIMEOUT_MS);
+    if (!fetched || !fetched.response.ok) {
+      await fetched?.response.body?.cancel();
+      return null;
+    }
+
+    const contentType = (fetched.response.headers.get("content-type") ?? "").split(";")[0].trim().toLowerCase();
+    const extension = EXTENSION_BY_CONTENT_TYPE.get(contentType);
+    if (!extension) {
+      await fetched.response.body?.cancel();
+      return null;
+    }
+
+    const bytes = await readCapped(fetched.response, MAX_BYTES);
     if (!bytes) return null;
 
     const blob = await put(`kits/${crypto.randomUUID()}${extension}`, bytes, {

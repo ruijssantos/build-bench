@@ -9,6 +9,7 @@ import {
   ResolveResultSchema,
   type KitCandidate,
 } from "@/domain/kit-candidate";
+import { resolveBoxArtUrl } from "@/lib/box-art";
 
 /**
  * Kit resolve — docs/PLAN.md §5.1 stage A, §2.4, §5.2.
@@ -39,9 +40,45 @@ export const maxDuration = 300;
  * search turn and short of anything that could spin. */
 const MAX_RESUMES = 3;
 
+/** Tighter than `box-art.ts`'s own default: these run after the user has
+ * already waited out the model call, so a slow host gets dropped rather than
+ * held onto. A candidate whose art doesn't resolve in time simply shows the
+ * fallback glyph — the same state it had before any of this existed. */
+const ART_TIMEOUT_MS = 6_000;
+
+/**
+ * Fills in each candidate's `imageUrl` from its own page.
+ *
+ * The model is asked for a direct image URL and usually can't produce one —
+ * web search sees page text, not image files — so before this step almost
+ * every candidate arrived with `imageUrl: null` and every result card
+ * rendered the empty-box glyph. `resolveBoxArtUrl` reads the kit page's
+ * Open Graph image instead, which is a real direct URL that exists to be
+ * embedded elsewhere.
+ *
+ * All candidates at once, and `allSettled` throughout: box art is decoration
+ * on a search result, so one host that hangs or throws must not cost the
+ * user the search they already paid for.
+ */
+async function withResolvedArt(candidates: KitCandidate[]): Promise<KitCandidate[]> {
+  const resolved = await Promise.allSettled(
+    candidates.map((candidate) =>
+      resolveBoxArtUrl(candidate.imageUrl ?? candidate.scalematesUrl, ART_TIMEOUT_MS),
+    ),
+  );
+
+  return candidates.map((candidate, i) => {
+    const outcome = resolved[i];
+    const imageUrl = outcome.status === "fulfilled" ? outcome.value : null;
+    return { ...candidate, imageUrl: imageUrl ?? candidate.imageUrl };
+  });
+}
+
 const SYSTEM_PROMPT = `You resolve a scale-model kit search into real, purchasable kit records for a hobbyist's wishlist app. The query is either a kit number ("24345") or free text ("Tamiya Nissan GT-R").
 
-Use web search to find real kits. Scalemates (scalemates.com) is the best single reference for brand, kit number, name, scale and category — prefer it as a source when you find a matching page there and use its URL as scalematesUrl. A clear box art photo from another retailer or the manufacturer's own site is fine for imageUrl if you can't confirm one on Scalemates.
+Use web search to find real kits. Scalemates (scalemates.com) is the best single reference for brand, kit number, name, scale and category — prefer it as a source when you find a matching page there and use its URL as scalematesUrl.
+
+Getting scalematesUrl right matters more than you might expect: the app reads the box art off whatever page you point it at, so a candidate with a good page URL ends up with a picture even when you never see an image yourself. If there is no Scalemates page, put the best product page you did find there — a retailer listing or the manufacturer's own page for that exact kit is fine.
 
 Return at most ${MAX_CANDIDATES} candidates, most likely match first. Only include kits you found real evidence for — never invent a kit number or name to pad the list. If nothing plausible turns up, return an empty candidates array; that is a normal, expected result, not a failure.
 
@@ -51,8 +88,8 @@ For each candidate:
 - name: the kit's subject, e.g. "Nissan Skyline GT-R (R34) V-Spec II"
 - scale: e.g. "1:24" — this app is built around 1:24 scale car kits, so when a query is ambiguous about scale weight 1:24 releases higher, but report whatever scale the real kit you found actually is
 - category: exactly one of ${KIT_CATEGORIES.join(", ")} — use these spellings verbatim
-- scalematesUrl: the kit's Scalemates page if you found one, else null
-- imageUrl: a direct URL to a box art image if you found one, else null`;
+- scalematesUrl: the kit's Scalemates page, or failing that the best product page you found for this exact kit; null only if you genuinely found no page for it
+- imageUrl: a direct URL to a box art image file if you happen to have one, else null — null is completely fine and expected, since the app can read the picture off scalematesUrl by itself. Never guess or construct an image URL to fill this in.`;
 
 type ResolveResponse = { ok: true; candidates: KitCandidate[] } | { ok: false; error: string };
 
@@ -149,7 +186,7 @@ export async function POST(request: NextRequest) {
     // paid searches over one off-vocabulary word.
     return NextResponse.json<ResolveResponse>({
       ok: true,
-      candidates: normalizeCandidates(response.parsed_output),
+      candidates: await withResolvedArt(normalizeCandidates(response.parsed_output)),
     });
   } catch (error) {
     if (error instanceof Anthropic.AuthenticationError) {
