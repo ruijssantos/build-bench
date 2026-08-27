@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, type ChangeEvent } from "react";
 
-import { addManualKit, updateManualKit } from "@/app/(bench)/wishlist/actions";
+import { addManualKit, fetchKitArt, updateManualKit } from "@/app/(bench)/wishlist/actions";
 import { Modal } from "@/components/bench/Modal";
 import { KitsIcon } from "@/components/icons";
 import formStyles from "@/components/inventory/InventoryForm.module.css";
@@ -45,9 +45,13 @@ export function ManualKitDialog({ kit, onClose }: { kit?: KitRow; onClose: () =>
   const [notes, setNotes] = useState(kit?.notes ?? "");
   /** Split from a single `saving` boolean so a stuck save is visible as
    * "Uploading…" vs "Saving…" rather than one undifferentiated state. */
-  const [phase, setPhase] = useState<"idle" | "uploading" | "saving">("idle");
+  const [phase, setPhase] = useState<"idle" | "uploading" | "saving" | "fetching">("idle");
   const saving = phase !== "idle";
   const [error, setError] = useState<string | null>(null);
+  /** What the last "Fetch from link" press did, shown in place of the photo
+   * hint — a failure here is usually the site refusing us, which is worth
+   * saying out loud rather than leaving as an empty frame. */
+  const [fetchNote, setFetchNote] = useState<string | null>(null);
 
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
@@ -71,6 +75,27 @@ export function ManualKitDialog({ kit, onClose }: { kit?: KitRow; onClose: () =>
       setPhotoPreview(URL.createObjectURL(resized));
     } catch {
       setError("Couldn't read that photo — try a different file.");
+    }
+  }
+
+  /** Reads the art off the link now, rather than hoping a save does it
+   * quietly. Closes on success so the refreshed card shows the picture. */
+  async function fetchFromLink() {
+    if (!kit) return;
+    setPhase("fetching");
+    setError(null);
+    setFetchNote(null);
+    try {
+      const result = await fetchKitArt(kit.id, scalematesUrl);
+      if (!result.ok) {
+        setFetchNote(result.error);
+        return;
+      }
+      onClose();
+    } catch {
+      setFetchNote("Couldn't fetch that — try again.");
+    } finally {
+      setPhase("idle");
     }
   }
 
@@ -258,6 +283,18 @@ export function ManualKitDialog({ kit, onClose }: { kit?: KitRow; onClose: () =>
               >
                 {photoFile ? "Choose a different photo" : "Choose a photo"}
               </button>
+              {/* Only for a kit that already exists: fetching art writes
+                  straight to the row, so there has to be a row. */}
+              {editing && kit && scalematesUrl.trim() && !photoFile ? (
+                <button
+                  type="button"
+                  className={styles.photoUploadButton}
+                  onClick={() => void fetchFromLink()}
+                  disabled={saving}
+                >
+                  {phase === "fetching" ? "Fetching…" : "Fetch from link"}
+                </button>
+              ) : null}
               <input
                 ref={fileInputRef}
                 id="manual-kit-photo"
@@ -268,7 +305,9 @@ export function ManualKitDialog({ kit, onClose }: { kit?: KitRow; onClose: () =>
                 disabled={saving}
               />
             </div>
-            <span className={styles.photoHint}>Optional — resized automatically from your computer.</span>
+            <span className={styles.photoHint}>
+              {fetchNote ?? "Optional — resized automatically from your computer."}
+            </span>
           </div>
         ) : null}
 

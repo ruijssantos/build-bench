@@ -62,9 +62,16 @@ const ART_TIMEOUT_MS = 6_000;
  */
 async function withResolvedArt(candidates: KitCandidate[]): Promise<KitCandidate[]> {
   const resolved = await Promise.allSettled(
-    candidates.map((candidate) =>
-      resolveBoxArtUrl(candidate.imageUrl ?? candidate.scalematesUrl, ART_TIMEOUT_MS),
-    ),
+    candidates.map(async (candidate) => {
+      // Direct image first, then the page — the same order `saveBoxArt`
+      // uses, so what a result card shows is what saving will store.
+      for (const source of [candidate.imageUrl, candidate.scalematesUrl]) {
+        if (!source) continue;
+        const outcome = await resolveBoxArtUrl(source, ART_TIMEOUT_MS);
+        if (outcome.ok) return outcome.url;
+      }
+      return null;
+    }),
   );
 
   return candidates.map((candidate, i) => {

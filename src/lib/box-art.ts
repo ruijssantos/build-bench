@@ -253,7 +253,38 @@ function extractPageImage(html: string, pageUrl: URL): string | null {
 }
 
 /**
- * Turns whatever URL we have for a kit into a direct image URL, or `null`.
+ * Every outcome of trying to get box art, success or failure.
+ *
+ * The `reason` is written to be shown to a person, because it is: the Edit
+ * dialog's "Fetch from link" reports it directly. Two rounds of this feature
+ * failed silently — `null` meant "no art" whether the page 403'd, had no
+ * Open Graph tag, or was never fetched at all — which left no way to tell
+ * a bug from a site that simply won't serve us. Everything below says which.
+ */
+export type BoxArtResult = { ok: true; url: string } | { ok: false; reason: string };
+
+/** One structured line per attempt, in the function logs. Box art crosses to
+ * hosts we don't control and can't test against from a dev machine, so when
+ * it fails in production the log is the only account of what happened. */
+function log(event: string, detail: Record<string, unknown>): void {
+  console.log(`[box-art] ${event} ${JSON.stringify(detail)}`);
+}
+
+/** A status a site returns when it has decided we're a robot, as opposed to
+ * one that means the page genuinely isn't there. Worth telling apart: the
+ * first is permanent for this approach and the user should upload a photo,
+ * the second might just be a bad URL. */
+const BOT_BLOCK_STATUSES = new Set([401, 403, 405, 406, 429, 503]);
+
+function describeStatus(status: number, host: string): string {
+  if (BOT_BLOCK_STATUSES.has(status)) {
+    return `${host} blocked the request (HTTP ${status}) — it doesn't allow automated fetching. Upload a photo instead.`;
+  }
+  return `${host} returned HTTP ${status}.`;
+}
+
+/**
+ * Turns whatever URL we have for a kit into a direct image URL.
  *
  * Takes either a direct image URL or a page URL — the caller rarely knows
  * which it has, and this is the one place that distinction gets resolved.
@@ -264,18 +295,31 @@ function extractPageImage(html: string, pageUrl: URL): string | null {
 export async function resolveBoxArtUrl(
   sourceUrl: string | null,
   timeoutMs = FETCH_TIMEOUT_MS,
-): Promise<string | null> {
-  if (!sourceUrl) return null;
+): Promise<BoxArtResult> {
+  if (!sourceUrl) return { ok: false, reason: "No link to read box art from." };
 
   // An obvious image URL is taken at its word — fetching it here would mean
   // downloading the whole image just to learn what we can already see.
-  if (looksLikeImageUrl(sourceUrl)) return sourceUrl;
+  if (looksLikeImageUrl(sourceUrl)) return { ok: true, url: sourceUrl };
+
+  const host = (() => {
+    try {
+      return new URL(sourceUrl).host;
+    } catch {
+      return "that link";
+    }
+  })();
 
   try {
     const fetched = await safeFetch(sourceUrl, "text/html,image/*", timeoutMs);
-    if (!fetched || !fetched.response.ok) {
-      await fetched?.response.body?.cancel();
-      return null;
+    if (!fetched) {
+      log("unreachable", { source: sourceUrl });
+      return { ok: false, reason: `Couldn't reach ${host}.` };
+    }
+    if (!fetched.response.ok) {
+      await fetched.response.body?.cancel();
+      log("page-not-ok", { source: sourceUrl, status: fetched.response.status });
+      return { ok: false, reason: describeStatus(fetched.response.status, host) };
     }
 
     const contentType = (fetched.response.headers.get("content-type") ?? "").split(";")[0].trim().toLowerCase();
@@ -283,64 +327,120 @@ export async function resolveBoxArtUrl(
     // Already an image, just without a telling extension.
     if (EXTENSION_BY_CONTENT_TYPE.has(contentType)) {
       await fetched.response.body?.cancel();
-      return fetched.url.href;
+      return { ok: true, url: fetched.url.href };
     }
 
     if (!contentType.startsWith("text/html") && !contentType.startsWith("application/xhtml")) {
       await fetched.response.body?.cancel();
-      return null;
+      log("not-a-page", { source: sourceUrl, contentType });
+      return { ok: false, reason: `${host} didn't return a web page or an image.` };
     }
 
     const bytes = await readCapped(fetched.response, MAX_HTML_BYTES);
-    if (!bytes) return null;
+    if (!bytes) {
+      log("page-unreadable", { source: sourceUrl });
+      return { ok: false, reason: `Couldn't read the page at ${host}.` };
+    }
 
     const image = extractPageImage(bytes.toString("utf-8"), fetched.url);
-    if (!image) return null;
+    if (!image) {
+      log("no-og-image", { source: sourceUrl, bytes: bytes.byteLength });
+      return { ok: false, reason: `No box art image is published on that ${host} page.` };
+    }
 
     // The extracted URL is attacker-influenced in exactly the same way the
     // original was, so it goes through the same check rather than being
     // trusted for having come from a page we just read.
-    return (await safeUrl(image)) ? image : null;
-  } catch {
-    return null;
+    if (!(await safeUrl(image))) {
+      log("og-image-rejected", { source: sourceUrl, image });
+      return { ok: false, reason: `The image ${host} points at isn't reachable.` };
+    }
+
+    log("resolved", { source: sourceUrl, image });
+    return { ok: true, url: image };
+  } catch (error) {
+    log("threw", { source: sourceUrl, error: error instanceof Error ? error.message : String(error) });
+    return { ok: false, reason: `Couldn't reach ${host}.` };
   }
 }
 
 /**
  * Copies box art into Blob and returns the stored URL.
  *
- * Accepts a page URL as readily as a direct image URL — `resolveBoxArtUrl`
- * sorts out which it was given.
+ * Takes an ordered list of candidate sources — a direct image URL, a
+ * retailer page, the Scalemates page — and uses the first that yields an
+ * image. One source was not enough in practice: the single most likely
+ * source for a kit page is also one of the most likely to refuse a
+ * server-side request, and having nothing to fall back to meant one
+ * uncooperative host cost the kit its art entirely.
  */
-export async function saveBoxArt(sourceUrl: string | null): Promise<string | null> {
-  const imageUrl = await resolveBoxArtUrl(sourceUrl);
-  if (!imageUrl) return null;
+export async function saveBoxArt(sources: Array<string | null>): Promise<BoxArtResult> {
+  const tried = sources.filter((s): s is string => Boolean(s));
+  if (tried.length === 0) return { ok: false, reason: "No link to read box art from." };
+
+  let lastReason = "No link to read box art from.";
+
+  for (const source of tried) {
+    const resolved = await resolveBoxArtUrl(source);
+    if (!resolved.ok) {
+      lastReason = resolved.reason;
+      continue;
+    }
+
+    const stored = await storeImage(resolved.url);
+    if (stored.ok) return stored;
+    lastReason = stored.reason;
+  }
+
+  return { ok: false, reason: lastReason };
+}
+
+/** Downloads a direct image URL and puts it in Blob. */
+async function storeImage(imageUrl: string): Promise<BoxArtResult> {
+  const host = (() => {
+    try {
+      return new URL(imageUrl).host;
+    } catch {
+      return "that host";
+    }
+  })();
 
   try {
     const fetched = await safeFetch(imageUrl, "image/*", FETCH_TIMEOUT_MS);
-    if (!fetched || !fetched.response.ok) {
-      await fetched?.response.body?.cancel();
-      return null;
+    if (!fetched) {
+      log("image-unreachable", { image: imageUrl });
+      return { ok: false, reason: `Couldn't download the image from ${host}.` };
+    }
+    if (!fetched.response.ok) {
+      await fetched.response.body?.cancel();
+      log("image-not-ok", { image: imageUrl, status: fetched.response.status });
+      return { ok: false, reason: describeStatus(fetched.response.status, host) };
     }
 
     const contentType = (fetched.response.headers.get("content-type") ?? "").split(";")[0].trim().toLowerCase();
     const extension = EXTENSION_BY_CONTENT_TYPE.get(contentType);
     if (!extension) {
       await fetched.response.body?.cancel();
-      return null;
+      log("image-wrong-type", { image: imageUrl, contentType });
+      return { ok: false, reason: `What ${host} served back wasn't an image.` };
     }
 
     const bytes = await readCapped(fetched.response, MAX_BYTES);
-    if (!bytes) return null;
+    if (!bytes) {
+      log("image-unreadable", { image: imageUrl });
+      return { ok: false, reason: `Couldn't download the image from ${host}.` };
+    }
 
     const blob = await put(`kits/${crypto.randomUUID()}${extension}`, bytes, {
       access: "public",
       contentType,
       addRandomSuffix: false,
     });
-    return blob.url;
-  } catch {
-    return null;
+    log("stored", { image: imageUrl, bytes: bytes.byteLength, blob: blob.url });
+    return { ok: true, url: blob.url };
+  } catch (error) {
+    log("store-threw", { image: imageUrl, error: error instanceof Error ? error.message : String(error) });
+    return { ok: false, reason: "Couldn't store that image — try again." };
   }
 }
 
