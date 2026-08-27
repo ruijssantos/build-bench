@@ -579,7 +579,7 @@ a.iconButton:hover {
 
 .itemRow {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 10px;
   padding: 12px 14px;
   border-bottom: 1px solid var(--card-sunken);
@@ -593,7 +593,6 @@ a.iconButton:hover {
   flex: none;
   width: 24px;
   height: 24px;
-  margin-top: 1px;
   border-radius: 7px;
   border: 1.5px solid var(--line-strong);
   background: var(--card);
@@ -751,6 +750,20 @@ a.iconButton:hover {
 
 .photoUploadButton:hover {
   background: var(--accent-tint);
+}
+
+/* The paste-an-address row under the file picker. Input takes the space, the
+   Fetch button keeps its own width — same shape as the search row. */
+.photoUrlRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.photoUrlRow input {
+  flex: 1;
+  min-width: 0;
 }
 
 .photoHint {

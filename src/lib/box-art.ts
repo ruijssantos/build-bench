@@ -1,7 +1,17 @@
 import { lookup } from "node:dns/promises";
 import { isIP } from "node:net";
 
-import { del, put } from "@vercel/blob";
+import {
+  BlobAccessError,
+  BlobContentTypeNotAllowedError,
+  BlobError,
+  BlobFileTooLargeError,
+  BlobServiceNotAvailable,
+  BlobStoreNotFoundError,
+  BlobStoreSuspendedError,
+  del,
+  put,
+} from "@vercel/blob";
 
 /**
  * Box art, fetched once at save time — docs/PLAN.md §2.4, §4.3. A kit's
@@ -270,6 +280,82 @@ function log(event: string, detail: Record<string, unknown>): void {
   console.log(`[box-art] ${event} ${JSON.stringify(detail)}`);
 }
 
+/**
+ * Turns a Blob write failure into something the person looking at the screen
+ * can act on.
+ *
+ * These messages name environment variables, which is unusual for user-facing
+ * copy and right here: this is a single-user app whose one user administers
+ * its Vercel project (§1.1). A generic "try again" cost a full debugging round
+ * trip on a store misconfiguration that the SDK had already identified
+ * precisely. None of these leak the token itself — only whether it works.
+ */
+export function describeBlobError(error: unknown): string {
+  if (error instanceof BlobAccessError) {
+    return "Vercel Blob rejected the token. Check BLOB_READ_WRITE_TOKEN in the project's environment variables, then redeploy.";
+  }
+  if (error instanceof BlobStoreNotFoundError) {
+    return "That Blob store doesn't exist. Reconnect the store in Vercel → Storage, then redeploy so the new token is picked up.";
+  }
+  if (error instanceof BlobStoreSuspendedError) {
+    return "The Blob store is suspended — check its status in Vercel → Storage.";
+  }
+  if (error instanceof BlobServiceNotAvailable) {
+    return "Vercel Blob is unavailable right now — try again in a moment.";
+  }
+  if (error instanceof BlobFileTooLargeError || error instanceof BlobContentTypeNotAllowedError) {
+    return error.message;
+  }
+
+  // The base class, checked after every subclass above. This is the branch a
+  // missing or unconfigured token actually lands in — `put` throws a plain
+  // `BlobError` for that, not one of the typed ones — and leaving it to fall
+  // through to the generic line below is what made every Blob failure look
+  // identical no matter what was wrong. The SDK's own message is specific and
+  // safe to show: it never echoes the token, only whether one was found.
+  if (error instanceof BlobError) {
+    if (error.message.includes("No read-write token found")) {
+      return "No Blob token is configured. Connect a Blob store in Vercel → Storage, then redeploy so BLOB_READ_WRITE_TOKEN reaches the running deployment.";
+    }
+    if (error.message.includes("private store")) {
+      // Access mode is fixed when a store is created, so this one can't be
+      // toggled — hence "create a new store" rather than "change the setting".
+      return "This Blob store is private, and box art has to be public to show in the app. Create a new store with public access in Vercel → Storage, connect it to the project, and redeploy. See docs/PLAN.md §9.2.";
+    }
+    return error.message;
+  }
+
+  // Anything else — a network failure reaching Blob, most likely. The detail
+  // goes on screen rather than into a log only: this app has one user, who
+  // administers its Vercel project, and "try again" has already cost several
+  // rounds of guessing at errors that were perfectly well described.
+  const detail = error instanceof Error ? error.message : String(error);
+  return `Couldn't store that image — ${detail.slice(0, 200)}`;
+}
+
+/**
+ * Hosts that answer a server-side fetch with a challenge page rather than
+ * their content, so there is nothing to be gained by asking.
+ *
+ * Scalemates is the one that matters here: it is the best kit reference on
+ * the web and the natural `scalematesUrl` for almost every candidate, and it
+ * returns 403 to a datacenter IP every time. Reading its Open Graph image was
+ * a good idea that simply cannot work from a serverless function. Skipping it
+ * outright — rather than spending a request and a timeout on it per candidate,
+ * per search — is why this list exists. It stays the kit's *link*; it just
+ * isn't asked for pictures.
+ */
+const ART_HOSTILE_HOSTS = ["scalemates.com"];
+
+function isArtHostile(url: string): boolean {
+  try {
+    const host = new URL(url).hostname.toLowerCase();
+    return ART_HOSTILE_HOSTS.some((blocked) => host === blocked || host.endsWith(`.${blocked}`));
+  } catch {
+    return false;
+  }
+}
+
 /** A status a site returns when it has decided we're a robot, as opposed to
  * one that means the page genuinely isn't there. Worth telling apart: the
  * first is permanent for this approach and the user should upload a photo,
@@ -299,8 +385,19 @@ export async function resolveBoxArtUrl(
   if (!sourceUrl) return { ok: false, reason: "No link to read box art from." };
 
   // An obvious image URL is taken at its word — fetching it here would mean
-  // downloading the whole image just to learn what we can already see.
+  // downloading the whole image just to learn what we can already see. Note
+  // this runs before the hostile-host check on purpose: a direct image URL
+  // on such a host is still worth trying, since it's the page HTML that gets
+  // challenged, not usually the image CDN behind it.
   if (looksLikeImageUrl(sourceUrl)) return { ok: true, url: sourceUrl };
+
+  if (isArtHostile(sourceUrl)) {
+    log("skipped-hostile-host", { source: sourceUrl });
+    return {
+      ok: false,
+      reason: "Scalemates blocks automated requests, so its pictures can't be fetched. Paste an image URL or upload a photo instead.",
+    };
+  }
 
   const host = (() => {
     try {
@@ -397,6 +494,16 @@ export async function saveBoxArt(sources: Array<string | null>): Promise<BoxArtR
 
 /** Downloads a direct image URL and puts it in Blob. */
 async function storeImage(imageUrl: string): Promise<BoxArtResult> {
+  // Checked before spending a download on an image that has nowhere to go.
+  if (!process.env.BLOB_READ_WRITE_TOKEN) {
+    log("no-token", { image: imageUrl });
+    return {
+      ok: false,
+      reason:
+        "No Blob token is configured. Connect a Blob store in Vercel → Storage, then redeploy so BLOB_READ_WRITE_TOKEN reaches the running deployment.",
+    };
+  }
+
   const host = (() => {
     try {
       return new URL(imageUrl).host;
@@ -439,8 +546,11 @@ async function storeImage(imageUrl: string): Promise<BoxArtResult> {
     log("stored", { image: imageUrl, bytes: bytes.byteLength, blob: blob.url });
     return { ok: true, url: blob.url };
   } catch (error) {
-    log("store-threw", { image: imageUrl, error: error instanceof Error ? error.message : String(error) });
-    return { ok: false, reason: "Couldn't store that image — try again." };
+    log("store-threw", {
+      image: imageUrl,
+      error: error instanceof Error ? `${error.constructor.name}: ${error.message}` : String(error),
+    });
+    return { ok: false, reason: describeBlobError(error) };
   }
 }
 
