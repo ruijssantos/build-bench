@@ -1,9 +1,16 @@
 .box {
-  /* Only matters inside a flex row (the Wishlist search form at desktop —
-     see Wishlist.module.css .searchForm); a block-level parent (Thinner's
-     phone/desktop wrappers) ignores flex properties entirely, so this is
-     free to be unconditional. */
-  flex: 1;
+  /* flex-basis must stay `auto`, not the `0%` that the bare `flex: 1`
+     shorthand implies — Wishlist's search form is a column on phone, and
+     with a `0%` basis the column's main axis is height, so flex-basis
+     would override this rule's own `height: 52px` and collapse the box to
+     its content height instead. `auto` defers to `height` first and only
+     grows/shrinks from there, which is what actually happens: nothing else
+     in that column competes for vertical space, so it stays at 52px. In
+     the desktop row this same rule is what lets the box give up width to
+     `.searchActions` beside it. A block-level parent (Thinner's phone/
+     desktop wrappers) ignores flex properties entirely, so none of this
+     costs Thinner anything either way. */
+  flex: 1 1 auto;
   min-width: 0;
   background: var(--card);
   border: 1px solid var(--line-strong);
