@@ -826,6 +826,24 @@ to a card thumbnail in the browser first, what actually needed uploading was a f
 streaming that through a function costs nothing, keeps the whole exchange same-origin, and drops
 `@vercel/blob/client` out of the browser bundle entirely.
 
+Both of the above shipped and neither actually fixed anything, because the real fault sat one
+layer under both diagnoses. Every failure path in `saveBoxArt` returned `null` — a 403, a page
+with no `og:image`, and a link never fetched were indistinguishable — so there was nothing to
+debug from and two rounds went out on reasoning alone. Fixing that (every step returns a `reason`
+instead of `null`, one structured `[box-art]` log line per attempt, an explicit "Fetch from link"
+in the Edit dialog that runs synchronously and shows the result) is what finally produced a fact:
+Scalemates returns HTTP 403 to every server-side request. `resolveBoxArtUrl` now skips it outright
+— no request made — rather than spending a request and a timeout finding that out per candidate,
+per search; it stays the kit's *link*, just not an art source. The upload's own error
+(`describeBlobError`, mapping the SDK's typed exceptions to a message that names the fix) then
+surfaced the actual root cause of *both* failures: the Blob store had been created with private
+access, and every `put()` call here asks for `access: "public"` — box art is served straight to
+`<img>` tags off Blob's CDN, and a private store has no URL a browser can fetch. That is a
+dashboard setting, not a code bug; §9.2 now says to choose public when creating the store, since
+the mode can't be changed after the fact. A pasted image address (with its own "Fetch" button,
+same synchronous-and-visible shape) is the fallback for a link that won't cooperate no matter what
+the store is — Scalemates chief among them.
+
 Two more, both found in review rather than decided up front. `confidence` is listed on stage A's
 candidate payload in §5.1 and is **not** implemented: the screen ranks candidates by the order
 they come back in and shows no score, so the field would have been collected and never rendered.

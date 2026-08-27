@@ -48,9 +48,10 @@ export function ManualKitDialog({ kit, onClose }: { kit?: KitRow; onClose: () =>
   const [phase, setPhase] = useState<"idle" | "uploading" | "saving" | "fetching">("idle");
   const saving = phase !== "idle";
   const [error, setError] = useState<string | null>(null);
-  /** What the last "Fetch from link" press did, shown in place of the photo
-   * hint — a failure here is usually the site refusing us, which is worth
-   * saying out loud rather than leaving as an empty frame. */
+  /** What the last "Fetch" press (or an auto-fetch on save) did, shown in
+   * place of the photo hint — a failure here is usually the site refusing
+   * us, which is worth saying out loud rather than leaving as an empty
+   * frame. */
   const [fetchNote, setFetchNote] = useState<string | null>(null);
 
   const [photoFile, setPhotoFile] = useState<File | null>(null);

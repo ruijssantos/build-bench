@@ -579,7 +579,7 @@ a.iconButton:hover {
 
 .itemRow {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 10px;
   padding: 12px 14px;
   border-bottom: 1px solid var(--card-sunken);
@@ -593,7 +593,6 @@ a.iconButton:hover {
   flex: none;
   width: 24px;
   height: 24px;
-  margin-top: 1px;
   border-radius: 7px;
   border: 1.5px solid var(--line-strong);
   background: var(--card);
