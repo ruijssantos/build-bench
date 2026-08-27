@@ -1,10 +1,20 @@
-/* Sticky, not fixed: it keeps its own slot in the page's normal flow (no
-   compensating bottom padding needed anywhere else), but on a page tall
-   enough to scroll, it never leaves the bottom of the viewport — a long
-   screen used to mean scrolling all the way past the content to reach it. */
+/* Fixed, not sticky. Sticky was the first attempt — verified working in a
+   Chromium repro, but iOS Safari has a long-standing bug where `position:
+   sticky` doesn't stick inside a body-level scroll container, and that's
+   exactly what this app has: `html, body { overflow-x: hidden }` in
+   tokens.css leaves `overflow-y` un-set, and per the CSS Overflow spec a
+   non-visible overflow-x forces the other axis to compute as `auto`
+   instead of `visible` — so `<body>` becomes a real scroll container
+   rather than the viewport scrolling directly, which is precisely the
+   configuration WebKit's sticky implementation gets wrong. `fixed` doesn't
+   care which element is scrolling; it's always relative to the viewport.
+   The cost is that it drops out of `.shell`'s normal flow, which is why
+   `.content` below carries matching bottom padding — nothing else on the
+   page needed compensating for `sticky`, but `fixed` needs it here. */
 .bar {
-  flex: none;
-  position: sticky;
+  position: fixed;
+  left: 0;
+  right: 0;
   bottom: 0;
   z-index: 1;
   height: 84px;
