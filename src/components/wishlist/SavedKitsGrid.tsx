@@ -1,5 +1,6 @@
 import { listKitsByStatus } from "@/db/repositories/kits";
 
+import { EmptyKits } from "./EmptyKits";
 import { SavedKitCard } from "./SavedKitCard";
 import styles from "./Wishlist.module.css";
 
@@ -7,19 +8,27 @@ import styles from "./Wishlist.module.css";
  * The saved half of the Kits module — everything the database owns here,
  * behind one boundary (docs/PERFORMANCE.md §5). `listKitsByStatus` is
  * request-time then cached, so a second visit costs nothing.
+ *
+ * Sits below the search card, independent of whatever the search box is
+ * doing — these persist across visits, search results don't.
  */
 export async function SavedKitsGrid() {
   const kits = await listKitsByStatus("wishlist");
 
   if (kits.length === 0) {
-    return <div className={styles.emptyModule}>Nothing saved yet — search above, or add a kit by hand.</div>;
+    return <EmptyKits />;
   }
 
   return (
-    <div className={styles.cardGrid}>
-      {kits.map((kit) => (
-        <SavedKitCard key={kit.id} kit={kit} />
-      ))}
-    </div>
+    <>
+      <div className={styles.subHead}>
+        <span className={styles.moduleTitle}>Saved kits ({kits.length})</span>
+      </div>
+      <div className={styles.cardGrid}>
+        {kits.map((kit) => (
+          <SavedKitCard key={kit.id} kit={kit} />
+        ))}
+      </div>
+    </>
   );
 }

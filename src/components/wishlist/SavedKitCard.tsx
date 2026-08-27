@@ -2,13 +2,15 @@ import { ExternalLinkIcon, TrashIcon } from "@/components/icons";
 import { removeKitAction } from "@/app/(bench)/wishlist/actions";
 import type { KitRow } from "@/db/repositories/kits";
 
+import { EditKitTrigger } from "./EditKitTrigger";
 import { KitCardBody } from "./KitCardBody";
 import { MarkBoughtButton } from "./MarkBoughtButton";
 import styles from "./Wishlist.module.css";
 
-/** One saved kit — box art, identity, and the three things you do with it:
- * mark it bought, open its Scalemates page, or remove it. A Server
- * Component; the only client code in it is the bought tick's pending state. */
+/** One saved kit — box art, identity, and the things you do with it: mark it
+ * bought, edit its properties, open its link, or remove it. A Server
+ * Component; the only client code in it is the bought tick's pending state
+ * and the Edit dialog, each its own small island. */
 export function SavedKitCard({ kit }: { kit: KitRow }) {
   const title = kit.name ?? "kit";
 
@@ -26,14 +28,19 @@ export function SavedKitCard({ kit }: { kit: KitRow }) {
       <div className={styles.savedCardActions}>
         <MarkBoughtButton id={kit.id} />
         <div className={styles.savedSpacer} />
+        <EditKitTrigger kit={kit} />
+        {/* Generic now, not Scalemates-specific: a hand-entered kit can put
+            any URL here — a retailer page, a forum thread, whatever's
+            useful — and it renders the same link icon a resolved kit's
+            Scalemates page does. */}
         {kit.scalematesUrl ? (
           <a
             className={styles.iconButton}
             href={kit.scalematesUrl}
             target="_blank"
             rel="noopener noreferrer"
-            title="Open on Scalemates"
-            aria-label={`Open ${title} on Scalemates`}
+            title="Open link"
+            aria-label={`Open link for ${title}`}
           >
             <ExternalLinkIcon size={15} />
           </a>

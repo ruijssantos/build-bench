@@ -33,7 +33,9 @@ export default function WishlistPage() {
       <div className={styles.scrollArea}>
         <div className={styles.grid}>
           <section className={styles.section}>
-            <span className={styles.moduleTitle}>Kits</span>
+            <div className={styles.sectionHead}>
+              <h2 className={styles.sectionTitle}>Kits</h2>
+            </div>
             <KitSearch />
             <BenchError label="Saved kits">
               <Suspense fallback={<KitsSkeleton />}>
@@ -43,8 +45,8 @@ export default function WishlistPage() {
           </section>
 
           <section className={styles.section}>
-            <div className={styles.moduleHead}>
-              <span className={styles.moduleTitle}>Other items</span>
+            <div className={styles.sectionHead}>
+              <h2 className={styles.sectionTitle}>Other items</h2>
               <AddItemTrigger />
             </div>
             <BenchError label="Other items">

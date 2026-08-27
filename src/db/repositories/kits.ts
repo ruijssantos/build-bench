@@ -51,6 +51,18 @@ async function queryKitsByStatus(status: KitStatus): Promise<KitRow[]> {
   return db.select().from(kit).where(eq(kit.status, status)).orderBy(desc(kit.createdAt));
 }
 
+/** One row by id, scoped to `status` — same reasoning as every mutation
+ * below: the wishlist screen may only look at rows it actually shows. Used
+ * ahead of an edit, to know the image it's replacing (if any). */
+export async function findKitById(id: number, status: KitStatus): Promise<KitRow | undefined> {
+  const rows = await db
+    .select()
+    .from(kit)
+    .where(and(eq(kit.id, id), eq(kit.status, status)))
+    .limit(1);
+  return rows[0];
+}
+
 export interface CreateKitInput {
   brand: string;
   kitNumber: string | null;
@@ -104,6 +116,39 @@ export async function deleteKit(id: number, status: KitStatus): Promise<{ imageU
 
 export async function updateKitImage(id: number, imageUrl: string): Promise<void> {
   await db.update(kit).set({ imageUrl }).where(eq(kit.id, id));
+}
+
+export interface UpdateKitInput {
+  brand: string;
+  kitNumber: string | null;
+  name: string;
+  scale: string | null;
+  category: KitCategory;
+  scalematesUrl: string | null;
+  notes: string | null;
+  /** Only set when the edit uploaded a new photo — omitted leaves the
+   * existing `image_url` (or lack of one) alone. */
+  imageUrl?: string;
+}
+
+/** Edits a wishlist kit in place — same status scoping as every other
+ * mutation here (see the note above `updateKitStatus`). */
+export async function updateKit(id: number, status: KitStatus, input: UpdateKitInput): Promise<boolean> {
+  const rows = await db
+    .update(kit)
+    .set({
+      brand: input.brand,
+      kitNumber: input.kitNumber,
+      name: input.name,
+      scale: input.scale,
+      category: input.category,
+      scalematesUrl: input.scalematesUrl,
+      notes: input.notes,
+      ...(input.imageUrl ? { imageUrl: input.imageUrl } : {}),
+    })
+    .where(and(eq(kit.id, id), eq(kit.status, status)))
+    .returning({ id: kit.id });
+  return rows.length > 0;
 }
 
 /**

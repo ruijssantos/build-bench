@@ -19,17 +19,17 @@ import styles from "./DesktopHeader.module.css";
  * `trailing` is optional — Paints puts its Add button here; Thinner and the
  * ComingSoon placeholders have nothing to put beside the title and just omit
  * it, which collapses cleanly since the header is a flex row either way.
+ *
+ * `trailing` sits right after the title on `.header`'s own `gap: 20px` —
+ * not pushed to the far edge by a spacer. A trailing action reads as part of
+ * the same instruction as the title ("Paints" + "Add a paint"), not as a
+ * separate thing that happens to live in the same row.
  */
 export function DesktopHeader({ title, trailing }: { title: string; trailing?: ReactNode }) {
   return (
     <div className={styles.header}>
       <h1 className={styles.title}>{title}</h1>
-      {trailing ? (
-        <>
-          <div className={styles.spacer} />
-          {trailing}
-        </>
-      ) : null}
+      {trailing}
     </div>
   );
 }
