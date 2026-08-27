@@ -30,6 +30,8 @@ export function PhoneHeader({ title, trailing }: { title: string; trailing?: Rea
         </g>
       </svg>
 
+      <div className={styles.statusBarSpace} />
+
       <div className={styles.row}>
         <div>
           <div className={styles.eyebrow}>The Build Bench</div>

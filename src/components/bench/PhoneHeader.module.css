@@ -17,6 +17,10 @@
   pointer-events: none;
 }
 
+.statusBarSpace {
+  height: 44px;
+}
+
 .row {
   position: relative;
   padding: 8px 20px 18px;
