@@ -4,6 +4,7 @@ import { isIP } from "node:net";
 import {
   BlobAccessError,
   BlobContentTypeNotAllowedError,
+  BlobError,
   BlobFileTooLargeError,
   BlobServiceNotAvailable,
   BlobStoreNotFoundError,
@@ -305,7 +306,26 @@ export function describeBlobError(error: unknown): string {
   if (error instanceof BlobFileTooLargeError || error instanceof BlobContentTypeNotAllowedError) {
     return error.message;
   }
-  return "Couldn't store that image — try again.";
+
+  // The base class, checked after every subclass above. This is the branch a
+  // missing or unconfigured token actually lands in — `put` throws a plain
+  // `BlobError` for that, not one of the typed ones — and leaving it to fall
+  // through to the generic line below is what made every Blob failure look
+  // identical no matter what was wrong. The SDK's own message is specific and
+  // safe to show: it never echoes the token, only whether one was found.
+  if (error instanceof BlobError) {
+    if (error.message.includes("No read-write token found")) {
+      return "No Blob token is configured. Connect a Blob store in Vercel → Storage, then redeploy so BLOB_READ_WRITE_TOKEN reaches the running deployment.";
+    }
+    return error.message;
+  }
+
+  // Anything else — a network failure reaching Blob, most likely. The detail
+  // goes on screen rather than into a log only: this app has one user, who
+  // administers its Vercel project, and "try again" has already cost several
+  // rounds of guessing at errors that were perfectly well described.
+  const detail = error instanceof Error ? error.message : String(error);
+  return `Couldn't store that image — ${detail.slice(0, 200)}`;
 }
 
 /**
@@ -469,6 +489,16 @@ export async function saveBoxArt(sources: Array<string | null>): Promise<BoxArtR
 
 /** Downloads a direct image URL and puts it in Blob. */
 async function storeImage(imageUrl: string): Promise<BoxArtResult> {
+  // Checked before spending a download on an image that has nowhere to go.
+  if (!process.env.BLOB_READ_WRITE_TOKEN) {
+    log("no-token", { image: imageUrl });
+    return {
+      ok: false,
+      reason:
+        "No Blob token is configured. Connect a Blob store in Vercel → Storage, then redeploy so BLOB_READ_WRITE_TOKEN reaches the running deployment.",
+    };
+  }
+
   const host = (() => {
     try {
       return new URL(imageUrl).host;
