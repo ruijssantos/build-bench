@@ -63,32 +63,44 @@ function readHtml(route: string): string {
 }
 
 // ---------------------------------------------------------------------------
-// 1. What the browser downloads for the Thinner Bench
+// 1. What the browser downloads for the busiest screens
+//
+// Both routes here, not just Thinner: the Wishlist regression that started
+// this section of the budget (a 220px skeleton where a populated grid could
+// run 1,000px+, and box art shipped unresized to Vercel Blob) shipped clean
+// through this script because it only ever looked at /thinner. A screen this
+// budget doesn't check is a screen with no budget.
 // ---------------------------------------------------------------------------
 
-const html = readHtml("thinner");
+const BUDGETED_ROUTES = ["thinner", "wishlist"];
 const chunkDir = join(BUILD_DIR, "static/chunks");
+let eagerScripts: string[] = [];
 
-/** Every <script> the document pulls in, minus the `noModule` legacy bundle,
- * which no module-capable browser ever fetches. */
-const eagerScripts = [...html.matchAll(/<script src="\/_next\/(static\/chunks\/[^"]+\.js)"([^>]*)>/g)]
-  .filter((m) => !m[2].includes("noModule"))
-  .map((m) => m[1]);
+for (const route of BUDGETED_ROUTES) {
+  const html = readHtml(route);
 
-if (eagerScripts.length === 0) {
-  throw new Error("Found no scripts in the prerendered /thinner document — has the build layout changed?");
+  /** Every <script> the document pulls in, minus the `noModule` legacy
+   * bundle, which no module-capable browser ever fetches. */
+  const scripts = [...html.matchAll(/<script src="\/_next\/(static\/chunks\/[^"]+\.js)"([^>]*)>/g)]
+    .filter((m) => !m[2].includes("noModule"))
+    .map((m) => m[1]);
+
+  if (scripts.length === 0) {
+    throw new Error(`Found no scripts in the prerendered /${route} document — has the build layout changed?`);
+  }
+  if (route === "thinner") eagerScripts = scripts; // reused by section 2, below
+
+  const initialJs = scripts.reduce((total, src) => total + gzipOf(join(BUILD_DIR, src)), 0);
+  check(`/${route} initial JS (gzip)`, initialJs, BUDGETS.initialJsGzip);
+
+  check(`/${route} document (gzip)`, gzipSync(Buffer.from(html)).length, BUDGETS.documentGzip);
+
+  const cssTotal = [...html.matchAll(/href="\/_next\/(static\/chunks\/[^"]+\.css)"/g)].reduce(
+    (total, m) => total + gzipOf(join(BUILD_DIR, m[1])),
+    0,
+  );
+  check(`/${route} CSS (gzip)`, cssTotal, BUDGETS.cssGzip);
 }
-
-const initialJs = eagerScripts.reduce((total, src) => total + gzipOf(join(BUILD_DIR, src)), 0);
-check("initial JS (gzip)", initialJs, BUDGETS.initialJsGzip);
-
-check("/thinner document (gzip)", gzipSync(Buffer.from(html)).length, BUDGETS.documentGzip);
-
-const cssTotal = [...html.matchAll(/href="\/_next\/(static\/chunks\/[^"]+\.css)"/g)].reduce(
-  (total, m) => total + gzipOf(join(BUILD_DIR, m[1])),
-  0,
-);
-check("/thinner CSS (gzip)", cssTotal, BUDGETS.cssGzip);
 
 // ---------------------------------------------------------------------------
 // 2. The paint catalogue must stay in a lazily-loaded chunk
@@ -114,7 +126,36 @@ if (leaked.length > 0) {
 }
 
 // ---------------------------------------------------------------------------
-// 3. Every route keeps a static shell
+// 3. A saved kit's box art goes through Next's image optimizer
+//
+// The report this section responds to: 426 KiB across four unresized JPEGs,
+// served verbatim because `saveBoxArt` copies the source bytes into Blob as-
+// is (docs/PLAN.md §2.4 — deliberate, that's the SSRF-safe re-hosting step,
+// not a resize). `KitArt` routes a saved kit's own-Blob art through
+// `next/image` instead of a plain `<img>` (docs/PERFORMANCE.md, Wishlist
+// section); this checks the config that makes that possible actually shipped,
+// rather than the runtime behaviour, which needs a real Blob store to see.
+// ---------------------------------------------------------------------------
+
+const requiredServerFiles = JSON.parse(readFileSync(join(BUILD_DIR, "required-server-files.json"), "utf-8")) as {
+  config?: { images?: { remotePatterns?: Array<{ hostname?: string }> } };
+};
+const blobPatternConfigured = (requiredServerFiles.config?.images?.remotePatterns ?? []).some((p) =>
+  p.hostname?.endsWith(".public.blob.vercel-storage.com"),
+);
+
+if (!blobPatternConfigured) {
+  failures.push({
+    what: "images.remotePatterns is missing the Blob store host",
+    actual: "not configured",
+    budget: "next/image can optimise a saved kit's box art",
+  });
+} else {
+  notes.push("✓ next/image is configured for the Blob store's box art");
+}
+
+// ---------------------------------------------------------------------------
+// 4. Every route keeps a static shell
 // ---------------------------------------------------------------------------
 
 const appDir = join(BUILD_DIR, "server/app");

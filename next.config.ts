@@ -48,6 +48,20 @@ const nextConfig: NextConfig = {
     wishlist: { stale: 30, revalidate: 60, expire: 240 },
   },
 
+  /**
+   * A saved kit's box art is re-hosted on our own Vercel Blob store at save
+   * time (`saveBoxArt`, docs/PLAN.md §2.4) — never linked to arbitrary hosts
+   * — so it's the one image source in the app safe to run through Next's
+   * optimizer. `**` matches the store's subdomain, which is per-deployment.
+   * A search candidate's art, still on whoever's host the search turned up,
+   * is deliberately excluded: `next/image` would refuse an unlisted host at
+   * request time, so `KitArt` renders that case as a plain `<img>` instead
+   * (docs/PERFORMANCE.md, Wishlist section).
+   */
+  images: {
+    remotePatterns: [{ protocol: "https", hostname: "**.public.blob.vercel-storage.com" }],
+  },
+
   // Deliberately NOT set: `experimental.inlineCss`. Measured on this app, it
   // makes every document 15 kB larger gzipped rather than smaller — React
   // serialises the same CSS into the RSC payload as well as the <style> tag,

@@ -633,20 +633,33 @@ a.iconButton:hover {
   background: #14294c;
 }
 
-/* --------------------------------------------------------------- skeleton */
+/* --------------------------------------------------------------- skeleton
+   Built from the real card/row classnames — `.card`, `.cardArt`, `.cardBody`,
+   `.itemRow` and friends, reused as-is below — rather than one undifferen-
+   tiated block (docs/PERFORMANCE.md §11 point 3). A single block the wrong
+   height was the whole CLS problem here: it was ~220px where a populated
+   grid is often 1,000px+, so the entire section jumped once real content
+   landed. Shaped placeholders can't know the real *count* before the query
+   resolves — `KitsSkeleton`/`OtherItemsSkeleton` render a small fixed
+   number, so a wishlist within that bound sees no shift at all, and a
+   bigger one only shifts by its extra rows, not by the whole section. See
+   docs/PERFORMANCE.md, Wishlist section, for the accepted residual. */
 
-.skeletonBlock {
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-card);
+.skeletonSwatch {
+  background: var(--card-sunken);
 }
 
-.skeletonKits {
-  height: 220px;
+.skeletonLine {
+  display: inline-block;
+  background: var(--card-sunken);
+  border-radius: 6px;
+  color: transparent;
+  max-width: 100%;
 }
 
-.skeletonItems {
-  height: 160px;
+.skeletonTick {
+  border-color: transparent;
+  background: var(--card-sunken);
 }
 
 /* ------------------------------------------------------------- photo upload

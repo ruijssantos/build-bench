@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { preconnect } from "react-dom";
 
 import { BenchError } from "@/components/bench/BenchError";
 import { DesktopHeader } from "@/components/bench/DesktopHeader";
@@ -10,6 +11,7 @@ import { OtherItemsList } from "@/components/wishlist/OtherItemsList";
 import { OtherItemsSkeleton } from "@/components/wishlist/OtherItemsSkeleton";
 import { SavedKitsGrid } from "@/components/wishlist/SavedKitsGrid";
 import styles from "@/components/wishlist/Wishlist.module.css";
+import { blobStoreOrigin } from "@/lib/box-art";
 
 export const metadata = { title: "Wishlist" };
 
@@ -25,6 +27,13 @@ export const metadata = { title: "Wishlist" };
  * list or vice versa.
  */
 export default function WishlistPage() {
+  // The origin resolves from an env var alone (see `blobStoreOrigin`), so
+  // this stays safe to call unconditionally in the static shell — DNS + TLS
+  // for the saved kits' box art can start before the grid's own query even
+  // begins. docs/PERFORMANCE.md, Wishlist section.
+  const blobOrigin = blobStoreOrigin();
+  if (blobOrigin) preconnect(blobOrigin);
+
   return (
     <>
       <PhoneHeader title="Wishlist" />

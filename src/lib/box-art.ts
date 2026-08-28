@@ -38,6 +38,18 @@ import {
  */
 
 const MAX_BYTES = 8 * 1024 * 1024;
+
+/** "vercel_blob_rw_<storeId>_<secret>" — the same parse `@vercel/blob` itself
+ * does internally (its `parseStoreIdFromReadWriteToken`) to build a blob's
+ * URL as `https://<storeId>.public.blob.vercel-storage.com/...`. Exposed here
+ * so the wishlist page can preconnect to that origin without a network
+ * round trip to discover it — see docs/PERFORMANCE.md, Wishlist section. */
+export function blobStoreOrigin(): string | null {
+  const token = process.env.BLOB_READ_WRITE_TOKEN;
+  if (!token) return null;
+  const storeId = token.split("_")[3];
+  return storeId ? `https://${storeId}.public.blob.vercel-storage.com` : null;
+}
 /** Enough of a page to reach the `<head>` on any real site; a page that
  * hasn't declared its Open Graph image in the first megabyte isn't going to. */
 const MAX_HTML_BYTES = 1024 * 1024;
