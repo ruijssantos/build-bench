@@ -17,6 +17,7 @@ export function KitCardBody({
   scale,
   category,
   notes,
+  priority,
 }: {
   imageUrl: string | null;
   brand: string | null;
@@ -29,10 +30,12 @@ export function KitCardBody({
    * rules out an Edit dialog this phase: unrendered, anything typed into it
    * would be unreachable from the moment the dialog closed. */
   notes?: string | null;
+  /** Set on the LCP candidate only — see `KitArt`. */
+  priority?: boolean;
 }) {
   return (
     <>
-      <KitArt src={imageUrl} alt="" />
+      <KitArt src={imageUrl} alt="" priority={priority} />
       <div className={styles.cardBody}>
         {brand ? <span className={styles.cardBrand}>{brand}</span> : null}
         <span className={styles.cardName}>{name ?? "Untitled kit"}</span>

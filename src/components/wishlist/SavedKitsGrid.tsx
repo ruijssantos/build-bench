@@ -25,8 +25,10 @@ export async function SavedKitsGrid() {
         <span className={styles.moduleTitle}>Saved kits ({kits.length})</span>
       </div>
       <div className={styles.cardGrid}>
-        {kits.map((kit) => (
-          <SavedKitCard key={kit.id} kit={kit} />
+        {kits.map((kit, index) => (
+          // The first card is the wishlist's LCP element on a cold load —
+          // see KitArt. Everything after it keeps the ordinary lazy path.
+          <SavedKitCard key={kit.id} kit={kit} priority={index === 0} />
         ))}
       </div>
     </>

@@ -193,7 +193,66 @@ no `weight` option — one file covers 400–800. DM Mono sets only small second
 labels and is `preload: false`, so it doesn't compete for bandwidth during
 first paint. All three use `display: "swap"`.
 
-## 8. What was measured and rejected
+## 8. Images (the Wishlist)
+
+A saved kit's box art is the one place in the app the shape from §1–§5 met a
+regression Lighthouse actually caught: 79 on `/wishlist` against 100
+everywhere else, almost entirely CLS (0.228) and LCP (3.6 s). Both traced back
+to the same two files.
+
+**The skeleton was one undifferentiated block.** `KitsSkeleton` reserved a
+fixed 220 px; a populated grid ran 1,000 px+. The whole section jumped once
+real content landed — Lighthouse named it exactly: `section.Wishlist-
+module__section`. Fixed the same way §11 point 3 already prescribes but this
+screen hadn't followed yet: `KitsSkeleton`/`OtherItemsSkeleton` are built from
+the real `.card`/`.cardArt`/`.cardBody`/`.itemRow` classnames, so each
+reserved unit is exactly the height its real counterpart will be. What a
+skeleton *can't* know before the query resolves is the count, so both render a
+small fixed number (2 cards, 3 rows) rather than guess — a wishlist within
+that bound sees no shift at all; a bigger one shifts by its extra rows, not by
+the whole section. Measured with a 4-kit fixture: **CLS 0.0000 on phone,
+0.0136 on desktop**, both from 0.228.
+
+**The LCP image was undiscoverable and unresized.** Three compounding causes,
+all in `KitArt`: `loading="lazy"` on what's usually the LCP element (report:
+"LCP resources should not use loading=lazy"); the image absent from the
+initial HTML entirely, since the grid streams behind `<Suspense>`, so nothing
+before that boundary resolves could have named its URL; and no `preconnect`
+to the Blob host, so DNS + TLS for a cross-origin request only started once
+the `<img>` was finally parsed. Fixed on the same request/render-time-vs-
+static-shell split as everywhere else in this doc:
+
+- `SavedKitsGrid` marks index `0` `priority` — the LCP candidate on a cold
+  load. `KitArt` turns that into `preload={true}` on `next/image` (Next 16;
+  `priority` is deprecated in its favour), which Next serialises as
+  `<link rel="preload" as="image" imageSrcSet="…">` in `<head>` — discoverable
+  before the `<img>` tag itself is ever parsed, regardless of which boundary
+  it streams in behind. Verified in the raw SSR response.
+- `blobStoreOrigin()` (`src/lib/box-art.ts`) parses the Blob store's hostname
+  out of `BLOB_READ_WRITE_TOKEN` — the same parse `@vercel/blob` does
+  internally — so the wishlist page can `ReactDOM.preconnect()` to it from
+  pure env, no I/O, safe to call unconditionally at the top of the page
+  component. Verified landing in the DOM at `domcontentloaded` via Playwright.
+
+**426 KiB across four unresized JPEGs** — `saveBoxArt` copies whatever bytes a
+web search's image host served, verbatim, into Blob (docs/PLAN.md §2.4 — the
+SSRF-safe re-hosting step, deliberately not a resize). `KitArt` now routes a
+saved kit's art through `next/image` when it recognises the host as our own
+Blob store (`images.remotePatterns` in `next.config.ts`, `**.public.blob.
+vercel-storage.com`) — automatic AVIF/WebP negotiation, a real `srcSet`,
+`fill` sizing off `.cardArt`'s existing `aspect-ratio: 4/3`. A search
+candidate's art is deliberately excluded: it's still on whoever's host the
+search turned up, `next/image` would 400 on an unlisted host, and there's no
+return on optimising a URL that's thrown away the moment the candidate isn't
+saved — `KitArt` keeps the plain `<img>` (with its `referrerPolicy`
+workaround) for that case. Fixes every already-saved kit retroactively, since
+the optimizer runs on read, not on the stored bytes.
+
+`npm run perf:budget` now checks both `/thinner` and `/wishlist` — see §10 —
+and that `images.remotePatterns` actually shipped in the build output; it
+can't check the runtime image-weight win itself without a real Blob store.
+
+## 9. What was measured and rejected
 
 - **`experimental.inlineCss`** — makes every document ~15 kB *larger* gzipped,
   not smaller: React serialises the same CSS into the RSC payload as well as
@@ -206,7 +265,7 @@ first paint. All three use `display: "swap"`.
   first return's render into the prefetch. Measured no difference, and runtime
   prefetching costs a server invocation per prefetchable link.
 
-## 9. Known, bounded, accepted
+## 10. Known, bounded, accepted
 
 Landing directly on an ambiguous bottle-line colour (`/thinner?code=X-7`) shifts
 the page once by 45 px when the acrylic/enamel toggle streams in: **CLS 0.041**
@@ -217,21 +276,29 @@ code. Client-side navigations don't shift at all — the toggle resolves during
 the prefetch. If it ever needs to be zero, reserve the row's height in the
 shell and accept the gap.
 
-## 10. Budget
+## 11. Budget
 
 `npm run perf:budget` reads a finished build and fails on:
 
 | Check | Budget | Currently |
 |---|---|---|
-| Initial JS, gzipped (framework included) | 150 kB | 143 kB |
-| `/thinner` static shell, gzipped | 8 kB | 2.7 kB |
-| `/thinner` CSS, gzipped | 9.0 kB | 8.5 kB |
+| `/thinner` initial JS, gzipped (framework included) | 150 kB | 143 kB |
+| `/wishlist` initial JS, gzipped | 150 kB | 148 kB |
+| `/thinner` static shell, gzipped | 8 kB | 2.9 kB |
+| `/wishlist` static shell, gzipped | 8 kB | 2.8 kB |
+| CSS, gzipped (shared by both) | 9.0 kB | 8.5 kB |
 | Paint catalogue in an eagerly-loaded chunk | never | behind its dynamic import |
-| Every app route ships a static shell | all 7 | all 7 |
+| `images.remotePatterns` covers the Blob store | required | configured |
+| Every app route ships a static shell | all 6 | all 6 |
 
 These guard regressions that are invisible in review: a `"use client"` one level
 too high, a static import of the catalogue, a page that quietly stops being
 prerenderable. Move a budget only in the commit that needs it, and say why.
+
+`/wishlist`'s JS is close to the ceiling — 2 kB of headroom against `/thinner`'s
+7 kB, from `next/image`'s client runtime. Real, not a rounding artefact: the
+next thing that adds a client dependency to the Wishlist screen should check
+this number before merging, not find out from CI.
 
 **One stylesheet per route group.** The CSS number is measured on `/thinner`
 but is not `/thinner`'s alone: every route under `(bench)` shares one hashed
@@ -248,7 +315,7 @@ Phases 4–8 each spend from it too. The next change to push past 9.0 kB is
 the one that has to decide whether to raise the number again or split the
 group.
 
-## 11. Checklist for a new screen
+## 12. Checklist for a new screen
 
 1. Page component is not `async` and awaits nothing at the top level.
 2. Reference data comes from `src/catalogue/`; only mutable data is queried.
@@ -259,4 +326,7 @@ group.
 5. Rarely-opened UI behind `lazy()`.
 6. Mutations are Server Actions with `updateTag`.
 7. Every streamed boundary is wrapped in `BenchError` or `QuietError`.
-8. `npm run perf:budget` passes.
+8. An image on our own storage goes through `next/image`, with `preload`
+   (§8) on whichever one is the likely LCP element; an arbitrary external URL
+   stays a plain `<img>`.
+9. `npm run perf:budget` passes.

@@ -11,7 +11,7 @@ import styles from "./Wishlist.module.css";
  * bought, edit its properties, open its link, or remove it. A Server
  * Component; the only client code in it is the bought tick's pending state
  * and the Edit dialog, each its own small island. */
-export function SavedKitCard({ kit }: { kit: KitRow }) {
+export function SavedKitCard({ kit, priority }: { kit: KitRow; priority?: boolean }) {
   const title = kit.name ?? "kit";
 
   return (
@@ -24,6 +24,7 @@ export function SavedKitCard({ kit }: { kit: KitRow }) {
         scale={kit.scale}
         category={kit.category}
         notes={kit.notes}
+        priority={priority}
       />
       <div className={styles.savedCardActions}>
         <MarkBoughtButton id={kit.id} />
