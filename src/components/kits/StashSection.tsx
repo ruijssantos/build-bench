@@ -32,7 +32,7 @@ export async function StashSection({ searchParams }: { searchParams: Promise<Kit
         statuses={statuses}
         moduleLabel={filter ? statusLabel(filter) : "All kits"}
         withReadiness
-        emptyState={filter ? <EmptyStashFiltered label={statusLabel(filter)} /> : <EmptyStash />}
+        emptyState={filter ? <EmptyStashFiltered status={filter} /> : <EmptyStash />}
         renderCard={(kit, priority, readiness) => (
           <StashKitCard key={kit.id} kit={kit} priority={priority} readiness={readiness} />
         )}

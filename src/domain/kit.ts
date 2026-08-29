@@ -72,6 +72,37 @@ export function statusLabel(status: string | null): string {
   return isKitStatus(status) ? STATUS_LABEL[status] : "Unknown";
 }
 
+/**
+ * Where a kit already is, as a phrase that finishes "That kit is already …".
+ *
+ * `statusLabel` alone doesn't survive being spliced into a sentence: "Stash"
+ * is a noun, "Building" and "Built" are adjectives, so a lowercased label
+ * produces "already in your building." Each status gets its own phrasing
+ * instead.
+ */
+const STATUS_PHRASE: Record<KitStatus, string> = {
+  wishlist: "on your wishlist",
+  stash: "in your stash",
+  building: "being built",
+  built: "built",
+};
+
+export function statusPhrase(status: string | null): string {
+  return isKitStatus(status) ? STATUS_PHRASE[status] : "already here";
+}
+
+/** The empty-state line for a status filter that matched nothing — same
+ * problem as `statusPhrase`, different sentence ("No kits are …"). */
+const STATUS_EMPTY: Record<StashStatus, string> = {
+  stash: "No kits are sitting in the stash right now.",
+  building: "No kits are being built right now.",
+  built: "No kits are finished yet.",
+};
+
+export function statusEmptyLine(status: StashStatus): string {
+  return STATUS_EMPTY[status];
+}
+
 /** The forward step `updateKitStatus(id, from, to)` takes from the Stash
  * screen's status stepper and the list card's one-tap advance — `null` once
  * a kit is `built`, there being nowhere further forward to go. */

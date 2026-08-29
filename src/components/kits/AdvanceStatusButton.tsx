@@ -1,6 +1,6 @@
 "use client";
 
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 
 import { advanceKitStatus } from "@/app/(bench)/kits/actions";
 import { CheckIcon } from "@/components/icons";
@@ -19,24 +19,38 @@ import styles from "@/components/wishlist/Wishlist.module.css";
  */
 export function AdvanceStatusButton({ id, status }: { id: number; status: StashStatus }) {
   const [pending, startTransition] = useTransition();
+  const [error, setError] = useState<string | null>(null);
   const next = nextStashStatus(status);
   if (!next) return null;
 
   const label = next === "building" ? "Start building" : "Mark built";
 
   return (
-    <button
-      type="button"
-      className={styles.boughtButton}
-      disabled={pending}
-      onClick={() =>
-        startTransition(async () => {
-          await advanceKitStatus(id, status);
-        })
-      }
-    >
-      <CheckIcon size={13} />
-      <span>{pending ? "Updating…" : label}</span>
-    </button>
+    <>
+      <button
+        type="button"
+        className={styles.boughtButton}
+        disabled={pending}
+        onClick={() =>
+          startTransition(async () => {
+            setError(null);
+            try {
+              // The action returns a real reason when its `and(id, status)`
+              // predicate misses — a stale tab acting on a kit that has since
+              // moved. Throwing that away left the button spinning and then
+              // silently doing nothing.
+              const result = await advanceKitStatus(id, status);
+              if (!result.ok) setError(result.error);
+            } catch {
+              setError("Couldn't update that — try again.");
+            }
+          })
+        }
+      >
+        <CheckIcon size={13} />
+        <span>{pending ? "Updating…" : label}</span>
+      </button>
+      {error ? <span className={styles.cardError}>{error}</span> : null}
+    </>
   );
 }

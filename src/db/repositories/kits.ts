@@ -3,7 +3,7 @@ import { cacheLife, cacheTag } from "next/cache";
 import { connection } from "next/server";
 
 import { db } from "@/db/client";
-import { kit } from "@/db/schema";
+import { kit, kitManual, kitPaintRequirement } from "@/db/schema";
 import type { KitCategory, KitStatus } from "@/domain/kit";
 
 /**
@@ -161,27 +161,79 @@ export async function updateKitStatus(id: number, from: KitStatus, to: KitStatus
     .update(kit)
     .set({
       status: to,
-      // Stamped once, on the transition in — `coalesce` so a kit that was
-      // already started (moved back to stash, then forward again) doesn't
-      // have its original date overwritten. Editable after via
-      // `updateKitPurchase`, which is the escape hatch for backfilling or
-      // correcting either date by hand.
-      ...(to === "building" ? { startedAt: sql`coalesce(${kit.startedAt}, current_date)` } : {}),
+      // The date columns follow the status rather than only ever accumulating.
+      // Forward: stamped once, `coalesce` so re-advancing a kit that was moved
+      // back doesn't overwrite the original date. Backward: cleared, because a
+      // kit that is no longer built has no completion date and one that is no
+      // longer started has no start date — without this, moving back from
+      // `built` left a completion date showing on a kit still being built, and
+      // the `coalesce` above then made it permanent. Both stay editable by hand
+      // via `updateKitPurchase`, for backfilling or correcting.
+      ...(to === "building"
+        ? {
+            startedAt: sql`coalesce(${kit.startedAt}, current_date)`,
+            // built → building: it isn't finished any more.
+            ...(from === "built" ? { completedAt: null } : {}),
+          }
+        : {}),
       ...(to === "built" ? { completedAt: sql`coalesce(${kit.completedAt}, current_date)` } : {}),
+      // Back to the shelf, unstarted: neither date describes it any more.
+      ...(to === "stash" ? { startedAt: null, completedAt: null } : {}),
     })
     .where(and(eq(kit.id, id), eq(kit.status, from)))
     .returning({ id: kit.id });
   return rows.length > 0;
 }
 
-/** Deletes only within `status`, and returns the removed row's `image_url`
- * so the caller can drop the blob it was the last reference to. */
-export async function deleteKit(id: number, status: KitStatus): Promise<{ imageUrl: string | null } | null> {
+/**
+ * Deletes only within `status`, and returns every blob URL the removed rows
+ * were the last reference to — the kit's box art plus each of its manuals —
+ * so the caller can drop them.
+ *
+ * Children go first, by hand. `kit_manual.kit_id` and
+ * `kit_paint_requirement.kit_id` both reference `kit(id)` with
+ * `ON DELETE no action` (`drizzle/0000_init.sql`), so deleting a kit that has
+ * either would raise a foreign-key violation — which is exactly what this did
+ * before Phase 4a, harmlessly, because nothing had ever created a child row
+ * for a kit until this phase added manuals and paint requirements.
+ *
+ * Not a transaction, because Neon's HTTP driver has none (see
+ * `scripts/migrate.mts`). The order is chosen so a failure part-way is as
+ * recoverable as possible: requirements (re-derivable by re-extracting), then
+ * manuals (the row, whose blob the caller then drops), then the kit itself.
+ *
+ * `build_log_entry`, `research_job` and `kit_research` also reference `kit`
+ * and are deliberately *not* handled here: nothing in the app writes them yet.
+ * Phase 6 and Phase 7 each need to add their table to this function in the
+ * same commit that starts writing it, or deleting a kit will start failing
+ * again the same way.
+ */
+export async function deleteKit(
+  id: number,
+  status: KitStatus,
+): Promise<{ imageUrl: string | null; manualUrls: string[] } | null> {
+  // Scoped read first: this decides whether the caller is even allowed to act
+  // on the row, before anything is deleted.
+  const target = await db
+    .select({ id: kit.id })
+    .from(kit)
+    .where(and(eq(kit.id, id), eq(kit.status, status)))
+    .limit(1);
+  if (target.length === 0) return null;
+
+  await db.delete(kitPaintRequirement).where(eq(kitPaintRequirement.kitId, id));
+  const removedManuals = await db
+    .delete(kitManual)
+    .where(eq(kitManual.kitId, id))
+    .returning({ blobUrl: kitManual.blobUrl });
+
   const rows = await db
     .delete(kit)
     .where(and(eq(kit.id, id), eq(kit.status, status)))
     .returning({ imageUrl: kit.imageUrl });
-  return rows[0] ?? null;
+  if (rows.length === 0) return null;
+
+  return { imageUrl: rows[0].imageUrl, manualUrls: removedManuals.map((m) => m.blobUrl) };
 }
 
 /** Art editing (docs/PLAN.md §6 Phase 4a adds it on the detail page) is

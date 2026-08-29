@@ -51,32 +51,54 @@ export interface NewPaintRequirement {
 
 /**
  * Re-running "Extract paint list" on a manual replaces that manual's rows
- * rather than duplicating them (docs/PLAN.md §4.3) — delete then insert,
- * two statements rather than one transaction: Neon's HTTP driver has no
- * transactions (see `scripts/migrate.mts`'s note), the same constraint every
- * multi-statement write in this app already lives with.
+ * rather than duplicating them (docs/PLAN.md §4.3).
+ *
+ * Insert-then-delete, not delete-then-insert, because Neon's HTTP driver has
+ * no transactions (see `scripts/migrate.mts`) and the order decides what a
+ * failure part-way leaves behind. Deleting first means an insert that fails —
+ * a `paint_code` the compiled catalogue knows but the seeded `paint` table
+ * doesn't, a list long enough to overflow the bind parameters — wipes a paint
+ * list the user already had and reports only "try again".
+ *
+ * This way round, the failure modes invert: a failed insert leaves the old
+ * list untouched, and a failed delete leaves duplicates, which the display
+ * buckets de-duplicate by code and raw label anyway (`bucketPaintRequirements`)
+ * and the next successful re-run clears. Worst case is a stale row, not a lost
+ * list.
  */
 export async function replaceManualPaintRequirements(
   kitId: number,
   manualId: number,
   rows: NewPaintRequirement[],
 ): Promise<void> {
-  await db
-    .delete(kitPaintRequirement)
+  const superseded = await db
+    .select({ id: kitPaintRequirement.id })
+    .from(kitPaintRequirement)
     .where(and(eq(kitPaintRequirement.kitId, kitId), eq(kitPaintRequirement.manualId, manualId)));
 
-  if (rows.length === 0) return;
+  if (rows.length > 0) {
+    await db.insert(kitPaintRequirement).values(
+      rows.map((row) => ({
+        kitId,
+        manualId,
+        rawLabel: row.rawLabel,
+        paintCode: row.paintCode,
+        partHint: row.partHint,
+        source: "manual_pdf",
+      })),
+    );
+  }
 
-  await db.insert(kitPaintRequirement).values(
-    rows.map((row) => ({
-      kitId,
-      manualId,
-      rawLabel: row.rawLabel,
-      paintCode: row.paintCode,
-      partHint: row.partHint,
-      source: "manual_pdf",
-    })),
-  );
+  // By captured id, so this can only remove the rows that were there before
+  // the insert above — never the ones it just wrote.
+  if (superseded.length > 0) {
+    await db.delete(kitPaintRequirement).where(
+      inArray(
+        kitPaintRequirement.id,
+        superseded.map((row) => row.id),
+      ),
+    );
+  }
 }
 
 export interface KitReadiness {

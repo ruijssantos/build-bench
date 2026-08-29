@@ -1,6 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
-import { updateTag } from "next/cache";
+import { revalidateTag } from "next/cache";
 import { NextResponse, type NextRequest } from "next/server";
 
 import { findKitManualById, markManualPaintsExtracted } from "@/db/repositories/kit-manuals";
@@ -95,6 +95,19 @@ export async function POST(request: NextRequest) {
   if (!fetched) {
     return jsonError("Couldn't reach the stored manual — try again.");
   }
+  // Checked before the body is read, the same as every other `safeFetch`
+  // caller in `box-art.ts`: `safeFetch` hands back whatever the host answered,
+  // status and all. Without this, a 404 or 403 from Blob (a deleted object, a
+  // store that lost its token) would have its HTML error page base64'd and
+  // posted to the model as `application/pdf` — burning a paid Opus call to
+  // learn nothing, and reporting the generic failure rather than the real one.
+  if (!fetched.response.ok) {
+    await fetched.response.body?.cancel();
+    console.error(`[extract] manual fetch failed: HTTP ${fetched.response.status} for manual ${manual.id}`);
+    return jsonError(
+      `Couldn't read the stored manual — storage answered HTTP ${fetched.response.status}. If it was removed, re-upload it.`,
+    );
+  }
   const bytes = await readCapped(fetched.response, MAX_EXTRACTION_PDF_BYTES);
   if (!bytes) {
     return jsonError(
@@ -164,8 +177,14 @@ export async function POST(request: NextRequest) {
     );
     await markManualPaintsExtracted(manualId as number, kitId as number);
 
-    updateTag(kitTag(kitId as number));
-    updateTag(KIT_REQUIREMENTS_TAG);
+    // `revalidateTag`, not `updateTag`: this is a Route Handler, and
+    // `updateTag` throws there by design (it exists for read-your-own-writes
+    // inside a Server Action). That throw would land in this function's own
+    // catch below — so every *successful* extraction reported failure while
+    // the caches went stale. `"max"` expires immediately, which is what a
+    // just-written paint list needs.
+    revalidateTag(kitTag(kitId as number), "max");
+    revalidateTag(KIT_REQUIREMENTS_TAG, "max");
 
     return NextResponse.json<ExtractResponse>({
       ok: true,

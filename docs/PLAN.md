@@ -947,22 +947,86 @@ as `kit.category` before it: a label the upload UI suggests, not an enum the col
 against `current_date` on the transition in, so a kit moved back a step and forward again
 doesn't lose its original date to a second stamp.
 
-What this phase could not verify without a live database, a real Anthropic key and a browser
-pointed at an actual Blob store: a genuinely large manual upload (the 10–40 MB real-world
-case, and specifically whether client-direct upload behaves the way `@vercel/blob/client`'s
-docs describe against this project's own Blob store); the inline PDF viewer's actual behaviour
-across desktop browsers (it's a plain `<iframe src={blobUrl}>` — no library, relies on the
-browser's own PDF handling, which varies); a real `/api/kits/extract` call end to end, since
-that needs `ANTHROPIC_API_KEY` and a real scanned manual to be worth anything; and blob cleanup
-on delete for both a removed kit's art and a removed manual (`deleteBoxArt` reused for both —
-the precedent from Phase 3 — but neither path was exercised against a real store). Every route,
-component and Server Action shell was checked with a local dev server against no database at
-all: every `<Suspense>` boundary this phase added throws `DATABASE_URL is not set` cleanly into
-its own `BenchError` card with no unhandled crash, on both `/kits` and `/kits/[id]`, on phone
-and desktop viewports — see the screenshots taken during this build for what that looked like.
-Populated-state layout (real cards, a real manuals list, real paint buckets) was designed
-against, and closely follows, the review mock the plan for this phase was built from, but
-wasn't seen rendered with real rows.
+Review after the first Phase 4a commit caught a cluster of bugs, all of them the same shape:
+this is the first phase where a `kit` has *children* (manuals, paint requirements) and the
+first with a Route Handler that writes. Both invalidated assumptions the earlier phases were
+right to make.
+
+`kit_manual.kit_id`, `kit_paint_requirement.kit_id` and `kit_paint_requirement.manual_id` all
+reference their parents with `ON DELETE no action` (from `0000_init`), which had never mattered
+because nothing created a child row. Removing a manual that had been extracted, or a kit that
+had a manual, therefore raised a foreign-key violation — the trash button silently did nothing,
+and on the grid the failure took the whole section down through `BenchError`. `deleteKitManual`
+and `deleteKit` now clear children first, in an order chosen so a failure part-way loses only
+what re-extraction rebuilds, and `deleteKit` returns each manual's blob URL so `removeKit` can
+drop those objects too — before this, deleting a kit orphaned every manual PDF it owned.
+`build_log_entry`, `research_job` and `kit_research` also reference `kit` and are deliberately
+left alone: nothing writes them yet, and Phases 6/7 each need to add their table to `deleteKit`
+in the same commit that starts writing it.
+
+`/api/kits/extract` called `updateTag`, which **throws** in a Route Handler by design — it
+exists for read-your-own-writes inside a Server Action, and Next guards it on
+`workStore.page.endsWith('/route')`. The throw landed in the route's own catch, so every
+*successful* extraction reported "Paint extraction hit a problem — try again" after a paid
+~60s Opus call, while the caches went stale. It is `revalidateTag(tag, "max")` now. The client
+also needed a `router.refresh()`: a `fetch` from a client component doesn't re-render the server
+tree, so even a working extraction left the Paints panel on its empty state.
+
+Three more worth recording because each was a silent wrong answer rather than an error. The
+deferred `after()` box-art write closed over the status the kit had *before* a fetch that can
+take ~10s — and `updateKitImage` had just gained a status predicate, so a kit stashed in that
+window lost its art to a zero-row update; it re-reads the row now, and drops the blob if the
+write still misses. "Promote to Stash" was offered for a duplicate in *any* status, so a kit
+already `built` got a button that walked it two rungs backwards; the server now decides
+promotability (`wishlist → stash` only) rather than each caller guessing, and
+`promoteKitToStash` hardcodes that transition instead of taking a source status from the client.
+And moving a kit back down the ladder left the date the forward transition stamped — a
+completion date showing on a kit still being built, made permanent by the `coalesce` — so
+`updateKitStatus` now clears on the way back as well as stamping on the way in.
+
+Smaller, all real: `updateKitArt` derived `alreadyStored` from a client-supplied boolean, which
+would have let a crafted call store an arbitrary third-party URL as `image_url` against §2.4's
+"never hotlinked" rule (derived server-side now, matching `addManualKit`);
+`replaceManualPaintRequirements` deleted before inserting, so a failed insert wiped a paint list
+the user already had (inserts first now, deleting only the ids captured beforehand — a failure
+leaves duplicates, which the display buckets de-duplicate anyway, rather than nothing);
+`ManualRow` formatted timestamps with `toLocaleDateString`, which resolves in UTC on the server
+and the viewer's zone in the browser and so produced a hydration mismatch plus an off-by-one
+date near midnight (`src/domain/dates.ts` formats from ISO parts for both); the status buttons
+discarded the `KitResult` their actions return, making the "that kit has moved on already"
+message dead code; `ArtEditDialog.fetchFromUrl` had `try/finally` with no `catch`, so a rejected
+action was an unhandled rejection with nothing on screen; and two copy bugs from splicing
+`statusLabel` into fixed sentences ("already in your building.", "No kits are currently stash.")
+— `statusPhrase`/`statusEmptyLine` give each status its own wording. `KitDetailSkeleton` also
+renders the real `PhoneHeader`/`DesktopHeader` now: the title comes from the kit, so the header
+sits inside the Suspense boundary, and a fallback without one dropped ~110px in above
+already-painted cards.
+
+**What was verified, and how.** The SQL side of this phase now has real coverage: every
+statement it issues was run against a local PostgreSQL 16 (the same major version Neon serves),
+loaded with the migrations in order. That is what confirmed the missing-migration failure above
+(0000–0003 applied, then `listKitsByStatuses`' exact `SELECT` → `column "started_at" does not
+exist`, cleared by 0004, which is also a clean no-op when replayed); reproduced both
+foreign-key violations on delete and confirmed the child-first ordering fixes them and returns
+the manual blob URLs; walked a kit `stash → building → built → building → stash` and confirmed
+the dates stamp on the way up and clear on the way back; checked `replaceManualPaintRequirements`
+replaces exactly (6 rows → 2, no duplication); and confirmed `getStashReadiness` against a
+fixture built for the case it exists to handle — a code owned through two shelf rows (a spray
+can and the jar decanted from it) counting once, a repeated non-Tamiya callout counting once —
+giving owned 2 / missing 1 / unresolved 2, i.e. "Own 2 of 3 · 1 to buy · +2 unresolved".
+
+Still unverified, and still needing a real Anthropic key and a browser pointed at an actual
+Blob store: a genuinely large manual upload (the 10–40 MB real-world case, and specifically
+whether client-direct upload behaves the way `@vercel/blob/client`'s docs describe against this
+project's own store); the inline PDF viewer across desktop browsers (a plain
+`<iframe src={blobUrl}>` — no library, so it rides on each browser's own PDF handling); a real
+`/api/kits/extract` call end to end, which needs a key and a real scanned manual to be worth
+anything; and blob cleanup actually removing objects (the row-side logic is verified above, the
+`del()` calls against a real store are not). The UI was driven with a headless browser against
+no database, confirming every `<Suspense>` boundary this phase added fails into its own
+`BenchError` card with no unhandled crash on `/kits` and `/kits/[id]`, phone and desktop — but
+populated-state layout (real cards, a real manuals list, real paint buckets) still hasn't been
+seen rendered with real rows.
 
 ---
 
@@ -1023,6 +1087,19 @@ search starts resolving queries through Claude (§5.1 stage A).
 
 Schema and migrations live in `src/db/schema.ts` / `drizzle-kit`, wired to Neon's HTTP driver
 (`drizzle-orm/neon-http` — no connection pool to configure; it's stateless HTTP per query).
+
+> **Migrations do not run on deploy.** Nothing in CI (`.github/workflows/ci.yml`) or in the
+> Vercel build applies them — `npm run db:migrate` is a manual step, run against the target
+> database with its credentials pulled (`vercel env pull`). So **any phase that adds a column
+> must be migrated before its deploy is usable**, and until it is, every screen reading that
+> table fails: drizzle names every column explicitly in its `SELECT`, so one missing column
+> takes down the whole query, and `BenchError` reports it as "The database didn't answer."
+> Phase 4a shipped exactly that way — 0004 adds three columns, the preview deploy was still on
+> 0003, and both `/kits` *and* `/wishlist` broke, since they share `listKitsByStatuses`.
+> Diagnosing it cost a round trip that "run the migration" in the PR description would have
+> saved. If a future phase wants this to be impossible rather than merely documented, the fix
+> is a deploy step that runs the migrator, not more prose here.
+
 `npm run db:migrate` applies pending migrations; `npm run db:seed` (`scripts/seed.mts`) loads
 the committed catalogue and ratio rules into `paint` and `ratio_rule` and the initial paint
 shelf into `inventory_item`, using credentials pulled locally via `vercel env pull`. The rig

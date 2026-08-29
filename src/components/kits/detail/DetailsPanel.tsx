@@ -1,16 +1,8 @@
 import styles from "@/components/wishlist/Wishlist.module.css";
 import type { KitRow } from "@/db/repositories/kits";
+import { formatIsoDate } from "@/domain/dates";
 
 import { EditPurchaseTrigger } from "./EditPurchaseTrigger";
-
-function formatDate(iso: string | null): string | null {
-  if (!iso) return null;
-  const [y, m, d] = iso.split("-");
-  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-  const monthIndex = Number(m) - 1;
-  if (!y || Number.isNaN(monthIndex) || !months[monthIndex]) return iso;
-  return `${Number(d)} ${months[monthIndex]} ${y}`;
-}
 
 function Row({ label, value }: { label: string; value: string | null }) {
   return (
@@ -37,9 +29,9 @@ export function DetailsPanel({ kit }: { kit: KitRow }) {
           <EditPurchaseTrigger kit={kit} />
         </div>
         <Row label="Purchased from" value={kit.purchasedFrom} />
-        <Row label="Purchased" value={formatDate(kit.purchasedAt)} />
-        <Row label="Started" value={formatDate(kit.startedAt)} />
-        <Row label="Completed" value={formatDate(kit.completedAt)} />
+        <Row label="Purchased" value={formatIsoDate(kit.purchasedAt)} />
+        <Row label="Started" value={formatIsoDate(kit.startedAt)} />
+        <Row label="Completed" value={formatIsoDate(kit.completedAt)} />
       </div>
     </div>
   );

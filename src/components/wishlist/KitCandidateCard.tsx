@@ -16,17 +16,17 @@ import styles from "./Wishlist.module.css";
  * fetched into Blob until this actually runs; see `saveKitCandidate`'s own
  * comment.
  *
- * A duplicate found on another screen offers a Promote button instead of
- * just failing — but only saving into the stash offers it (`status !==
- * "wishlist"`): promoting a kit *out* of the stash on a save-to-wishlist
- * isn't a direction this app supports (§3.3 is one-directional), so the
- * wishlist screen shows the plain "already X" message and stops there.
+ * A duplicate that is a wishlist kit, on a save into the stash, comes back
+ * with `promotable` set and offers a Promote button instead of just failing.
+ * The server decides that (see `duplicateResult`) — this component only
+ * renders what it's told, so a kit already `building` or `built` can never
+ * get a button that would walk it backwards.
  */
 export function KitCandidateCard({ candidate, status }: { candidate: KitCandidate; status: KitStatus }) {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [promote, setPromote] = useState<{ id: number; status: KitStatus } | null>(null);
+  const [promote, setPromote] = useState<{ id: number } | null>(null);
 
   async function save() {
     setSaving(true);
@@ -36,7 +36,7 @@ export function KitCandidateCard({ candidate, status }: { candidate: KitCandidat
       const result = await saveKitCandidate(candidate, status);
       if (!result.ok) {
         setError(result.error);
-        if (status !== "wishlist") setPromote(result.existing ?? null);
+        setPromote(result.promotable ?? null);
         return;
       }
       setSaved(true);
@@ -51,7 +51,7 @@ export function KitCandidateCard({ candidate, status }: { candidate: KitCandidat
     if (!promote) return;
     setSaving(true);
     try {
-      const result = await promoteKitToStash(promote.id, promote.status);
+      const result = await promoteKitToStash(promote.id);
       if (!result.ok) {
         setError(result.error);
         return;
@@ -59,6 +59,8 @@ export function KitCandidateCard({ candidate, status }: { candidate: KitCandidat
       setSaved(true);
       setError(null);
       setPromote(null);
+    } catch {
+      setError("Couldn't move that kit — try again.");
     } finally {
       setSaving(false);
     }

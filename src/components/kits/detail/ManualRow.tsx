@@ -1,21 +1,18 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
 import { deleteManual } from "@/app/(bench)/kits/actions";
 import { CheckIcon, ExternalLinkIcon, EyeIcon, FileIcon, TrashIcon } from "@/components/icons";
 import styles from "@/components/wishlist/Wishlist.module.css";
 import type { KitManualRow } from "@/db/repositories/kit-manuals";
+import { formatTimestampDate } from "@/domain/dates";
 import { manualLabel } from "@/domain/kit-manual";
 
 function formatBytes(bytes: number | null): string {
   if (!bytes) return "";
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-}
-
-function formatDate(d: Date | null): string {
-  if (!d) return "";
-  return new Date(d).toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" });
 }
 
 /**
@@ -28,10 +25,12 @@ function formatDate(d: Date | null): string {
  * fighting over that same property on the same element is fragile.
  */
 export function ManualRow({ manual, kitId }: { manual: KitManualRow; kitId: number }) {
+  const router = useRouter();
   const [viewing, setViewing] = useState(false);
   const [extracting, startExtract] = useTransition();
   const [extractError, setExtractError] = useState<string | null>(null);
   const [pendingDelete, startDelete] = useTransition();
+  const [deleteError, setDeleteError] = useState<string | null>(null);
 
   async function runExtract() {
     setExtractError(null);
@@ -43,9 +42,33 @@ export function ManualRow({ manual, kitId }: { manual: KitManualRow; kitId: numb
           body: JSON.stringify({ manualId: manual.id, kitId }),
         });
         const data = (await res.json()) as { ok: boolean; error?: string };
-        if (!data.ok) setExtractError(data.error ?? "Extraction failed — try again.");
+        if (!data.ok) {
+          setExtractError(data.error ?? "Extraction failed — try again.");
+          return;
+        }
+        // The route revalidates its cache tags, but this was a `fetch` from a
+        // client component — nothing re-renders the server tree on its own, so
+        // without this the Paints panel keeps showing its empty state and this
+        // button keeps saying "Extract paint list" after a run that worked.
+        router.refresh();
       } catch {
         setExtractError("Extraction hit a problem — try again.");
+      }
+    });
+  }
+
+  function runDelete() {
+    setDeleteError(null);
+    startDelete(async () => {
+      try {
+        const result = await deleteManual(manual.id, kitId);
+        if (!result.ok) {
+          setDeleteError(result.error);
+          return;
+        }
+        router.refresh();
+      } catch {
+        setDeleteError("Couldn't remove that manual — try again.");
       }
     });
   }
@@ -62,8 +85,8 @@ export function ManualRow({ manual, kitId }: { manual: KitManualRow; kitId: numb
           </div>
           <div className={styles.manualName}>{manual.filename ?? "manual.pdf"}</div>
           <div className={styles.manualMeta}>
-            {formatBytes(manual.sizeBytes)} · uploaded {formatDate(manual.uploadedAt)}
-            {manual.paintsExtractedAt ? ` · paints extracted ${formatDate(manual.paintsExtractedAt)}` : ""}
+            {formatBytes(manual.sizeBytes)} · uploaded {formatTimestampDate(manual.uploadedAt)}
+            {manual.paintsExtractedAt ? ` · paints extracted ${formatTimestampDate(manual.paintsExtractedAt)}` : ""}
           </div>
         </div>
         <button
@@ -72,11 +95,7 @@ export function ManualRow({ manual, kitId }: { manual: KitManualRow; kitId: numb
           title="Remove manual"
           aria-label={`Remove ${manual.filename ?? "manual"}`}
           disabled={pendingDelete}
-          onClick={() =>
-            startDelete(async () => {
-              await deleteManual(manual.id, kitId);
-            })
-          }
+          onClick={runDelete}
         >
           <TrashIcon size={15} />
         </button>
@@ -108,6 +127,7 @@ export function ManualRow({ manual, kitId }: { manual: KitManualRow; kitId: numb
       </div>
 
       {extractError ? <div className={styles.cardError}>{extractError}</div> : null}
+      {deleteError ? <div className={styles.cardError}>{deleteError}</div> : null}
 
       {viewing ? (
         <span className={styles.deskOnly}>

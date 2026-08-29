@@ -3,7 +3,7 @@ import { cacheLife, cacheTag } from "next/cache";
 import { connection } from "next/server";
 
 import { db } from "@/db/client";
-import { kitManual } from "@/db/schema";
+import { kitManual, kitPaintRequirement } from "@/db/schema";
 
 import { kitTag } from "./kits";
 
@@ -66,7 +66,25 @@ export async function createKitManual(input: CreateKitManualInput): Promise<numb
   return rows[0].id;
 }
 
+/**
+ * Removes a manual and the paint requirements extracted from it.
+ *
+ * The requirements go first: `kit_paint_requirement.manual_id` references
+ * `kit_manual(id)` with `ON DELETE no action` (`drizzle/0000_init.sql`), so
+ * deleting a manual that has ever been extracted would otherwise raise a
+ * foreign-key violation and the trash button would do nothing. Dropping them
+ * is also the right model rather than a concession to the constraint — those
+ * rows are that manual's readings, and they have no meaning once it's gone.
+ *
+ * Two statements, no transaction (Neon HTTP has none — `scripts/migrate.mts`).
+ * Requirements first means a failure part-way loses only the extraction, which
+ * re-running "Extract paint list" rebuilds.
+ */
 export async function deleteKitManual(id: number, kitId: number): Promise<{ blobUrl: string } | null> {
+  await db
+    .delete(kitPaintRequirement)
+    .where(and(eq(kitPaintRequirement.kitId, kitId), eq(kitPaintRequirement.manualId, id)));
+
   const rows = await db
     .delete(kitManual)
     .where(and(eq(kitManual.id, id), eq(kitManual.kitId, kitId)))

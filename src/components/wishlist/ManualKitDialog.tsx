@@ -64,11 +64,11 @@ export function ManualKitDialog({
    * us, which is worth saying out loud rather than leaving as an empty
    * frame. */
   const [fetchNote, setFetchNote] = useState<string | null>(null);
-  /** Set when adding hits a duplicate that lives on another screen — offers
-   * Promote instead of just failing, the same as `KitCandidateCard`. Only
-   * ever set on an add into the stash (`status !== "wishlist"`); see that
-   * component's note on why the wishlist side doesn't offer it. */
-  const [promote, setPromote] = useState<{ id: number; status: KitStatus } | null>(null);
+  /** Set when adding hits a wishlist kit while saving into the stash — offers
+   * Promote instead of just failing, the same as `KitCandidateCard`. The
+   * server decides when that's on offer (`duplicateResult`), so a `building`
+   * or `built` duplicate never gets a button that would move it backwards. */
+  const [promote, setPromote] = useState<{ id: number } | null>(null);
 
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
@@ -123,12 +123,14 @@ export function ManualKitDialog({
     if (!promote) return;
     setPhase("saving");
     try {
-      const result = await promoteKitToStash(promote.id, promote.status);
+      const result = await promoteKitToStash(promote.id);
       if (!result.ok) {
         setError(result.error);
         return;
       }
       onClose();
+    } catch {
+      setError("Couldn't move that kit — try again.");
     } finally {
       setPhase("idle");
     }
@@ -181,7 +183,7 @@ export function ManualKitDialog({
 
       if (!result.ok) {
         setError(result.error);
-        if (!editing && status !== "wishlist") setPromote(result.existing ?? null);
+        if (!editing) setPromote(result.promotable ?? null);
         return;
       }
 

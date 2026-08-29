@@ -52,7 +52,7 @@ export function ArtEditDialog({ kitId, onClose }: { kitId: number; onClose: () =
         setError(data.error);
         return;
       }
-      const result = await updateKitArt(kitId, data.url, true);
+      const result = await updateKitArt(kitId, data.url);
       if (!result.ok) {
         setError(result.error);
         return;
@@ -70,12 +70,17 @@ export function ArtEditDialog({ kitId, onClose }: { kitId: number; onClose: () =
     setError(null);
     setPhase("fetching");
     try {
-      const result = await updateKitArt(kitId, photoUrl, false);
+      const result = await updateKitArt(kitId, photoUrl);
       if (!result.ok) {
         setError(result.error);
         return;
       }
       onClose();
+    } catch {
+      // Without this the rejection escapes into the `void fetchFromUrl()` call
+      // site as an unhandled promise rejection and the button just returns to
+      // "Fetch" with nothing said — indistinguishable from a no-op.
+      setError("Couldn't fetch that image — try again.");
     } finally {
       setPhase("idle");
     }

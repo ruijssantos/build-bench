@@ -22,7 +22,7 @@ import {
   isStashStatus,
   nextStashStatus,
   previousStashStatus,
-  statusLabel,
+  statusPhrase,
   type KitStatus,
   type StashStatus,
 } from "@/domain/kit";
@@ -44,28 +44,29 @@ import { readText } from "@/lib/form-text";
  * page, so editing kit #12 doesn't evict every other kit's cached read.
  */
 
-export type KitResult = { ok: true } | { ok: false; error: string; existing?: { id: number; status: KitStatus } };
-
-function statusPhrase(status: string): string {
-  return status === "wishlist" ? "on your wishlist" : `in your ${statusLabel(status).toLowerCase()}`;
-}
+/** `promotable` is set only when the duplicate is a *wishlist* kit and the
+ * caller was saving into the stash — the one direction where offering to move
+ * the existing row instead of creating a second one makes sense. */
+export type KitResult = { ok: true } | { ok: false; error: string; promotable?: { id: number } };
 
 /**
- * `findKitByBrandNumber` searches every status (docs/PLAN.md §6 Phase 4a) —
- * a hit outside the status being saved into is offered back as something to
- * *promote* rather than a second row. `existing` carries what a caller needs
- * to offer that: the row's id and its actual status, to hand to
- * `promoteKitToStash` (or, symmetrically, any future generalisation of it).
+ * `findKitByBrandNumber` searches every status (docs/PLAN.md §6 Phase 4a), so
+ * a duplicate can turn up on either screen. Which of those is worth *offering
+ * to promote* is narrower than "any status that isn't the target": only
+ * `wishlist → stash` is a promotion.
+ *
+ * Every other mismatch is just a duplicate to report. In particular a kit
+ * already `building` or `built` must never come back as promotable — the
+ * caller would render "Promote to Stash" and clicking it would walk a
+ * finished kit two rungs *backwards* down the status ladder, which is not a
+ * thing this screen should be able to do by accident. Deciding that here,
+ * server-side, rather than in each caller's own conditional, is also what
+ * keeps a client from asking for it directly.
  */
 function duplicateResult(existing: KitRow, targetStatus: KitStatus, brand: string, kitNumber: string): KitResult {
-  if (existing.status === targetStatus) {
-    return { ok: false, error: `${brand} ${kitNumber} is already ${statusPhrase(targetStatus)}.` };
-  }
-  return {
-    ok: false,
-    error: `${brand} ${kitNumber} is already ${statusPhrase(existing.status)}.`,
-    existing: { id: existing.id, status: existing.status as KitStatus },
-  };
+  const error = `${brand} ${kitNumber} is already ${statusPhrase(existing.status)}.`;
+  const promotable = targetStatus === "stash" && existing.status === "wishlist";
+  return promotable ? { ok: false, error, promotable: { id: existing.id } } : { ok: false, error };
 }
 
 // ---------------------------------------------------------------------------
@@ -110,16 +111,46 @@ export async function saveKitCandidate(input: KitCandidate, status: KitStatus): 
   updateTag(KIT_TAG);
 
   if (artSources.some(Boolean)) {
-    after(async () => {
-      const art = await saveBoxArt(artSources);
-      if (!art.ok) return;
-      await updateKitImage(id, status, art.url);
-      updateTag(KIT_TAG);
-      updateTag(kitTag(id));
-    });
+    after(() => storeArtAfterResponse(id, artSources));
   }
 
   return { ok: true };
+}
+
+/**
+ * The deferred box-art write shared by both save paths.
+ *
+ * Re-reads the kit's status immediately before writing rather than closing
+ * over the status it had when the save returned. `saveBoxArt` can spend up to
+ * ~10s per source fetching and uploading, and `updateKitImage` is now scoped
+ * by `and(id, status)` — so a kit stashed or advanced during that window would
+ * have its art written against a status the row no longer has, match zero
+ * rows, and lose the picture silently while leaving the uploaded blob
+ * orphaned. Adding the status predicate is what introduced that window; this
+ * is what closes it.
+ *
+ * If the write still misses (the row was deleted, or its status changed inside
+ * the remaining gap), the just-uploaded blob is dropped rather than left
+ * unreferenced — the same rule `removeKit` follows.
+ */
+async function storeArtAfterResponse(id: number, sources: Array<string | null>): Promise<void> {
+  const art = await saveBoxArt(sources);
+  if (!art.ok) return;
+
+  const current = await findKitById(id);
+  if (!current) {
+    await deleteBoxArt(art.url);
+    return;
+  }
+
+  const written = await updateKitImage(id, current.status as KitStatus, art.url);
+  if (!written) {
+    await deleteBoxArt(art.url);
+    return;
+  }
+
+  updateTag(KIT_TAG);
+  updateTag(kitTag(id));
 }
 
 export interface AddManualKitInput {
@@ -173,13 +204,7 @@ export async function addManualKit(input: AddManualKitInput, status: KitStatus):
   if (!alreadyStored) {
     const sources = [providedImage, scalematesUrl].filter(Boolean);
     if (sources.length > 0) {
-      after(async () => {
-        const art = await saveBoxArt(sources);
-        if (!art.ok) return;
-        await updateKitImage(id, status, art.url);
-        updateTag(KIT_TAG);
-        updateTag(kitTag(id));
-      });
+      after(() => storeArtAfterResponse(id, sources));
     }
   }
 
@@ -264,7 +289,17 @@ export async function fetchKitArt(id: number, linkUrl: string): Promise<FetchArt
   const art = await saveBoxArt([link]);
   if (!art.ok) return { ok: false, error: art.reason };
 
-  await updateKitImage(id, status, art.url);
+  // Checked, not assumed: `updateKitImage` is status-scoped, so a status
+  // change between the read above and this write matches zero rows. Reporting
+  // success anyway — and then deleting the old blob below — would leave the
+  // row pointing at a URL that had just been removed, i.e. a permanently
+  // broken image on a card the dialog said it had fixed.
+  const written = await updateKitImage(id, status, art.url);
+  if (!written) {
+    await deleteBoxArt(art.url);
+    return { ok: false, error: "That kit changed while the picture was downloading — try again." };
+  }
+
   updateTag(KIT_TAG);
   updateTag(kitTag(id));
 
@@ -283,7 +318,7 @@ export async function fetchKitArt(id: number, linkUrl: string): Promise<FetchArt
  * predicate fixed, and it changes exactly one field — no reason to route it
  * through the full identity-edit form.
  */
-export async function updateKitArt(id: number, imageUrl: string, alreadyStored: boolean): Promise<KitResult> {
+export async function updateKitArt(id: number, imageUrl: string): Promise<KitResult> {
   if (!Number.isInteger(id)) return { ok: false, error: "Unknown kit." };
   const link = readText(imageUrl, 2000);
   if (!link) return { ok: false, error: "Choose a photo or paste an image address first." };
@@ -292,11 +327,23 @@ export async function updateKitArt(id: number, imageUrl: string, alreadyStored: 
   if (!existing) return { ok: false, error: "That kit is no longer here." };
   const status = existing.status as KitStatus;
 
+  // Derived here, never taken from the caller. This used to be an
+  // `alreadyStored` boolean the client passed in, which meant a crafted call
+  // could store any third-party URL as `image_url` — against the schema's own
+  // "Vercel Blob — sourced once, never hotlinked" rule (§2.4), and silently
+  // dropping every such card off `next/image` onto the unoptimised path, since
+  // `KitArt.isOptimizable` only recognises our own Blob host. `addManualKit`
+  // already derives it the same way; this now matches.
+  const alreadyStored = link.includes(".blob.vercel-storage.com");
+
   const art = alreadyStored ? ({ ok: true, url: link } as const) : await saveBoxArt([link]);
   if (!art.ok) return { ok: false, error: art.reason };
 
   const updated = await updateKitImage(id, status, art.url);
-  if (!updated) return { ok: false, error: "That kit is no longer here." };
+  if (!updated) {
+    if (!alreadyStored) await deleteBoxArt(art.url);
+    return { ok: false, error: "That kit changed while the picture was saving — try again." };
+  }
 
   updateTag(KIT_TAG);
   updateTag(kitTag(id));
@@ -318,12 +365,19 @@ export async function removeKit(formData: FormData): Promise<void> {
   const existing = await findKitById(id);
   if (!existing) return;
 
+  // `deleteKit` clears the kit's manuals and paint requirements first (see its
+  // own note — both reference `kit(id)` with no cascade), and hands back every
+  // blob those rows owned so none is left behind: the box art plus one per
+  // manual PDF. Before Phase 4a a kit had no children and no blob but its art.
   const removed = await deleteKit(id, existing.status as KitStatus);
   if (!removed) return;
 
   updateTag(KIT_TAG);
   updateTag(kitTag(id));
-  after(() => deleteBoxArt(removed.imageUrl));
+  after(async () => {
+    await deleteBoxArt(removed.imageUrl);
+    for (const url of removed.manualUrls) await deleteBoxArt(url);
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -359,12 +413,22 @@ export async function regressKitStatus(id: number, from: StashStatus): Promise<K
   return { ok: true };
 }
 
-/** What a duplicate-add's "Promote to Stash" button calls — the same
- * one-column `status` write as every transition here, just named for what
- * the person watching it actually asked for. */
-export async function promoteKitToStash(id: number, fromStatus: KitStatus): Promise<KitResult> {
-  const updated = await updateKitStatus(id, fromStatus, "stash");
-  if (!updated) return { ok: false, error: "That kit has moved on already — refresh and try again." };
+/**
+ * What a duplicate-add's "Promote to Stash" button calls — the same
+ * one-column `status` write as every transition here, just named for what the
+ * person watching it actually asked for.
+ *
+ * Hardcodes `wishlist → stash` rather than taking a `from` status from the
+ * caller: that is the only promotion this app has (§3.3), and accepting the
+ * source status as a parameter meant a client could name `built` and quietly
+ * walk a finished kit backwards. `duplicateResult` above only ever offers this
+ * for a wishlist row, and this refuses anything else regardless.
+ */
+export async function promoteKitToStash(id: number): Promise<KitResult> {
+  if (!Number.isInteger(id)) return { ok: false, error: "Unknown kit." };
+
+  const updated = await updateKitStatus(id, "wishlist", "stash");
+  if (!updated) return { ok: false, error: "That kit isn't on the wishlist any more — refresh and try again." };
 
   updateTag(KIT_TAG);
   updateTag(kitTag(id));

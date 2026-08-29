@@ -50,7 +50,7 @@ Open [http://localhost:3000](http://localhost:3000).
 | `npm run typecheck` | `tsc --noEmit` |
 | `npm run perf:budget` | Check a finished build against the budget in `docs/PERFORMANCE.md` |
 | `npm run db:generate` | Generate a Drizzle migration from `src/db/schema.ts` |
-| `npm run db:migrate` | Apply pending migrations to `DATABASE_URL` |
+| `npm run db:migrate` | Apply pending migrations to `DATABASE_URL` — **run this after deploying any phase that adds a column**; nothing runs it automatically (see `docs/PLAN.md` §9.3) |
 | `npm run db:seed` | Load `seed/*.json` — catalogue, ratio rules, and the paint shelf |
 | `npm run catalogue:build` | Regenerate `seed/paints.tamiya.json` |
 | `npm run catalogue:verify` | CI gate: every code the app needs is in the catalogue |
