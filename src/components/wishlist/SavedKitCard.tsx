@@ -1,5 +1,5 @@
+import { removeKit } from "@/app/(bench)/kits/actions";
 import { ExternalLinkIcon, TrashIcon } from "@/components/icons";
-import { removeKitAction } from "@/app/(bench)/wishlist/actions";
 import type { KitRow } from "@/db/repositories/kits";
 
 import { EditKitTrigger } from "./EditKitTrigger";
@@ -25,6 +25,7 @@ export function SavedKitCard({ kit, priority }: { kit: KitRow; priority?: boolea
         category={kit.category}
         notes={kit.notes}
         priority={priority}
+        kitId={kit.id}
       />
       <div className={styles.savedCardActions}>
         <MarkBoughtButton id={kit.id} />
@@ -46,7 +47,7 @@ export function SavedKitCard({ kit, priority }: { kit: KitRow; priority?: boolea
             <ExternalLinkIcon size={15} />
           </a>
         ) : null}
-        <form action={removeKitAction}>
+        <form action={removeKit}>
           <input type="hidden" name="id" value={kit.id} />
           <button
             type="submit"

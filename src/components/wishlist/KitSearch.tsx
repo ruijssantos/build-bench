@@ -5,6 +5,7 @@ import { lazy, Suspense, useEffect, useState, type FormEvent } from "react";
 import { SearchField } from "@/components/bench/SearchField";
 import { PlusIcon } from "@/components/icons";
 import { NAV_RECLICK_EVENT } from "@/components/nav/nav-events";
+import type { KitStatus } from "@/domain/kit";
 import type { KitCandidate } from "@/domain/kit-candidate";
 
 import { KitCandidateCard } from "./KitCandidateCard";
@@ -30,8 +31,14 @@ type SearchState =
  * search is a real, paid ~10–20s call to `/api/kits/resolve`. Manual entry
  * sits in the same card, always reachable, never behind a failed or even an
  * attempted search.
+ *
+ * Shared by the Wishlist and the Stash — `saveStatus` picks which status a
+ * result or a hand-entered kit saves into, and `homeHref` is which nav
+ * item's re-click should reset this instance back to a blank box (§7: the
+ * wishlist's own `NAV_RECLICK_EVENT` reset never distinguished screens
+ * before there were two of them to tell apart).
  */
-export function KitSearch() {
+export function KitSearch({ saveStatus, homeHref }: { saveStatus: KitStatus; homeHref: string }) {
   const [query, setQuery] = useState("");
   const [state, setState] = useState<SearchState>({ status: "idle" });
   const [runs, setRuns] = useState(0);
@@ -48,11 +55,11 @@ export function KitSearch() {
 
   useEffect(() => {
     function onNavClick(e: Event) {
-      if ((e as CustomEvent<string>).detail === "/wishlist") reset();
+      if ((e as CustomEvent<string>).detail === homeHref) reset();
     }
     window.addEventListener(NAV_RECLICK_EVENT, onNavClick);
     return () => window.removeEventListener(NAV_RECLICK_EVENT, onNavClick);
-  }, []);
+  }, [homeHref]);
 
   async function search(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -140,7 +147,7 @@ export function KitSearch() {
               saved with no way to save it. */}
           <div className={styles.cardGrid}>
             {state.candidates.map((candidate, i) => (
-              <KitCandidateCard key={`${state.run}-${i}`} candidate={candidate} />
+              <KitCandidateCard key={`${state.run}-${i}`} candidate={candidate} status={saveStatus} />
             ))}
           </div>
         </div>
@@ -148,7 +155,7 @@ export function KitSearch() {
 
       {manualOpen ? (
         <Suspense fallback={null}>
-          <ManualKitDialog onClose={() => setManualOpen(false)} />
+          <ManualKitDialog defaultStatus={saveStatus} onClose={() => setManualOpen(false)} />
         </Suspense>
       ) : null}
     </div>

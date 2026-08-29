@@ -5,10 +5,12 @@ import { BenchError } from "@/components/bench/BenchError";
 import { DesktopHeader } from "@/components/bench/DesktopHeader";
 import { PhoneHeader } from "@/components/bench/PhoneHeader";
 import { AddItemTrigger } from "@/components/wishlist/AddItemTrigger";
+import { EmptyKits } from "@/components/wishlist/EmptyKits";
 import { KitSearch } from "@/components/wishlist/KitSearch";
 import { KitsSkeleton } from "@/components/wishlist/KitsSkeleton";
 import { OtherItemsList } from "@/components/wishlist/OtherItemsList";
 import { OtherItemsSkeleton } from "@/components/wishlist/OtherItemsSkeleton";
+import { SavedKitCard } from "@/components/wishlist/SavedKitCard";
 import { SavedKitsGrid } from "@/components/wishlist/SavedKitsGrid";
 import styles from "@/components/wishlist/Wishlist.module.css";
 import { blobStoreOrigin } from "@/lib/box-art";
@@ -45,10 +47,15 @@ export default function WishlistPage() {
             <div className={styles.sectionHead}>
               <h2 className={styles.sectionTitle}>Kits</h2>
             </div>
-            <KitSearch />
+            <KitSearch saveStatus="wishlist" homeHref="/wishlist" />
             <BenchError label="Saved kits">
               <Suspense fallback={<KitsSkeleton />}>
-                <SavedKitsGrid />
+                <SavedKitsGrid
+                  statuses={["wishlist"]}
+                  moduleLabel="Saved kits"
+                  emptyState={<EmptyKits />}
+                  renderCard={(kit, priority) => <SavedKitCard key={kit.id} kit={kit} priority={priority} />}
+                />
               </Suspense>
             </BenchError>
           </section>

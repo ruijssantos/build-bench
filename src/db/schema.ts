@@ -135,6 +135,8 @@ export const kit = pgTable(
     imageUrl: text("image_url"), // Vercel Blob — sourced once, never hotlinked
     purchasedFrom: text("purchased_from"), // a shop name, free text
     purchasedAt: date("purchased_at"),
+    startedAt: date("started_at"), // stamped on stash → building, editable after
+    completedAt: date("completed_at"), // stamped on building → built, editable after
     notes: text("notes"),
     createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
   },
@@ -163,6 +165,7 @@ export const kitManual = pgTable("kit_manual", {
     .references(() => kit.id),
   blobUrl: text("blob_url").notNull(), // Vercel Blob
   filename: text("filename"),
+  label: text("label"), // "Instructions" | "Decal guide" | "Painting guide" | free text
   sizeBytes: integer("size_bytes"),
   pageCount: integer("page_count"),
   paintsExtractedAt: timestamp("paints_extracted_at", { withTimezone: true }),

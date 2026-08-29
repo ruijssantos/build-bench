@@ -744,20 +744,42 @@ one-directional — Phase 4 picks the row up from there); other items tick betwe
 bought both ways, since there's no ownership record for a tool to move to. Needs
 `ANTHROPIC_API_KEY` — this is the phase that first uses it.
 
-### Phase 4 — Stash
+### Phase 4a — Stash ✅
 The kits you own: `status` of `stash`, `building` or `built`, promoted from the wishlist with
-one tap or added directly. Manual PDF upload to Blob and a desktop viewer (§4.3), **Extract
-paint list** → `kit_paint_requirement`, and the per-kit paint list checked against the shelf
-— what this kit calls for, what you already have, what's missing.
+one tap (`promoteKitToStash`) or added directly (search and manual entry both save straight
+to `stash`). `/kits` mirrors the wishlist's shell shape plus URL-driven status filter pills
+(All/Stash/Building/Built, each with a count from one `countKitsByStatus` query); `/kits/[id]`
+is the app's first detail route — identity + art + a Scalemates/YouTube-search link pair,
+a three-step status stepper (`stash → building → built`, stamping `started_at`/`completed_at`
+on the way in, editable after), purchase details, manual PDF upload with an **Extract paint
+list** action per manual (Claude Opus 5, streaming, effort high), and the resulting
+`kit_paint_requirement` rows shown as three buckets — Owned, Missing, Unresolved — against the
+shelf. The per-kit bucket view is one targeted query; the Stash grid's "14 of 17 · 3 to buy"
+line on every card comes from one aggregate query across every stashed kit, not N+1.
+
+Manual upload does what §4.3 originally hoped for and Phase 3's photo upload couldn't:
+client-direct upload via `@vercel/blob/client`'s `upload()` against a token route
+(`/api/kits/manuals/upload-token`), because the private-store misdiagnosis that killed the
+first attempt (§7, Phase 3) is fixed. A `kit_manual` row is written by a Server Action the
+client calls once `upload()` resolves, not from `onUploadCompleted` (no public callback URL
+locally). A plain server-side `put`, capped at Vercel's ~4 MB request-body limit, is the
+fallback when the direct path fails, and the UI says which path actually ran.
+
+Deep research — difficulty, fit issues with sources, a real build video — is explicitly
+**Phase 4b**, not built here: this phase ships only the free part, a plain YouTube search
+link built the way `paintSearchUrl` builds its shop link (`kitYoutubeSearchUrl`, no API, no
+key). Phase 6 below still owns the paid stages B/C research this link will eventually sit
+beside.
 
 ### Phase 5 — Cross-brand equivalence
 Cybermodeler import (§2.2), `paint_equivalent`, foreign → Tamiya lookup. Sits here rather
-than earlier because this is what makes Phase 4's paint list work for Japanese kits, whose
-manuals call out Mr. Color throughout. Standalone lookup screen too.
+than earlier because this is what makes Phase 4a's paint list work for Japanese kits, whose
+manuals call out Mr. Color throughout — Phase 4a's own Unresolved bucket is exactly the gap
+this phase closes, without re-running extraction on a single manual.
 
 ### Phase 6 — Kit research
 §5.1 stages B and C against a stash kit: difficulty, fit issues with sources, build video,
-manual link. Optional enhancement — nothing depends on it.
+manual link — Phase 4b. Optional enhancement — nothing depends on it.
 
 ### Phase 7 — Build log
 Per-kit dated journal by stage, photos to Blob, research and manual attached to the kit. To
@@ -854,6 +876,93 @@ resolve route validates against is deliberately looser than §5.1's shape — `z
 neither the category enum nor the candidate cap to the API (both are demoted to prose), so both are
 enforced by coercion after the fact rather than by rejecting the response; a strict schema threw
 away whole paid searches over one off-vocabulary word.
+
+Phase 4a's first commit to a dynamic route (`/kits/[id]`) surfaced a real gap in the shared
+`(bench)` layout that nothing before it had ever exercised: `NavRail` and `NavTabBar` both call
+`usePathname()` directly, unguarded, and that hook returns build-time-known data on every
+static route this app had — right up until a `[id]` segment made the pathname itself genuinely
+request-dependent. `next build` refused to prerender the new route at all, with the error
+pointing at the *layout*, not the new page, since the nav sits above every route under it.
+Fixed generically rather than special-cased to this one page: both components now wrap only
+their `usePathname()`-dependent piece in an inner `<Suspense>`, with a fallback that renders
+the identical nav markup with nothing marked active. On every existing static route the
+boundary resolves at build time and nothing changes; only a future dynamic route (Phase 6's
+kit research detail, perhaps, or Phase 7's build log entries) would ever see the fallback
+flash, and only for the beat before the real pathname streams in. Worth knowing before the
+next phase that adds a `[param]` route: this is now the pattern, not a one-off patch.
+
+The CSS budget moved a third time, from 9.0 kB to 10.0 kB — see `scripts/
+check-perf-budget.ts`'s own comment and `PERFORMANCE.md` §10 for the full reasoning. Short
+version: this is the phase §10 already named as the one that might have to split the `(bench)`
+route group's shared stylesheet instead of raising the number again, and a real split (a
+Stash-only stylesheet, meaning the first navigation into it costs its own fetch instead of
+reusing every other screen's already-cached one) was judged the worse trade for now. Revisit
+if Phase 5 or later pushes it past 10.0 kB in turn.
+
+Duplicate detection (`findKitByBrandNumber`, formerly `findWishlistKit`) now searches every
+status, not just the one being saved into, and a hit elsewhere comes back with `existing: {id,
+status}` so a caller can offer to *promote* the row instead of just failing. Only the Stash's
+own search-and-save and manual-entry flows actually render a Promote button on that result,
+though — saving into the *wishlist* and finding the kit already in the stash shows the
+accurate "already in your stash" message and stops there, since demoting a stashed kit back to
+wishlist isn't a direction this app supports (§3.3 is one-directional the other way already).
+A closely related change: `findKitById` dropped its `status` parameter entirely and now reads
+a row by id alone, unscoped. Every *write* still carries the same `and(id, status)` predicate
+the file's own header comment has always required — the id-alone read just means a mutation
+shared across two screens (`updateManualKit`, `fetchKitArt`, `updateKitArt`, `removeKit`) can
+look up "whatever status this kit is actually in right now" and use that as its own write
+predicate, rather than each screen hardcoding the one status it used to assume. A stale read
+racing a concurrent status change still fails safely: the write's predicate simply won't match
+and the action reports the same "no longer here" it always did.
+
+`/api/kits/extract` diverges from `/api/kits/resolve`'s shape in one deliberate way: it writes
+`kit_paint_requirement` and stamps `paints_extracted_at` itself, inside the route, rather than
+handing the parsed list back to the client for a separate Server Action to save (the way photo
+upload splits "store the bytes" from "write the row," because that split exists to let one
+upload result feed either a fresh kit or an edit to an existing one). Extraction has no such
+fork — there is nothing between "Claude answered" and "save it" that needs a second round
+trip's worth of user input — so keeping the write in the route avoids re-serialising a
+manual's whole paint list back down to the browser only to ship it straight back up.
+
+Art editing (the camera affordance on a kit's picture) ended up on every card that shows one —
+the Stash grid, the Stash detail hero, and the Wishlist's own saved-kit cards — not just the
+detail page alone, on the view that "you can change a kit's photo" should be one consistent
+affordance rather than a Stash-only feature with an inconsistent gap on the screen one tap
+away. Its dialog (`ArtEditDialog`) is its own lazy chunk for the same reason `ManualKitDialog`
+already was — every card on both grids carries the trigger, so its upload/fetch logic staying
+out of the initial bundle is what kept `/wishlist`'s own JS budget from tipping over when this
+landed on that screen too.
+
+The detail page's header Edit button is a plain icon button (`.iconButton`, the same pencil
+every card's own Edit already uses), not a bordered pill with its own surface — matching how
+Edit already looks everywhere else in the app rather than introducing a one-off treatment for
+this single spot, and it cost nothing new from the CSS budget this phase was already spending
+carefully.
+
+`kit_manual.label` is nullable free text with four suggested values (`MANUAL_LABELS` in
+`src/domain/kit-manual.ts` — Instructions, Decal guide, Painting guide, Other), the same shape
+as `kit.category` before it: a label the upload UI suggests, not an enum the column enforces.
+`kit.started_at`/`completed_at` are `date`, not `timestamptz` — they're "which day," matching
+`purchased_at`'s own existing type — and `updateKitStatus` stamps them with a `coalesce`
+against `current_date` on the transition in, so a kit moved back a step and forward again
+doesn't lose its original date to a second stamp.
+
+What this phase could not verify without a live database, a real Anthropic key and a browser
+pointed at an actual Blob store: a genuinely large manual upload (the 10–40 MB real-world
+case, and specifically whether client-direct upload behaves the way `@vercel/blob/client`'s
+docs describe against this project's own Blob store); the inline PDF viewer's actual behaviour
+across desktop browsers (it's a plain `<iframe src={blobUrl}>` — no library, relies on the
+browser's own PDF handling, which varies); a real `/api/kits/extract` call end to end, since
+that needs `ANTHROPIC_API_KEY` and a real scanned manual to be worth anything; and blob cleanup
+on delete for both a removed kit's art and a removed manual (`deleteBoxArt` reused for both —
+the precedent from Phase 3 — but neither path was exercised against a real store). Every route,
+component and Server Action shell was checked with a local dev server against no database at
+all: every `<Suspense>` boundary this phase added throws `DATABASE_URL is not set` cleanly into
+its own `BenchError` card with no unhandled crash, on both `/kits` and `/kits/[id]`, on phone
+and desktop viewports — see the screenshots taken during this build for what that looked like.
+Populated-state layout (real cards, a real manuals list, real paint buckets) was designed
+against, and closely follows, the review mock the plan for this phase was built from, but
+wasn't seen rendered with real rows.
 
 ---
 

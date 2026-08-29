@@ -29,6 +29,13 @@
       "when": 1787680102465,
       "tag": "0003_wishlist_and_stash",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1788012475330,
+      "tag": "0004_kit_status_dates_and_manual_label",
+      "breakpoints": true
     }
   ]
 }

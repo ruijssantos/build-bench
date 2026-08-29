@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Suspense } from "react";
 
 import { SignOutButton } from "@/components/bench/SignOutButton";
 
@@ -15,14 +16,38 @@ import { NAV_ITEMS } from "./nav-items";
  * is shared with `NavRail`, which already has its own full "Sign out" row,
  * and a route-shaped nav item is the wrong model for an action with no page
  * of its own anyway.
+ *
+ * The tabs sit behind their own inner `<Suspense>` — same reasoning as
+ * `NavRail`'s own `NavItemsActive`: `usePathname()` is genuinely
+ * request-time data on a dynamic route (`/kits/[id]`), and this bar lives in
+ * the shared layout above every route under it.
  */
 export function NavTabBar() {
-  const pathname = usePathname();
-
   return (
     <nav className={styles.bar} aria-label="Primary">
+      <Suspense fallback={<NavTabs pathname={null} />}>
+        <NavTabsActive />
+      </Suspense>
+      <SignOutButton
+        formClassName={styles.signOutItem}
+        className={styles.item}
+        labelClassName={styles.itemLabel}
+        iconSize={22}
+      />
+    </nav>
+  );
+}
+
+function NavTabsActive() {
+  const pathname = usePathname();
+  return <NavTabs pathname={pathname} />;
+}
+
+function NavTabs({ pathname }: { pathname: string | null }) {
+  return (
+    <>
       {NAV_ITEMS.map((item) => {
-        const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
+        const active = pathname !== null && (pathname === item.href || pathname.startsWith(`${item.href}/`));
         const Icon = item.icon;
         return (
           <Link
@@ -36,12 +61,6 @@ export function NavTabBar() {
           </Link>
         );
       })}
-      <SignOutButton
-        formClassName={styles.signOutItem}
-        className={styles.item}
-        labelClassName={styles.itemLabel}
-        iconSize={22}
-      />
-    </nav>
+    </>
   );
 }
