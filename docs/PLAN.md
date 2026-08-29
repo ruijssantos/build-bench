@@ -722,6 +722,11 @@ build it** — the wishlist comes before the stash because that's the order a ki
 through in real life, and because resolving a kit (§5.1 stage A) is the machinery the stash
 then inherits for free.
 
+> **Before testing any phase's branch: §9.5 is the runbook.** Several phases add database
+> columns, and nothing applies a migration automatically — a branch whose migration hasn't
+> been run looks deployed and answers "The database didn't answer" on every screen that reads
+> the changed table. §9.5 has the exact commands; the ledger there says which phases added one.
+
 ### Phase 0 — Foundations ✅
 Next.js scaffold, Neon + Blob via Vercel, Drizzle schema and first migration, cookie auth,
 `tokens.css`, PWA manifest, CI.
@@ -1111,3 +1116,64 @@ I never need your connection string, a database password, or an API key typed in
 Every secret lives in Vercel's Environment Variables; I only ever reach it through
 `vercel env pull` when running a script against the real database. If one ever ends up
 pasted here anyway, rotate it.
+
+### 9.5 Runbook — pulling a branch and applying its migrations
+
+**Read this before testing any branch in preview.** A phase that adds a column does not work
+until its migration is applied, and nothing applies it for you (§9.3). This is the whole
+procedure; it is safe to run start to finish even when there is nothing pending, because every
+migration in `drizzle/` is written to be replay-safe (`IF NOT EXISTS` throughout — re-running
+one already applied prints "already exists, skipping" and changes nothing).
+
+```bash
+cd path/to/build-bench
+
+# 0. Don't lose local work — if this prints anything, commit or stash it first.
+git status
+
+# 1. Sync main.
+git checkout main
+git pull origin main
+
+# 2. Fetch and switch to the phase branch.
+git fetch origin
+git checkout claude/phase-4a-build-bench-stash-uv8ohp   # ← the branch from the PR
+git pull
+
+# 3. Dependencies, in case the branch changed them.
+npm install
+
+# 4. Pull the real credentials (writes .env.local — gitignored, never commit it).
+#    Needs the Vercel CLI: npm i -g vercel, then `vercel link` once in this repo.
+vercel env pull .env.local
+
+# 5. Apply any pending migrations to the database those credentials point at.
+npm run db:migrate
+
+# 6. Run it.
+npm run dev
+```
+
+Step 5 prints `Migrations applied.` It applies whatever the database is missing, so a database
+already up to date is a no-op. One database backs development, preview and production here
+(§9.2 connects a single Neon instance to the project), so this one run covers all three — and,
+by the same token, it is the *shared* schema being changed, which is why every migration is
+additive and none drops a column another deploy might still be reading.
+
+**The migration ledger.** What exists, and what each one is needed by:
+
+| Migration | Adds | Needed by |
+|---|---|---|
+| `0000_init` | the whole schema | Phase 0 |
+| `0001_drop_inventory_location` | drops `inventory_item.location` | Phase 2 |
+| `0002_drop_airbrush_and_shopping` | drops four tables, retypes `purchased_from` | Phase 2 |
+| `0003_wishlist_and_stash` | `wishlist_item`; `kit.category`/`scalemates_url`/`image_url` | Phase 3 |
+| `0004_kit_status_dates_and_manual_label` | `kit.started_at`/`completed_at`, `kit_manual.label` | Phase 4a |
+
+**A phase that adds a migration says so in its PR description, in the steps to test it.** That
+is the rule this file exists to record, because it has now been broken twice — the branch
+looked fine, the deploy 500'd on a missing column, and the reason was a step nobody had been
+told about. If a future phase wants the whole class of mistake gone rather than documented, add
+a `vercel-build` script that runs the migrator before `next build`: Vercel prefers that script
+when present while CI keeps calling `npm run build` directly, so the build stays database-free
+where it has to be (§5 in PERFORMANCE.md) and migrates where it can.
