@@ -51,11 +51,23 @@ export function isKitStatus(value: unknown): value is KitStatus {
   return typeof value === "string" && (KIT_STATUSES as readonly string[]).includes(value);
 }
 
-/** The Stash screen's three statuses, in the order the stepper on the detail
- * page shows them — `wishlist` never reaches this screen (§3.3: buying is
- * one-directional, Phase 3's job, not this one's). */
+/** The Stash screen's three statuses, in *progression* order — this is the
+ * order the detail page's stepper walks, and the order `nextStashStatus` /
+ * `previousStashStatus` step through. `wishlist` never reaches this screen
+ * (§3.3: buying is one-directional, Phase 3's job, not this one's). */
 export const STASH_STATUSES = ["stash", "building", "built"] as const;
 export type StashStatus = (typeof STASH_STATUSES)[number];
+
+/**
+ * The same three statuses in *attention* order, which is not the same thing.
+ *
+ * The stepper has to read stash → building → built, because that's the road a
+ * kit travels. A list has no such obligation, and sorting it that way buries
+ * the one thing worth seeing first: what's actually on the bench right now.
+ * So the grid and the filter pills lead with Building, then Stash (what could
+ * be started next), then Built (a finished shelf, browsed rather than worked).
+ */
+export const STASH_DISPLAY_ORDER = ["building", "stash", "built"] as const;
 
 export function isStashStatus(value: unknown): value is StashStatus {
   return typeof value === "string" && (STASH_STATUSES as readonly string[]).includes(value);

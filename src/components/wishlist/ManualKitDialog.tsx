@@ -321,16 +321,20 @@ export function ManualKitDialog({
           />
         </div>
 
-        {!kit?.imageUrl ? (
-          <div className={formStyles.field}>
-            <label className={formStyles.label} htmlFor="manual-kit-photo">
-              Photo
-            </label>
+        {/* Always shown, add and edit alike. It used to be hidden once a kit
+            had art, which left no way to *replace* a wrong picture from the
+            one dialog that edits everything else about the kit. The preview
+            starts as whatever art the kit already has, so the field shows what
+            you're replacing rather than an empty frame. */}
+        <div className={formStyles.field}>
+          <label className={formStyles.label} htmlFor="manual-kit-photo">
+            Photo
+          </label>
             <div className={styles.photoField}>
               <div className={styles.photoPreview}>
-                {photoPreview ? (
-                  // eslint-disable-next-line @next/next/no-img-element -- a local object URL, not one next/image can optimise
-                  <img src={photoPreview} alt="" className={styles.photoPreviewImg} />
+                {photoPreview ?? kit?.imageUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element -- a local object URL or an already-stored blob; not worth the optimiser inside a dialog
+                  <img src={photoPreview ?? kit?.imageUrl ?? ""} alt="" className={styles.photoPreviewImg} />
                 ) : (
                   <KitsIcon size={22} />
                 )}
@@ -341,7 +345,7 @@ export function ManualKitDialog({
                 onClick={() => fileInputRef.current?.click()}
                 disabled={saving}
               >
-                {photoFile ? "Choose a different photo" : "Choose a photo"}
+                {photoFile || kit?.imageUrl ? "Choose a different photo" : "Choose a photo"}
               </button>
               <input
                 ref={fileInputRef}
@@ -385,8 +389,7 @@ export function ManualKitDialog({
               {fetchNote ??
                 "Optional — upload from your computer, or paste the address of a picture you found online."}
             </span>
-          </div>
-        ) : null}
+        </div>
 
         {error ? <div className={formStyles.error}>{error}</div> : null}
 

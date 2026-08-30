@@ -25,10 +25,10 @@ export function IdentityPanel({ kit }: { kit: KitRow }) {
         scale={kit.scale}
         category={kit.category}
         status={kit.status}
-        kitId={kit.id}
+        kit={kit}
         priority
         extra={
-          <div className={styles.cardChips}>
+          <div className={styles.kitLinks}>
             {kit.scalematesUrl ? (
               <a className={styles.manualButton} href={kit.scalematesUrl} target="_blank" rel="noopener noreferrer">
                 <ExternalLinkIcon size={12} /> Scalemates

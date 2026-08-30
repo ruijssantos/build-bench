@@ -1007,6 +1007,37 @@ renders the real `PhoneHeader`/`DesktopHeader` now: the title comes from the kit
 sits inside the Suspense boundary, and a fallback without one dropped ~110px in above
 already-painted cards.
 
+A second review pass, this one from screenshots of the real thing, caught what static
+checking could not. The status chips were the sharpest lesson: `.chipStatusBuilding` and
+`.chipStatusBuilt` were written *above* `.chip` in the stylesheet, and since all three carry
+the same single-class specificity, `.chip`'s own `background`/`color` won the tie by source
+order alone — every status rendered identical grey, and nothing in typecheck, lint, build or
+the budget could see it. They live below `.chip` now, with a comment saying why they must.
+Stash gained its own treatment at the same time (neutral ground, darker ink, a hairline) so
+all three statuses separate at a glance rather than two-plus-a-default.
+
+The modal stacking bug had the same character — visible instantly, invisible to every check.
+`Modal` was rendering in place, and every trigger that opens one sits inside a kit card's
+action row, which sets a `z-index` to clear the card's stretched link. A positioned element
+with a `z-index` creates a stacking context, so the overlay's `z-index: 50` stopped competing
+with the page and started competing only with its siblings *inside that row* — other cards'
+buttons then painted straight over an open dialog. No overlay z-index can fix that from
+inside; `Modal` portals to `<body>` now, which fixes it for every caller at once and for any
+future one.
+
+Three product decisions came out of the same pass. The grid and its filter pills sort by
+*attention* (Building, then Stash, then Built) rather than by progression — the stepper still
+walks stash → building → built, because that's the road a kit travels, but a list has no such
+obligation and sorting it that way buried what's actually on the bench; `STASH_DISPLAY_ORDER`
+is the second ordering, deliberately separate from `STASH_STATUSES`. The photo field went back
+into the edit dialog for add *and* edit alike, after being hidden once a kit had art — which
+left no way to replace a wrong picture from the one dialog that edits everything else about
+the kit. And the camera badge on the art now appears only when the art is missing, since a
+permanent badge on every thumbnail was clutter on the majority of cards. Those two together
+retired `ArtEditDialog` and the `updateKitArt` action entirely: the camera opens the same edit
+dialog, so there is one photo code path rather than two, and `/wishlist`'s tight JS budget got
+the difference back.
+
 **What was verified, and how.** The SQL side of this phase now has real coverage: every
 statement it issues was run against a local PostgreSQL 16 (the same major version Neon serves),
 loaded with the migrations in order. That is what confirmed the missing-migration failure above
@@ -1019,6 +1050,19 @@ replaces exactly (6 rows → 2, no duplication); and confirmed `getStashReadines
 fixture built for the case it exists to handle — a code owned through two shelf rows (a spray
 can and the jar decanted from it) counting once, a repeated non-Tamiya callout counting once —
 giving owned 2 / missing 1 / unresolved 2, i.e. "Own 2 of 3 · 1 to buy · +2 unresolved".
+
+The UI then got the same treatment, which is what all of the above was found by: a local
+Postgres seeded with the real 395-paint catalogue, a ten-bottle shelf and five kits spread
+across all three statuses, with the driver temporarily pointed at it (reverted before commit —
+`src/db/client.ts` is untouched). That confirmed, on phone and desktop, the display ordering,
+the three chip colours, the filter pills and their counts, the readiness lines against a kit
+deliberately built for the awkward case ("Own 3 of 5 · 2 to buy · +2 unresolved", with TS-8
+owned through two shelf rows and one non-Tamiya callout repeated), the detail page's stepper,
+manuals and three paint buckets, and the modal painting cleanly above everything. It also
+exercised the foreign-key delete through the actual UI rather than through SQL: removing a kit
+that had two manuals and eight paint requirements left four kits, zero manuals, and exactly
+the two requirement rows belonging to the *other* kit, then redirected to `/kits` with no
+console errors.
 
 Still unverified, and still needing a real Anthropic key and a browser pointed at an actual
 Blob store: a genuinely large manual upload (the 10–40 MB real-world case, and specifically

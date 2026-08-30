@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import inventoryStyles from "@/components/inventory/Inventory.module.css";
-import { STASH_STATUSES, statusLabel } from "@/domain/kit";
+import { STASH_DISPLAY_ORDER, statusLabel } from "@/domain/kit";
 
 import { kitsHref, type KitsStatusFilter } from "./kits-params";
 
@@ -20,7 +20,7 @@ export function StatusFilterPills({
   active: KitsStatusFilter;
   counts: Record<string, number>;
 }) {
-  const total = STASH_STATUSES.reduce((sum, s) => sum + (counts[s] ?? 0), 0);
+  const total = STASH_DISPLAY_ORDER.reduce((sum, s) => sum + (counts[s] ?? 0), 0);
 
   return (
     <nav className={inventoryStyles.filters} aria-label="Filter the stash">
@@ -32,7 +32,7 @@ export function StatusFilterPills({
       >
         All ({total})
       </Link>
-      {STASH_STATUSES.map((status) => (
+      {STASH_DISPLAY_ORDER.map((status) => (
         <Link
           key={status}
           href={kitsHref(status)}

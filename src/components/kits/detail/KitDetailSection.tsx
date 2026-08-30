@@ -9,6 +9,7 @@ import styles from "@/components/wishlist/Wishlist.module.css";
 import { getKitById } from "@/db/repositories/kits";
 import { isStashStatus } from "@/domain/kit";
 
+import { DeleteKitButton } from "./DeleteKitButton";
 import { DetailsPanel } from "./DetailsPanel";
 import { IdentityPanel } from "./IdentityPanel";
 import { ManualsPanel } from "./ManualsPanel";
@@ -38,11 +39,17 @@ export async function KitDetailSection({ params }: { params: Promise<{ id: strin
   if (!kit || !isStashStatus(kit.status)) notFound();
 
   const title = kit.name ?? "Kit";
+  const headerActions = (
+    <div className={styles.headerActions}>
+      <EditKitTrigger kit={kit} />
+      <DeleteKitButton id={kit.id} name={title} />
+    </div>
+  );
 
   return (
     <>
-      <PhoneHeader title={title} trailing={<EditKitTrigger kit={kit} />} />
-      <DesktopHeader title={title} trailing={<EditKitTrigger kit={kit} />} />
+      <PhoneHeader title={title} trailing={headerActions} />
+      <DesktopHeader title={title} trailing={headerActions} />
 
       <div className={styles.scrollArea}>
         <div className={styles.detailGrid}>

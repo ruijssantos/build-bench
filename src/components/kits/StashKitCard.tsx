@@ -49,7 +49,7 @@ export function StashKitCard({
         category={kit.category}
         status={kit.status}
         priority={priority}
-        kitId={kit.id}
+        kit={kit}
         extra={<ReadyLine readiness={readiness} />}
       />
       <div className={styles.savedCardActions}>

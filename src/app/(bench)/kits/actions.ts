@@ -1,6 +1,7 @@
 "use server";
 
 import { updateTag } from "next/cache";
+import { redirect } from "next/navigation";
 import { after } from "next/server";
 
 import { createKitManual, deleteKitManual } from "@/db/repositories/kit-manuals";
@@ -310,51 +311,6 @@ export async function fetchKitArt(id: number, linkUrl: string): Promise<FetchArt
   return { ok: true, imageUrl: art.url };
 }
 
-/**
- * The detail page's art-only edit — a photo already uploaded via
- * `/api/kits/upload`, or a pasted link fetched synchronously. Split from
- * `updateManualKit` on purpose (docs/PLAN.md §6 Phase 4a): this is the one
- * call site the plan flags as the reason `updateKitImage` needed its status
- * predicate fixed, and it changes exactly one field — no reason to route it
- * through the full identity-edit form.
- */
-export async function updateKitArt(id: number, imageUrl: string): Promise<KitResult> {
-  if (!Number.isInteger(id)) return { ok: false, error: "Unknown kit." };
-  const link = readText(imageUrl, 2000);
-  if (!link) return { ok: false, error: "Choose a photo or paste an image address first." };
-
-  const existing = await findKitById(id);
-  if (!existing) return { ok: false, error: "That kit is no longer here." };
-  const status = existing.status as KitStatus;
-
-  // Derived here, never taken from the caller. This used to be an
-  // `alreadyStored` boolean the client passed in, which meant a crafted call
-  // could store any third-party URL as `image_url` — against the schema's own
-  // "Vercel Blob — sourced once, never hotlinked" rule (§2.4), and silently
-  // dropping every such card off `next/image` onto the unoptimised path, since
-  // `KitArt.isOptimizable` only recognises our own Blob host. `addManualKit`
-  // already derives it the same way; this now matches.
-  const alreadyStored = link.includes(".blob.vercel-storage.com");
-
-  const art = alreadyStored ? ({ ok: true, url: link } as const) : await saveBoxArt([link]);
-  if (!art.ok) return { ok: false, error: art.reason };
-
-  const updated = await updateKitImage(id, status, art.url);
-  if (!updated) {
-    if (!alreadyStored) await deleteBoxArt(art.url);
-    return { ok: false, error: "That kit changed while the picture was saving — try again." };
-  }
-
-  updateTag(KIT_TAG);
-  updateTag(kitTag(id));
-
-  if (existing.imageUrl && existing.imageUrl !== art.url) {
-    after(() => deleteBoxArt(existing.imageUrl));
-  }
-
-  return { ok: true };
-}
-
 /** Removes a kit, and its box art blob with it. Status-agnostic in: reads
  * the row fresh to learn its current status, then deletes scoped to that —
  * same concurrency-safe shape as every mutation above. */
@@ -378,6 +334,31 @@ export async function removeKit(formData: FormData): Promise<void> {
     await deleteBoxArt(removed.imageUrl);
     for (const url of removed.manualUrls) await deleteBoxArt(url);
   });
+}
+
+/**
+ * The detail page's Remove — the same deletion as `removeKit`, but it has to
+ * leave: the page it was pressed on is that kit's own route, which 404s the
+ * moment the row is gone. `redirect` throws by design, so it goes last, after
+ * every write and the blob cleanup are queued.
+ */
+export async function removeKitAndReturn(id: number): Promise<KitResult> {
+  if (!Number.isInteger(id)) return { ok: false, error: "Unknown kit." };
+
+  const existing = await findKitById(id);
+  if (!existing) return { ok: false, error: "That kit is already gone." };
+
+  const removed = await deleteKit(id, existing.status as KitStatus);
+  if (!removed) return { ok: false, error: "That kit is already gone." };
+
+  updateTag(KIT_TAG);
+  updateTag(kitTag(id));
+  after(async () => {
+    await deleteBoxArt(removed.imageUrl);
+    for (const url of removed.manualUrls) await deleteBoxArt(url);
+  });
+
+  redirect("/kits");
 }
 
 // ---------------------------------------------------------------------------

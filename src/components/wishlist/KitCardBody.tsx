@@ -1,18 +1,21 @@
 import type { ReactNode } from "react";
 
+import type { KitRow } from "@/db/repositories/kits";
 import { categoryLabel, statusLabel } from "@/domain/kit";
 
 import { ArtEditButton } from "./ArtEditButton";
 import { KitArt } from "./KitArt";
 import styles from "./Wishlist.module.css";
 
-/** Building → accent (the thing in progress), Built → ok (done). Stash
- * stays the plain neutral chip every other chip on this card already is —
- * three visibly distinct looks without a fourth chrome colour (docs/PLAN.md
- * §4.1's rule, taken literally). */
+/** Three distinct looks so a status is scannable down a grid — see the
+ * `.chipStatus*` note in `Wishlist.module.css` for the token choices, and for
+ * why those rules have to sit after `.chip` in that file. `wishlist` keeps the
+ * plain chip: on the Wishlist screen every card has that status, so colouring
+ * it would say nothing. */
 function statusChipClass(status: string): string {
   if (status === "building") return styles.chipStatusBuilding;
   if (status === "built") return styles.chipStatusBuilt;
+  if (status === "stash") return styles.chipStatusStash;
   return "";
 }
 
@@ -33,7 +36,7 @@ export function KitCardBody({
   status,
   notes,
   priority,
-  kitId,
+  kit,
   extra,
 }: {
   imageUrl: string | null;
@@ -52,20 +55,21 @@ export function KitCardBody({
   notes?: string | null;
   /** Set on the LCP candidate only — see `KitArt`. */
   priority?: boolean;
-  /** A saved kit's id — when present, the art gets the "change photo"
-   * camera affordance (`ArtEditButton`). Absent for a search candidate,
-   * which isn't saved yet and has nothing to point the edit at. */
-  kitId?: number;
+  /** The saved row this card is showing — when present, and only while it has
+   * no art, the picture gets the "add a photo" affordance (`ArtEditButton`,
+   * which needs the whole row to hand to the edit dialog). Absent for a search
+   * candidate, which isn't saved yet and has nothing to point an edit at. */
+  kit?: KitRow;
   /** Extra content rendered inside the card body, after the chips — the
    * Stash card's readiness line ("Own 14 of 17 · 3 to buy"). */
   extra?: ReactNode;
 }) {
   return (
     <>
-      {kitId != null ? (
+      {kit ? (
         <div className={styles.artWrap}>
           <KitArt src={imageUrl} alt="" priority={priority} />
-          <ArtEditButton kitId={kitId} hasArt={Boolean(imageUrl)} />
+          <ArtEditButton kit={kit} />
         </div>
       ) : (
         <KitArt src={imageUrl} alt="" priority={priority} />

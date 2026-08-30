@@ -3,29 +3,31 @@
 import { lazy, Suspense, useState } from "react";
 
 import { CameraIcon } from "@/components/icons";
+import type { KitRow } from "@/db/repositories/kits";
 
 import styles from "./Wishlist.module.css";
 
-const ArtEditDialog = lazy(() => import("./ArtEditDialog").then((m) => ({ default: m.ArtEditDialog })));
+const ManualKitDialog = lazy(() => import("./ManualKitDialog").then((m) => ({ default: m.ManualKitDialog })));
 
 /**
- * The camera affordance on a kit's art — the same "change photo" control on
- * every screen that shows a saved kit (the Stash list, the Stash detail
- * hero, and the Wishlist's own cards), added consistently rather than once
- * on the detail page alone. Its own small dialog rather than routing
- * through `ManualKitDialog`'s full identity form: this changes exactly one
- * field.
+ * "Add a photo", on the art of a kit that hasn't got one — on every screen
+ * that shows a saved kit, so the affordance is the same in the Stash grid,
+ * the Wishlist grid and the detail page's hero.
  *
- * Sits as a sibling of `KitArt` inside a `position: relative` wrapper
- * (`KitCardBody`'s `.artWrap`) rather than living inside `KitArt` itself, so
- * a not-yet-saved search candidate (`KitCandidateCard`, which never passes a
- * kit id into `KitCardBody`) never renders one. The dialog itself is a lazy
- * chunk, fetched only on click (docs/PERFORMANCE.md §4) — every card on the
- * Stash and Wishlist grids carries this button, so its upload/fetch logic
- * staying out of the initial bundle is what keeps that cheap.
+ * Only when the art is missing. A kit that *has* a picture is changed through
+ * the Edit dialog, which now carries the photo field for add and edit alike:
+ * a permanent camera badge sitting on top of every thumbnail was clutter on
+ * the majority of cards, and it split "change this kit's picture" away from
+ * the one dialog that edits everything else about the kit.
+ *
+ * It opens that same `ManualKitDialog` rather than a second art-only dialog —
+ * one code path for one job, and it retired the separate `ArtEditDialog` (and
+ * the `updateKitArt` action behind it) entirely.
  */
-export function ArtEditButton({ kitId, hasArt }: { kitId: number; hasArt: boolean }) {
+export function ArtEditButton({ kit }: { kit: KitRow }) {
   const [open, setOpen] = useState(false);
+
+  if (kit.imageUrl) return null;
 
   return (
     <>
@@ -33,18 +35,20 @@ export function ArtEditButton({ kitId, hasArt }: { kitId: number; hasArt: boolea
         type="button"
         className={styles.artEditButton}
         onClick={(e) => {
+          // The Stash card is a stretched link; without this the click
+          // navigates to the detail page instead of opening the dialog.
           e.preventDefault();
           e.stopPropagation();
           setOpen(true);
         }}
-        title={hasArt ? "Change photo" : "Add a photo"}
-        aria-label={hasArt ? "Change photo" : "Add a photo"}
+        title="Add a photo"
+        aria-label={`Add a photo for ${kit.name ?? "this kit"}`}
       >
         <CameraIcon size={15} />
       </button>
       {open ? (
         <Suspense fallback={null}>
-          <ArtEditDialog kitId={kitId} onClose={() => setOpen(false)} />
+          <ManualKitDialog kit={kit} onClose={() => setOpen(false)} />
         </Suspense>
       ) : null}
     </>

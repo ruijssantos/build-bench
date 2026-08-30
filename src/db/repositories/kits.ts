@@ -55,6 +55,14 @@ export async function listKitsByStatuses(statuses: KitStatus[]): Promise<KitRow[
   return queryKitsByStatuses(statuses);
 }
 
+/**
+ * Attention order, then newest first within each status — see
+ * `STASH_DISPLAY_ORDER`: what's on the bench, then what could be started, then
+ * what's finished. A single-status read (the wishlist's, or a filtered stash
+ * pill) collapses to plain newest-first, since every row scores the same.
+ */
+const STASH_DISPLAY_SORT = sql`case ${kit.status} when 'building' then 0 when 'stash' then 1 when 'built' then 2 else 3 end`;
+
 async function queryKitsByStatuses(statuses: KitStatus[]): Promise<KitRow[]> {
   "use cache";
   cacheLife("wishlist");
@@ -64,7 +72,7 @@ async function queryKitsByStatuses(statuses: KitStatus[]): Promise<KitRow[]> {
     .select()
     .from(kit)
     .where(inArray(kit.status, statuses))
-    .orderBy(sql`${kit.createdAt} desc`);
+    .orderBy(STASH_DISPLAY_SORT, sql`${kit.createdAt} desc`);
 }
 
 /** How many kits sit in each of these statuses — the Stash screen's filter

@@ -219,6 +219,9 @@
   color: var(--accent);
   cursor: pointer;
   white-space: nowrap;
+  /* Also worn by the detail page's Scalemates / YouTube links, which are real
+     `<a>`s and so arrive underlined by default. */
+  text-decoration: none;
 }
 
 @media (min-width: 900px) {
@@ -370,20 +373,6 @@
   background: rgba(27, 26, 23, 0.72);
 }
 
-/* Status identity on the Stash card — reusing the same two tokens the
-   detail page's status stepper carries meaning with, rather than a fourth
-   chrome colour (§4.1). Stash itself stays the plain `.chip` look. */
-.chipStatusBuilding {
-  background: var(--accent-tint);
-  color: var(--accent);
-  font-weight: 700;
-}
-
-.chipStatusBuilt {
-  background: var(--ok-tint);
-  color: var(--ok);
-  font-weight: 700;
-}
 
 .cardBody {
   display: flex;
@@ -505,6 +494,36 @@
   white-space: nowrap;
 }
 
+/* Status identity on a kit card — three looks that separate at a glance in a
+   scrolling grid, from the same tokens the detail page's stepper already uses
+   rather than a fourth chrome colour (§4.1): Building takes accent (on the
+   bench now), Built takes ok (done), and Stash keeps the neutral ground but
+   darkens its ink and adds a hairline, so it reads as a *state* rather than
+   as one more grey fact beside the scale and category chips.
+
+   These must stay **after** `.chip`: they carry the same single-class
+   specificity, so with `.chip` later in the file its own background and
+   colour simply won that tie and every status rendered plain grey — which is
+   exactly what shipped in the first pass. */
+.chipStatusStash {
+  border: 1px solid var(--line-strong);
+  color: var(--ink-soft);
+  font-weight: 700;
+  padding: 3px 10px;
+}
+
+.chipStatusBuilding {
+  background: var(--accent-tint);
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.chipStatusBuilt {
+  background: var(--ok-tint);
+  color: var(--ok);
+  font-weight: 700;
+}
+
 .cardActions {
   display: flex;
   align-items: center;
@@ -588,6 +607,8 @@
   font-size: 12px;
   font-weight: 700;
   cursor: pointer;
+  /* A manual row's "Open" wears this too, and that one is a real `<a>`. */
+  text-decoration: none;
 }
 
 .boughtButton:hover {
@@ -875,13 +896,32 @@ a.iconButton:hover {
   font-weight: 700;
   color: var(--muted);
   text-decoration: none;
-  padding: 14px var(--gutter) 0;
+  /* The bottom padding is the gap to the title below it — the phone header
+     that follows has no top margin of its own. */
+  padding: 14px var(--gutter) 10px;
 }
 
 @media (min-width: 900px) {
   .crumb {
-    padding: 26px 0 0;
+    padding: 26px 0 12px;
   }
+}
+
+/* Edit + Remove, side by side in the detail header's trailing slot. */
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* The Scalemates / YouTube pair under the identity block. Its own row rather
+   than more chips: they're destinations, not facts about the kit, and the
+   margin is what stops them reading as a third line of chips. */
+.kitLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
 }
 
 .crumb:hover {

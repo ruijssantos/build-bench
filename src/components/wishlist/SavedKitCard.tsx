@@ -25,7 +25,7 @@ export function SavedKitCard({ kit, priority }: { kit: KitRow; priority?: boolea
         category={kit.category}
         notes={kit.notes}
         priority={priority}
-        kitId={kit.id}
+        kit={kit}
       />
       <div className={styles.savedCardActions}>
         <MarkBoughtButton id={kit.id} />
