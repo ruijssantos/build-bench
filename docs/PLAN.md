@@ -584,11 +584,12 @@ downloading one, which means guessing at third-party hosting that can block, mov
 rate-limit, and raises copyright questions a self-supplied file doesn't. It also decouples
 paint shopping from kit research (§6).
 
-Mechanically: drag-drop or file-pick → `PUT` to Vercel Blob → `kit_manual` row. Viewed inline
-on desktop, downloadable on phone. An **Extract paint list** action sends the stored PDF to
-Claude as a base64 document block and writes `kit_paint_requirement` rows, feeding the
-shopping list. Kit research still *reports* a manual URL when it finds one, as a link — it
-never fetches it.
+Mechanically: drag-drop or file-pick → `PUT` to Vercel Blob → `kit_manual` row. "Open" links
+straight to the stored PDF — the browser's own viewer, in a new tab, phone and desktop alike;
+an earlier desktop-only inline `<iframe>` toggle duplicated that for no real benefit and was
+removed (§7 round 5). An **Extract paint list** action uploads the stored PDF to Claude through
+the Files API and writes `kit_paint_requirement` rows, feeding the shopping list. Kit research
+still *reports* a manual URL when it finds one, as a link — it never fetches it.
 
 ---
 
@@ -680,7 +681,10 @@ Verified against current API documentation, not recalled:
   — branch before indexing
 - Stage C: `client.messages.parse()` with `zodOutputFormat(KitResearchSchema)`;
   `parsed_output` is null on failure, guard it
-- Manual paint extraction (§4.3) uses a base64 `document` block — no beta header needed
+- Manual paint extraction (§4.3) uses the Files API — `client.files.upload` then a `document`
+  block referencing `file_id`, no beta header needed either way (§7 round 5: base64 inlining was
+  the original approach and got replaced once it turned out to cap what could be extracted well
+  below what could be stored)
 
 ### 5.3 Cost
 
@@ -1114,6 +1118,50 @@ zero matches on the page; and there's a real visible gap between the pill row an
 file" in a full-page screenshot. Pushed the shared `Inventory`/`InventoryForm` CSS 0.4 kB over its
 budget in the process — see docs/PERFORMANCE.md §11 for why that moved to 10.5 kB instead of
 being trimmed further.
+
+**Round 5 — the manual viewer and the real bug behind it.** The user hit the ~20 MB extraction
+ceiling with an actual manual (29.5 MB, well inside the 45 MB upload limit) and asked why storing
+and extracting had two different size ceilings at all. They didn't: the ~20 MB number was never a
+real product decision, it was `/api/kits/extract` inlining the PDF as base64 in the Messages API
+request body, which has a 32 MB ceiling of its own — base64 inflates a file by ~33%, so a raw PDF
+had to stay under ~20 MB to fit. A manual between 20 and 45 MB uploaded and stored fine and then
+could never be extracted, silently, forever. The real fix wasn't a bigger number, it was removing
+the reason for a second number: the route now uploads the fetched PDF to the Anthropic Files API
+(`client.files.upload`, no beta header — out of beta as of this SDK) and references it by
+`file_id` in the document block instead of inlining base64. The Files API's own ceiling is
+500 MB, so `MAX_EXTRACTION_PDF_BYTES` is gone entirely — extraction now shares
+`MAX_MANUAL_UPLOAD_BYTES` (45 MB, moved to `domain/kit-manual.ts` as the one ceiling a manual
+answers to) with the upload route. If it's stored, it can be extracted, full stop. The uploaded
+Files-API copy is deleted again in a `finally` once the run finishes (success or failure) — it
+exists only to make one request's document reference resolvable, not as a second permanent copy
+of the manual, and a delete failure is logged and swallowed rather than turning a real result into
+a generic one.
+
+Two smaller fixes rode along, both from a screenshot of the manuals list: the inline `<iframe>`
+"View" toggle (desktop-only, `.deskOnly`) was removed outright rather than fixed — it duplicated
+what "Open" already does (the browser's own PDF viewer, in a new tab) for the cost of a second
+render path and a `viewing` state nobody asked to keep. And "Open"/"Extract paint list" were
+hovering green, because both reuse `.boughtButton` for its pill shape and inherited its hover too
+— a color this file's own top comment reserves for "mark bought" semantics (`--ok`, "in range /
+owned"), which neither Open nor a not-yet-run extraction is. Added `.manualActionButton`, layered
+on top of `.boughtButton` for the shape, that overrides just the hover to the plain accent used
+everywhere else a secondary action isn't destructive or already done — same family as
+`.editButtonHover` from round 4. Left `.boughtButtonDone` (the "Extracted — re-run" state) alone:
+that one actually is the "done" state, same as a purchased kit, so green is correct there.
+
+Verified what could be verified locally: typecheck/lint/build/perf/catalogue all clean, and a
+local-Postgres-plus-headless-browser pass confirming the View/Hide buttons and the iframe are
+gone from the DOM, that Open and the not-yet-extracted Extract button compute an accent hover
+while the done state still computes the ok/green one, and that a manual seeded at 50 MB (over the
+now-shared cap) fails immediately with the storage-limit message while one seeded at the real
+29.5 MB size clears that check and proceeds to actually attempt the fetch — it then fails on a
+fake Blob URL, which is the test fixture's limit, not the code's. The Files API call itself —
+`client.files.upload`, the `file_id` document reference, and the cleanup delete — could not be
+exercised end to end here: that needs a real `ANTHROPIC_API_KEY` and a real Blob-hosted PDF,
+neither of which exist in this sandbox (`safeUrl`'s SSRF check correctly refuses a local test
+server, same as it would in production). The API shapes used are not guessed — confirmed against
+the installed SDK's own source (`node_modules/@anthropic-ai/sdk/src/resources/files.ts` and
+`to-file.ts`) and the current (non-beta) Files API docs, fetched fresh rather than recalled.
 
 ---
 

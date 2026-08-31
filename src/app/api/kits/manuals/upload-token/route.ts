@@ -1,6 +1,8 @@
 import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
 import { NextResponse } from "next/server";
 
+import { MAX_MANUAL_UPLOAD_BYTES } from "@/domain/kit-manual";
+
 /**
  * The client-direct upload's token route — docs/PLAN.md §6 Phase 4a, §4.3.
  *
@@ -18,13 +20,6 @@ import { NextResponse } from "next/server";
  * `onUploadCompleted` below, which needs a publicly reachable callback URL
  * and never fires against a local dev server.
  */
-
-/** Generous, not tight — real manuals run 10–40 MB (docs/PLAN.md §4.3). The
- * ~20 MB ceiling that matters is on *extraction* (the Anthropic request
- * limit after base64 inflation), checked separately when "Extract paint
- * list" runs, not here: a manual too big to auto-extract still deserves to
- * store and view. */
-const MAX_MANUAL_UPLOAD_BYTES = 45 * 1024 * 1024;
 
 export async function POST(request: Request): Promise<NextResponse> {
   let body: HandleUploadBody;

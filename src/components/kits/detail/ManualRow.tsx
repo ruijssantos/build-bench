@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
 import { deleteManual } from "@/app/(bench)/kits/actions";
-import { CheckIcon, ExternalLinkIcon, EyeIcon, FileIcon, TrashIcon } from "@/components/icons";
+import { CheckIcon, ExternalLinkIcon, FileIcon, TrashIcon } from "@/components/icons";
 import styles from "@/components/wishlist/Wishlist.module.css";
 import type { KitManualRow } from "@/db/repositories/kit-manuals";
 import { formatTimestampDate } from "@/domain/dates";
@@ -16,17 +16,14 @@ function formatBytes(bytes: number | null): string {
 }
 
 /**
- * One manual: label, filename, size — plus what you do with it. "Open" (a
- * plain link, works on phone and desktop alike — a PDF opens in whatever the
- * browser's own viewer is) and, desktop-only, an inline toggle that embeds
- * the same PDF in an `<iframe>` without leaving the page. The desktop-only
- * pieces are wrapped in `.deskOnly` rather than applied to the button/iframe
- * directly — both already declare their own `display`, and a second class
- * fighting over that same property on the same element is fragile.
+ * One manual: label, filename, size — plus what you do with it. Just "Open"
+ * (a plain link, `target="_blank"`) and "Extract paint list" — there was
+ * also an inline `<iframe>` viewer, desktop-only, but it duplicated what
+ * "Open" already does (the browser's own PDF viewer, in a new tab) for the
+ * cost of a second render path, so it's gone rather than fixed.
  */
 export function ManualRow({ manual, kitId }: { manual: KitManualRow; kitId: number }) {
   const router = useRouter();
-  const [viewing, setViewing] = useState(false);
   const [extracting, startExtract] = useTransition();
   const [extractError, setExtractError] = useState<string | null>(null);
   const [pendingDelete, startDelete] = useTransition();
@@ -102,14 +99,14 @@ export function ManualRow({ manual, kitId }: { manual: KitManualRow; kitId: numb
       </div>
 
       <div className={styles.manualActions}>
-        <a className={styles.boughtButton} href={manual.blobUrl} target="_blank" rel="noopener noreferrer">
+        <a
+          className={`${styles.boughtButton} ${styles.manualActionButton}`}
+          href={manual.blobUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           <ExternalLinkIcon size={13} /> Open
         </a>
-        <span className={styles.deskOnly}>
-          <button type="button" className={styles.boughtButton} onClick={() => setViewing((v) => !v)}>
-            <EyeIcon size={13} /> {viewing ? "Hide" : "View"}
-          </button>
-        </span>
         {manual.paintsExtractedAt ? (
           <button
             type="button"
@@ -120,7 +117,12 @@ export function ManualRow({ manual, kitId }: { manual: KitManualRow; kitId: numb
             <CheckIcon size={13} /> {extracting ? "Re-extracting…" : "Extracted — re-run"}
           </button>
         ) : (
-          <button type="button" className={styles.boughtButton} disabled={extracting} onClick={() => void runExtract()}>
+          <button
+            type="button"
+            className={`${styles.boughtButton} ${styles.manualActionButton}`}
+            disabled={extracting}
+            onClick={() => void runExtract()}
+          >
             <FileIcon size={13} /> {extracting ? "Extracting…" : "Extract paint list"}
           </button>
         )}
@@ -128,12 +130,6 @@ export function ManualRow({ manual, kitId }: { manual: KitManualRow; kitId: numb
 
       {extractError ? <div className={styles.cardError}>{extractError}</div> : null}
       {deleteError ? <div className={styles.cardError}>{deleteError}</div> : null}
-
-      {viewing ? (
-        <span className={styles.deskOnly}>
-          <iframe src={manual.blobUrl} title={manual.filename ?? "Manual"} className={styles.manualViewer} />
-        </span>
-      ) : null}
     </div>
   );
 }
