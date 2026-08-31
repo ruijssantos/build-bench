@@ -109,6 +109,18 @@
   cursor: pointer;
 }
 
+/* Every dialog's "Cancel" and the status stepper's "Move back to …" share
+   this class, and none of them had any hover feedback at all — the resting
+   state is already subtle (a thin border on `--muted` text), so with no
+   hover it just looks inert. Same neutral treatment `.iconButton:hover`
+   uses elsewhere, not an accent/ok/alert colour: this button never heads
+   toward a particular outcome, it just needs to read as clickable. */
+.ghostButton:hover {
+  border-color: var(--ink);
+  color: var(--ink);
+  background: var(--card-sunken);
+}
+
 .primaryButton {
   height: 42px;
   padding: 0 18px;

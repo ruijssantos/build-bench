@@ -1,4 +1,5 @@
 import { getCataloguePaint } from "@/catalogue/paints";
+import { comparePaintCodes } from "@/domain/paint-code";
 
 /**
  * Paints vs. the shelf — docs/PLAN.md §6 Phase 4a: three buckets, derived,
@@ -69,7 +70,7 @@ export function bucketPaintRequirements(
     }
   }
 
-  const byCode = (a: { code: string }, b: { code: string }) => a.code.localeCompare(b.code);
+  const byCode = (a: { code: string }, b: { code: string }) => comparePaintCodes(a.code, b.code);
   return {
     owned: [...owned.values()].sort(byCode),
     missing: [...missing.values()].sort(byCode),
