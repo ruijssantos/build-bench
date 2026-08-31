@@ -1,4 +1,4 @@
-import Anthropic from "@anthropic-ai/sdk";
+import Anthropic, { toFile } from "@anthropic-ai/sdk";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import { revalidateTag } from "next/cache";
 import { NextResponse, type NextRequest } from "next/server";
@@ -6,6 +6,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { findKitManualById, markManualPaintsExtracted } from "@/db/repositories/kit-manuals";
 import { KIT_REQUIREMENTS_TAG, replaceManualPaintRequirements } from "@/db/repositories/kit-paint-requirements";
 import { kitTag } from "@/db/repositories/kits";
+import { MAX_MANUAL_UPLOAD_BYTES } from "@/domain/kit-manual";
 import { normalizeExtractedPaints, PaintExtractionResultSchema } from "@/domain/kit-paint-extraction";
 import { readCapped, safeFetch } from "@/lib/box-art";
 
@@ -28,18 +29,22 @@ import { readCapped, safeFetch } from "@/lib/box-art";
  * declared here (this reads an attached document, not the web), so there is
  * no server-tool-error content shape to branch on the way resolve's web
  * search does — that check doesn't apply to this call.
+ *
+ * The PDF goes to Claude through the Files API, not inlined as base64 in the
+ * request body. That used to be the only option, and it capped what could be
+ * extracted well below what could be stored (docs/PLAN.md §4.3, §7) — base64
+ * inflates a file by ~33% and the Messages API request ceiling is 32 MB, so a
+ * raw PDF had to stay under ~20 MB even though uploads allow 45 MB. The Files
+ * API's own ceiling is 500 MB, comfortably past `MAX_MANUAL_UPLOAD_BYTES`, so
+ * this route can now extract anything it can store. The uploaded file is
+ * deleted again once the run finishes (`finally`, below) — it only exists to
+ * make this one request's document reference resolvable, not as a second
+ * copy of the manual worth keeping around.
  */
 
 export const maxDuration = 300;
 
 const MAX_RESUMES = 3;
-
-/** The Anthropic request ceiling is 32 MB and base64 inflates a file by
- * ~33%, so a raw PDF has to stay well under that once the rest of the
- * request (system prompt, schema) is added. 20 MB raw → ~27 MB encoded,
- * comfortable headroom. A manual over this still stores and views fine; it
- * just can't auto-extract. */
-const MAX_EXTRACTION_PDF_BYTES = 20 * 1024 * 1024;
 
 const FETCH_TIMEOUT_MS = 20_000;
 
@@ -81,9 +86,9 @@ export async function POST(request: NextRequest) {
     return jsonError("That manual is no longer on this kit.");
   }
 
-  if (manual.sizeBytes && manual.sizeBytes > MAX_EXTRACTION_PDF_BYTES) {
+  if (manual.sizeBytes && manual.sizeBytes > MAX_MANUAL_UPLOAD_BYTES) {
     return jsonError(
-      `This manual is ${(manual.sizeBytes / (1024 * 1024)).toFixed(1)} MB — paint extraction needs the PDF under ~20 MB (the model's request limit, once base64 encoding inflates it). It's still stored and viewable; extraction just can't run on it.`,
+      `This manual is ${(manual.sizeBytes / (1024 * 1024)).toFixed(1)} MB, over the ${MAX_MANUAL_UPLOAD_BYTES / (1024 * 1024)} MB storage limit — it shouldn't be possible to have uploaded it. Re-upload it and try again.`,
     );
   }
 
@@ -108,38 +113,42 @@ export async function POST(request: NextRequest) {
       `Couldn't read the stored manual — storage answered HTTP ${fetched.response.status}. If it was removed, re-upload it.`,
     );
   }
-  const bytes = await readCapped(fetched.response, MAX_EXTRACTION_PDF_BYTES);
+  const bytes = await readCapped(fetched.response, MAX_MANUAL_UPLOAD_BYTES);
   if (!bytes) {
-    return jsonError(
-      "This manual is too large for paint extraction (over ~20 MB once base64-encoded) or couldn't be read. It's still stored and viewable.",
-    );
+    return jsonError("Couldn't read the stored manual — try again.");
   }
 
   const client = new Anthropic();
 
-  const requestParams = {
-    model: "claude-opus-5",
-    max_tokens: 16000,
-    thinking: { type: "adaptive" as const },
-    output_config: { effort: "high" as const, format: zodOutputFormat(PaintExtractionResultSchema) },
-    system: SYSTEM_PROMPT,
-    messages: [
-      {
-        role: "user" as const,
-        content: [
-          {
-            type: "document" as const,
-            source: { type: "base64" as const, media_type: "application/pdf" as const, data: bytes.toString("base64") },
-          },
-          { type: "text" as const, text: "Extract the paint list from this manual." },
-        ],
-      },
-    ],
-  };
-
-  let messages: Anthropic.MessageParam[] = requestParams.messages;
-
+  let uploadedFileId: string | null = null;
   try {
+    const uploaded = await client.files.upload({
+      file: await toFile(bytes, manual.filename ?? "manual.pdf", { type: "application/pdf" }),
+    });
+    uploadedFileId = uploaded.id;
+
+    const requestParams = {
+      model: "claude-opus-5",
+      max_tokens: 16000,
+      thinking: { type: "adaptive" as const },
+      output_config: { effort: "high" as const, format: zodOutputFormat(PaintExtractionResultSchema) },
+      system: SYSTEM_PROMPT,
+      messages: [
+        {
+          role: "user" as const,
+          content: [
+            {
+              type: "document" as const,
+              source: { type: "file" as const, file_id: uploadedFileId },
+            },
+            { type: "text" as const, text: "Extract the paint list from this manual." },
+          ],
+        },
+      ],
+    };
+
+    let messages: Anthropic.MessageParam[] = requestParams.messages;
+
     let stream = client.messages.stream({ ...requestParams, messages });
     let response = await stream.finalMessage();
 
@@ -202,5 +211,15 @@ export async function POST(request: NextRequest) {
       return jsonError("Paint extraction hit a problem — try again.");
     }
     return jsonError("Paint extraction hit a problem — try again.");
+  } finally {
+    // Best-effort: a file left behind counts against the org's storage quota
+    // but never blocks anything, so a delete failure here shouldn't turn a
+    // real extraction result (success or a reported error) into a generic
+    // one.
+    if (uploadedFileId) {
+      await client.files.delete(uploadedFileId).catch((error: unknown) => {
+        console.error(`[extract] failed to delete uploaded file ${uploadedFileId}:`, error);
+      });
+    }
   }
 }

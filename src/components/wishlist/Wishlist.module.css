@@ -617,6 +617,20 @@
   background: var(--ok-tint);
 }
 
+/* `.boughtButton`'s green hover previews "this becomes bought" — right for
+   `MarkBoughtButton` (the only caller that's actually heading toward that
+   state), wrong for a manual row's Open/Extract, which have nothing to do
+   with "bought". Layered on top of `.boughtButton` for the same pill shape,
+   this swaps the hover to the plain accent every other non-destructive,
+   not-already-done secondary action uses (`.editButtonHover`'s sibling). Not
+   applied to `.boughtButtonDone`: that one is *already* the ok/green "done"
+   state on purpose, same as a purchased kit. */
+.manualActionButton:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-tint);
+}
+
 /* ≥44px touch target without a 44px-looking button — glyph 32–34px, padding
    carries the rest, same approach as `Inventory.module.css` `.iconButton`. */
 .iconButton,
@@ -1129,13 +1143,6 @@ a.iconButton:hover {
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
-}
-
-.manualViewer {
-  width: 100%;
-  height: 480px;
-  border: 1px solid var(--line);
-  border-radius: 12px;
 }
 
 /* `.boughtButton:hover` already lands on these exact ok-tinted colours, so
