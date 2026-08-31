@@ -219,6 +219,9 @@
   color: var(--accent);
   cursor: pointer;
   white-space: nowrap;
+  /* Also worn by the detail page's Scalemates / YouTube links, which are real
+     `<a>`s and so arrive underlined by default. */
+  text-decoration: none;
 }
 
 @media (min-width: 900px) {
@@ -301,12 +304,24 @@
 }
 
 .card {
+  position: relative;
   display: flex;
   flex-direction: column;
   background: var(--card);
   border: 1px solid var(--line);
   border-radius: 18px;
   overflow: hidden;
+}
+
+/* A whole-card link on the Stash grid (docs/PLAN.md §6 Phase 4a) without
+   nesting a Link inside the art-edit button or the actions row's own
+   buttons/links/forms — invalid HTML, and a real hydration risk. Absolutely
+   covers `.card` at z-index 1; every actual control raises itself to 2 (see
+   `.savedCardActions`, `.artEditButton`) so it stays clickable on top. */
+.cardStretchLink {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
 }
 
 .cardArt {
@@ -329,6 +344,35 @@
 .cardArtFallback {
   color: var(--icon-idle);
 }
+
+/* Wraps KitArt only when a caller passes `kitId` (a saved kit, never an
+   unsaved search candidate) — a bare positioning context so ArtEditButton
+   can sit in its corner without KitArt itself needing to know it exists. */
+.artWrap {
+  position: relative;
+}
+
+.artEditButton {
+  position: absolute;
+  z-index: 2;
+  top: 8px;
+  right: 8px;
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 9px;
+  background: rgba(27, 26, 23, 0.55);
+  color: #fff;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.artEditButton:hover {
+  background: rgba(27, 26, 23, 0.72);
+}
+
 
 .cardBody {
   display: flex;
@@ -388,6 +432,55 @@
   overflow: hidden;
 }
 
+/* The Stash card's readiness line — "Own 14 of 17 · 3 to buy" — passed into
+   KitCardBody as `extra`. The paint icon is the same PaintsIcon the nav rail
+   uses for Paints, so it reads as "this line is about paints" without a
+   label eating the room a card doesn't have. */
+.readyLine {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 3px;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.readyIcon {
+  flex: none;
+  display: inline-flex;
+  color: var(--icon-idle);
+}
+
+.readyCount {
+  color: var(--ink-soft);
+  font-weight: 600;
+}
+
+.readyBuy {
+  color: var(--alert);
+}
+
+.readyReady {
+  color: var(--ok);
+}
+
+.readyUnresolved {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted-2);
+}
+
+.readyNone {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 3px;
+  font-family: var(--font-ui);
+  font-size: 11.5px;
+  color: var(--muted-2);
+}
+
 .chip {
   display: inline-flex;
   align-items: center;
@@ -399,6 +492,36 @@
   background: var(--card-sunken);
   color: var(--muted);
   white-space: nowrap;
+}
+
+/* Status identity on a kit card — three looks that separate at a glance in a
+   scrolling grid, from the same tokens the detail page's stepper already uses
+   rather than a fourth chrome colour (§4.1): Building takes accent (on the
+   bench now), Built takes ok (done), and Stash keeps the neutral ground but
+   darkens its ink and adds a hairline, so it reads as a *state* rather than
+   as one more grey fact beside the scale and category chips.
+
+   These must stay **after** `.chip`: they carry the same single-class
+   specificity, so with `.chip` later in the file its own background and
+   colour simply won that tie and every status rendered plain grey — which is
+   exactly what shipped in the first pass. */
+.chipStatusStash {
+  border: 1px solid var(--line-strong);
+  color: var(--ink-soft);
+  font-weight: 700;
+  padding: 3px 10px;
+}
+
+.chipStatusBuilding {
+  background: var(--accent-tint);
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.chipStatusBuilt {
+  background: var(--ok-tint);
+  color: var(--ok);
+  font-weight: 700;
 }
 
 .cardActions {
@@ -457,6 +580,8 @@
 /* ----------------------------------------------------------------- saved kits */
 
 .savedCardActions {
+  position: relative;
+  z-index: 2;
   display: flex;
   align-items: center;
   gap: 4px;
@@ -482,6 +607,8 @@
   font-size: 12px;
   font-weight: 700;
   cursor: pointer;
+  /* A manual row's "Open" wears this too, and that one is a real `<a>`. */
+  text-decoration: none;
 }
 
 .boughtButton:hover {
@@ -738,4 +865,410 @@ a.iconButton:hover {
   overflow: hidden;
   clip: rect(0 0 0 0);
   white-space: nowrap;
+}
+
+/* ============================================================= kit detail
+   docs/PLAN.md §6 Phase 4a — `/kits/[id]`, the app's first detail route.
+   Reuses `.card`/`.cardBody`/`.chip`/`.iconButton`/`.subHead`/`.moduleTitle`
+   throughout rather than a parallel set; only genuinely new shapes (the
+   two-column layout, the status stepper, manual rows, paint buckets) get
+   new classes here. */
+
+/* A whole-card visibility toggle, not a `display` value on an element that
+   already has one of its own (a button, an iframe) — see `ManualRow`'s own
+   note on why. */
+.deskOnly {
+  display: none;
+}
+
+@media (min-width: 900px) {
+  .deskOnly {
+    display: block;
+  }
+}
+
+.crumb {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-ui);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--muted);
+  text-decoration: none;
+  /* The bottom padding is the gap to the title below it — the phone header
+     that follows has no top margin of its own. */
+  padding: 14px var(--gutter) 10px;
+}
+
+@media (min-width: 900px) {
+  .crumb {
+    padding: 26px 0 12px;
+  }
+}
+
+/* Edit + Remove, side by side in the detail header's trailing slot. */
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* The Scalemates / YouTube pair under the identity block. Its own row rather
+   than more chips: they're destinations, not facts about the kit, and the
+   margin is what stops them reading as a third line of chips. */
+.kitLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.crumb:hover {
+  color: var(--accent);
+}
+
+.detailGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 14px var(--gutter) 28px;
+}
+
+@media (min-width: 900px) {
+  .detailGrid {
+    display: grid;
+    grid-template-columns: 360px 1fr;
+    align-items: start;
+    gap: 26px;
+    padding: 20px 0 28px;
+  }
+}
+
+.railCol,
+.mainCol {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-width: 0;
+}
+
+/* ---- status stepper ---- */
+
+.stepper {
+  display: flex;
+  align-items: flex-start;
+  margin: 4px 0 14px;
+}
+
+.step {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.step:not(:first-child)::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  top: 11px;
+  right: 50%;
+  width: 100%;
+  height: 2px;
+  background: var(--line-strong);
+}
+
+.step.stepDone::before,
+.step.stepCurrent::before {
+  background: var(--ok);
+}
+
+.stepDot {
+  position: relative;
+  z-index: 1;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--card);
+  border: 2px solid var(--line-strong);
+  color: var(--faint);
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.stepLabel {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted-2);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.stepDone .stepDot {
+  background: var(--ok);
+  border-color: var(--ok);
+  color: var(--bg);
+}
+
+.stepCurrent .stepDot {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg);
+}
+
+.stepDone .stepLabel,
+.stepCurrent .stepLabel {
+  color: var(--ink);
+}
+
+.statusActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* ---- purchase & dates ---- */
+
+.detailRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--card-sunken);
+}
+
+.detailRow:last-child {
+  border-bottom: none;
+}
+
+.detailLabel {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted-2);
+}
+
+.detailValue {
+  font-family: var(--font-ui);
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink);
+  text-align: right;
+}
+
+.detailValueEmpty {
+  color: var(--faint);
+}
+
+/* ---- manuals ---- */
+
+.manualRow {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.manualTop {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.manualIcon {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: var(--card-sunken);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--icon-idle);
+}
+
+.manualInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.manualName {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-top: 4px;
+}
+
+.manualMeta {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  color: var(--muted-2);
+  margin-top: 2px;
+}
+
+.manualActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.manualViewer {
+  width: 100%;
+  height: 480px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+
+/* `.boughtButton:hover` already lands on these exact ok-tinted colours, so
+   "done" needs only the resting state — hovering an already-extracted
+   manual's button looks the same whether or not this rule fires. */
+.boughtButtonDone {
+  border-color: var(--ok);
+  color: var(--ok);
+  background: var(--ok-tint);
+}
+
+.dropzone {
+  border: 1.5px dashed var(--line-strong);
+  border-radius: 14px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+  color: var(--icon-idle);
+}
+
+/* Extra gap above "Choose a file", beyond `.dropzone`'s own uniform one. */
+.dropzoneUpload {
+  margin-top: 6px;
+}
+
+/* ---- paints ---- */
+
+.paintBucket + .paintBucket {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+
+.bucketHead {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 8px;
+}
+
+.bucketDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex: none;
+}
+
+.bucketDotOwned {
+  background: var(--ok);
+}
+
+.bucketDotMissing {
+  background: var(--alert);
+}
+
+.bucketDotUnresolved {
+  background: var(--muted-2);
+}
+
+.paintDot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  flex: none;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12);
+}
+
+.ownedChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 26px;
+  padding: 0 10px 0 6px;
+  border-radius: var(--radius-pill);
+  background: var(--ok-tint);
+  color: var(--ok);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.missingRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 2px;
+}
+
+.missingRow + .missingRow {
+  border-top: 1px solid var(--card-sunken);
+}
+
+.missingCode {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--alert);
+}
+
+.missingName {
+  font-family: var(--font-ui);
+  font-size: 11.5px;
+  color: var(--ink-soft);
+  flex: 1;
+  min-width: 0;
+}
+
+.unresolvedRow {
+  padding: 7px 9px;
+  border: 1px dashed var(--line-strong);
+  border-radius: 9px;
+}
+
+.unresolvedRow + .unresolvedRow {
+  margin-top: 6px;
+}
+
+.unresolvedLabel {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--ink-soft);
+}
+
+.unresolvedTag {
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--muted-2);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-top: 2px;
 }

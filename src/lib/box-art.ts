@@ -113,7 +113,7 @@ function isPublicAddress(address: string): boolean {
 
 /** Parses a URL and rejects it unless it is http(s) and every address its
  * hostname resolves to is public. Returns the parsed URL, or `null`. */
-async function safeUrl(raw: string): Promise<URL | null> {
+export async function safeUrl(raw: string): Promise<URL | null> {
   let parsed: URL;
   try {
     parsed = new URL(raw);
@@ -145,8 +145,16 @@ async function safeUrl(raw: string): Promise<URL | null> {
  * first URL gets bypassed. Returns the final response and the URL it
  * actually came from — the latter matters for resolving relative `og:image`
  * values against the page that declared them.
+ *
+ * Exported (with `safeUrl` and `readCapped` below) for `/api/kits/extract`
+ * (docs/PLAN.md §6 Phase 4a): fetching a manual PDF back out of our own Blob
+ * store is a much lower-stakes request than the arbitrary, model-chosen URLs
+ * the rest of this file defends against — the URL came from our own upload,
+ * not a web search result — but the byte-capped, timed-out fetch here is
+ * exactly what that read wants too, so it reuses this rather than a second
+ * copy.
  */
-async function safeFetch(
+export async function safeFetch(
   rawUrl: string,
   accept: string,
   timeoutMs: number,
@@ -190,7 +198,7 @@ async function safeFetch(
  * streams unbounded bytes under an image content-type OOM the function
  * before the check ever ran.
  */
-async function readCapped(response: Response, maxBytes: number): Promise<Buffer | null> {
+export async function readCapped(response: Response, maxBytes: number): Promise<Buffer | null> {
   const declared = Number(response.headers.get("content-length"));
   if (Number.isFinite(declared) && declared > maxBytes) return null;
 

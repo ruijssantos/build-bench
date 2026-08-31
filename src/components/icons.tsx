@@ -179,3 +179,73 @@ export function TrashIcon(props: IconProps) {
     </svg>
   );
 }
+
+/** The art-edit affordance — a small camera, docs/PLAN.md §6 Phase 4a. */
+export function CameraIcon(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      <path d="M3 8a2 2 0 0 1 2-2h2l1.5-2h7L17 6h2a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8z" />
+      <circle cx="12" cy="13" r="3.5" />
+    </svg>
+  );
+}
+
+/** A manual's document icon — the Stash detail page's Manuals panel. */
+export function FileIcon(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      <path d="M7 3h7l5 5v13H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z" />
+      <path d="M14 3v5h5" />
+    </svg>
+  );
+}
+
+/** The build-video / YouTube search link. */
+export function PlayIcon(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M10.3 8.7l5 3.3-5 3.3V8.7z" />
+    </svg>
+  );
+}
+
+/** The detail page's "‹ Stash" breadcrumb back link. */
+export function ChevronLeftIcon(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      <path d="M15 18l-6-6 6-6" />
+    </svg>
+  );
+}
+
+/** A manual's inline-viewer toggle (desktop). */
+export function EyeIcon(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z" />
+      <circle cx="12" cy="12" r="3" />
+    </svg>
+  );
+}
+
+/** A manual's download link (phone) and the upload dropzone's own glyph. */
+export function DownloadIcon(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      <path d="M12 4v12" />
+      <path d="M6 12l6 6 6-6" />
+      <path d="M4 20h16" />
+    </svg>
+  );
+}
+
+export function UploadIcon(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      <path d="M12 16V4" />
+      <path d="M6 10l6-6 6 6" />
+      <path d="M4 20h16" />
+    </svg>
+  );
+}

@@ -282,11 +282,11 @@ shell and accept the gap.
 
 | Check | Budget | Currently |
 |---|---|---|
-| `/thinner` initial JS, gzipped (framework included) | 150 kB | 143 kB |
-| `/wishlist` initial JS, gzipped | 150 kB | 148 kB |
-| `/thinner` static shell, gzipped | 8 kB | 2.9 kB |
-| `/wishlist` static shell, gzipped | 8 kB | 2.8 kB |
-| CSS, gzipped (shared by both) | 9.0 kB | 8.5 kB |
+| `/thinner` initial JS, gzipped (framework included) | 150 kB | 143.6 kB |
+| `/wishlist` initial JS, gzipped | 150 kB | 149.4 kB |
+| `/thinner` static shell, gzipped | 8 kB | 3.4 kB |
+| `/wishlist` static shell, gzipped | 8 kB | 3.3 kB |
+| CSS, gzipped (shared by both) | 10.5 kB | 10.4 kB |
 | Paint catalogue in an eagerly-loaded chunk | never | behind its dynamic import |
 | `images.remotePatterns` covers the Blob store | required | configured |
 | Every app route ships a static shell | all 6 | all 6 |
@@ -295,10 +295,13 @@ These guard regressions that are invisible in review: a `"use client"` one level
 too high, a static import of the catalogue, a page that quietly stops being
 prerenderable. Move a budget only in the commit that needs it, and say why.
 
-`/wishlist`'s JS is close to the ceiling — 2 kB of headroom against `/thinner`'s
-7 kB, from `next/image`'s client runtime. Real, not a rounding artefact: the
-next thing that adds a client dependency to the Wishlist screen should check
-this number before merging, not find out from CI.
+`/wishlist`'s JS has 0.6 kB of headroom left against the 150 kB ceiling, tighter
+than `/thinner`'s 6.4 kB — Phase 4a's art-edit affordance (`ArtEditButton`)
+landed on every saved-kit card on both screens, and even lazy-loaded (its dialog
+is its own chunk, fetched only on click) the trigger itself still cost a sliver
+of eager JS on `/wishlist`. Real, not a rounding artefact: the next thing that
+adds a client dependency to either screen should check this number before
+merging, not find out from CI.
 
 **One stylesheet per route group.** The CSS number is measured on `/thinner`
 but is not `/thinner`'s alone: every route under `(bench)` shares one hashed
@@ -308,12 +311,31 @@ cards, the manual-entry/photo-upload dialog — moved it again to 8.0 kB, past
 the original 8 kB budget, which is why that number became 8.5 kB. The sticky
 mobile tab bar and its sixth sign-out tab moved it once more, to 8.5 kB
 exactly — global chrome shared by every screen, not a phase's own cost, but
-spent from the same allowance regardless — so the budget is 9.0 kB now. That
-is the deal the grouping makes — a navigation between bench screens fetches
-no new CSS at all — but it does mean the budget is a shared allowance, and
-Phases 4–8 each spend from it too. The next change to push past 9.0 kB is
-the one that has to decide whether to raise the number again or split the
-group.
+spent from the same allowance regardless — so the budget became 9.0 kB. Phase
+4a moved it a third time, to 10.0 kB: the app's first detail route
+(`/kits/[id]`) needed real new UI vocabulary — a status stepper, manual rows
+with an inline PDF viewer, three paint buckets, a two-column desktop layout —
+that the existing card/chip/pill language could carry the *content* of but not
+the *shape* of, on top of the art-edit affordance and coloured status chips
+this phase added to the existing grid cards. This is the phase called out
+below as the one likely to force the question, and the question was answered:
+raise the number, deliberately, rather than split the group now. That is the
+deal the grouping makes — a navigation between bench screens fetches no new
+CSS at all — but it does mean the budget is a shared allowance, and Phases
+5–8 each spend from it too. The next change to push past 10.0 kB is the one
+that has to decide, again, whether to raise the number a fourth time or
+actually split the group — at some point a screen this different in kind
+(the app's first detail route, likely joined by more in Phases 6–7) may be
+better served by its own stylesheet than by keeping stretching one shared by
+five very different screens.
+
+A round of preview polish right after Phase 4a shipped (a bordered Edit
+button to match Delete on the kit detail header, a pointer cursor on the
+manual upload's label pills, a touch more spacing in that same dropzone)
+nudged it once more, to 10.5 kB — small, real CSS in the shared
+`Inventory`/`InventoryForm` stylesheets `/thinner` also loads, so it counts
+against `/thinner`'s number even though none of it touches Thinner's own
+screen. Same deal as before: raised deliberately, not a rounding error.
 
 ## 12. Checklist for a new screen
 

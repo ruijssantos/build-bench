@@ -722,6 +722,11 @@ build it** — the wishlist comes before the stash because that's the order a ki
 through in real life, and because resolving a kit (§5.1 stage A) is the machinery the stash
 then inherits for free.
 
+> **Before testing any phase's branch: §9.5 is the runbook.** Several phases add database
+> columns, and nothing applies a migration automatically — a branch whose migration hasn't
+> been run looks deployed and answers "The database didn't answer" on every screen that reads
+> the changed table. §9.5 has the exact commands; the ledger there says which phases added one.
+
 ### Phase 0 — Foundations ✅
 Next.js scaffold, Neon + Blob via Vercel, Drizzle schema and first migration, cookie auth,
 `tokens.css`, PWA manifest, CI.
@@ -744,20 +749,42 @@ one-directional — Phase 4 picks the row up from there); other items tick betwe
 bought both ways, since there's no ownership record for a tool to move to. Needs
 `ANTHROPIC_API_KEY` — this is the phase that first uses it.
 
-### Phase 4 — Stash
+### Phase 4a — Stash ✅
 The kits you own: `status` of `stash`, `building` or `built`, promoted from the wishlist with
-one tap or added directly. Manual PDF upload to Blob and a desktop viewer (§4.3), **Extract
-paint list** → `kit_paint_requirement`, and the per-kit paint list checked against the shelf
-— what this kit calls for, what you already have, what's missing.
+one tap (`promoteKitToStash`) or added directly (search and manual entry both save straight
+to `stash`). `/kits` mirrors the wishlist's shell shape plus URL-driven status filter pills
+(All/Stash/Building/Built, each with a count from one `countKitsByStatus` query); `/kits/[id]`
+is the app's first detail route — identity + art + a Scalemates/YouTube-search link pair,
+a three-step status stepper (`stash → building → built`, stamping `started_at`/`completed_at`
+on the way in, editable after), purchase details, manual PDF upload with an **Extract paint
+list** action per manual (Claude Opus 5, streaming, effort high), and the resulting
+`kit_paint_requirement` rows shown as three buckets — Owned, Missing, Unresolved — against the
+shelf. The per-kit bucket view is one targeted query; the Stash grid's "14 of 17 · 3 to buy"
+line on every card comes from one aggregate query across every stashed kit, not N+1.
+
+Manual upload does what §4.3 originally hoped for and Phase 3's photo upload couldn't:
+client-direct upload via `@vercel/blob/client`'s `upload()` against a token route
+(`/api/kits/manuals/upload-token`), because the private-store misdiagnosis that killed the
+first attempt (§7, Phase 3) is fixed. A `kit_manual` row is written by a Server Action the
+client calls once `upload()` resolves, not from `onUploadCompleted` (no public callback URL
+locally). A plain server-side `put`, capped at Vercel's ~4 MB request-body limit, is the
+fallback when the direct path fails, and the UI says which path actually ran.
+
+Deep research — difficulty, fit issues with sources, a real build video — is explicitly
+**Phase 4b**, not built here: this phase ships only the free part, a plain YouTube search
+link built the way `paintSearchUrl` builds its shop link (`kitYoutubeSearchUrl`, no API, no
+key). Phase 6 below still owns the paid stages B/C research this link will eventually sit
+beside.
 
 ### Phase 5 — Cross-brand equivalence
 Cybermodeler import (§2.2), `paint_equivalent`, foreign → Tamiya lookup. Sits here rather
-than earlier because this is what makes Phase 4's paint list work for Japanese kits, whose
-manuals call out Mr. Color throughout. Standalone lookup screen too.
+than earlier because this is what makes Phase 4a's paint list work for Japanese kits, whose
+manuals call out Mr. Color throughout — Phase 4a's own Unresolved bucket is exactly the gap
+this phase closes, without re-running extraction on a single manual.
 
 ### Phase 6 — Kit research
 §5.1 stages B and C against a stash kit: difficulty, fit issues with sources, build video,
-manual link. Optional enhancement — nothing depends on it.
+manual link — Phase 4b. Optional enhancement — nothing depends on it.
 
 ### Phase 7 — Build log
 Per-kit dated journal by stage, photos to Blob, research and manual attached to the kit. To
@@ -855,6 +882,239 @@ neither the category enum nor the candidate cap to the API (both are demoted to 
 enforced by coercion after the fact rather than by rejecting the response; a strict schema threw
 away whole paid searches over one off-vocabulary word.
 
+Phase 4a's first commit to a dynamic route (`/kits/[id]`) surfaced a real gap in the shared
+`(bench)` layout that nothing before it had ever exercised: `NavRail` and `NavTabBar` both call
+`usePathname()` directly, unguarded, and that hook returns build-time-known data on every
+static route this app had — right up until a `[id]` segment made the pathname itself genuinely
+request-dependent. `next build` refused to prerender the new route at all, with the error
+pointing at the *layout*, not the new page, since the nav sits above every route under it.
+Fixed generically rather than special-cased to this one page: both components now wrap only
+their `usePathname()`-dependent piece in an inner `<Suspense>`, with a fallback that renders
+the identical nav markup with nothing marked active. On every existing static route the
+boundary resolves at build time and nothing changes; only a future dynamic route (Phase 6's
+kit research detail, perhaps, or Phase 7's build log entries) would ever see the fallback
+flash, and only for the beat before the real pathname streams in. Worth knowing before the
+next phase that adds a `[param]` route: this is now the pattern, not a one-off patch.
+
+The CSS budget moved a third time, from 9.0 kB to 10.0 kB — see `scripts/
+check-perf-budget.ts`'s own comment and `PERFORMANCE.md` §10 for the full reasoning. Short
+version: this is the phase §10 already named as the one that might have to split the `(bench)`
+route group's shared stylesheet instead of raising the number again, and a real split (a
+Stash-only stylesheet, meaning the first navigation into it costs its own fetch instead of
+reusing every other screen's already-cached one) was judged the worse trade for now. Revisit
+if Phase 5 or later pushes it past 10.0 kB in turn.
+
+Duplicate detection (`findKitByBrandNumber`, formerly `findWishlistKit`) now searches every
+status, not just the one being saved into, and a hit elsewhere comes back with `existing: {id,
+status}` so a caller can offer to *promote* the row instead of just failing. Only the Stash's
+own search-and-save and manual-entry flows actually render a Promote button on that result,
+though — saving into the *wishlist* and finding the kit already in the stash shows the
+accurate "already in your stash" message and stops there, since demoting a stashed kit back to
+wishlist isn't a direction this app supports (§3.3 is one-directional the other way already).
+A closely related change: `findKitById` dropped its `status` parameter entirely and now reads
+a row by id alone, unscoped. Every *write* still carries the same `and(id, status)` predicate
+the file's own header comment has always required — the id-alone read just means a mutation
+shared across two screens (`updateManualKit`, `fetchKitArt`, `updateKitArt`, `removeKit`) can
+look up "whatever status this kit is actually in right now" and use that as its own write
+predicate, rather than each screen hardcoding the one status it used to assume. A stale read
+racing a concurrent status change still fails safely: the write's predicate simply won't match
+and the action reports the same "no longer here" it always did.
+
+`/api/kits/extract` diverges from `/api/kits/resolve`'s shape in one deliberate way: it writes
+`kit_paint_requirement` and stamps `paints_extracted_at` itself, inside the route, rather than
+handing the parsed list back to the client for a separate Server Action to save (the way photo
+upload splits "store the bytes" from "write the row," because that split exists to let one
+upload result feed either a fresh kit or an edit to an existing one). Extraction has no such
+fork — there is nothing between "Claude answered" and "save it" that needs a second round
+trip's worth of user input — so keeping the write in the route avoids re-serialising a
+manual's whole paint list back down to the browser only to ship it straight back up.
+
+Art editing (the camera affordance on a kit's picture) ended up on every card that shows one —
+the Stash grid, the Stash detail hero, and the Wishlist's own saved-kit cards — not just the
+detail page alone, on the view that "you can change a kit's photo" should be one consistent
+affordance rather than a Stash-only feature with an inconsistent gap on the screen one tap
+away. Its dialog (`ArtEditDialog`) is its own lazy chunk for the same reason `ManualKitDialog`
+already was — every card on both grids carries the trigger, so its upload/fetch logic staying
+out of the initial bundle is what kept `/wishlist`'s own JS budget from tipping over when this
+landed on that screen too.
+
+The detail page's header Edit button is a plain icon button (`.iconButton`, the same pencil
+every card's own Edit already uses), not a bordered pill with its own surface — matching how
+Edit already looks everywhere else in the app rather than introducing a one-off treatment for
+this single spot, and it cost nothing new from the CSS budget this phase was already spending
+carefully.
+
+`kit_manual.label` is nullable free text with four suggested values (`MANUAL_LABELS` in
+`src/domain/kit-manual.ts` — Instructions, Decal guide, Painting guide, Other), the same shape
+as `kit.category` before it: a label the upload UI suggests, not an enum the column enforces.
+`kit.started_at`/`completed_at` are `date`, not `timestamptz` — they're "which day," matching
+`purchased_at`'s own existing type — and `updateKitStatus` stamps them with a `coalesce`
+against `current_date` on the transition in, so a kit moved back a step and forward again
+doesn't lose its original date to a second stamp.
+
+Review after the first Phase 4a commit caught a cluster of bugs, all of them the same shape:
+this is the first phase where a `kit` has *children* (manuals, paint requirements) and the
+first with a Route Handler that writes. Both invalidated assumptions the earlier phases were
+right to make.
+
+`kit_manual.kit_id`, `kit_paint_requirement.kit_id` and `kit_paint_requirement.manual_id` all
+reference their parents with `ON DELETE no action` (from `0000_init`), which had never mattered
+because nothing created a child row. Removing a manual that had been extracted, or a kit that
+had a manual, therefore raised a foreign-key violation — the trash button silently did nothing,
+and on the grid the failure took the whole section down through `BenchError`. `deleteKitManual`
+and `deleteKit` now clear children first, in an order chosen so a failure part-way loses only
+what re-extraction rebuilds, and `deleteKit` returns each manual's blob URL so `removeKit` can
+drop those objects too — before this, deleting a kit orphaned every manual PDF it owned.
+`build_log_entry`, `research_job` and `kit_research` also reference `kit` and are deliberately
+left alone: nothing writes them yet, and Phases 6/7 each need to add their table to `deleteKit`
+in the same commit that starts writing it.
+
+`/api/kits/extract` called `updateTag`, which **throws** in a Route Handler by design — it
+exists for read-your-own-writes inside a Server Action, and Next guards it on
+`workStore.page.endsWith('/route')`. The throw landed in the route's own catch, so every
+*successful* extraction reported "Paint extraction hit a problem — try again" after a paid
+~60s Opus call, while the caches went stale. It is `revalidateTag(tag, "max")` now. The client
+also needed a `router.refresh()`: a `fetch` from a client component doesn't re-render the server
+tree, so even a working extraction left the Paints panel on its empty state.
+
+Three more worth recording because each was a silent wrong answer rather than an error. The
+deferred `after()` box-art write closed over the status the kit had *before* a fetch that can
+take ~10s — and `updateKitImage` had just gained a status predicate, so a kit stashed in that
+window lost its art to a zero-row update; it re-reads the row now, and drops the blob if the
+write still misses. "Promote to Stash" was offered for a duplicate in *any* status, so a kit
+already `built` got a button that walked it two rungs backwards; the server now decides
+promotability (`wishlist → stash` only) rather than each caller guessing, and
+`promoteKitToStash` hardcodes that transition instead of taking a source status from the client.
+And moving a kit back down the ladder left the date the forward transition stamped — a
+completion date showing on a kit still being built, made permanent by the `coalesce` — so
+`updateKitStatus` now clears on the way back as well as stamping on the way in.
+
+Smaller, all real: `updateKitArt` derived `alreadyStored` from a client-supplied boolean, which
+would have let a crafted call store an arbitrary third-party URL as `image_url` against §2.4's
+"never hotlinked" rule (derived server-side now, matching `addManualKit`);
+`replaceManualPaintRequirements` deleted before inserting, so a failed insert wiped a paint list
+the user already had (inserts first now, deleting only the ids captured beforehand — a failure
+leaves duplicates, which the display buckets de-duplicate anyway, rather than nothing);
+`ManualRow` formatted timestamps with `toLocaleDateString`, which resolves in UTC on the server
+and the viewer's zone in the browser and so produced a hydration mismatch plus an off-by-one
+date near midnight (`src/domain/dates.ts` formats from ISO parts for both); the status buttons
+discarded the `KitResult` their actions return, making the "that kit has moved on already"
+message dead code; `ArtEditDialog.fetchFromUrl` had `try/finally` with no `catch`, so a rejected
+action was an unhandled rejection with nothing on screen; and two copy bugs from splicing
+`statusLabel` into fixed sentences ("already in your building.", "No kits are currently stash.")
+— `statusPhrase`/`statusEmptyLine` give each status its own wording. `KitDetailSkeleton` also
+renders the real `PhoneHeader`/`DesktopHeader` now: the title comes from the kit, so the header
+sits inside the Suspense boundary, and a fallback without one dropped ~110px in above
+already-painted cards.
+
+A second review pass, this one from screenshots of the real thing, caught what static
+checking could not. The status chips were the sharpest lesson: `.chipStatusBuilding` and
+`.chipStatusBuilt` were written *above* `.chip` in the stylesheet, and since all three carry
+the same single-class specificity, `.chip`'s own `background`/`color` won the tie by source
+order alone — every status rendered identical grey, and nothing in typecheck, lint, build or
+the budget could see it. They live below `.chip` now, with a comment saying why they must.
+Stash gained its own treatment at the same time (neutral ground, darker ink, a hairline) so
+all three statuses separate at a glance rather than two-plus-a-default.
+
+The modal stacking bug had the same character — visible instantly, invisible to every check.
+`Modal` was rendering in place, and every trigger that opens one sits inside a kit card's
+action row, which sets a `z-index` to clear the card's stretched link. A positioned element
+with a `z-index` creates a stacking context, so the overlay's `z-index: 50` stopped competing
+with the page and started competing only with its siblings *inside that row* — other cards'
+buttons then painted straight over an open dialog. No overlay z-index can fix that from
+inside; `Modal` portals to `<body>` now, which fixes it for every caller at once and for any
+future one.
+
+Three product decisions came out of the same pass. The grid and its filter pills sort by
+*attention* (Building, then Stash, then Built) rather than by progression — the stepper still
+walks stash → building → built, because that's the road a kit travels, but a list has no such
+obligation and sorting it that way buried what's actually on the bench; `STASH_DISPLAY_ORDER`
+is the second ordering, deliberately separate from `STASH_STATUSES`. The photo field went back
+into the edit dialog for add *and* edit alike, after being hidden once a kit had art — which
+left no way to replace a wrong picture from the one dialog that edits everything else about
+the kit. And the camera badge on the art now appears only when the art is missing, since a
+permanent badge on every thumbnail was clutter on the majority of cards. Those two together
+retired `ArtEditDialog` and the `updateKitArt` action entirely: the camera opens the same edit
+dialog, so there is one photo code path rather than two, and `/wishlist`'s tight JS budget got
+the difference back.
+
+**What was verified, and how.** The SQL side of this phase now has real coverage: every
+statement it issues was run against a local PostgreSQL 16 (the same major version Neon serves),
+loaded with the migrations in order. That is what confirmed the missing-migration failure above
+(0000–0003 applied, then `listKitsByStatuses`' exact `SELECT` → `column "started_at" does not
+exist`, cleared by 0004, which is also a clean no-op when replayed); reproduced both
+foreign-key violations on delete and confirmed the child-first ordering fixes them and returns
+the manual blob URLs; walked a kit `stash → building → built → building → stash` and confirmed
+the dates stamp on the way up and clear on the way back; checked `replaceManualPaintRequirements`
+replaces exactly (6 rows → 2, no duplication); and confirmed `getStashReadiness` against a
+fixture built for the case it exists to handle — a code owned through two shelf rows (a spray
+can and the jar decanted from it) counting once, a repeated non-Tamiya callout counting once —
+giving owned 2 / missing 1 / unresolved 2, i.e. "Own 2 of 3 · 1 to buy · +2 unresolved".
+
+The UI then got the same treatment, which is what all of the above was found by: a local
+Postgres seeded with the real 395-paint catalogue, a ten-bottle shelf and five kits spread
+across all three statuses, with the driver temporarily pointed at it (reverted before commit —
+`src/db/client.ts` is untouched). That confirmed, on phone and desktop, the display ordering,
+the three chip colours, the filter pills and their counts, the readiness lines against a kit
+deliberately built for the awkward case ("Own 3 of 5 · 2 to buy · +2 unresolved", with TS-8
+owned through two shelf rows and one non-Tamiya callout repeated), the detail page's stepper,
+manuals and three paint buckets, and the modal painting cleanly above everything. It also
+exercised the foreign-key delete through the actual UI rather than through SQL: removing a kit
+that had two manuals and eight paint requirements left four kits, zero manuals, and exactly
+the two requirement rows belonging to the *other* kit, then redirected to `/kits` with no
+console errors.
+
+Still unverified, and still needing a real Anthropic key and a browser pointed at an actual
+Blob store: a genuinely large manual upload (the 10–40 MB real-world case, and specifically
+whether client-direct upload behaves the way `@vercel/blob/client`'s docs describe against this
+project's own store); the inline PDF viewer across desktop browsers (a plain
+`<iframe src={blobUrl}>` — no library, so it rides on each browser's own PDF handling); a real
+`/api/kits/extract` call end to end, which needs a key and a real scanned manual to be worth
+anything; and blob cleanup actually removing objects (the row-side logic is verified above, the
+`del()` calls against a real store are not). The UI was driven with a headless browser against
+no database, confirming every `<Suspense>` boundary this phase added fails into its own
+`BenchError` card with no unhandled crash on `/kits` and `/kits/[id]`, phone and desktop — but
+populated-state layout (real cards, a real manuals list, real paint buckets) still hasn't been
+seen rendered with real rows.
+
+**Round 4 — preview polish.** A fourth pass of screenshot feedback, all cosmetic:
+
+- **Edit wasn't a button.** `EditKitTrigger` is shared between a card's compact action row
+  (borderless icon, fine among other icons there) and the detail page's header (bordered, right
+  next to `DeleteKitButton`'s `.deleteButton`) — one component, two contexts that want different
+  weight. Gave it a `variant` prop (`"icon"` default, `"button"` for the detail header) rather
+  than splitting it in two: the dialog it opens and the data it needs are identical either way,
+  only the trigger's own chrome differs. The button variant reuses `.deleteButton`'s box
+  wholesale (border, height, padding — its resting state was already the right look for Edit)
+  and layers on a small `.editButtonHover` modifier so hovering Edit reads as accent, not the
+  alert red that would wrongly suggest something destructive.
+- **"Tap again to remove" never reset.** `DeleteKitButton`'s `armed` state had no path back to
+  `false` except a failed delete — click Remove, look away, and it stayed armed forever, one
+  stray click on the (now-relabelled) button away from actually deleting. Added a
+  `mousedown` listener on `document`, live only while armed, that disarms on any click outside
+  the button itself — the same "walk away and it forgets" behavior a real confirm dialog gives
+  for free.
+- **Three small dropzone fixes**, all in `ManualsList`'s "Choose a PDF" panel: the label pills
+  (Instructions/Decal guide/…) are `<button>`s reusing `.filterPill`, a class written for
+  `<Link>` anchors — anchors get a pointer cursor for free, buttons don't, so hovering them
+  showed the default arrow; added `cursor: pointer` to `.filterPill` itself, which fixes every
+  caller, not just this one. Removed the "Uploads straight to storage — real manuals run
+  10–40 MB…" hint line entirely, per feedback that it wasn't earning its place. Added a small
+  `margin-top` between the pill row and "Choose a file" (`.dropzoneUpload`) — `.dropzone`'s own
+  `gap: 8px` is uniform across every child, which read as too tight once a whole pill row sat
+  between the heading and the button rather than just the icon and heading.
+
+Verified the same way as round 3: a local Postgres seeded with one stash kit, the driver
+temporarily pointed at it and reverted before commit, driven with a headless browser. Confirmed
+directly rather than by inspection: the Edit button's computed border/height now match Remove's;
+clicking Remove arms it ("Tap again to remove"), and a click elsewhere resets it to "Remove"
+(grabbed the element handle before the aria-label changed, since role-based re-queries break once
+the click flips it); the label pill's computed `cursor` is `pointer`; the removed hint text has
+zero matches on the page; and there's a real visible gap between the pill row and "Choose a
+file" in a full-page screenshot. Pushed the shared `Inventory`/`InventoryForm` CSS 0.4 kB over its
+budget in the process — see docs/PERFORMANCE.md §11 for why that moved to 10.5 kB instead of
+being trimmed further.
+
 ---
 
 ## 8. Non-goals
@@ -914,6 +1174,19 @@ search starts resolving queries through Claude (§5.1 stage A).
 
 Schema and migrations live in `src/db/schema.ts` / `drizzle-kit`, wired to Neon's HTTP driver
 (`drizzle-orm/neon-http` — no connection pool to configure; it's stateless HTTP per query).
+
+> **Migrations do not run on deploy.** Nothing in CI (`.github/workflows/ci.yml`) or in the
+> Vercel build applies them — `npm run db:migrate` is a manual step, run against the target
+> database with its credentials pulled (`vercel env pull`). So **any phase that adds a column
+> must be migrated before its deploy is usable**, and until it is, every screen reading that
+> table fails: drizzle names every column explicitly in its `SELECT`, so one missing column
+> takes down the whole query, and `BenchError` reports it as "The database didn't answer."
+> Phase 4a shipped exactly that way — 0004 adds three columns, the preview deploy was still on
+> 0003, and both `/kits` *and* `/wishlist` broke, since they share `listKitsByStatuses`.
+> Diagnosing it cost a round trip that "run the migration" in the PR description would have
+> saved. If a future phase wants this to be impossible rather than merely documented, the fix
+> is a deploy step that runs the migrator, not more prose here.
+
 `npm run db:migrate` applies pending migrations; `npm run db:seed` (`scripts/seed.mts`) loads
 the committed catalogue and ratio rules into `paint` and `ratio_rule` and the initial paint
 shelf into `inventory_item`, using credentials pulled locally via `vercel env pull`. The rig
@@ -925,3 +1198,64 @@ I never need your connection string, a database password, or an API key typed in
 Every secret lives in Vercel's Environment Variables; I only ever reach it through
 `vercel env pull` when running a script against the real database. If one ever ends up
 pasted here anyway, rotate it.
+
+### 9.5 Runbook — pulling a branch and applying its migrations
+
+**Read this before testing any branch in preview.** A phase that adds a column does not work
+until its migration is applied, and nothing applies it for you (§9.3). This is the whole
+procedure; it is safe to run start to finish even when there is nothing pending, because every
+migration in `drizzle/` is written to be replay-safe (`IF NOT EXISTS` throughout — re-running
+one already applied prints "already exists, skipping" and changes nothing).
+
+```bash
+cd path/to/build-bench
+
+# 0. Don't lose local work — if this prints anything, commit or stash it first.
+git status
+
+# 1. Sync main.
+git checkout main
+git pull origin main
+
+# 2. Fetch and switch to the phase branch.
+git fetch origin
+git checkout claude/phase-4a-build-bench-stash-uv8ohp   # ← the branch from the PR
+git pull
+
+# 3. Dependencies, in case the branch changed them.
+npm install
+
+# 4. Pull the real credentials (writes .env.local — gitignored, never commit it).
+#    Needs the Vercel CLI: npm i -g vercel, then `vercel link` once in this repo.
+vercel env pull .env.local
+
+# 5. Apply any pending migrations to the database those credentials point at.
+npm run db:migrate
+
+# 6. Run it.
+npm run dev
+```
+
+Step 5 prints `Migrations applied.` It applies whatever the database is missing, so a database
+already up to date is a no-op. One database backs development, preview and production here
+(§9.2 connects a single Neon instance to the project), so this one run covers all three — and,
+by the same token, it is the *shared* schema being changed, which is why every migration is
+additive and none drops a column another deploy might still be reading.
+
+**The migration ledger.** What exists, and what each one is needed by:
+
+| Migration | Adds | Needed by |
+|---|---|---|
+| `0000_init` | the whole schema | Phase 0 |
+| `0001_drop_inventory_location` | drops `inventory_item.location` | Phase 2 |
+| `0002_drop_airbrush_and_shopping` | drops four tables, retypes `purchased_from` | Phase 2 |
+| `0003_wishlist_and_stash` | `wishlist_item`; `kit.category`/`scalemates_url`/`image_url` | Phase 3 |
+| `0004_kit_status_dates_and_manual_label` | `kit.started_at`/`completed_at`, `kit_manual.label` | Phase 4a |
+
+**A phase that adds a migration says so in its PR description, in the steps to test it.** That
+is the rule this file exists to record, because it has now been broken twice — the branch
+looked fine, the deploy 500'd on a missing column, and the reason was a step nobody had been
+told about. If a future phase wants the whole class of mistake gone rather than documented, add
+a `vercel-build` script that runs the migrator before `next build`: Vercel prefers that script
+when present while CI keeps calling `npm run build` directly, so the build stays database-free
+where it has to be (§5 in PERFORMANCE.md) and migrates where it can.

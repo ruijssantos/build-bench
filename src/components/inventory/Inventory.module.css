@@ -164,6 +164,7 @@
   color: #6b6456;
   text-decoration: none;
   white-space: nowrap;
+  cursor: pointer;
 }
 
 .filterPillActive,

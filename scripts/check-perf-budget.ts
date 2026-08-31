@@ -30,9 +30,24 @@ const BUDGETS = {
    * pushed the shared `(bench)` stylesheet to ~8.0 kB. Raised again, to 9.0 kB,
    * for the sticky mobile tab bar and its sixth sign-out tab — global chrome
    * every screen shares, not a phase-specific cost, and it left the previous
-   * ceiling with room for about one more CSS rule. See docs/PERFORMANCE.md
-   * §10. */
-  cssGzip: 9 * 1024,
+   * ceiling with room for about one more CSS rule. Raised a third time, to
+   * 10.0 kB, for Phase 4a (the Stash): the app's first detail route, with
+   * genuinely new UI vocabulary throughout it (a status stepper, manual rows
+   * with an inline PDF viewer, three paint buckets, a two-column desktop
+   * layout) that nothing already on the shelf could fully cover. This is the
+   * phase PLAN.md §10 named as the one that might need to split the `(bench)`
+   * route group's shared stylesheet instead of raising this number again —
+   * a real split was judged the worse trade for now (every bench screen
+   * currently shares one cached stylesheet; splitting means a first
+   * navigation into the Stash costs its own fetch), so the number moved
+   * instead, deliberately, not silently. See docs/PERFORMANCE.md §10.
+   * Nudged to 10.5 kB for the round of preview polish after Phase 4a shipped:
+   * a bordered Edit button to match Delete, a pointer cursor on the manual
+   * label pills, and a touch more spacing in the upload dropzone — all in
+   * the shared `Inventory`/`InventoryForm` stylesheets `/thinner` also
+   * loads, so a few real lines there cost this budget even though none of
+   * them touch Thinner's own UI. */
+  cssGzip: 10.5 * 1024,
 };
 
 interface Failure {

@@ -1,4 +1,4 @@
-import { and, eq, sql } from "drizzle-orm";
+import { and, eq, inArray, sql } from "drizzle-orm";
 import { cacheLife, cacheTag } from "next/cache";
 import { connection } from "next/server";
 
@@ -181,6 +181,32 @@ export async function deleteInventoryItem(id: number): Promise<boolean> {
     .where(eq(inventoryItem.id, id))
     .returning({ id: inventoryItem.id });
   return rows.length > 0;
+}
+
+/**
+ * Which of these paint codes are on the shelf at all — the Stash detail
+ * page's Owned/Missing split (docs/PLAN.md §6 Phase 4a). A `Set`, not the
+ * full rows: the caller only ever asks "is this code owned", never "by which
+ * shelf row", and a code with several rows (a spray can and the jar decanted
+ * from it) should answer that question once, not once per row.
+ */
+export async function listOwnedPaintCodes(codes: string[]): Promise<Set<string>> {
+  await connection();
+  return queryOwnedPaintCodes(codes);
+}
+
+async function queryOwnedPaintCodes(codes: string[]): Promise<Set<string>> {
+  "use cache";
+  cacheLife("inventory");
+  cacheTag(INVENTORY_TAG);
+
+  if (codes.length === 0) return new Set();
+
+  const rows = await db
+    .selectDistinct({ paintCode: inventoryItem.paintCode })
+    .from(inventoryItem)
+    .where(inArray(inventoryItem.paintCode, codes));
+  return new Set(rows.map((row) => row.paintCode));
 }
 
 /** Guards the Add flow against a second row for the same code in the same

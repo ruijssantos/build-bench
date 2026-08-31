@@ -1,17 +1,16 @@
-import { and, desc, eq, sql } from "drizzle-orm";
+import { and, eq, inArray, sql } from "drizzle-orm";
 import { cacheLife, cacheTag } from "next/cache";
 import { connection } from "next/server";
 
 import { db } from "@/db/client";
-import { kit } from "@/db/schema";
+import { kit, kitManual, kitPaintRequirement } from "@/db/schema";
 import type { KitCategory, KitStatus } from "@/domain/kit";
 
 /**
- * The `kit` table — docs/PLAN.md §3.2, §3.3. One table backs both the
- * wishlist (`status = 'wishlist'`, this phase) and the stash
- * (`stash`/`building`/`built`, Phase 4), so this repository is written
- * generically over `status` rather than wishlist-only, even though nothing
- * in this phase reads anything but `wishlist`.
+ * The `kit` table — docs/PLAN.md §3.2, §3.3. One table backs the wishlist
+ * (`status = 'wishlist'`, Phase 3) and the stash (`stash`/`building`/`built`,
+ * Phase 4a), so this repository is written generically over `status`
+ * throughout rather than assuming either screen.
  *
  * Same two-layer shape as `./inventory.ts`: `connection()` pins reads to
  * request time so `next build` never opens a database, and `use cache` then
@@ -29,37 +28,104 @@ export interface KitRow {
   status: string;
   scalematesUrl: string | null;
   imageUrl: string | null;
+  purchasedFrom: string | null;
+  purchasedAt: string | null;
+  startedAt: string | null;
+  completedAt: string | null;
   notes: string | null;
   createdAt: Date | null;
 }
 
-/** Invalidated by every kit write. One tag for the whole table, same call as
- * `INVENTORY_TAG` — the wishlist grid and (from Phase 4) the stash both read
- * off `status`, not off separate rows, so there's nothing narrower to tag. */
+/** Invalidated by every kit write. One tag for the whole table — every
+ * screen that lists kits by status reads off `status`, not off separate
+ * rows, so there's nothing narrower to tag for a *list*. A single kit's own
+ * detail page additionally tags on `kitTag(id)` (below), so editing one
+ * kit's manuals doesn't evict every other kit's cached detail read. */
 export const KIT_TAG = "kit";
 
-export async function listKitsByStatus(status: KitStatus): Promise<KitRow[]> {
-  await connection();
-  return queryKitsByStatus(status);
+/** Per-kit tag for the detail page and its sub-resources (manuals, paint
+ * requirements) — narrower than `KIT_TAG` so uploading a manual to kit #12
+ * doesn't invalidate every other kit's already-cached detail read. */
+export function kitTag(id: number): string {
+  return `kit:${id}`;
 }
 
-async function queryKitsByStatus(status: KitStatus): Promise<KitRow[]> {
+export async function listKitsByStatuses(statuses: KitStatus[]): Promise<KitRow[]> {
+  await connection();
+  return queryKitsByStatuses(statuses);
+}
+
+/**
+ * Attention order, then newest first within each status — see
+ * `STASH_DISPLAY_ORDER`: what's on the bench, then what could be started, then
+ * what's finished. A single-status read (the wishlist's, or a filtered stash
+ * pill) collapses to plain newest-first, since every row scores the same.
+ */
+const STASH_DISPLAY_SORT = sql`case ${kit.status} when 'building' then 0 when 'stash' then 1 when 'built' then 2 else 3 end`;
+
+async function queryKitsByStatuses(statuses: KitStatus[]): Promise<KitRow[]> {
   "use cache";
   cacheLife("wishlist");
   cacheTag(KIT_TAG);
 
-  return db.select().from(kit).where(eq(kit.status, status)).orderBy(desc(kit.createdAt));
-}
-
-/** One row by id, scoped to `status` — same reasoning as every mutation
- * below: the wishlist screen may only look at rows it actually shows. Used
- * ahead of an edit, to know the image it's replacing (if any). */
-export async function findKitById(id: number, status: KitStatus): Promise<KitRow | undefined> {
-  const rows = await db
+  return db
     .select()
     .from(kit)
-    .where(and(eq(kit.id, id), eq(kit.status, status)))
-    .limit(1);
+    .where(inArray(kit.status, statuses))
+    .orderBy(STASH_DISPLAY_SORT, sql`${kit.createdAt} desc`);
+}
+
+/** How many kits sit in each of these statuses — the Stash screen's filter
+ * pills, which always show every pill's count regardless of which one is
+ * active. A separate, cheap query rather than deriving it from whichever
+ * filtered list happens to be loaded, since a specific filter's own fetch
+ * only ever returns rows for that one status. */
+export async function countKitsByStatus(statuses: KitStatus[]): Promise<Record<string, number>> {
+  await connection();
+  return queryCountKitsByStatus(statuses);
+}
+
+async function queryCountKitsByStatus(statuses: KitStatus[]): Promise<Record<string, number>> {
+  "use cache";
+  cacheLife("wishlist");
+  cacheTag(KIT_TAG);
+
+  const rows = await db
+    .select({ status: kit.status, count: sql<number>`count(*)` })
+    .from(kit)
+    .where(inArray(kit.status, statuses))
+    .groupBy(kit.status);
+
+  return Object.fromEntries(rows.map((row) => [row.status, Number(row.count)]));
+}
+
+/** One kit by id, any status — the detail page's own read. Cached and
+ * request-time, same shape as `listKitsByStatuses`; a wishlist-status kit
+ * reads back fine here too; the detail page itself treats that as
+ * not-found, since the wishlist screen (not this one) owns that status. */
+export async function getKitById(id: number): Promise<KitRow | undefined> {
+  await connection();
+  return queryKitById(id);
+}
+
+async function queryKitById(id: number): Promise<KitRow | undefined> {
+  "use cache";
+  cacheLife("wishlist");
+  cacheTag(KIT_TAG);
+  cacheTag(kitTag(id));
+
+  const rows = await db.select().from(kit).where(eq(kit.id, id)).limit(1);
+  return rows[0];
+}
+
+/**
+ * One row by id, unscoped by status — used ahead of a mutation to learn a
+ * kit's *current* status (which the mutation itself then uses as its own
+ * predicate — see `updateKitImage` and friends below). Uncached, since every
+ * caller is about to write and needs a fresh read, not a request-cached one.
+ */
+export async function findKitById(id: number): Promise<KitRow | undefined> {
+  const rows = await db.select().from(kit).where(eq(kit.id, id)).limit(1);
   return rows[0];
 }
 
@@ -91,31 +157,104 @@ export async function createKit(input: CreateKitInput): Promise<number> {
  *
  * The wishlist and the stash share this table (§3.3), so an id alone is not
  * an authorisation to touch a row: without the status predicate a stale tab,
- * a replayed form post or an id typo on the wishlist screen would happily
- * delete a kit Phase 4 has already stashed, built, or hung manuals and
- * research off. The screen may only act on rows the screen actually shows.
+ * a replayed form post or an id typo would happily act on a kit that has
+ * since moved screens — deleted a kit Phase 4a has already stashed, built,
+ * or hung manuals and paint requirements off. The screen may only act on
+ * rows it actually shows *as of the status it just read*, which is why every
+ * caller here re-reads the row (`findKitById`, above) immediately before
+ * writing rather than trusting a status the client sent.
  */
 export async function updateKitStatus(id: number, from: KitStatus, to: KitStatus): Promise<boolean> {
   const rows = await db
     .update(kit)
-    .set({ status: to })
+    .set({
+      status: to,
+      // The date columns follow the status rather than only ever accumulating.
+      // Forward: stamped once, `coalesce` so re-advancing a kit that was moved
+      // back doesn't overwrite the original date. Backward: cleared, because a
+      // kit that is no longer built has no completion date and one that is no
+      // longer started has no start date — without this, moving back from
+      // `built` left a completion date showing on a kit still being built, and
+      // the `coalesce` above then made it permanent. Both stay editable by hand
+      // via `updateKitPurchase`, for backfilling or correcting.
+      ...(to === "building"
+        ? {
+            startedAt: sql`coalesce(${kit.startedAt}, current_date)`,
+            // built → building: it isn't finished any more.
+            ...(from === "built" ? { completedAt: null } : {}),
+          }
+        : {}),
+      ...(to === "built" ? { completedAt: sql`coalesce(${kit.completedAt}, current_date)` } : {}),
+      // Back to the shelf, unstarted: neither date describes it any more.
+      ...(to === "stash" ? { startedAt: null, completedAt: null } : {}),
+    })
     .where(and(eq(kit.id, id), eq(kit.status, from)))
     .returning({ id: kit.id });
   return rows.length > 0;
 }
 
-/** Deletes only within `status`, and returns the removed row's `image_url`
- * so the caller can drop the blob it was the last reference to. */
-export async function deleteKit(id: number, status: KitStatus): Promise<{ imageUrl: string | null } | null> {
+/**
+ * Deletes only within `status`, and returns every blob URL the removed rows
+ * were the last reference to — the kit's box art plus each of its manuals —
+ * so the caller can drop them.
+ *
+ * Children go first, by hand. `kit_manual.kit_id` and
+ * `kit_paint_requirement.kit_id` both reference `kit(id)` with
+ * `ON DELETE no action` (`drizzle/0000_init.sql`), so deleting a kit that has
+ * either would raise a foreign-key violation — which is exactly what this did
+ * before Phase 4a, harmlessly, because nothing had ever created a child row
+ * for a kit until this phase added manuals and paint requirements.
+ *
+ * Not a transaction, because Neon's HTTP driver has none (see
+ * `scripts/migrate.mts`). The order is chosen so a failure part-way is as
+ * recoverable as possible: requirements (re-derivable by re-extracting), then
+ * manuals (the row, whose blob the caller then drops), then the kit itself.
+ *
+ * `build_log_entry`, `research_job` and `kit_research` also reference `kit`
+ * and are deliberately *not* handled here: nothing in the app writes them yet.
+ * Phase 6 and Phase 7 each need to add their table to this function in the
+ * same commit that starts writing it, or deleting a kit will start failing
+ * again the same way.
+ */
+export async function deleteKit(
+  id: number,
+  status: KitStatus,
+): Promise<{ imageUrl: string | null; manualUrls: string[] } | null> {
+  // Scoped read first: this decides whether the caller is even allowed to act
+  // on the row, before anything is deleted.
+  const target = await db
+    .select({ id: kit.id })
+    .from(kit)
+    .where(and(eq(kit.id, id), eq(kit.status, status)))
+    .limit(1);
+  if (target.length === 0) return null;
+
+  await db.delete(kitPaintRequirement).where(eq(kitPaintRequirement.kitId, id));
+  const removedManuals = await db
+    .delete(kitManual)
+    .where(eq(kitManual.kitId, id))
+    .returning({ blobUrl: kitManual.blobUrl });
+
   const rows = await db
     .delete(kit)
     .where(and(eq(kit.id, id), eq(kit.status, status)))
     .returning({ imageUrl: kit.imageUrl });
-  return rows[0] ?? null;
+  if (rows.length === 0) return null;
+
+  return { imageUrl: rows[0].imageUrl, manualUrls: removedManuals.map((m) => m.blobUrl) };
 }
 
-export async function updateKitImage(id: number, imageUrl: string): Promise<void> {
-  await db.update(kit).set({ imageUrl }).where(eq(kit.id, id));
+/** Art editing (docs/PLAN.md §6 Phase 4a adds it on the detail page) is
+ * exactly the call site that made this exploitable before: fixed to carry
+ * the same `and(id, status)` predicate as every other mutation here rather
+ * than being the one write in this file with none. */
+export async function updateKitImage(id: number, status: KitStatus, imageUrl: string): Promise<boolean> {
+  const rows = await db
+    .update(kit)
+    .set({ imageUrl })
+    .where(and(eq(kit.id, id), eq(kit.status, status)))
+    .returning({ id: kit.id });
+  return rows.length > 0;
 }
 
 export interface UpdateKitInput {
@@ -131,8 +270,8 @@ export interface UpdateKitInput {
   imageUrl?: string;
 }
 
-/** Edits a wishlist kit in place — same status scoping as every other
- * mutation here (see the note above `updateKitStatus`). */
+/** Edits a kit's identity fields in place — same status scoping as every
+ * other mutation here (see the note above `updateKitStatus`). */
 export async function updateKit(id: number, status: KitStatus, input: UpdateKitInput): Promise<boolean> {
   const rows = await db
     .update(kit)
@@ -151,11 +290,38 @@ export async function updateKit(id: number, status: KitStatus, input: UpdateKitI
   return rows.length > 0;
 }
 
+export interface UpdateKitPurchaseInput {
+  purchasedFrom: string | null;
+  /** "YYYY-MM-DD" or `null` to clear. */
+  purchasedAt: string | null;
+  startedAt: string | null;
+  completedAt: string | null;
+}
+
+/** The detail page's Purchase & dates panel — plumbing only (docs/PLAN.md §6
+ * Phase 4a: the columns already existed, this is what finally writes them).
+ * Same status scoping as every mutation above. */
+export async function updateKitPurchase(
+  id: number,
+  status: KitStatus,
+  input: UpdateKitPurchaseInput,
+): Promise<boolean> {
+  const rows = await db
+    .update(kit)
+    .set(input)
+    .where(and(eq(kit.id, id), eq(kit.status, status)))
+    .returning({ id: kit.id });
+  return rows.length > 0;
+}
+
 /**
- * The duplicate guard behind saving a candidate — the wishlist equivalent of
- * `findInventoryItem`. Brand plus kit number is a kit's identity, and saving
- * the same one twice from two searches is the same mistake as adding a second
- * shelf row for one bottle of XF-64.
+ * The duplicate guard behind saving a kit — parameterised over no status at
+ * all: it searches every status, because the useful answer to "is this kit
+ * already here" is "yes, on your wishlist" just as much as "yes, in your
+ * stash." A caller that finds a hit outside the status it's about to save
+ * into can offer to *promote* the existing row instead of creating a second
+ * one (docs/PLAN.md §6 Phase 4a) — the row's own `status` is right there to
+ * decide that with.
  *
  * Case-insensitive: "tamiya" and "Tamiya" are one brand. Only meaningful
  * where a kit number exists — two kits from one brand with no number between
@@ -165,13 +331,12 @@ export async function updateKit(id: number, status: KitStatus, input: UpdateKitI
  * would read `%` and `_` in a brand or kit number as wildcards — a false
  * match there blocks a save that should have gone through.
  */
-export async function findWishlistKit(brand: string, kitNumber: string): Promise<KitRow | undefined> {
+export async function findKitByBrandNumber(brand: string, kitNumber: string): Promise<KitRow | undefined> {
   const rows = await db
     .select()
     .from(kit)
     .where(
       and(
-        eq(kit.status, "wishlist"),
         sql`lower(${kit.brand}) = ${brand.toLowerCase()}`,
         sql`lower(${kit.kitNumber}) = ${kitNumber.toLowerCase()}`,
       ),

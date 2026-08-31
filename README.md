@@ -15,12 +15,16 @@ allowed to touch the database — are in
 Shipped so far: the foundations (Phase 0), the Thinner Bench (Phase 1), the
 paint shelf (Phase 2) — the Google Sheet imported, CRUD over form and state,
 one-tap running low, and "do I own this?" on the Thinner Bench result card —
-and the wishlist (Phase 3): kits searched by number or name and resolved
+the wishlist (Phase 3): kits searched by number or name and resolved
 through Claude with web search, saved with box art and a Scalemates link, plus
-a free-text list for tools and supplies. Both tick over to bought.
+a free-text list for tools and supplies, both ticking over to bought — and the
+stash (Phase 4a): the kits you own, a status pipeline (stash → building →
+built) with a detail page per kit, manual PDF upload with an **Extract paint
+list** action (Claude Opus 5), and the resulting paint list checked against
+the shelf on every card and on the kit's own page.
 
-Next is Phase 4, the stash: the kits you own, manual PDF upload, and a
-per-kit paint list checked against the shelf.
+Next is Phase 4b, deep kit research (difficulty, fit issues, a build video —
+§5.1 stages B/C), folded into Phase 6's scope.
 
 ## Stack
 
@@ -46,7 +50,7 @@ Open [http://localhost:3000](http://localhost:3000).
 | `npm run typecheck` | `tsc --noEmit` |
 | `npm run perf:budget` | Check a finished build against the budget in `docs/PERFORMANCE.md` |
 | `npm run db:generate` | Generate a Drizzle migration from `src/db/schema.ts` |
-| `npm run db:migrate` | Apply pending migrations to `DATABASE_URL` |
+| `npm run db:migrate` | Apply pending migrations to `DATABASE_URL` — **run this after deploying any phase that adds a column**; nothing runs it automatically (see `docs/PLAN.md` §9.3) |
 | `npm run db:seed` | Load `seed/*.json` — catalogue, ratio rules, and the paint shelf |
 | `npm run catalogue:build` | Regenerate `seed/paints.tamiya.json` |
 | `npm run catalogue:verify` | CI gate: every code the app needs is in the catalogue |

@@ -2,12 +2,12 @@
 
 import { useEffect, useRef, useState, type ChangeEvent } from "react";
 
-import { addManualKit, fetchKitArt, updateManualKit } from "@/app/(bench)/wishlist/actions";
+import { addManualKit, fetchKitArt, promoteKitToStash, updateManualKit } from "@/app/(bench)/kits/actions";
 import { Modal } from "@/components/bench/Modal";
 import { KitsIcon } from "@/components/icons";
 import formStyles from "@/components/inventory/InventoryForm.module.css";
 import type { KitRow } from "@/db/repositories/kits";
-import { categoryLabel, KIT_CATEGORIES } from "@/domain/kit";
+import { categoryLabel, KIT_CATEGORIES, type KitStatus } from "@/domain/kit";
 import { resizeImage } from "@/lib/resize-image";
 
 import styles from "./Wishlist.module.css";
@@ -33,8 +33,19 @@ const UPLOAD_TIMEOUT_MS = 30_000;
  * only appears when the kit has no box art yet — a resolved or already
  * hand-uploaded photo isn't replaced from here.
  */
-export function ManualKitDialog({ kit, onClose }: { kit?: KitRow; onClose: () => void }) {
+export function ManualKitDialog({
+  kit,
+  defaultStatus,
+  onClose,
+}: {
+  kit?: KitRow;
+  /** Which status a *new* kit saves into — required when `kit` is absent,
+   * ignored when editing (an existing kit's own `status` decides there). */
+  defaultStatus?: KitStatus;
+  onClose: () => void;
+}) {
   const editing = kit != null;
+  const status = (editing ? kit.status : defaultStatus) as KitStatus;
 
   const [brand, setBrand] = useState(kit?.brand ?? "");
   const [kitNumber, setKitNumber] = useState(kit?.kitNumber ?? "");
@@ -53,6 +64,11 @@ export function ManualKitDialog({ kit, onClose }: { kit?: KitRow; onClose: () =>
    * us, which is worth saying out loud rather than leaving as an empty
    * frame. */
   const [fetchNote, setFetchNote] = useState<string | null>(null);
+  /** Set when adding hits a wishlist kit while saving into the stash — offers
+   * Promote instead of just failing, the same as `KitCandidateCard`. The
+   * server decides when that's on offer (`duplicateResult`), so a `building`
+   * or `built` duplicate never gets a button that would move it backwards. */
+  const [promote, setPromote] = useState<{ id: number } | null>(null);
 
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
@@ -103,12 +119,30 @@ export function ManualKitDialog({ kit, onClose }: { kit?: KitRow; onClose: () =>
     }
   }
 
+  async function doPromote() {
+    if (!promote) return;
+    setPhase("saving");
+    try {
+      const result = await promoteKitToStash(promote.id);
+      if (!result.ok) {
+        setError(result.error);
+        return;
+      }
+      onClose();
+    } catch {
+      setError("Couldn't move that kit — try again.");
+    } finally {
+      setPhase("idle");
+    }
+  }
+
   async function save() {
     if (!brand.trim() || !name.trim()) {
       setError("Give it at least a brand and a name.");
       return;
     }
     setError(null);
+    setPromote(null);
     try {
       let imageUrl: string | undefined;
       if (photoFile) {
@@ -142,10 +176,14 @@ export function ManualKitDialog({ kit, onClose }: { kit?: KitRow; onClose: () =>
       const result =
         editing && kit
           ? await updateManualKit({ id: kit.id, brand, kitNumber, name, scale, category, scalematesUrl, notes, imageUrl })
-          : await addManualKit({ brand, kitNumber, name, scale, category, scalematesUrl, notes, imageUrl: art });
+          : await addManualKit(
+              { brand, kitNumber, name, scale, category, scalematesUrl, notes, imageUrl: art },
+              status,
+            );
 
       if (!result.ok) {
         setError(result.error);
+        if (!editing) setPromote(result.promotable ?? null);
         return;
       }
 
@@ -283,16 +321,20 @@ export function ManualKitDialog({ kit, onClose }: { kit?: KitRow; onClose: () =>
           />
         </div>
 
-        {!kit?.imageUrl ? (
-          <div className={formStyles.field}>
-            <label className={formStyles.label} htmlFor="manual-kit-photo">
-              Photo
-            </label>
+        {/* Always shown, add and edit alike. It used to be hidden once a kit
+            had art, which left no way to *replace* a wrong picture from the
+            one dialog that edits everything else about the kit. The preview
+            starts as whatever art the kit already has, so the field shows what
+            you're replacing rather than an empty frame. */}
+        <div className={formStyles.field}>
+          <label className={formStyles.label} htmlFor="manual-kit-photo">
+            Photo
+          </label>
             <div className={styles.photoField}>
               <div className={styles.photoPreview}>
-                {photoPreview ? (
-                  // eslint-disable-next-line @next/next/no-img-element -- a local object URL, not one next/image can optimise
-                  <img src={photoPreview} alt="" className={styles.photoPreviewImg} />
+                {photoPreview ?? kit?.imageUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element -- a local object URL or an already-stored blob; not worth the optimiser inside a dialog
+                  <img src={photoPreview ?? kit?.imageUrl ?? ""} alt="" className={styles.photoPreviewImg} />
                 ) : (
                   <KitsIcon size={22} />
                 )}
@@ -303,7 +345,7 @@ export function ManualKitDialog({ kit, onClose }: { kit?: KitRow; onClose: () =>
                 onClick={() => fileInputRef.current?.click()}
                 disabled={saving}
               >
-                {photoFile ? "Choose a different photo" : "Choose a photo"}
+                {photoFile || kit?.imageUrl ? "Choose a different photo" : "Choose a photo"}
               </button>
               <input
                 ref={fileInputRef}
@@ -347,27 +389,36 @@ export function ManualKitDialog({ kit, onClose }: { kit?: KitRow; onClose: () =>
               {fetchNote ??
                 "Optional — upload from your computer, or paste the address of a picture you found online."}
             </span>
-          </div>
-        ) : null}
+        </div>
 
         {error ? <div className={formStyles.error}>{error}</div> : null}
+
+        {!editing && status !== "wishlist" ? (
+          <span className={formStyles.hint}>Saves directly to your Stash.</span>
+        ) : null}
 
         <div className={formStyles.actions}>
           <div className={formStyles.spacer} />
           <button type="button" className={formStyles.ghostButton} onClick={onClose} disabled={saving}>
             Cancel
           </button>
-          <button type="button" className={formStyles.primaryButton} onClick={() => void save()} disabled={saving}>
-            {phase === "uploading"
-              ? "Uploading photo…"
-              : phase === "saving"
-                ? editing
-                  ? "Saving…"
-                  : "Adding…"
-                : editing
-                  ? "Save changes"
-                  : "Add kit"}
-          </button>
+          {promote ? (
+            <button type="button" className={formStyles.primaryButton} onClick={() => void doPromote()} disabled={saving}>
+              {phase === "saving" ? "Promoting…" : "Promote to Stash"}
+            </button>
+          ) : (
+            <button type="button" className={formStyles.primaryButton} onClick={() => void save()} disabled={saving}>
+              {phase === "uploading"
+                ? "Uploading photo…"
+                : phase === "saving"
+                  ? editing
+                    ? "Saving…"
+                    : "Adding…"
+                  : editing
+                    ? "Save changes"
+                    : "Add kit"}
+            </button>
+          )}
         </div>
       </div>
     </Modal>
