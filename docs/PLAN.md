@@ -1311,6 +1311,56 @@ in Owned (the shelf owned XF-83 but not AS-11, confirming the bottle-preference 
 takes effect, not just returns *a* candidate); `H23`/`C79` and `C328` correctly stayed in
 Unresolved rather than being silently mismatched to something wrong.
 
+**Round 8 — a real extraction regression from round 7's own formula fix.** The user re-ran
+extraction (to pick up Phase 5) on a kit that had already extracted well, and watched a mostly
+Owned/Missing paint list collapse to "Own 1 of 1 · +20 unresolved" — alarming, and reported as
+"all my previous paints extracted are gone." Not data loss from `db:seed` (nothing in
+`scripts/seed.mts` touches `kit`, `kit_manual`, or `kit_paint_requirement` — checked, not
+assumed, before saying so): re-running extraction legitimately deletes and reinserts that
+manual's paint list (`replaceManualPaintRequirements`), and this run's Claude call came back
+with a genuinely different, worse result than the one before it.
+
+The user sent the actual manual page: a GSI Creos (H/C code) ↔ Tamiya equivalence table, 19
+rows, the kind many Tamiya manuals print so a builder without Tamiya's own paints knows what to
+buy instead. Every row already states its Tamiya equivalent directly — 17 of 19 as a plain code
+(X-2, XF-84, …), 2 as an explicit mix ("XF-7 + X-56 ×5"), and only 2 with no Tamiya equivalent
+at all (dashed). The extraction that ran before round 7 read that Tamiya column correctly and
+resolved nearly everything; this run instead reported the *foreign* H/C code as `codeGuess` for
+most rows — findable through neither the direct Tamiya catalogue nor, for most of these
+specific H-numbers, Phase 5's cross-brand chart, so the bulk of a genuinely mostly-resolved kit
+came back Unresolved.
+
+Root cause, by elimination rather than guesswork: round 5 (the Files API migration) was already
+live for whichever earlier run the user calls "good," so that wasn't it — round 7's own
+`SYSTEM_PROMPT` addition (`/api/kits/extract/route.ts`), teaching the extractor to recognize
+"Paint A = X-1(1) + X-2(1)"-shaped mix formulas, is the only thing that changed between the two
+runs. It never told the model to prefer a foreign code over a Tamiya one — but it also never
+told it *not* to, and a table headed "H□ / C■" with the model's attention freshly primed to
+watch for H/C-letter-prefixed "codes" worth reporting is a plausible way for that attention to
+land on the wrong column. Diagnosed by asking the user directly rather than guessing at a fix
+blind (having just gotten the file-size diagnosis wrong once already this project, guessing
+twice in a row on a real-data question wasn't worth the risk) and having them send the actual
+page — confirmed the exact mechanism (2 of 19 rows are real formulas, matching what they
+reported) rather than a plausible-sounding theory.
+
+Fix: rewrote `SYSTEM_PROMPT` to say explicitly what round 7's version left implicit — a manual
+that gives *both* a foreign code and a Tamiya equivalent in the same row means `codeGuess` is
+the Tamiya one, always; the foreign code is the fallback only for a row whose Tamiya column is
+genuinely blank or dashed. The formula instruction now explicitly covers a formula appearing
+*as* a row's Tamiya-equivalent value (the Wood Brown / Burnt Iron case), not just a formula as
+its own standalone line, and every "kit's own brand" phrasing was written as "Tamiya" by name —
+this app's catalogue is always Tamiya's regardless of which company boxed the kit, so a generic
+"own brand" phrase would have been vaguer than the thing it was replacing.
+
+Not verifiable locally the way most of this project's fixes are — there is no way to run the
+real extraction call without a real `ANTHROPIC_API_KEY` and the real manual, both outside this
+sandbox. Verified instead by re-reading the new prompt against every one of the 19 rows the user
+sent, by hand: 17 resolve directly from the stated Tamiya code, 2 correctly trigger the
+formula-split path, and the 2 truly dash-equivalent rows correctly still fall through to a
+foreign-code `codeGuess` (which Phase 5's chart may or may not additionally resolve, same as
+before) — matching the user's own description of the original good run ("only missing the ones
+where there wasn't a clear Tamiya label"). This still needs a real re-run to confirm outright.
+
 ---
 
 ## 8. Non-goals
