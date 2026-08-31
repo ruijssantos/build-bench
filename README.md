@@ -21,7 +21,11 @@ a free-text list for tools and supplies, both ticking over to bought — and the
 stash (Phase 4a): the kits you own, a status pipeline (stash → building →
 built) with a detail page per kit, manual PDF upload with an **Extract paint
 list** action (Claude Opus 5), and the resulting paint list checked against
-the shelf on every card and on the kit's own page.
+the shelf on every card and on the kit's own page — and cross-brand paint
+equivalence (Phase 5): a Mr. Color, Vallejo, Hataka (and seven more brands')
+code resolves to its Tamiya equivalent automatically during extraction, so a
+Japanese kit's manual doesn't dead-end in the Unresolved bucket just for
+calling out the "wrong" brand.
 
 Next is Phase 4b, deep kit research (difficulty, fit issues, a build video —
 §5.1 stages B/C), folded into Phase 6's scope.
@@ -51,9 +55,10 @@ Open [http://localhost:3000](http://localhost:3000).
 | `npm run perf:budget` | Check a finished build against the budget in `docs/PERFORMANCE.md` |
 | `npm run db:generate` | Generate a Drizzle migration from `src/db/schema.ts` |
 | `npm run db:migrate` | Apply pending migrations to `DATABASE_URL` — **run this after deploying any phase that adds a column**; nothing runs it automatically (see `docs/PLAN.md` §9.3) |
-| `npm run db:seed` | Load `seed/*.json` — catalogue, ratio rules, and the paint shelf |
+| `npm run db:seed` | Load `seed/*.json` — catalogue, ratio rules, the paint shelf, paint brands, and cross-brand equivalents |
 | `npm run catalogue:build` | Regenerate `seed/paints.tamiya.json` |
-| `npm run catalogue:verify` | CI gate: every code the app needs is in the catalogue |
+| `npm run catalogue:verify` | CI gate: every code the app needs is in the catalogue, and every cross-brand equivalent resolves to a real catalogue code and brand |
+| `npm run equivalents:build` | Regenerate `seed/equivalents.json` from `scripts/data/cybermodeler-tamiya-cross-reference.json` |
 
 ### Environment variables
 

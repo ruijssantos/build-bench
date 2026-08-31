@@ -17,10 +17,15 @@ export type RatioFamily =
   | "primer"
   | "additive";
 
-/** "xf64" / "XF 64" / "xf-64" → "XF-64". Non-matching input passes through uppercased. */
+/** "xf64" / "XF 64" / "xf-64" / "XF064" → "XF-64". No real Tamiya code carries
+ * a leading zero (§2.2's own catalogue never does), but cross-reference
+ * charts sometimes print one anyway ("AS01" for AS-1) — stripped here so
+ * that still resolves, rather than mismatching against the zero-less code
+ * the catalogue actually stores. Non-matching input passes through
+ * uppercased. */
 export function normalizePaintCode(raw: string): string {
   const s = raw.toUpperCase().replace(/\s+/g, "");
-  const m = s.match(/^([A-Z]+)-?(\d+[A-Z]?)$/);
+  const m = s.match(/^([A-Z]+)-?0*(\d+[A-Z]?)$/);
   return m ? `${m[1]}-${m[2]}` : s;
 }
 

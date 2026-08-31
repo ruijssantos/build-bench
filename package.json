@@ -13,7 +13,8 @@
     "db:migrate": "tsx scripts/migrate.mts",
     "db:seed": "tsx scripts/seed.mts",
     "catalogue:build": "tsx scripts/build-catalogue.ts",
-    "catalogue:verify": "tsx scripts/verify-catalogue.ts"
+    "catalogue:verify": "tsx scripts/verify-catalogue.ts",
+    "equivalents:build": "tsx scripts/build-equivalents.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.120.0",

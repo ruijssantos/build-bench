@@ -33,6 +33,15 @@ interface InventorySeed {
   paint_code: string;
 }
 
+interface PaintBrandSeed {
+  key: string;
+}
+
+interface EquivalentSeed {
+  brand: string;
+  tamiya_code: string;
+}
+
 function loadJson<T>(path: string): T {
   return JSON.parse(readFileSync(path, "utf-8")) as T;
 }
@@ -42,9 +51,12 @@ const ratioRules = loadJson<RatioRule[]>("seed/ratio-rules.json");
 const KNOWN_INVENTORY_CODES = loadJson<InventorySeed[]>("seed/inventory.initial.json").map(
   (item) => item.paint_code,
 );
+const paintBrands = loadJson<PaintBrandSeed[]>("seed/paint-brands.json");
+const equivalents = loadJson<EquivalentSeed[]>("seed/equivalents.json");
 
 const catalogueCodes = new Set(catalogue.map((p) => p.code));
 const ratioFamilies = new Set(ratioRules.map((r) => r.family));
+const brandKeys = new Set(paintBrands.map((b) => b.key));
 
 let failed = false;
 
@@ -68,8 +80,28 @@ if (badFamily.length > 0) {
   for (const p of badFamily.slice(0, 20)) console.error(`  - ${p.code} → "${p.family}"`);
 }
 
+// 3. Every equivalent's Tamiya code must be a real catalogue code, and its
+// brand a real paint_brand — the same FK constraints Postgres would enforce
+// at seed time, checked here so a bad build-equivalents.ts run fails CI
+// instead of failing `npm run db:seed` on someone's machine.
+const badEquivalentCodes = equivalents.filter((e) => !catalogueCodes.has(e.tamiya_code));
+if (badEquivalentCodes.length > 0) {
+  failed = true;
+  console.error(`\n✗ ${badEquivalentCodes.length} equivalent(s) reference a Tamiya code not in the catalogue:`);
+  for (const e of badEquivalentCodes.slice(0, 20)) console.error(`  - ${e.tamiya_code}`);
+}
+const badEquivalentBrands = equivalents.filter((e) => !brandKeys.has(e.brand));
+if (badEquivalentBrands.length > 0) {
+  failed = true;
+  console.error(`\n✗ ${badEquivalentBrands.length} equivalent(s) reference a brand not in seed/paint-brands.json:`);
+  for (const e of badEquivalentBrands.slice(0, 20)) console.error(`  - ${e.brand}`);
+}
+
 if (!failed) {
-  console.log("✓ Every known-inventory code is present, and every paint's family resolves to a ratio rule.");
+  console.log(
+    "✓ Every known-inventory code is present, every paint's family resolves to a ratio rule, and every " +
+      `equivalent (${equivalents.length}) resolves to a real catalogue code and brand.`,
+  );
 }
 
 // 3. Report (non-failing) numbering gaps per line, for a human to sanity-check.

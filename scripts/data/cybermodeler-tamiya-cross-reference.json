@@ -1,0 +1,3242 @@
+[
+  {
+    "name": "IJN Dark Green",
+    "tamiya": [
+      "AS01",
+      "XF11"
+    ],
+    "brands": {
+      "ammo": [
+        "0264"
+      ],
+      "vallejo": [
+        "71.322"
+      ],
+      "gunze_mr_hobby": [
+        "C015",
+        "H059"
+      ]
+    }
+  },
+  {
+    "name": "IJN Gray",
+    "tamiya": [
+      "AS02",
+      "XF12"
+    ],
+    "brands": {
+      "ammo": [
+        "0263"
+      ],
+      "vallejo": [
+        "71.311"
+      ],
+      "gunze_mr_hobby": [
+        "C035",
+        "H061",
+        "N061"
+      ],
+      "testors": [
+        "2117"
+      ],
+      "xtracolour": [
+        "X354"
+      ]
+    }
+  },
+  {
+    "name": "Dark Gray",
+    "tamiya": [
+      "AS03"
+    ],
+    "brands": {
+      "ammo": [
+        "0253"
+      ],
+      "vallejo": [
+        "71.258"
+      ],
+      "gunze_mr_hobby": [
+        "C036",
+        "H068",
+        "N068"
+      ],
+      "hataka": [
+        "A313",
+        "B313",
+        "C313"
+      ],
+      "lifecolor": [
+        "UA507"
+      ],
+      "mission": [
+        "MMP049"
+      ],
+      "mr_paint": [
+        "064",
+        "A048"
+      ],
+      "revell": [
+        "32167",
+        "36167"
+      ],
+      "testors": [
+        "2084"
+      ],
+      "xtracolour": [
+        "X206",
+        "XA1206"
+      ]
+    }
+  },
+  {
+    "name": "Gray Violet",
+    "tamiya": [
+      "AS04"
+    ],
+    "brands": {
+      "ammo": [
+        "0254"
+      ],
+      "vallejo": [
+        "71.259"
+      ],
+      "gunze_mr_hobby": [
+        "C037",
+        "H069",
+        "N069"
+      ],
+      "hataka": [
+        "A007",
+        "B007",
+        "C007"
+      ],
+      "lifecolor": [
+        "UA508"
+      ],
+      "mission": [
+        "MMP050"
+      ],
+      "mr_paint": [
+        "065",
+        "A049"
+      ],
+      "revell": [
+        "32147"
+      ],
+      "testors": [
+        "2085"
+      ],
+      "xtracolour": [
+        "X207",
+        "XA1207"
+      ]
+    }
+  },
+  {
+    "name": "Light Blue",
+    "tamiya": [
+      "AS05",
+      "XF23"
+    ],
+    "brands": {
+      "vallejo": [
+        "71.257"
+      ],
+      "gunze_mr_hobby": [
+        "C117",
+        "H417"
+      ],
+      "hataka": [
+        "A038",
+        "B038",
+        "C038"
+      ],
+      "lifecolor": [
+        "UA509"
+      ],
+      "mission": [
+        "MMP051"
+      ],
+      "mr_paint": [
+        "066",
+        "A050"
+      ],
+      "testors": [
+        "2086"
+      ],
+      "xtracolour": [
+        "X208",
+        "XA1208"
+      ]
+    }
+  },
+  {
+    "name": "Gray",
+    "tamiya": [
+      "AS07",
+      "XF53"
+    ],
+    "brands": {
+      "ammo": [
+        "0239"
+      ],
+      "vallejo": [
+        "71.051"
+      ],
+      "gunze_mr_hobby": [
+        "C013",
+        "H022",
+        "N022"
+      ],
+      "hataka": [
+        "A054",
+        "B054",
+        "C054"
+      ],
+      "lifecolor": [
+        "UA071"
+      ],
+      "mission": [
+        "MMP103"
+      ],
+      "mr_paint": [
+        "039"
+      ],
+      "revell": [
+        "32174"
+      ]
+    }
+  },
+  {
+    "name": "Navy Blue",
+    "tamiya": [
+      "AS08"
+    ],
+    "brands": {
+      "ammo": [
+        "0227"
+      ],
+      "vallejo": [
+        "71.005"
+      ],
+      "gunze_mr_hobby": [
+        "C014",
+        "H054",
+        "N054"
+      ],
+      "hataka": [
+        "A171",
+        "B171",
+        "C171"
+      ],
+      "mr_paint": [
+        "281"
+      ],
+      "xtracolour": [
+        "X264"
+      ]
+    }
+  },
+  {
+    "name": "Dark Green",
+    "tamiya": [
+      "AS09",
+      "XF81"
+    ],
+    "brands": {
+      "ammo": [
+        "0206"
+      ],
+      "vallejo": [
+        "71.324"
+      ],
+      "gunze_mr_hobby": [
+        "C361",
+        "H073",
+        "N073"
+      ],
+      "lifecolor": [
+        "UA053"
+      ],
+      "mission": [
+        "MMP077"
+      ],
+      "mr_paint": [
+        "110"
+      ],
+      "testors": [
+        "2060"
+      ],
+      "xtracolour": [
+        "X001",
+        "XA1001"
+      ]
+    }
+  },
+  {
+    "name": "Ocean Gray",
+    "tamiya": [
+      "AS10"
+    ],
+    "brands": {
+      "ammo": [
+        "0245"
+      ],
+      "vallejo": [
+        "71.273"
+      ],
+      "gunze_mr_hobby": [
+        "C361"
+      ],
+      "hataka": [
+        "A032",
+        "B032",
+        "C032"
+      ],
+      "mission": [
+        "MMP093"
+      ],
+      "mr_paint": [
+        "115"
+      ],
+      "testors": [
+        "2057"
+      ],
+      "xtracolour": [
+        "X006",
+        "XA1036"
+      ]
+    }
+  },
+  {
+    "name": "Medium Sea Gray",
+    "tamiya": [
+      "AS11",
+      "XF83"
+    ],
+    "brands": {
+      "ammo": [
+        "0246"
+      ],
+      "vallejo": [
+        "71.307"
+      ],
+      "gunze_mr_hobby": [
+        "C335",
+        "H335"
+      ],
+      "hataka": [
+        "A141",
+        "B141",
+        "C141"
+      ],
+      "lifecolor": [
+        "UA028"
+      ],
+      "mission": [
+        "MP094"
+      ],
+      "mr_paint": [
+        "112"
+      ],
+      "testors": [
+        "2058"
+      ],
+      "xtracolour": [
+        "X003",
+        "XA1003"
+      ]
+    }
+  },
+  {
+    "name": "Silver",
+    "tamiya": [
+      "AS12",
+      "LP11",
+      "X11"
+    ],
+    "brands": {
+      "ammo": [
+        "0195"
+      ],
+      "vallejo": [
+        "70.790"
+      ],
+      "gunze_mr_hobby": [
+        "C008",
+        "H008",
+        "N008"
+      ],
+      "hataka": [
+        "A003",
+        "B003",
+        "C003"
+      ],
+      "lifecolor": [
+        "LC074"
+      ],
+      "mission": [
+        "MMM006"
+      ],
+      "mr_paint": [
+        "003"
+      ],
+      "revell": [
+        "32190",
+        "36190"
+      ],
+      "xtracolour": [
+        "X038"
+      ]
+    }
+  },
+  {
+    "name": "Green",
+    "tamiya": [
+      "AS13",
+      "XF65"
+    ],
+    "brands": {
+      "vallejo": [
+        "71.294"
+      ],
+      "gunze_mr_hobby": [
+        "C309",
+        "H309"
+      ],
+      "hataka": [
+        "A016",
+        "B016",
+        "C016"
+      ],
+      "lifecolor": [
+        "UA091"
+      ],
+      "mission": [
+        "MMP058"
+      ],
+      "mr_paint": [
+        "101"
+      ],
+      "xtracolour": [
+        "X114"
+      ]
+    }
+  },
+  {
+    "name": "Olive Green",
+    "tamiya": [
+      "AS14"
+    ],
+    "brands": {
+      "ammo": [
+        "0065"
+      ],
+      "vallejo": [
+        "71.289"
+      ],
+      "gunze_mr_hobby": [
+        "C303",
+        "H303"
+      ],
+      "hataka": [
+        "A021",
+        "B021",
+        "C021"
+      ],
+      "lifecolor": [
+        "UA059"
+      ],
+      "mission": [
+        "MMP028"
+      ],
+      "mr_paint": [
+        "102"
+      ],
+      "xtracolour": [
+        "X116",
+        "XA1116"
+      ]
+    }
+  },
+  {
+    "name": "Sierra Tan",
+    "tamiya": [
+      "AS15"
+    ],
+    "brands": {
+      "ammo": [
+        "0202"
+      ],
+      "vallejo": [
+        "71.125"
+      ],
+      "gunze_mr_hobby": [
+        "C310",
+        "H310"
+      ],
+      "hataka": [
+        "A012",
+        "B012",
+        "C012"
+      ],
+      "lifecolor": [
+        "UA015"
+      ],
+      "mission": [
+        "MMP060"
+      ],
+      "mr_paint": [
+        "103"
+      ]
+    }
+  },
+  {
+    "name": "Gray",
+    "tamiya": [
+      "AS16"
+    ],
+    "brands": {
+      "ammo": [
+        "0226"
+      ],
+      "vallejo": [
+        "71.296"
+      ],
+      "gunze_mr_hobby": [
+        "C311",
+        "H311"
+      ],
+      "hataka": [
+        "A039",
+        "B039",
+        "C039"
+      ],
+      "lifecolor": [
+        "UA021"
+      ],
+      "mission": [
+        "MMP095"
+      ],
+      "mr_paint": [
+        "104"
+      ]
+    }
+  },
+  {
+    "name": "IJA Green",
+    "tamiya": [
+      "AS17",
+      "XF13"
+    ],
+    "brands": {
+      "ammo": [
+        "0260"
+      ],
+      "vallejo": [
+        "71.285"
+      ],
+      "gunze_mr_hobby": [
+        "C016",
+        "H060",
+        "N060"
+      ],
+      "xtracolour": [
+        "X351"
+      ]
+    }
+  },
+  {
+    "name": "IJA Light Gray",
+    "tamiya": [
+      "AS18",
+      "XF14"
+    ],
+    "brands": {}
+  },
+  {
+    "name": "Intermediate Blue",
+    "tamiya": [
+      "AS19",
+      "XF18"
+    ],
+    "brands": {
+      "ammo": [
+        "0228"
+      ],
+      "vallejo": [
+        "71.299"
+      ],
+      "gunze_mr_hobby": [
+        "C366",
+        "H056",
+        "N056"
+      ],
+      "hataka": [
+        "A027",
+        "B027",
+        "C027"
+      ],
+      "lifecolor": [
+        "UA045"
+      ],
+      "mission": [
+        "MMP071"
+      ],
+      "mr_paint": [
+        "136"
+      ],
+      "xtracolour": [
+        "X125",
+        "XA1125"
+      ]
+    }
+  },
+  {
+    "name": "White",
+    "tamiya": [
+      "AS20"
+    ],
+    "brands": {
+      "vallejo": [
+        "71.279"
+      ],
+      "gunze_mr_hobby": [
+        "C316",
+        "H316"
+      ],
+      "hataka": [
+        "A049",
+        "B049",
+        "C049"
+      ],
+      "mission": [
+        "MMP104"
+      ],
+      "mr_paint": [
+        "099",
+        "A062"
+      ],
+      "xtracolour": [
+        "X141"
+      ]
+    }
+  },
+  {
+    "name": "Dark Green",
+    "tamiya": [
+      "AS21",
+      "LP31"
+    ],
+    "brands": {
+      "ammo": [
+        "0265"
+      ],
+      "vallejo": [
+        "70.847"
+      ],
+      "gunze_mr_hobby": [
+        "C124",
+        "H036",
+        "N036"
+      ],
+      "mission": [
+        "MMP112"
+      ],
+      "revell": [
+        "32162"
+      ],
+      "testors": [
+        "2116"
+      ],
+      "xtracolour": [
+        "X353"
+      ]
+    }
+  },
+  {
+    "name": "Dark Earth",
+    "tamiya": [
+      "AS22",
+      "XF52"
+    ],
+    "brands": {
+      "ammo": [
+        "0070"
+      ],
+      "vallejo": [
+        "71.323"
+      ],
+      "gunze_mr_hobby": [
+        "C022",
+        "H072",
+        "N072"
+      ],
+      "hataka": [
+        "A009",
+        "B009",
+        "C009"
+      ],
+      "lifecolor": [
+        "UA547"
+      ],
+      "mission": [
+        "MMP078"
+      ],
+      "mr_paint": [
+        "108"
+      ],
+      "revell": [
+        "32182"
+      ],
+      "testors": [
+        "2054"
+      ],
+      "xtracolour": [
+        "X002",
+        "XA1002"
+      ]
+    }
+  },
+  {
+    "name": "Light Green",
+    "tamiya": [
+      "AS23",
+      "XF05"
+    ],
+    "brands": {
+      "ammo": [
+        "0230"
+      ],
+      "vallejo": [
+        "71.022"
+      ],
+      "gunze_mr_hobby": [
+        "C122",
+        "H422"
+      ],
+      "hataka": [
+        "A020",
+        "B020",
+        "C020"
+      ],
+      "lifecolor": [
+        "UA511"
+      ],
+      "mission": [
+        "MMP053"
+      ],
+      "mr_paint": [
+        "071",
+        "A060"
+      ],
+      "testors": [
+        "2092"
+      ],
+      "xtracolour": [
+        "X225",
+        "XA1125"
+      ]
+    }
+  },
+  {
+    "name": "Dark Green",
+    "tamiya": [
+      "AS24",
+      "XF51"
+    ],
+    "brands": {
+      "ammo": [
+        "0925"
+      ],
+      "vallejo": [
+        "71.011"
+      ],
+      "gunze_mr_hobby": [
+        "C123",
+        "H423"
+      ],
+      "hataka": [
+        "A022",
+        "B022",
+        "C022"
+      ],
+      "lifecolor": [
+        "UA132"
+      ],
+      "mission": [
+        "MMP054"
+      ],
+      "mr_paint": [
+        "072",
+        "A061"
+      ],
+      "revell": [
+        "32168"
+      ],
+      "testors": [
+        "2091"
+      ],
+      "xtracolour": [
+        "X226",
+        "XA1226"
+      ]
+    }
+  },
+  {
+    "name": "Gray",
+    "tamiya": [
+      "AS25"
+    ],
+    "brands": {
+      "ammo": [
+        "0208"
+      ],
+      "vallejo": [
+        "71.120"
+      ],
+      "gunze_mr_hobby": [
+        "C307",
+        "H307"
+      ],
+      "hataka": [
+        "A035",
+        "B035",
+        "C035"
+      ],
+      "lifecolor": [
+        "UA027"
+      ],
+      "mission": [
+        "MMP074"
+      ],
+      "mr_paint": [
+        "097"
+      ],
+      "xtracolour": [
+        "X135",
+        "XA1135"
+      ]
+    }
+  },
+  {
+    "name": "Gray",
+    "tamiya": [
+      "AS26"
+    ],
+    "brands": {
+      "ammo": [
+        "0203"
+      ],
+      "vallejo": [
+        "71.312"
+      ],
+      "gunze_mr_hobby": [
+        "C308",
+        "H308"
+      ],
+      "hataka": [
+        "A037",
+        "B037",
+        "C037"
+      ],
+      "lifecolor": [
+        "UA026"
+      ],
+      "mission": [
+        "MMP073"
+      ],
+      "mr_paint": [
+        "057",
+        "A065"
+      ],
+      "revell": [
+        "32143"
+      ],
+      "xtracolour": [
+        "X136",
+        "XA1136"
+      ]
+    }
+  },
+  {
+    "name": "Gunship Gray",
+    "tamiya": [
+      "AS27"
+    ],
+    "brands": {
+      "ammo": [
+        "0204"
+      ],
+      "vallejo": [
+        "71.097"
+      ],
+      "gunze_mr_hobby": [
+        "C305",
+        "H305"
+      ],
+      "hataka": [
+        "A031",
+        "B031",
+        "C031"
+      ],
+      "lifecolor": [
+        "UA022"
+      ],
+      "mission": [
+        "MMP084"
+      ],
+      "mr_paint": [
+        "040",
+        "A066"
+      ],
+      "revell": [
+        "32174"
+      ]
+    }
+  },
+  {
+    "name": "Gray",
+    "tamiya": [
+      "AS28"
+    ],
+    "brands": {
+      "ammo": [
+        "0211"
+      ],
+      "vallejo": [
+        "71.275"
+      ],
+      "gunze_mr_hobby": [
+        "C306",
+        "H306"
+      ],
+      "hataka": [
+        "A054",
+        "B053",
+        "C054"
+      ],
+      "lifecolor": [
+        "UA094"
+      ],
+      "mission": [
+        "MMP118"
+      ],
+      "mr_paint": [
+        "039",
+        "A064"
+      ]
+    }
+  },
+  {
+    "name": "IJA Gray",
+    "tamiya": [
+      "AS29",
+      "XF76"
+    ],
+    "brands": {
+      "ammo": [
+        "0262"
+      ],
+      "gunze_mr_hobby": [
+        "C056",
+        "H062",
+        "N062"
+      ],
+      "mission": [
+        "MMP107"
+      ]
+    }
+  },
+  {
+    "name": "Black",
+    "tamiya": [
+      "LP01",
+      "X01"
+    ],
+    "brands": {
+      "ammo": [
+        "0032"
+      ],
+      "vallejo": [
+        "70.950"
+      ],
+      "gunze_mr_hobby": [
+        "C002",
+        "H002",
+        "N002"
+      ],
+      "hataka": [
+        "A125",
+        "B125",
+        "C125"
+      ],
+      "lifecolor": [
+        "LC002"
+      ],
+      "mission": [
+        "MMP047"
+      ],
+      "mr_paint": [
+        "005",
+        "A012"
+      ],
+      "revell": [
+        "32107",
+        "36107"
+      ]
+    }
+  },
+  {
+    "name": "White",
+    "tamiya": [
+      "LP02",
+      "X02"
+    ],
+    "brands": {
+      "ammo": [
+        "0050"
+      ],
+      "vallejo": [
+        "71.001"
+      ],
+      "gunze_mr_hobby": [
+        "C001",
+        "H001",
+        "N001"
+      ],
+      "hataka": [
+        "A125",
+        "B125",
+        "C125"
+      ],
+      "lifecolor": [
+        "LC001"
+      ],
+      "mission": [
+        "MMP001"
+      ],
+      "mr_paint": [
+        "004",
+        "A014"
+      ],
+      "revell": [
+        "32104",
+        "36104"
+      ],
+      "xtracolour": [
+        "X141"
+      ]
+    }
+  },
+  {
+    "name": "Blue",
+    "tamiya": [
+      "LP06",
+      "X03"
+    ],
+    "brands": {
+      "ammo": [
+        "0103"
+      ],
+      "vallejo": [
+        "71.004"
+      ],
+      "gunze_mr_hobby": [
+        "C005",
+        "H005",
+        "N005"
+      ],
+      "hataka": [
+        "A220",
+        "B220",
+        "C220"
+      ],
+      "lifecolor": [
+        "LC010"
+      ],
+      "mission": [
+        "MMP048"
+      ],
+      "mr_paint": [
+        "384"
+      ],
+      "revell": [
+        "32152"
+      ],
+      "testors": [
+        "2031"
+      ]
+    }
+  },
+  {
+    "name": "Blue",
+    "tamiya": [
+      "X04"
+    ],
+    "brands": {}
+  },
+  {
+    "name": "Green",
+    "tamiya": [
+      "AS13",
+      "X05"
+    ],
+    "brands": {
+      "ammo": [
+        "0074"
+      ],
+      "vallejo": [
+        "71.329"
+      ],
+      "gunze_mr_hobby": [
+        "C006",
+        "H006",
+        "N006"
+      ],
+      "hataka": [
+        "A093",
+        "B093",
+        "C093"
+      ],
+      "lifecolor": [
+        "UA060"
+      ],
+      "mission": [
+        "MMP004"
+      ],
+      "mr_paint": [
+        "385"
+      ],
+      "revell": [
+        "32161"
+      ],
+      "testors": [
+        "2029"
+      ]
+    }
+  },
+  {
+    "name": "Orange",
+    "tamiya": [
+      "TS12",
+      "X06"
+    ],
+    "brands": {
+      "vallejo": [
+        "71.083"
+      ],
+      "gunze_mr_hobby": [
+        "C059",
+        "H014",
+        "N014"
+      ],
+      "hataka": [
+        "A704",
+        "B704",
+        "C704"
+      ],
+      "lifecolor": [
+        "LC005"
+      ],
+      "mr_paint": [
+        "A068"
+      ],
+      "revell": [
+        "32130"
+      ]
+    }
+  },
+  {
+    "name": "Red",
+    "tamiya": [
+      "LP07",
+      "X07"
+    ],
+    "brands": {
+      "ammo": [
+        "0049"
+      ],
+      "vallejo": [
+        "71.269"
+      ],
+      "gunze_mr_hobby": [
+        "C003",
+        "H003",
+        "N003"
+      ],
+      "hataka": [
+        "A276",
+        "B276",
+        "C276"
+      ],
+      "lifecolor": [
+        "LC006"
+      ],
+      "mission": [
+        "MMP003"
+      ],
+      "mr_paint": [
+        "002"
+      ],
+      "revell": [
+        "32131",
+        "36131"
+      ]
+    }
+  },
+  {
+    "name": "Yellow",
+    "tamiya": [
+      "LP08",
+      "X08"
+    ],
+    "brands": {
+      "ammo": [
+        "0048"
+      ],
+      "vallejo": [
+        "71.078"
+      ],
+      "gunze_mr_hobby": [
+        "C004",
+        "H004",
+        "N004"
+      ],
+      "hataka": [
+        "A290",
+        "B290",
+        "C290"
+      ],
+      "lifecolor": [
+        "UA042"
+      ],
+      "mission": [
+        "MMP007"
+      ],
+      "mr_paint": [
+        "386"
+      ],
+      "revell": [
+        "32112"
+      ]
+    }
+  },
+  {
+    "name": "Red Brown",
+    "tamiya": [
+      "X09"
+    ],
+    "brands": {
+      "gunze_mr_hobby": [
+        "C007",
+        "H007",
+        "N007"
+      ]
+    }
+  },
+  {
+    "name": "Steel",
+    "tamiya": [
+      "LP40",
+      "X10"
+    ],
+    "brands": {
+      "ammo": [
+        "0191"
+      ],
+      "vallejo": [
+        "71.065"
+      ],
+      "gunze_mr_hobby": [
+        "C028",
+        "H018",
+        "N018"
+      ],
+      "mission": [
+        "MMM002"
+      ],
+      "mr_paint": [
+        "030"
+      ],
+      "revell": [
+        "32191",
+        "36191"
+      ],
+      "xtracolour": [
+        "X502"
+      ]
+    }
+  },
+  {
+    "name": "Silver",
+    "tamiya": [
+      "AS12",
+      "LP11",
+      "X11"
+    ],
+    "brands": {
+      "ammo": [
+        "0195"
+      ],
+      "vallejo": [
+        "70.790"
+      ],
+      "gunze_mr_hobby": [
+        "C008",
+        "H008",
+        "N008"
+      ],
+      "hataka": [
+        "A003",
+        "B003",
+        "C003"
+      ],
+      "lifecolor": [
+        "LC074"
+      ],
+      "mission": [
+        "MMM006"
+      ],
+      "mr_paint": [
+        "003"
+      ],
+      "revell": [
+        "32190",
+        "36190"
+      ],
+      "xtracolour": [
+        "X038"
+      ]
+    }
+  },
+  {
+    "name": "Gold",
+    "tamiya": [
+      "LP62",
+      "X12"
+    ],
+    "brands": {
+      "ammo": [
+        "0198"
+      ],
+      "vallejo": [
+        "71.066"
+      ],
+      "gunze_mr_hobby": [
+        "C009",
+        "H009",
+        "N009"
+      ],
+      "lifecolor": [
+        "LC025"
+      ],
+      "mission": [
+        "MMC003"
+      ],
+      "mr_paint": [
+        "153"
+      ],
+      "revell": [
+        "32194",
+        "36194"
+      ]
+    }
+  },
+  {
+    "name": "Metallic Blue Aotake",
+    "tamiya": [
+      "TS19",
+      "X13"
+    ],
+    "brands": {
+      "ammo": [
+        "0267"
+      ],
+      "gunze_mr_hobby": [
+        "C057",
+        "H063",
+        "N063"
+      ],
+      "lifecolor": [
+        "UA136"
+      ],
+      "mission": [
+        "MMP113"
+      ],
+      "testors": [
+        "2119"
+      ],
+      "xtracolour": [
+        "X355"
+      ]
+    }
+  },
+  {
+    "name": "Sky Blue",
+    "tamiya": [
+      "X14"
+    ],
+    "brands": {
+      "gunze_mr_hobby": [
+        "C034",
+        "H025",
+        "N025"
+      ]
+    }
+  },
+  {
+    "name": "Light Green",
+    "tamiya": [
+      "X15"
+    ],
+    "brands": {}
+  },
+  {
+    "name": "Purple",
+    "tamiya": [
+      "TS24",
+      "X16"
+    ],
+    "brands": {
+      "ammo": [
+        "0127"
+      ],
+      "vallejo": [
+        "70.959"
+      ],
+      "gunze_mr_hobby": [
+        "C067",
+        "H039",
+        "N039"
+      ]
+    }
+  },
+  {
+    "name": "Pink",
+    "tamiya": [
+      "TS25",
+      "X17"
+    ],
+    "brands": {
+      "vallejo": [
+        "70.994"
+      ],
+      "gunze_mr_hobby": [
+        "C063",
+        "H019",
+        "N019"
+      ]
+    }
+  },
+  {
+    "name": "Cowling Color N01",
+    "tamiya": [
+      "X18"
+    ],
+    "brands": {
+      "gunze_mr_hobby": [
+        "C125"
+      ]
+    }
+  },
+  {
+    "name": "Smoke Gray",
+    "tamiya": [
+      "LP67",
+      "X19"
+    ],
+    "brands": {
+      "vallejo": [
+        "70.939"
+      ],
+      "gunze_mr_hobby": [
+        "C101",
+        "H095",
+        "N095"
+      ],
+      "mission": [
+        "MMP170"
+      ]
+    }
+  },
+  {
+    "name": "Flat Base",
+    "tamiya": [
+      "LP22",
+      "X21"
+    ],
+    "brands": {
+      "gunze_mr_hobby": [
+        "C030",
+        "H040",
+        "N040"
+      ]
+    }
+  },
+  {
+    "name": "Gloss Clear",
+    "tamiya": [
+      "LP09",
+      "X22"
+    ],
+    "brands": {
+      "ammo": [
+        "0091"
+      ],
+      "vallejo": [
+        "71.058"
+      ],
+      "gunze_mr_hobby": [
+        "C046",
+        "H030",
+        "N030"
+      ],
+      "lifecolor": [
+        "LC073"
+      ],
+      "mission": [
+        "MMA006"
+      ],
+      "mr_paint": [
+        "048"
+      ],
+      "revell": [
+        "32101"
+      ]
+    }
+  },
+  {
+    "name": "Clear Blue",
+    "tamiya": [
+      "LP68",
+      "X23"
+    ],
+    "brands": {
+      "vallejo": [
+        "70.938"
+      ],
+      "gunze_mr_hobby": [
+        "C050",
+        "H093",
+        "N093"
+      ],
+      "mission": [
+        "MMP168"
+      ]
+    }
+  },
+  {
+    "name": "Clear Yellow",
+    "tamiya": [
+      "LP69",
+      "X24"
+    ],
+    "brands": {
+      "vallejo": [
+        "70.937"
+      ],
+      "gunze_mr_hobby": [
+        "C048",
+        "H091",
+        "N091"
+      ]
+    }
+  },
+  {
+    "name": "Clear Green",
+    "tamiya": [
+      "X25"
+    ],
+    "brands": {
+      "vallejo": [
+        "70.936"
+      ],
+      "gunze_mr_hobby": [
+        "C138",
+        "H094",
+        "N094"
+      ],
+      "mission": [
+        "MMP169"
+      ]
+    }
+  },
+  {
+    "name": "Clear Orange",
+    "tamiya": [
+      "LP53",
+      "X26"
+    ],
+    "brands": {
+      "vallejo": [
+        "70.935"
+      ],
+      "gunze_mr_hobby": [
+        "C049",
+        "H092",
+        "N092"
+      ],
+      "mission": [
+        "MMP171"
+      ]
+    }
+  },
+  {
+    "name": "Clear Red",
+    "tamiya": [
+      "LP72",
+      "X27"
+    ],
+    "brands": {
+      "vallejo": [
+        "70.934"
+      ],
+      "gunze_mr_hobby": [
+        "C047",
+        "H090",
+        "N090"
+      ],
+      "mission": [
+        "MMP167"
+      ]
+    }
+  },
+  {
+    "name": "Bright Green Dilectric Green",
+    "tamiya": [
+      "TS35",
+      "X28"
+    ],
+    "brands": {
+      "vallejo": [
+        "70.970"
+      ],
+      "gunze_mr_hobby": [
+        "C066",
+        "H026",
+        "N026"
+      ],
+      "hataka": [
+        "A327",
+        "B327",
+        "C327"
+      ],
+      "mr_paint": [
+        "032"
+      ]
+    }
+  },
+  {
+    "name": "Titanium Gold",
+    "tamiya": [
+      "X31"
+    ],
+    "brands": {}
+  },
+  {
+    "name": "Titanium Silver",
+    "tamiya": [
+      "X32"
+    ],
+    "brands": {}
+  },
+  {
+    "name": "Bronze",
+    "tamiya": [
+      "X33"
+    ],
+    "brands": {}
+  },
+  {
+    "name": "Metallic Brown",
+    "tamiya": [
+      "X34"
+    ],
+    "brands": {}
+  },
+  {
+    "name": "Flat Black",
+    "tamiya": [
+      "LP03",
+      "XF01"
+    ],
+    "brands": {
+      "ammo": [
+        "0046"
+      ],
+      "vallejo": [
+        "71.057"
+      ],
+      "gunze_mr_hobby": [
+        "C033",
+        "H012",
+        "N012"
+      ],
+      "hataka": [
+        "A041",
+        "B041",
+        "C041"
+      ],
+      "lifecolor": [
+        "LC002"
+      ],
+      "mr_paint": [
+        "017"
+      ]
+    }
+  },
+  {
+    "name": "Flat White",
+    "tamiya": [
+      "LP04",
+      "XF02"
+    ],
+    "brands": {
+      "vallejo": [
+        "71.001"
+      ],
+      "gunze_mr_hobby": [
+        "C062",
+        "H011",
+        "N011"
+      ],
+      "lifecolor": [
+        "LC001"
+      ]
+    }
+  },
+  {
+    "name": "Yellow",
+    "tamiya": [
+      "XF03"
+    ],
+    "brands": {
+      "ammo": [
+        "0125"
+      ],
+      "vallejo": [
+        "71.078"
+      ],
+      "gunze_mr_hobby": [
+        "C113",
+        "H413"
+      ],
+      "lifecolor": [
+        "UA140"
+      ],
+      "mission": [
+        "MMP090"
+      ],
+      "mr_paint": [
+        "051",
+        "A036"
+      ],
+      "revell": [
+        "32115",
+        "36115"
+      ],
+      "testors": [
+        "2072"
+      ],
+      "xtracolour": [
+        "X213",
+        "XA1213"
+      ]
+    }
+  },
+  {
+    "name": "Yellow Green",
+    "tamiya": [
+      "XF04"
+    ],
+    "brands": {
+      "vallejo": [
+        "70.827"
+      ],
+      "gunze_mr_hobby": [
+        "C064",
+        "H016",
+        "N016"
+      ]
+    }
+  },
+  {
+    "name": "Light Green",
+    "tamiya": [
+      "AS23",
+      "XF05"
+    ],
+    "brands": {
+      "ammo": [
+        "0230"
+      ],
+      "vallejo": [
+        "71.022"
+      ],
+      "gunze_mr_hobby": [
+        "C122",
+        "H422"
+      ],
+      "hataka": [
+        "A020",
+        "B020",
+        "C020"
+      ],
+      "lifecolor": [
+        "UA511"
+      ],
+      "mission": [
+        "MMP053"
+      ],
+      "mr_paint": [
+        "071",
+        "A060"
+      ],
+      "testors": [
+        "2092"
+      ],
+      "xtracolour": [
+        "X225",
+        "XA1125"
+      ]
+    }
+  },
+  {
+    "name": "Copper",
+    "tamiya": [
+      "XF06"
+    ],
+    "brands": {
+      "ammo": [
+        "0199"
+      ],
+      "vallejo": [
+        "71.068"
+      ],
+      "gunze_mr_hobby": [
+        "C010",
+        "H010",
+        "N010"
+      ],
+      "lifecolor": [
+        "LC078"
+      ],
+      "mission": [
+        "MMM004"
+      ],
+      "mr_paint": [
+        "154"
+      ],
+      "revell": [
+        "32193"
+      ]
+    }
+  },
+  {
+    "name": "Flat Red",
+    "tamiya": [
+      "XF07"
+    ],
+    "brands": {
+      "vallejo": [
+        "71.269"
+      ],
+      "gunze_mr_hobby": [
+        "H013",
+        "N013"
+      ],
+      "hataka": [
+        "A132",
+        "C132"
+      ],
+      "lifecolor": [
+        "LC006"
+      ],
+      "revell": [
+        "32131",
+        "36131"
+      ],
+      "testors": [
+        "2733"
+      ]
+    }
+  },
+  {
+    "name": "Flat Blue",
+    "tamiya": [
+      "XF08"
+    ],
+    "brands": {}
+  },
+  {
+    "name": "Cocoa Brown Hull Red",
+    "tamiya": [
+      "TS33",
+      "XF09"
+    ],
+    "brands": {
+      "vallejo": [
+        "71.038"
+      ],
+      "gunze_mr_hobby": [
+        "C029",
+        "H017"
+      ]
+    }
+  },
+  {
+    "name": "Dark Brown",
+    "tamiya": [
+      "XF10"
+    ],
+    "brands": {
+      "ammo": [
+        "0015"
+      ],
+      "vallejo": [
+        "71.041"
+      ],
+      "gunze_mr_hobby": [
+        "H406"
+      ],
+      "hataka": [
+        "A147",
+        "B147",
+        "C147"
+      ],
+      "lifecolor": [
+        "UA205"
+      ],
+      "mission": [
+        "MMP012"
+      ],
+      "mr_paint": [
+        "036",
+        "A021"
+      ],
+      "testors": [
+        "2096"
+      ],
+      "xtracolour": [
+        "X807",
+        "XA1807"
+      ]
+    }
+  },
+  {
+    "name": "IJN Dark Green",
+    "tamiya": [
+      "AS01",
+      "XF11"
+    ],
+    "brands": {
+      "ammo": [
+        "0264"
+      ],
+      "vallejo": [
+        "71.322"
+      ],
+      "gunze_mr_hobby": [
+        "C015",
+        "H059"
+      ]
+    }
+  },
+  {
+    "name": "IJN Gray",
+    "tamiya": [
+      "AS02",
+      "XF12"
+    ],
+    "brands": {
+      "ammo": [
+        "0263"
+      ],
+      "vallejo": [
+        "71.311"
+      ],
+      "gunze_mr_hobby": [
+        "C035",
+        "H061",
+        "N061"
+      ],
+      "testors": [
+        "2117"
+      ],
+      "xtracolour": [
+        "X354"
+      ]
+    }
+  },
+  {
+    "name": "IJA Green",
+    "tamiya": [
+      "AS17",
+      "XF13"
+    ],
+    "brands": {
+      "ammo": [
+        "0260"
+      ],
+      "vallejo": [
+        "71.285"
+      ],
+      "gunze_mr_hobby": [
+        "C016",
+        "H060",
+        "N060"
+      ],
+      "xtracolour": [
+        "X351"
+      ]
+    }
+  },
+  {
+    "name": "IJA Light Gray",
+    "tamiya": [
+      "AS18",
+      "XF14"
+    ],
+    "brands": {}
+  },
+  {
+    "name": "Flesh",
+    "tamiya": [
+      "LP30",
+      "XF15"
+    ],
+    "brands": {
+      "vallejo": [
+        "70.843"
+      ],
+      "gunze_mr_hobby": [
+        "C051",
+        "H044",
+        "N044"
+      ]
+    }
+  },
+  {
+    "name": "Aluminum",
+    "tamiya": [
+      "LP38",
+      "XF16"
+    ],
+    "brands": {
+      "ammo": [
+        "0194"
+      ],
+      "vallejo": [
+        "71.062"
+      ],
+      "gunze_mr_hobby": [
+        "C218"
+      ],
+      "hataka": [
+        "A078",
+        "C078"
+      ],
+      "mission": [
+        "MMM003"
+      ],
+      "mr_paint": [
+        "009"
+      ]
+    }
+  },
+  {
+    "name": "Sea Blue",
+    "tamiya": [
+      "XF17"
+    ],
+    "brands": {
+      "gunze_mr_hobby": [
+        "C071",
+        "H055",
+        "N055"
+      ]
+    }
+  },
+  {
+    "name": "Intermediate Blue",
+    "tamiya": [
+      "AS19",
+      "XF18"
+    ],
+    "brands": {
+      "ammo": [
+        "0228"
+      ],
+      "vallejo": [
+        "71.299"
+      ],
+      "gunze_mr_hobby": [
+        "C072",
+        "H056",
+        "N056"
+      ],
+      "hataka": [
+        "A027",
+        "B027",
+        "C027"
+      ],
+      "lifecolor": [
+        "UA045"
+      ],
+      "mission": [
+        "MMP071"
+      ],
+      "mr_paint": [
+        "136"
+      ],
+      "xtracolour": [
+        "X125",
+        "XA1125"
+      ]
+    }
+  },
+  {
+    "name": "Barley Gray",
+    "tamiya": [
+      "XF19"
+    ],
+    "brands": {
+      "gunze_mr_hobby": [
+        "C334",
+        "H334"
+      ],
+      "xtracolour": [
+        "X017"
+      ]
+    }
+  },
+  {
+    "name": "Gray",
+    "tamiya": [
+      "XF20"
+    ],
+    "brands": {
+      "vallejo": [
+        "70.820"
+      ],
+      "gunze_mr_hobby": [
+        "C325",
+        "H325"
+      ]
+    }
+  },
+  {
+    "name": "Duck Egg Green",
+    "tamiya": [
+      "XF21"
+    ],
+    "brands": {
+      "ammo": [
+        "0244"
+      ],
+      "vallejo": [
+        "71.302"
+      ],
+      "gunze_mr_hobby": [
+        "C026",
+        "H074"
+      ],
+      "hataka": [
+        "A026",
+        "B026",
+        "C026"
+      ],
+      "lifecolor": [
+        "UA521"
+      ],
+      "mission": [
+        "MMP080"
+      ],
+      "mr_paint": [
+        "118"
+      ],
+      "revell": [
+        "32159"
+      ],
+      "testors": [
+        "2049"
+      ],
+      "xtracolour": [
+        "X007",
+        "XA1007"
+      ]
+    }
+  },
+  {
+    "name": "RLM Gray",
+    "tamiya": [
+      "XF22"
+    ],
+    "brands": {
+      "ammo": [
+        "0217"
+      ],
+      "vallejo": [
+        "71.044"
+      ],
+      "gunze_mr_hobby": [
+        "C060",
+        "H070",
+        "N070"
+      ],
+      "hataka": [
+        "A023",
+        "B023",
+        "C023"
+      ],
+      "lifecolor": [
+        "UA071"
+      ],
+      "mission": [
+        "MMP056"
+      ],
+      "mr_paint": [
+        "050",
+        "A004"
+      ],
+      "revell": [
+        "32145",
+        "36145"
+      ],
+      "testors": [
+        "2071"
+      ],
+      "xtracolour": [
+        "X201",
+        "XA1201"
+      ]
+    }
+  },
+  {
+    "name": "Light Blue",
+    "tamiya": [
+      "AS05",
+      "XF23"
+    ],
+    "brands": {
+      "vallejo": [
+        "71.257"
+      ],
+      "gunze_mr_hobby": [
+        "C117",
+        "H417"
+      ],
+      "hataka": [
+        "A038",
+        "B038",
+        "C038"
+      ],
+      "lifecolor": [
+        "UA509"
+      ],
+      "mission": [
+        "MMP051"
+      ],
+      "mr_paint": [
+        "066",
+        "A050"
+      ],
+      "testors": [
+        "2086"
+      ],
+      "xtracolour": [
+        "X208",
+        "XA1208"
+      ]
+    }
+  },
+  {
+    "name": "Deep Gray",
+    "tamiya": [
+      "XF24"
+    ],
+    "brands": {
+      "gunze_mr_hobby": [
+        "C301",
+        "H301"
+      ],
+      "hataka": [
+        "A030",
+        "B030",
+        "C030"
+      ],
+      "mr_paint": [
+        "241"
+      ]
+    }
+  },
+  {
+    "name": "Light Sea Gray",
+    "tamiya": [
+      "XF25"
+    ],
+    "brands": {}
+  },
+  {
+    "name": "Deep Green",
+    "tamiya": [
+      "XF26"
+    ],
+    "brands": {
+      "ammo": [
+        "0238"
+      ],
+      "vallejo": [
+        "71.124"
+      ],
+      "gunze_mr_hobby": [
+        "C302",
+        "H302"
+      ],
+      "hataka": [
+        "A056",
+        "B056",
+        "C056"
+      ],
+      "lifecolor": [
+        "UA008"
+      ],
+      "mr_paint": [
+        "235"
+      ],
+      "revell": [
+        "32363"
+      ],
+      "xtracolour": [
+        "XA1114"
+      ]
+    }
+  },
+  {
+    "name": "Black Green",
+    "tamiya": [
+      "XF27"
+    ],
+    "brands": {
+      "ammo": [
+        "0232"
+      ],
+      "vallejo": [
+        "71.021"
+      ],
+      "gunze_mr_hobby": [
+        "C018",
+        "H065"
+      ],
+      "hataka": [
+        "A015",
+        "B015",
+        "C015"
+      ],
+      "lifecolor": [
+        "UA501"
+      ],
+      "mission": [
+        "MMP088"
+      ],
+      "mr_paint": [
+        "060",
+        "A044"
+      ],
+      "revell": [
+        "32140"
+      ],
+      "testors": [
+        "2080"
+      ],
+      "xtracolour": [
+        "X204",
+        "XA1204"
+      ]
+    }
+  },
+  {
+    "name": "Dark Copper",
+    "tamiya": [
+      "XF28"
+    ],
+    "brands": {}
+  },
+  {
+    "name": "Signalbraun",
+    "tamiya": [
+      "XF49"
+    ],
+    "brands": {
+      "gunze_mr_hobby": [
+        "H404"
+      ],
+      "hataka": [
+        "A297",
+        "B297",
+        "C297"
+      ],
+      "lifecolor": [
+        "UA209"
+      ],
+      "mission": [
+        "MMP141"
+      ],
+      "testors": [
+        "2100"
+      ],
+      "xtracolour": [
+        "X801",
+        "XA1801"
+      ]
+    }
+  },
+  {
+    "name": "Field Blue",
+    "tamiya": [
+      "XF50"
+    ],
+    "brands": {}
+  },
+  {
+    "name": "Dark Green",
+    "tamiya": [
+      "AS24",
+      "XF51"
+    ],
+    "brands": {
+      "ammo": [
+        "0925"
+      ],
+      "vallejo": [
+        "71.011"
+      ],
+      "gunze_mr_hobby": [
+        "C123",
+        "H423"
+      ],
+      "hataka": [
+        "A022",
+        "B022",
+        "C022"
+      ],
+      "lifecolor": [
+        "UA132"
+      ],
+      "mission": [
+        "MMP054"
+      ],
+      "mr_paint": [
+        "072",
+        "A061"
+      ],
+      "revell": [
+        "32168"
+      ],
+      "testors": [
+        "2091"
+      ],
+      "xtracolour": [
+        "X226",
+        "XA1226"
+      ]
+    }
+  },
+  {
+    "name": "Dark Earth",
+    "tamiya": [
+      "AS22",
+      "XF52"
+    ],
+    "brands": {
+      "ammo": [
+        "0070"
+      ],
+      "vallejo": [
+        "71.323"
+      ],
+      "gunze_mr_hobby": [
+        "C022",
+        "H072",
+        "N072"
+      ],
+      "hataka": [
+        "A009",
+        "B009",
+        "C009"
+      ],
+      "lifecolor": [
+        "UA547"
+      ],
+      "mission": [
+        "MMP078"
+      ],
+      "mr_paint": [
+        "108"
+      ],
+      "revell": [
+        "32182"
+      ],
+      "testors": [
+        "2054"
+      ],
+      "xtracolour": [
+        "X002",
+        "XA1002"
+      ]
+    }
+  },
+  {
+    "name": "Gray",
+    "tamiya": [
+      "AS07",
+      "XF53"
+    ],
+    "brands": {
+      "ammo": [
+        "0239"
+      ],
+      "vallejo": [
+        "71.051"
+      ],
+      "gunze_mr_hobby": [
+        "C013",
+        "H022",
+        "N022"
+      ],
+      "hataka": [
+        "A054",
+        "B054",
+        "C054"
+      ],
+      "lifecolor": [
+        "UA071"
+      ],
+      "mission": [
+        "MMP103"
+      ],
+      "mr_paint": [
+        "039"
+      ],
+      "revell": [
+        "32174"
+      ]
+    }
+  },
+  {
+    "name": "Dark Sea Gray",
+    "tamiya": [
+      "XF54"
+    ],
+    "brands": {}
+  },
+  {
+    "name": "Deck Tan",
+    "tamiya": [
+      "XF55"
+    ],
+    "brands": {
+      "gunze_mr_hobby": [
+        "C045",
+        "H085",
+        "N085"
+      ]
+    }
+  },
+  {
+    "name": "Metallic Gray",
+    "tamiya": [
+      "XF56"
+    ],
+    "brands": {}
+  },
+  {
+    "name": "Hemp",
+    "tamiya": [
+      "XF57"
+    ],
+    "brands": {
+      "gunze_mr_hobby": [
+        "C336",
+        "H336"
+      ],
+      "xtracolour": [
+        "X016"
+      ]
+    }
+  },
+  {
+    "name": "Olive Green",
+    "tamiya": [
+      "LP58",
+      "XF67"
+    ],
+    "brands": {
+      "ammo": [
+        "0084"
+      ],
+      "vallejo": [
+        "71.093"
+      ],
+      "gunze_mr_hobby": [
+        "C054",
+        "H080",
+        "N080"
+      ],
+      "hataka": [
+        "A152",
+        "C152"
+      ],
+      "lifecolor": [
+        "UA303"
+      ],
+      "mission": [
+        "MMP034"
+      ],
+      "mr_paint": [
+        "078"
+      ]
+    }
+  },
+  {
+    "name": "Tan",
+    "tamiya": [
+      "XF59"
+    ],
+    "brands": {
+      "ammo": [
+        "0200"
+      ],
+      "vallejo": [
+        "71.327"
+      ],
+      "gunze_mr_hobby": [
+        "C313",
+        "H313"
+      ],
+      "hataka": [
+        "A090",
+        "B090",
+        "C090"
+      ],
+      "mr_paint": [
+        "226"
+      ]
+    }
+  },
+  {
+    "name": "Dark Yellow",
+    "tamiya": [
+      "TS03",
+      "XF60"
+    ],
+    "brands": {
+      "ammo": [
+        "0010"
+      ],
+      "vallejo": [
+        "71.025"
+      ],
+      "gunze_mr_hobby": [
+        "H403"
+      ],
+      "hataka": [
+        "A250",
+        "B250",
+        "C250"
+      ],
+      "lifecolor": [
+        "UA204"
+      ],
+      "mission": [
+        "MMP011"
+      ],
+      "mr_paint": [
+        "037"
+      ],
+      "testors": [
+        "2095"
+      ],
+      "xtracolour": [
+        "X805",
+        "XA1805"
+      ]
+    }
+  },
+  {
+    "name": "Dark Green",
+    "tamiya": [
+      "TS02",
+      "XF61"
+    ],
+    "brands": {
+      "ammo": [
+        "0001"
+      ]
+    }
+  },
+  {
+    "name": "Olive Drab",
+    "tamiya": [
+      "TS05",
+      "XF62"
+    ],
+    "brands": {}
+  },
+  {
+    "name": "Panzer Gray",
+    "tamiya": [
+      "LP27",
+      "XF63"
+    ],
+    "brands": {
+      "ammo": [
+        "0008"
+      ],
+      "vallejo": [
+        "71.056"
+      ],
+      "gunze_mr_hobby": [
+        "H401"
+      ],
+      "hataka": [
+        "A224",
+        "B224",
+        "C224"
+      ],
+      "lifecolor": [
+        "UA207"
+      ],
+      "mission": [
+        "MMP014"
+      ],
+      "mr_paint": [
+        "034",
+        "A019"
+      ],
+      "revell": [
+        "32109",
+        "36109"
+      ],
+      "testors": [
+        "2094"
+      ],
+      "xtracolour": [
+        "X262",
+        "XA1800"
+      ]
+    }
+  },
+  {
+    "name": "Red Brown",
+    "tamiya": [
+      "XF64"
+    ],
+    "brands": {
+      "vallejo": [
+        "70.984"
+      ],
+      "gunze_mr_hobby": [
+        "C041",
+        "H047",
+        "N047"
+      ]
+    }
+  },
+  {
+    "name": "Green",
+    "tamiya": [
+      "AS13",
+      "XF65"
+    ],
+    "brands": {
+      "vallejo": [
+        "71.294"
+      ],
+      "gunze_mr_hobby": [
+        "C309",
+        "H309"
+      ],
+      "hataka": [
+        "A016",
+        "B016",
+        "C016"
+      ],
+      "lifecolor": [
+        "UA091"
+      ],
+      "mission": [
+        "MMP058"
+      ],
+      "mr_paint": [
+        "101"
+      ],
+      "xtracolour": [
+        "X114"
+      ]
+    }
+  },
+  {
+    "name": "Light Gray",
+    "tamiya": [
+      "XF66"
+    ],
+    "brands": {}
+  },
+  {
+    "name": "Bronze Green",
+    "tamiya": [
+      "LP58",
+      "XF67"
+    ],
+    "brands": {
+      "ammo": [
+        "0084"
+      ],
+      "vallejo": [
+        "71.093"
+      ],
+      "gunze_mr_hobby": [
+        "C054",
+        "H080",
+        "N080"
+      ],
+      "hataka": [
+        "A152",
+        "C152"
+      ],
+      "lifecolor": [
+        "UA303"
+      ],
+      "mission": [
+        "MMP034"
+      ],
+      "mr_paint": [
+        "078"
+      ]
+    }
+  },
+  {
+    "name": "Lederbraun",
+    "tamiya": [
+      "TS62",
+      "XF68"
+    ],
+    "brands": {
+      "ammo": [
+        "0085"
+      ],
+      "vallejo": [
+        "71.249"
+      ],
+      "hataka": [
+        "A188",
+        "C188"
+      ],
+      "lifecolor": [
+        "UA302"
+      ],
+      "mission": [
+        "MMP033"
+      ],
+      "mr_paint": [
+        "079"
+      ]
+    }
+  },
+  {
+    "name": "Teerschwarz",
+    "tamiya": [
+      "TS06",
+      "XF69"
+    ],
+    "brands": {
+      "vallejo": [
+        "71.251"
+      ],
+      "hataka": [
+        "A125",
+        "C125"
+      ],
+      "lifecolor": [
+        "UA301",
+        "UA736"
+      ],
+      "mission": [
+        "MMP035"
+      ],
+      "mr_paint": [
+        "077"
+      ]
+    }
+  },
+  {
+    "name": "Dark Green",
+    "tamiya": [
+      "AS23",
+      "XF70"
+    ],
+    "brands": {
+      "gunze_mr_hobby": [
+        "C124"
+      ],
+      "mission": [
+        "MMP112"
+      ],
+      "testors": [
+        "2116"
+      ]
+    }
+  },
+  {
+    "name": "Interior Green",
+    "tamiya": [
+      "XF71"
+    ],
+    "brands": {
+      "gunze_mr_hobby": [
+        "C126"
+      ],
+      "mission": [
+        "MMP109"
+      ]
+    }
+  },
+  {
+    "name": "Brown JGSDF",
+    "tamiya": [
+      "XF72"
+    ],
+    "brands": {}
+  },
+  {
+    "name": "Green JGSDF",
+    "tamiya": [
+      "XF73",
+      "XF74"
+    ],
+    "brands": {}
+  },
+  {
+    "name": "Kure Gray",
+    "tamiya": [
+      "LP12",
+      "XF75"
+    ],
+    "brands": {
+      "ammo": [
+        "0235"
+      ],
+      "vallejo": [
+        "71.308"
+      ],
+      "gunze_mr_hobby": [
+        "C601"
+      ],
+      "lifecolor": [
+        "UA644"
+      ]
+    }
+  },
+  {
+    "name": "IJA Gray",
+    "tamiya": [
+      "AS29",
+      "XF76"
+    ],
+    "brands": {
+      "ammo": [
+        "0262"
+      ],
+      "gunze_mr_hobby": [
+        "C056",
+        "H062",
+        "N062"
+      ],
+      "mission": [
+        "MMP107"
+      ]
+    }
+  },
+  {
+    "name": "Sasebo Gray",
+    "tamiya": [
+      "LP13",
+      "XF77"
+    ],
+    "brands": {
+      "gunze_mr_hobby": [
+        "C602"
+      ],
+      "lifecolor": [
+        "UA643"
+      ]
+    }
+  },
+  {
+    "name": "Wooden Deck Tan",
+    "tamiya": [
+      "XF78"
+    ],
+    "brands": {}
+  },
+  {
+    "name": "Linoleum",
+    "tamiya": [
+      "LP17",
+      "XF79"
+    ],
+    "brands": {
+      "gunze_mr_hobby": [
+        "C606"
+      ],
+      "lifecolor": [
+        "UA647"
+      ]
+    }
+  },
+  {
+    "name": "Light Gray",
+    "tamiya": [
+      "XF80"
+    ],
+    "brands": {}
+  },
+  {
+    "name": "Dark Green",
+    "tamiya": [
+      "AS09",
+      "XF81"
+    ],
+    "brands": {
+      "ammo": [
+        "0206"
+      ],
+      "vallejo": [
+        "71.324"
+      ],
+      "gunze_mr_hobby": [
+        "C361",
+        "H073",
+        "N073"
+      ],
+      "lifecolor": [
+        "UA053"
+      ],
+      "mission": [
+        "MMP077"
+      ],
+      "mr_paint": [
+        "110"
+      ],
+      "testors": [
+        "2060"
+      ],
+      "xtracolour": [
+        "X001",
+        "XA1001"
+      ]
+    }
+  },
+  {
+    "name": "Ocean Gray",
+    "tamiya": [
+      "AS10",
+      "XF82"
+    ],
+    "brands": {
+      "ammo": [
+        "0245"
+      ],
+      "vallejo": [
+        "71.273"
+      ],
+      "gunze_mr_hobby": [
+        "C362"
+      ],
+      "hataka": [
+        "A032",
+        "B032",
+        "C032"
+      ],
+      "mission": [
+        "MMP093"
+      ],
+      "mr_paint": [
+        "115"
+      ],
+      "testors": [
+        "2057"
+      ],
+      "xtracolour": [
+        "X006",
+        "XA1006"
+      ]
+    }
+  },
+  {
+    "name": "Medium Sea Gray",
+    "tamiya": [
+      "AS11",
+      "XF83"
+    ],
+    "brands": {
+      "ammo": [
+        "0246"
+      ],
+      "vallejo": [
+        "71.307"
+      ],
+      "gunze_mr_hobby": [
+        "C335",
+        "H335"
+      ],
+      "hataka": [
+        "A141",
+        "B141",
+        "C141"
+      ],
+      "lifecolor": [
+        "UA028"
+      ],
+      "mission": [
+        "MP094"
+      ],
+      "mr_paint": [
+        "112"
+      ],
+      "testors": [
+        "2058"
+      ],
+      "xtracolour": [
+        "X003",
+        "XA1003"
+      ]
+    }
+  },
+  {
+    "name": "Burnt Iron",
+    "tamiya": [
+      "LP54",
+      "XF84"
+    ],
+    "brands": {
+      "ammo": [
+        "0187"
+      ],
+      "vallejo": [
+        "71.072"
+      ],
+      "gunze_mr_hobby": [
+        "C061",
+        "H076",
+        "N076"
+      ]
+    }
+  },
+  {
+    "name": "Tire Black",
+    "tamiya": [
+      "LP65",
+      "XF85"
+    ],
+    "brands": {
+      "ammo": [
+        "0033"
+      ],
+      "vallejo": [
+        "71.315"
+      ],
+      "gunze_mr_hobby": [
+        "C137",
+        "H077",
+        "N077"
+      ],
+      "lifecolor": [
+        "UA733"
+      ],
+      "mission": [
+        "MMP040"
+      ]
+    }
+  },
+  {
+    "name": "Flat Clear",
+    "tamiya": [
+      "LP23",
+      "XF86"
+    ],
+    "brands": {
+      "vallejo": [
+        "71.059"
+      ],
+      "gunze_mr_hobby": [
+        "C182",
+        "H020",
+        "N020"
+      ],
+      "lifecolor": [
+        "LC027"
+      ],
+      "mission": [
+        "MMA005"
+      ],
+      "mr_paint": [
+        "127"
+      ],
+      "revell": [
+        "32102"
+      ]
+    }
+  },
+  {
+    "name": "Maizuru Gray",
+    "tamiya": [
+      "LP14",
+      "XF87"
+    ],
+    "brands": {
+      "gunze_mr_hobby": [
+        "C603"
+      ],
+      "lifecolor": [
+        "UA646"
+      ]
+    }
+  },
+  {
+    "name": "Dark Yellow 2",
+    "tamiya": [
+      "XF88"
+    ],
+    "brands": {}
+  },
+  {
+    "name": "Dark Green 2",
+    "tamiya": [
+      "XF89"
+    ],
+    "brands": {}
+  },
+  {
+    "name": "Red Brown 2",
+    "tamiya": [
+      "XF90"
+    ],
+    "brands": {}
+  },
+  {
+    "name": "Yokosuka Gray",
+    "tamiya": [
+      "LP15",
+      "XF91"
+    ],
+    "brands": {
+      "lifecolor": [
+        "UA645"
+      ]
+    }
+  }
+]
