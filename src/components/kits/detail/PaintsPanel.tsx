@@ -1,4 +1,3 @@
-import { ExternalLinkIcon } from "@/components/icons";
 import inventoryStyles from "@/components/inventory/Inventory.module.css";
 import styles from "@/components/wishlist/Wishlist.module.css";
 import { listOwnedPaintCodes } from "@/db/repositories/inventory";
@@ -67,23 +66,22 @@ export async function PaintsPanel({ kitId }: { kitId: number }) {
             <span className={styles.moduleTitle}>Missing ({buckets.missing.length})</span>
           </div>
           {buckets.missing.length > 0 ? (
-            buckets.missing.map((p) => (
-              <div key={p.code} className={styles.missingRow}>
-                <span className={styles.paintDot} style={{ background: p.hex }} />
-                <span className={styles.missingCode}>{p.code}</span>
-                <span className={styles.missingName}>{p.name}</span>
+            <div className={styles.cardChips}>
+              {buckets.missing.map((p) => (
                 <a
-                  className={styles.iconButton}
+                  key={p.code}
+                  className={styles.missingChip}
                   href={paintSearchUrl(p.code, p.name)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  title={`Find somewhere selling ${p.code}`}
-                  aria-label={`Find somewhere selling ${p.code}`}
+                  title={p.name}
+                  aria-label={`${p.code}, ${p.name} — find somewhere selling it`}
                 >
-                  <ExternalLinkIcon size={14} />
+                  <span className={styles.paintDot} style={{ background: p.hex }} />
+                  {p.code}
                 </a>
-              </div>
-            ))
+              ))}
+            </div>
           ) : (
             <span className={styles.photoHint}>Nothing missing.</span>
           )}

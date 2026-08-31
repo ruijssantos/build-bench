@@ -1175,6 +1175,54 @@ not just the one in the screenshot. Left `.primaryButton` alone — it has no ho
 that wasn't reported, and a solid-fill button reads as clickable at rest in a way a bordered one
 doesn't, so it's not obviously the same bug.
 
+**Round 7 — the Paints panel.** Five fixes from a screenshot of a kit with a real, messy
+extraction result:
+
+- **No margin under the "Paints" title.** `.paintBucket + .paintBucket` gave every bucket
+  *after* the first a top border and padding, but the first bucket had nothing above it at all —
+  the title sat flush against "Owned". Moved the `margin-top: 14px` onto the base `.paintBucket`
+  rule (every bucket gets it, first included) and left `+ .paintBucket` to layer just the
+  separator (border + padding) on top, so the gap between buckets is unchanged and the gap under
+  the title is now real.
+- **Owned and Missing looked like two different UIs** — Owned a row of chips, Missing a list of
+  full-width rows with a separate icon-button per line. Rebuilt Missing as the same chip
+  (`.ownedChip`/`.missingChip` now share one box-model rule, differing only in colour — `--ok` vs
+  `--alert`, the same meaning their bucket dots already carry) and dropped the visible paint name
+  entirely in favour of a `title` tooltip, matching what Owned already did. The chip is now the
+  whole "find somewhere selling this" link itself (an `<a>`, `cursor: pointer`, a hover state that
+  swaps to solid `--alert`) rather than a separate `ExternalLinkIcon` button bolted onto a text
+  row — one clickable shape instead of a row of parts.
+- **Owned order was plain `localeCompare`,** which sorts "X-2" after "X-19" — visibly wrong next
+  to the Paints screen's own ordering (line, then the code's number, then the string —
+  `SHELF_ORDER` in `db/repositories/inventory.ts`). Added `comparePaintCodes` to
+  `domain/paint-code.ts`, a plain-JS comparator matching that SQL `case`/`regexp_replace` logic by
+  hand (documented as such — different enough mechanisms, SQL vs. in-memory array, that sharing
+  one implementation would mean wrapping one to satisfy the other for three lines of logic), and
+  used it for both Owned and Missing — the request only named Owned, but leaving Missing on the
+  old lexicographic sort would have reintroduced the exact "these two lists don't match"
+  complaint the chip-style fix above just resolved.
+- **The extractor didn't recognize custom-mix formulas.** A manual's own mix table can define a
+  named blend as a formula rather than a single paint — "H A = C30(1) + C335(1)" — and the
+  extraction prompt had no instruction for that shape, so the whole formula line came back as one
+  opaque `rawLabel`, landing in Unresolved as a string nobody can look up (it isn't a paint; it's
+  a recipe). Added a paragraph to `SYSTEM_PROMPT` (`/api/kits/extract/route.ts`) naming the
+  pattern and asking for one requirement entry per paint on the right-hand side of the "=",
+  dropping the ratio numbers and the mix's own name — with an explicit carve-out for a part
+  elsewhere simply painted "Paint A" (referencing the mix by name, formula not restated at that
+  point): that stays its own single entry, since expanding a bare reference the model can't see
+  the formula for risks inventing one.
+
+Verified what's verifiable without a real Anthropic call: `comparePaintCodes` against the exact
+code list from the screenshot (`X-1, X-2, X-10, X-11, X-12, X-14, X-18, X-19, X-21, X-26, X-27,
+XF-1, XF-2, XF-7, XF-60, XF-84` — the numeric order, not the lexicographic one), and the panel
+itself against a local Postgres seeded with fifteen owned codes, one missing (`X-1`, owned-list
+codes minus one), and nine unresolved rows — confirming live: the Owned/Missing chips render
+identically in shape, Missing shows only the code with the name on `title`, the Missing chip is a
+real link with a hover state, and there's now visible air under "Paints" before "Owned". The
+formula-recognition prompt change is not verifiable locally the same way — it only proves itself
+against a real manual and a real `ANTHROPIC_API_KEY`, neither available in this sandbox — so
+that one is asking for that live check.
+
 ---
 
 ## 8. Non-goals
