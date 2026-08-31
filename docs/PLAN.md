@@ -1163,6 +1163,18 @@ server, same as it would in production). The API shapes used are not guessed —
 the installed SDK's own source (`node_modules/@anthropic-ai/sdk/src/resources/files.ts` and
 `to-file.ts`) and the current (non-beta) Files API docs, fetched fresh rather than recalled.
 
+**Round 6 — one more missing hover.** `.ghostButton` (every dialog's "Cancel", and the status
+stepper's "Move back to Stash/Building") had no `:hover` rule at all — same shape of bug as round
+4's `.filterPill` cursor miss, just a different property. Its resting state is already subtle (a
+thin `--line-strong` border on muted text), so with nothing changing on hover it read as inert
+rather than clickable. Added `.ghostButton:hover` with the same neutral treatment
+`.iconButton:hover` already uses elsewhere (`--card-sunken` background, `--ink` text/border) —
+not an accent/ok/alert colour, since this button never signals a particular outcome. Fixed at the
+shared class rather than a one-off override, so it's every "Cancel" in the app plus this button,
+not just the one in the screenshot. Left `.primaryButton` alone — it has no hover either, but
+that wasn't reported, and a solid-fill button reads as clickable at rest in a way a bordered one
+doesn't, so it's not obviously the same bug.
+
 ---
 
 ## 8. Non-goals
