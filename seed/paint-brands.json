@@ -1,0 +1,12 @@
+[
+  { "key": "gunze_mr_hobby", "label": "Gunze/Mr. Hobby", "sort": 0 },
+  { "key": "revell", "label": "Revell", "sort": 1 },
+  { "key": "vallejo", "label": "Vallejo", "sort": 2 },
+  { "key": "ammo", "label": "AMMO by Mig", "sort": 3 },
+  { "key": "testors", "label": "Testors", "sort": 4 },
+  { "key": "lifecolor", "label": "LifeColor", "sort": 5 },
+  { "key": "xtracolour", "label": "XtraColour", "sort": 6 },
+  { "key": "hataka", "label": "Hataka", "sort": 7 },
+  { "key": "mission", "label": "Mission Models", "sort": 8 },
+  { "key": "mr_paint", "label": "Mr. Paint", "sort": 9 }
+]

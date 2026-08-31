@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { getCataloguePaint } from "@/catalogue/paints";
+import { resolveForeignCode } from "@/catalogue/equivalents";
 
 /**
  * The Claude paint-extraction wire schema — docs/PLAN.md §6 Phase 4a, §4.3.
@@ -26,9 +27,11 @@ export const PaintExtractionResultSchema = z.object({
 
 export interface ExtractedPaintRequirement {
   rawLabel: string;
-  /** Resolved against `src/catalogue/paints.ts`; `null` when the callout
-   * isn't a Tamiya code the catalogue knows — a non-Tamiya kit's Mr. Color
-   * or Vallejo callouts are the expected case, not an error. */
+  /** Resolved against `src/catalogue/paints.ts` first, then, for a code
+   * that isn't itself Tamiya's, against `src/catalogue/equivalents.ts`
+   * (Phase 5, docs/PLAN.md §2.2) — `null` only when neither knows it, which
+   * for a code the cross-reference chart never covered is the expected
+   * case, not an error. */
   paintCode: string | null;
   partHint: string | null;
 }
@@ -44,6 +47,16 @@ function resolveCode(rawLabel: string, codeGuess: string | null | undefined): st
     if (!candidate) continue;
     const paint = getCataloguePaint(candidate);
     if (paint) return paint.code;
+  }
+  // Neither candidate is a Tamiya code the catalogue knows directly — the
+  // common case for a Japanese kit, whose manual calls out Mr. Color/Mr.
+  // Hobby throughout. Only `codeGuess` is tried here, not `CODE_IN_TEXT`:
+  // that regex is shaped for Tamiya's own "LETTERS-NUMBER" codes, and a
+  // foreign code ("UA507", "MMP049") doesn't share that shape closely
+  // enough to extract reliably without risking a false match.
+  if (codeGuess) {
+    const equivalent = resolveForeignCode(codeGuess);
+    if (equivalent) return equivalent;
   }
   return null;
 }

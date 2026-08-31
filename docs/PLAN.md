@@ -104,23 +104,26 @@ reports them per line as a non-failing sanity check, not a hunt-by-hand job.
 Phase 3's source for cross-brand equivalents: the
 [Tamiya Color Cross-Reference](https://www.cybermodeler.com/color/tamiya_map.shtml),
 covering Gunze Sangyo (GSI — i.e. Mr. Hobby), Vallejo, Revell, Testors, XtraColour, AMMO by
-Mig, Hataka, Lifecolor and Mission Models.
+Mig, Hataka, Lifecolor and Mission Models — plus Mr. Paint (MRP), a tenth brand the chart
+itself carries that this list hadn't anticipated; added to `paint_brand` rather than dropped.
 
 - **Direction.** The chart maps Tamiya → other brands. The real question runs the other way —
   a non-Tamiya kit calls for H12, what Tamiya code do you reach for? `paint_equivalent` is
-  indexed both ways (§3.1); the UI leads with foreign → Tamiya.
+  indexed both ways (§3.1); resolution (§7, Phase 5) leads with foreign → Tamiya.
 - **Display order** (a call made once, revisit whenever): Gunze/Mr. Hobby, Revell, Vallejo,
-  AMMO, Testors, LifeColor, XtraColour, Hataka, Mission Models. Gunze first because Japanese
-  car kits (Fujimi, Aoshima, Hasegawa) call Mr. Color throughout; Revell second because
-  Revell car kits are common in European shops. Stored as `sort` on `paint_brand` (§3.1), so
-  it's a data change, not a code change.
+  AMMO, Testors, LifeColor, XtraColour, Hataka, Mission Models, Mr. Paint. Gunze first because
+  Japanese car kits (Fujimi, Aoshima, Hasegawa) call Mr. Color throughout; Revell second
+  because Revell car kits are common in European shops. Stored as `sort` on `paint_brand`
+  (§3.1), so it's a data change, not a code change.
 - **Import once, at build time**, same pattern as the paint catalogue — `equivalents.json`,
-  committed, never scraped at runtime. The Cybermodeler page was unreachable from the
-  planning sandbox that first drafted this, so its exact table markup is unverified; expect
-  one adjustment pass against the real HTML when building the import script.
+  committed, never scraped at runtime. The Cybermodeler page turned out to be unreachable at
+  build time too (blocked from both the planning sandbox and the one that built this phase),
+  so the import ran against a PDF export of the page instead of live HTML — see §7 for exactly
+  how, and for what that source does and doesn't cover.
 - Where the chart has no row, fall back to a Claude lookup, written with
   `source = 'claude-research'` and a lower `match_quality` so it stays visibly distinct from
-  chart-sourced data.
+  chart-sourced data. **Not built in Phase 5** — every code the chart doesn't carry still lands
+  in Unresolved, same as before this phase. See §7.
 
 ### 2.3 The rig
 
@@ -780,11 +783,12 @@ link built the way `paintSearchUrl` builds its shop link (`kitYoutubeSearchUrl`,
 key). Phase 6 below still owns the paid stages B/C research this link will eventually sit
 beside.
 
-### Phase 5 — Cross-brand equivalence
+### Phase 5 — Cross-brand equivalence ✅
 Cybermodeler import (§2.2), `paint_equivalent`, foreign → Tamiya lookup. Sits here rather
 than earlier because this is what makes Phase 4a's paint list work for Japanese kits, whose
 manuals call out Mr. Color throughout — Phase 4a's own Unresolved bucket is exactly the gap
-this phase closes, without re-running extraction on a single manual.
+this phase closes, without re-running extraction on a single manual. §7 has the build
+account: what shipped, what the data actually covers, and what's still open.
 
 ### Phase 6 — Kit research
 §5.1 stages B and C against a stash kit: difficulty, fit issues with sources, build video,
@@ -1223,6 +1227,90 @@ formula-recognition prompt change is not verifiable locally the same way — it 
 against a real manual and a real `ANTHROPIC_API_KEY`, neither available in this sandbox — so
 that one is asking for that live check.
 
+**Phase 5 — cross-brand equivalence, built.** Prompted by round 7's own C335 row: a real Mr.
+Color code from the user's kit that had nowhere to resolve to. §2.2 had already scoped this
+phase and named its source; this is the account of actually building it.
+
+*Getting the data in.* Neither `cybermodeler.com` nor a mirror of it (`web.archive.org`
+included) was reachable from this sandbox — same limitation §2.2 already flagged when the
+phase was first planned. The user supplied the chart as a PDF export of the live page instead.
+`pdftotext -bbox-layout` (poppler-utils, not preinstalled — added for this) gives every word's
+real (x, y) position rather than whitespace-approximated columns, which mattered here: the page
+has a sidebar (site nav, a NOTICE block) running down the left margin that a plain `-layout`
+text dump interleaves with the table itself mid-line — invisible in a quick look at the text,
+and exactly the kind of thing that silently corrupts a paint code. Column boundaries came from
+the real header row's x-positions; rows were grouped by y-proximity, with one genuine edge case
+(a two-line colour name, "Metallic Blue" / "Aotake" stacked) needing a wider merge-gap
+tolerance than the default line spacing to catch. The parsed table (129 colours, up to 10
+brands each) is committed as `scripts/data/cybermodeler-tamiya-cross-reference.json` — the
+transcription, kept separate from `scripts/build-equivalents.ts`'s transform logic — and
+`build-equivalents.ts` turns it into `seed/equivalents.json`, the same "generate once, commit,
+never re-scrape at runtime" pattern `build-catalogue.ts` already established for the paint
+catalogue itself.
+
+*What the schema needed.* Nothing — `paint_brand` and `paint_equivalent` have existed since
+migration 0000 and sat completely unused. This phase is pure seed data plus application code:
+`seed/paint-brands.json` (ten brands, the chart's nine plus Mr. Paint, which the chart itself
+carries and the original brand list hadn't — §2.2), `seed/equivalents.json` (1,229 rows after
+dedup — see below), a `resolveForeignCode` lookup in `src/catalogue/equivalents.ts` (compiled
+into the build, same reasoning as `catalogue/paints.ts`: a lookup extraction needs synchronously
+shouldn't cost a database round trip), and one new fallback branch in
+`kit-paint-extraction.ts`'s `resolveCode` — try the Tamiya catalogue first, then, only for the
+model's own `codeGuess`, try the equivalents lookup. `verify-catalogue.ts` gained a matching
+check: every equivalent's Tamiya code must resolve to a real catalogue entry and its brand to a
+real `paint_brand`, the same class of CI gate the catalogue itself already had.
+
+*Two real bugs surfaced building this, both fixed, neither specific to cross-brand data:*
+- `normalizePaintCode` never stripped leading zeros — "AS01" normalized to "AS-01", which
+  doesn't match the catalogue's "AS-1". Never surfaced before because Tamiya's own manuals don't
+  print leading zeros; Cybermodeler's chart does, for the first nine AS/X codes. Fixed in the
+  shared normalizer, so it's fixed for extraction and search too, not just this phase.
+- A meaningful chunk of the source chart (129 of 130 parsed rows, one dropped for having no
+  Tamiya code at all) turned out to be genuinely duplicated — the page organizes into several
+  sub-tables (one grouped around the AS line, one around XF, …) and a shade with both a spray
+  and a bottle code appears in more than one, full row repeated. Deduped by (brand, foreign
+  code, Tamiya code) in `build-equivalents.ts`, dropping 345 of 1,574 generated rows; the one
+  substantive side effect was two sub-tables disagreeing on a name ("Olive Green" vs. "Bronze
+  Green" for XF-67, which this app's own catalogue calls "NATO Green") — cosmetic only
+  (`foreign_name` is descriptive, not a join key), documented rather than silently resolved
+  either way.
+
+*The one real design call: what to return when a foreign code maps to more than one Tamiya
+paint.* A shade often has both a bottle code and a spray-can code — Mr. Color C335 is both
+Tamiya AS-11 (spray) and XF-83 (bottle) — but `resolveCode` needs a single `paintCode`, not a
+list. `resolveForeignCode` prefers the bottle/lacquer form (X, XF, LP) over a spray can (TS,
+AS): that's the format the Thinner Bench's ratio calculator is actually built around, and the
+more useful "buy this" answer when the owner has neither. The real gap this leaves: if someone
+owns *only* the spray-can equivalent, this still reports the paint as missing, because bucketing
+(`kit-paints.ts`) checks ownership of one resolved code, not every equivalent Tamiya code for
+that foreign code. Fixing that properly means `ExtractedPaintRequirement.paintCode` becoming a
+list checked against the shelf as a set, which is a real change to the bucketing shape, not a
+seed-data tweak — left as a known limitation rather than a shallow patch.
+
+*What's still open:* the second source the user offered
+(`mech9.com`'s Tamiya spray-paint conversion chart, also unreachable from here) isn't
+incorporated — Phase 5 ships on the Cybermodeler data alone. §2.2's own documented fallback
+(`source = 'claude-research'` for a code the chart has no row for) isn't built either — a code
+this chart doesn't cover, like the user's own H23/C79 and C328 rows, still lands in Unresolved,
+same as before this phase; there's a real, scoped fast-follow here (a Claude web-search call, on
+"Extract paint list", for exactly the requirements that come back with `paintCode: null`) but it
+wasn't built speculatively. And a manual already extracted before this phase shipped keeps
+whatever it resolved to at the time — cross-brand resolution runs at extraction time, not
+retroactively, so an existing kit's Unresolved bucket only picks up the improvement once
+"Extract paint list" (or "Extracted — re-run") is clicked again.
+
+Verified without a real database: `resolveForeignCode` against known cases (`C335`/`H335`,
+case- and whitespace-insensitive, both resolving to `XF-83` — bottle preferred over the `AS-11`
+spray candidate; `H23`/`C79`/`C328`, the user's own uncovered codes, correctly returning
+`null`). Verified with one: seeded a local Postgres with the real `db:seed` script (temporarily
+pointed at node-postgres, reverted after — same as every other round's methodology) including
+the new `paint_brand`/`paint_equivalent` tables, then ran the actual resolution path
+(`normalizeExtractedPaints`) against wire data shaped like the user's real manual rows and drove
+it through the UI: `C335 ミディアムシーグレー Medium Seagray` resolved to `XF-83` and rendered
+in Owned (the shelf owned XF-83 but not AS-11, confirming the bottle-preference rule actually
+takes effect, not just returns *a* candidate); `H23`/`C79` and `C328` correctly stayed in
+Unresolved rather than being silently mismatched to something wrong.
+
 ---
 
 ## 8. Non-goals
@@ -1340,6 +1428,14 @@ vercel env pull .env.local
 # 5. Apply any pending migrations to the database those credentials point at.
 npm run db:migrate
 
+# 5.5. Re-run the seed — needed whenever a phase's *data* changed, not just
+#      its schema (Phase 5 is the first one since Phase 0: no new migration,
+#      but paint_brand and paint_equivalent are empty until this runs). Safe
+#      to run even when nothing changed — every table it touches upserts or
+#      is scoped by `source`, never blind-appends (see the file's own
+#      top-of-file comment for exactly how each table is kept re-run-safe).
+npm run db:seed
+
 # 6. Run it.
 npm run dev
 ```
@@ -1360,10 +1456,20 @@ additive and none drops a column another deploy might still be reading.
 | `0003_wishlist_and_stash` | `wishlist_item`; `kit.category`/`scalemates_url`/`image_url` | Phase 3 |
 | `0004_kit_status_dates_and_manual_label` | `kit.started_at`/`completed_at`, `kit_manual.label` | Phase 4a |
 
-**A phase that adds a migration says so in its PR description, in the steps to test it.** That
-is the rule this file exists to record, because it has now been broken twice — the branch
-looked fine, the deploy 500'd on a missing column, and the reason was a step nobody had been
-told about. If a future phase wants the whole class of mistake gone rather than documented, add
-a `vercel-build` script that runs the migrator before `next build`: Vercel prefers that script
-when present while CI keeps calling `npm run build` directly, so the build stays database-free
-where it has to be (§5 in PERFORMANCE.md) and migrates where it can.
+**Phase 5 added no migration** — `paint_brand` and `paint_equivalent` have existed since
+`0000_init` and were simply empty. What it needs instead is exactly step 5.5 above: a re-seed,
+not a migration. Skipping it doesn't 500 anything (unlike a missing column) — it just means
+every foreign-brand paint code keeps landing in Unresolved as if this phase had never shipped,
+which is a much quieter failure to notice than a crashed screen. Called out here because
+"forgot the one-time step nobody told me about" is exactly the mistake this section exists to
+prevent, and a re-seed is that mistake's data-side twin, not covered by the migration ledger
+above at all.
+
+**A phase that adds a migration or needs a re-seed says so in its PR description, in the steps
+to test it.** That is the rule this file exists to record, because it has now been broken twice
+on the migration side — the branch looked fine, the deploy 500'd on a missing column, and the
+reason was a step nobody had been told about. If a future phase wants the whole class of
+mistake gone rather than documented, add a `vercel-build` script that runs the migrator (and,
+per this phase, the seed too) before `next build`: Vercel prefers that script when present
+while CI keeps calling `npm run build` directly, so the build stays database-free where it has
+to be (§5 in PERFORMANCE.md) and migrates/seeds where it can.
