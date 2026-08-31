@@ -127,7 +127,7 @@ export function ManualsList({ kitId, manuals }: { kitId: number; manuals: KitMan
           </div>
           <button
             type="button"
-            className={formStyles.primaryButton}
+            className={`${formStyles.primaryButton} ${styles.dropzoneUpload}`}
             onClick={() => fileInputRef.current?.click()}
             disabled={phase !== "idle"}
           >
@@ -144,10 +144,6 @@ export function ManualsList({ kitId, manuals }: { kitId: number; manuals: KitMan
               if (file) void handleFile(file);
             }}
           />
-          <span className={styles.photoHint}>
-            Uploads straight to storage — real manuals run 10–40 MB, no problem. Paint extraction needs the PDF under
-            ~20 MB once base64-encoded; a larger manual still stores and views fine, it just skips auto-extraction.
-          </span>
           {error ? <div className={formStyles.error}>{error}</div> : null}
         </div>
       ) : null}

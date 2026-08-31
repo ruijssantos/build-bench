@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 
 import { removeKitAndReturn } from "@/app/(bench)/kits/actions";
 import { TrashIcon } from "@/components/icons";
@@ -12,6 +12,10 @@ import formStyles from "@/components/inventory/InventoryForm.module.css";
  * shelf's own Edit dialog uses, because this deletes a kit's manuals and
  * paint requirements along with it and there is no undo.
  *
+ * Arming isn't sticky: a click anywhere else on the page disarms it back to
+ * "Remove", so walking away from a half-confirmed delete doesn't leave a
+ * live "one more click deletes this" trap for whatever gets clicked next.
+ *
  * The action redirects to `/kits` on success, so there is no success state to
  * render here — only a failure one, for a kit already gone from another tab.
  */
@@ -19,10 +23,21 @@ export function DeleteKitButton({ id, name }: { id: number; name: string }) {
   const [armed, setArmed] = useState(false);
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!armed) return;
+    function handlePointerDown(e: MouseEvent) {
+      if (buttonRef.current && !buttonRef.current.contains(e.target as Node)) setArmed(false);
+    }
+    document.addEventListener("mousedown", handlePointerDown);
+    return () => document.removeEventListener("mousedown", handlePointerDown);
+  }, [armed]);
 
   return (
     <>
       <button
+        ref={buttonRef}
         type="button"
         className={`${formStyles.deleteButton} ${armed ? formStyles.deleteArmed : ""}`}
         disabled={pending}

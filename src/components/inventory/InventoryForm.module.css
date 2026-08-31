@@ -156,6 +156,15 @@
   font-weight: 700;
 }
 
+/* Reuses `.deleteButton`'s box entirely — its resting state (line-strong
+   border, muted ink) is already the right look for Edit; only the hover
+   colour needs to differ (accent, not alert), which this overrides when
+   paired with `.deleteButton` on the same element. */
+.editButtonHover:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
 /* ------------------------------------------------------------ paint picker */
 
 .pickerWrap {

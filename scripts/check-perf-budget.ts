@@ -40,8 +40,14 @@ const BUDGETS = {
    * a real split was judged the worse trade for now (every bench screen
    * currently shares one cached stylesheet; splitting means a first
    * navigation into the Stash costs its own fetch), so the number moved
-   * instead, deliberately, not silently. See docs/PERFORMANCE.md §10. */
-  cssGzip: 10 * 1024,
+   * instead, deliberately, not silently. See docs/PERFORMANCE.md §10.
+   * Nudged to 10.5 kB for the round of preview polish after Phase 4a shipped:
+   * a bordered Edit button to match Delete, a pointer cursor on the manual
+   * label pills, and a touch more spacing in the upload dropzone — all in
+   * the shared `Inventory`/`InventoryForm` stylesheets `/thinner` also
+   * loads, so a few real lines there cost this budget even though none of
+   * them touch Thinner's own UI. */
+  cssGzip: 10.5 * 1024,
 };
 
 interface Failure {

@@ -1159,6 +1159,11 @@ a.iconButton:hover {
   color: var(--icon-idle);
 }
 
+/* Extra gap above "Choose a file", beyond `.dropzone`'s own uniform one. */
+.dropzoneUpload {
+  margin-top: 6px;
+}
+
 /* ---- paints ---- */
 
 .paintBucket + .paintBucket {

@@ -1077,6 +1077,44 @@ no database, confirming every `<Suspense>` boundary this phase added fails into 
 populated-state layout (real cards, a real manuals list, real paint buckets) still hasn't been
 seen rendered with real rows.
 
+**Round 4 — preview polish.** A fourth pass of screenshot feedback, all cosmetic:
+
+- **Edit wasn't a button.** `EditKitTrigger` is shared between a card's compact action row
+  (borderless icon, fine among other icons there) and the detail page's header (bordered, right
+  next to `DeleteKitButton`'s `.deleteButton`) — one component, two contexts that want different
+  weight. Gave it a `variant` prop (`"icon"` default, `"button"` for the detail header) rather
+  than splitting it in two: the dialog it opens and the data it needs are identical either way,
+  only the trigger's own chrome differs. The button variant reuses `.deleteButton`'s box
+  wholesale (border, height, padding — its resting state was already the right look for Edit)
+  and layers on a small `.editButtonHover` modifier so hovering Edit reads as accent, not the
+  alert red that would wrongly suggest something destructive.
+- **"Tap again to remove" never reset.** `DeleteKitButton`'s `armed` state had no path back to
+  `false` except a failed delete — click Remove, look away, and it stayed armed forever, one
+  stray click on the (now-relabelled) button away from actually deleting. Added a
+  `mousedown` listener on `document`, live only while armed, that disarms on any click outside
+  the button itself — the same "walk away and it forgets" behavior a real confirm dialog gives
+  for free.
+- **Three small dropzone fixes**, all in `ManualsList`'s "Choose a PDF" panel: the label pills
+  (Instructions/Decal guide/…) are `<button>`s reusing `.filterPill`, a class written for
+  `<Link>` anchors — anchors get a pointer cursor for free, buttons don't, so hovering them
+  showed the default arrow; added `cursor: pointer` to `.filterPill` itself, which fixes every
+  caller, not just this one. Removed the "Uploads straight to storage — real manuals run
+  10–40 MB…" hint line entirely, per feedback that it wasn't earning its place. Added a small
+  `margin-top` between the pill row and "Choose a file" (`.dropzoneUpload`) — `.dropzone`'s own
+  `gap: 8px` is uniform across every child, which read as too tight once a whole pill row sat
+  between the heading and the button rather than just the icon and heading.
+
+Verified the same way as round 3: a local Postgres seeded with one stash kit, the driver
+temporarily pointed at it and reverted before commit, driven with a headless browser. Confirmed
+directly rather than by inspection: the Edit button's computed border/height now match Remove's;
+clicking Remove arms it ("Tap again to remove"), and a click elsewhere resets it to "Remove"
+(grabbed the element handle before the aria-label changed, since role-based re-queries break once
+the click flips it); the label pill's computed `cursor` is `pointer`; the removed hint text has
+zero matches on the page; and there's a real visible gap between the pill row and "Choose a
+file" in a full-page screenshot. Pushed the shared `Inventory`/`InventoryForm` CSS 0.4 kB over its
+budget in the process — see docs/PERFORMANCE.md §11 for why that moved to 10.5 kB instead of
+being trimmed further.
+
 ---
 
 ## 8. Non-goals

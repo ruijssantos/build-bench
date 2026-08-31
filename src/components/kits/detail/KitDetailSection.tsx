@@ -41,7 +41,7 @@ export async function KitDetailSection({ params }: { params: Promise<{ id: strin
   const title = kit.name ?? "Kit";
   const headerActions = (
     <div className={styles.headerActions}>
-      <EditKitTrigger kit={kit} />
+      <EditKitTrigger kit={kit} variant="button" />
       <DeleteKitButton id={kit.id} name={title} />
     </div>
   );

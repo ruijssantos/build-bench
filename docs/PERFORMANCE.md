@@ -286,7 +286,7 @@ shell and accept the gap.
 | `/wishlist` initial JS, gzipped | 150 kB | 149.4 kB |
 | `/thinner` static shell, gzipped | 8 kB | 3.4 kB |
 | `/wishlist` static shell, gzipped | 8 kB | 3.3 kB |
-| CSS, gzipped (shared by both) | 10.0 kB | 9.9 kB |
+| CSS, gzipped (shared by both) | 10.5 kB | 10.4 kB |
 | Paint catalogue in an eagerly-loaded chunk | never | behind its dynamic import |
 | `images.remotePatterns` covers the Blob store | required | configured |
 | Every app route ships a static shell | all 6 | all 6 |
@@ -328,6 +328,14 @@ actually split the group — at some point a screen this different in kind
 (the app's first detail route, likely joined by more in Phases 6–7) may be
 better served by its own stylesheet than by keeping stretching one shared by
 five very different screens.
+
+A round of preview polish right after Phase 4a shipped (a bordered Edit
+button to match Delete on the kit detail header, a pointer cursor on the
+manual upload's label pills, a touch more spacing in that same dropzone)
+nudged it once more, to 10.5 kB — small, real CSS in the shared
+`Inventory`/`InventoryForm` stylesheets `/thinner` also loads, so it counts
+against `/thinner`'s number even though none of it touches Thinner's own
+screen. Same deal as before: raised deliberately, not a rounding error.
 
 ## 12. Checklist for a new screen
 
