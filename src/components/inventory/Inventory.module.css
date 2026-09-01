@@ -431,8 +431,8 @@ a.iconButton {
 
 .iconButton:hover,
 a.iconButton:hover {
-  background: var(--card-sunken);
-  color: var(--ink);
+  background: var(--accent-tint);
+  color: var(--accent);
 }
 
 .lowButton {

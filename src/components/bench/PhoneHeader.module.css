@@ -30,6 +30,15 @@
   gap: 12px;
 }
 
+/* `stackTrailing` — the title takes the full row on its own, `trailing`
+   drops to its own line below rather than competing with a title that
+   might run to three lines. */
+.rowStacked {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+}
+
 .eyebrow {
   font-family: var(--font-ui);
   font-size: 12px;
