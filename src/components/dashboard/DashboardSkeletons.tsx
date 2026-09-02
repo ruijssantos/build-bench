@@ -32,16 +32,19 @@ export function StatsSkeleton() {
   );
 }
 
+/** Shaped like the real hero — `.benchCard`'s own art sizing applies here
+ * too, so the reserved block is the width and height the card will be rather
+ * than a stacked card that collapses sideways when the query lands. */
 export function BenchSkeleton() {
   return (
-    <div className={cardStyles.cardGrid} aria-hidden="true">
-      <div className={cardStyles.card}>
+    <div className={styles.benchList} aria-hidden="true">
+      <div className={`${cardStyles.card} ${styles.benchCard}`}>
         <div className={`${cardStyles.cardArt} ${cardStyles.skeletonSwatch}`} />
         <div className={cardStyles.cardBody}>
           <span className={`${cardStyles.cardBrand} ${cardStyles.skeletonLine}`} style={{ width: 64 }}>
             Brand
           </span>
-          <span className={`${cardStyles.cardName} ${cardStyles.skeletonLine}`} style={{ width: "80%" }}>
+          <span className={`${cardStyles.cardName} ${cardStyles.skeletonLine}`} style={{ width: "60%" }}>
             Name
           </span>
           <span className={`${cardStyles.cardNumber} ${cardStyles.skeletonLine}`} style={{ width: 48 }}>

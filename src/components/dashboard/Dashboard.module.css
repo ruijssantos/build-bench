@@ -80,10 +80,57 @@
   color: var(--muted-2);
 }
 
-/* ------------------------------------------------------------ two columns */
+/* ----------------------------------------------------------- bench + row */
 
-/* One column on a phone; on a desktop the two decision modules take the
-   width and the two reference modules ride a fixed rail beside them. */
+/* The bench spans the full width and the other three modules sit as equal
+   columns beneath it.
+
+   The first shape tried here was a 1fr + 380px split with the bench in the
+   wide column, and it was wrong for the actual data: this app's owner builds
+   one kit at a time, occasionally two, so the "grid" of building kits was a
+   single card in one 260px track with ~700px of dead space beside it. A
+   module that holds one item is a hero, not a grid. */
+.benchList {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Art left, details right — on a phone it falls back to the stacked card
+   every other screen uses, where the art's own 4:3 is right. */
+@media (min-width: 900px) {
+  /* `flex-direction` has to be restated: `.card` is a column everywhere else
+     in the app, and inheriting that here put the art on top at 320px wide
+     with the body stranded beneath it — the stacked card, just narrower. */
+  .benchCard {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+  }
+
+  /* The art. Targeted structurally rather than by class because it belongs to
+     `Wishlist.module.css` and CSS-module names are hashed per file — this is
+     the one place the Dashboard reaches into `KitCardBody`'s shape.
+     `div:first-of-type`, deliberately, not `:first-child`: the card's first
+     child is the stretched `<a>` overlay that makes the whole card a link, so
+     `:first-child` would size the *link* (shrinking its hit area to 320px)
+     and leave the art to size itself from content. The art is the first
+     `div`; `.cardBody` is the second. */
+  .benchCard > div:first-of-type {
+    flex: none;
+    width: 360px;
+  }
+
+  /* The body — `div:last-of-type` by the same reasoning. Centred against the
+     art's 270px rather than hanging at the top of it: this card carries five
+     short lines, and top-aligning them under a hero-sized picture leaves a
+     visible well of nothing beneath the text. */
+  .benchCard > div:last-of-type {
+    justify-content: center;
+  }
+}
+
+/* One column on a phone; three equal ones on a desktop. */
 .columns {
   display: flex;
   flex-direction: column;
@@ -93,17 +140,10 @@
 @media (min-width: 900px) {
   .columns {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 380px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 20px;
     align-items: start;
   }
-}
-
-.column {
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-  min-width: 0;
 }
 
 /* --------------------------------------------------------------- row bits */

@@ -18,6 +18,11 @@ import styles from "./Dashboard.module.css";
  * than a dashboard-specific card: a kit looks like a kit wherever it appears,
  * and the readiness line is the one fact that makes this module more than a
  * shortcut.
+ *
+ * Laid out as a full-width hero rather than a grid — see `.benchCard` in
+ * `Dashboard.module.css` for why. Two kits stack as two rows; the owner
+ * builds one at a time, occasionally two, so there is no third case to plan
+ * for and a grid would strand exactly the width this module should be using.
  */
 export async function OnTheBench() {
   const [kits, readiness] = await Promise.all([listKitsByStatuses(["building"]), getStashReadiness()]);
@@ -35,11 +40,11 @@ export async function OnTheBench() {
   const byKit = new Map(readiness.map((row) => [row.kitId, row]));
 
   return (
-    <div className={cardStyles.cardGrid}>
+    <div className={styles.benchList}>
       {kits.map((kit, index) => {
         const started = formatIsoDate(kit.startedAt);
         return (
-          <div className={cardStyles.card} key={kit.id}>
+          <div className={`${cardStyles.card} ${styles.benchCard}`} key={kit.id}>
             <Link
               href={`/kits/${kit.id}`}
               className={cardStyles.cardStretchLink}
