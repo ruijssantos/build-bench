@@ -91,7 +91,11 @@ export function BenchSkeleton() {
         </div>
       </div>
 
-      <div className={bench.specsArea} aria-hidden="true">
+      {/* One stack, matching `BenchContent`'s own `.sideArea`. No placeholder
+          for the "Also sold as" card: whether it renders at all depends on
+          the code, so reserving its box would leave a hole on every paint the
+          chart doesn't cover — which is most of the spray lines. */}
+      <div className={bench.sideArea} aria-hidden="true">
         <div className={specs.grid}>
           {["pressure", "distance", "coats", "thinner"].map((key) => (
             <div className={specs.tile} key={key}>
@@ -100,9 +104,7 @@ export function BenchSkeleton() {
             </div>
           ))}
         </div>
-      </div>
 
-      <div className={bench.notesArea} aria-hidden="true">
         <div className={benchNotes.card}>
           <Line className={benchNotes.title} width={110} />
           <div className={benchNotes.list}>

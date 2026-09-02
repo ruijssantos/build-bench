@@ -789,7 +789,9 @@ Cybermodeler import (§2.2), `paint_equivalent`, foreign → Tamiya lookup. Sits
 than earlier because this is what makes Phase 4a's paint list work for Japanese kits, whose
 manuals call out Mr. Color throughout — Phase 4a's own Unresolved bucket is exactly the gap
 this phase closes, without re-running extraction on a single manual. §7 has the build
-account: what shipped, what the data actually covers, and what's still open.
+account: what shipped, what the data actually covers, and what's still open. The reverse
+direction — one Tamiya code to every brand that sells a match — surfaced later as the Thinner
+Bench's "Also sold as" card (§7), the chart's first UI.
 
 ### Phase 6 — Dashboard ✅
 `/dashboard`, and the screen the app now opens on (`/` redirects here; the Build Log's nav
@@ -1445,6 +1447,30 @@ and cost more than the finished phase does; rewriting it to import the wishlist'
 `.itemList`/`.itemRow`/`.itemBody`/`.itemTitle`/`.paintDot` and the `.moduleTitle` tier left
 only genuinely new surface. The rule worth keeping: check whether a card or row already exists
 before writing one.
+
+**The Thinner Bench's desktop gaps**, reported after the Dashboard shipped, turned out to be the
+same class of bug as the Dashboard's own and worth writing down because neither was visible in
+review. Its grid was `"hero search" / "hero specs" / "hero notes"` — the hero spanning three
+auto rows. A spanning item taller than the rows it spans does not overflow: **CSS grid
+distributes the surplus equally across every row it spans**, so a `row-gap: 16px` rendered at
+roughly 140px, twice, and `align-items: start` could not help because the items were already at
+the top of rows that were themselves too tall. Measured in a browser, not estimated. The fix is
+one grid area (`"hero side"`) holding a flex stack, so the stack's own gap is the only thing
+between those cards and the surplus lands once, below them.
+
+Two things rode along. Search moved out of the grid to full width above it — it is the first
+thing you touch on that screen and it was sitting in a right-hand column, where the Stash and
+the Wishlist both put theirs across the top. And `SpecGrid` stays 2×2 on desktop instead of
+widening to 1×4: those tiles hold six characters, and at full width each was ~500px of air.
+
+That freed room for the first UI Phase 5's chart has ever had: an **"Also sold as"** card under
+the bench notes, listing what this Tamiya code is called by the other brands
+(`getEquivalentsFor`, added to `src/catalogue/equivalents.ts` alongside the foreign → Tamiya
+lookup that was already there — one module, one seed file, both directions). It is a pure
+Server Component over the compiled catalogue: no query, no client JS. It renders **nothing**
+when the chart has no rows, which is normal rather than a failure — coverage is good on the
+bottle lines and thin on TS/AS, so a decanted spray usually shows no card at all. TS-8, the
+paint that prompted the report, is one of those.
 
 ---
 

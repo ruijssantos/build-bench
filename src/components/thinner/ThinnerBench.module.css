@@ -24,20 +24,33 @@
 .grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  grid-template-areas: "hero" "specs" "notes";
+  grid-template-areas: "hero" "side";
   gap: 12px;
   padding: 0 20px 28px;
 }
 
+/*
+ * One grid area for everything beside the hero, holding a flex stack —
+ * deliberately not the three separate rows this used to be
+ * ("hero search" / "hero specs" / "hero notes").
+ *
+ * The hero spans whatever rows it is given, and it is much taller than the
+ * things beside it. CSS grid resolves that by distributing the surplus
+ * EQUALLY across every row the tall item spans, so a `row-gap: 16px` rendered
+ * as roughly 140px of dead space between the search box and the spec tiles,
+ * and again between the tiles and the notes — measured, not estimated. No
+ * amount of `align-items: start` fixes it: the items were aligned to the top
+ * of rows that were themselves too tall.
+ *
+ * With one area the stack's own `gap` is the only thing between those cards,
+ * and the hero's surplus becomes a single run of space below the stack, where
+ * it reads as the end of the column rather than as holes punched in it.
+ */
 @media (min-width: 900px) {
   .grid {
     grid-template-columns: 520px minmax(0, 1fr);
-    grid-template-areas:
-      "hero search"
-      "hero specs"
-      "hero notes";
+    grid-template-areas: "hero side";
     column-gap: 24px;
-    row-gap: 16px;
     padding: 0;
     align-items: start;
   }
@@ -50,7 +63,11 @@
 
 /* Hidden (not just its inner input) on phone — the desktop SearchBox
    instance has nowhere sensible to sit in the single-column mobile stack;
-   phoneSearchBlock above the grid already covers mobile search. */
+   phoneSearchBlock above the grid already covers mobile search.
+
+   No longer inside the grid: search is the first thing you touch on this
+   screen, and it sat in a right-hand column below the title. Full width above
+   the grid matches where the Stash and the Wishlist put theirs. */
 .searchArea {
   display: none;
 }
@@ -58,19 +75,25 @@
 @media (min-width: 900px) {
   .searchArea {
     display: block;
-    grid-area: search;
     min-width: 0;
+    margin-bottom: 20px;
   }
 }
 
-.specsArea {
-  grid-area: specs;
+/* Everything that isn't the hero, stacked. On a phone this is just the
+   single-column order it always was. */
+.sideArea {
+  grid-area: side;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
-.notesArea {
-  grid-area: notes;
-  min-width: 0;
+@media (min-width: 900px) {
+  .sideArea {
+    gap: 16px;
+  }
 }
 
 .emptyCard {
@@ -147,4 +170,85 @@
   padding: 2px 6px;
   border-radius: 6px;
   color: var(--ink);
+}
+
+/* --------------------------------------------------- "Also sold as" card */
+
+/* Phase 5's cross-brand chart, surfaced at the bench (docs/PLAN.md §2.2).
+   Same card language as `BenchNotes` beside it — this is a reference block,
+   not a control, so it stays quiet: no accent, no semantic colour, codes in
+   the mono face the rest of the app uses for a paint code. */
+.equivalentsCard {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-card);
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* The locked module-title tier — §4.1. */
+.equivalentsTitle {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+}
+
+/* One column on a phone, two on a desktop: ten brands in one column would
+   run the card longer than the hero it sits beside. */
+.equivalentsGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 10px;
+}
+
+@media (min-width: 900px) {
+  .equivalentsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px 22px;
+  }
+}
+
+.equivalentsRow {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  min-width: 0;
+}
+
+/* Fixed width so the code chips line up down each column rather than
+   stair-stepping off brand names of different lengths. Wide enough for the
+   longest label in `seed/paint-brands.json` — "Gunze/Mr. Hobby" — on one
+   line: it breaks at the slash, so at 96px (and still at 116px) it wrapped,
+   which made those rows taller than their neighbours and knocked the two
+   columns out of step with each other. Left wrappable rather than `nowrap`
+   so a longer brand added to the seed later degrades into two lines instead
+   of overlapping its own codes. */
+.equivalentsBrand {
+  font-family: var(--font-ui);
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--muted);
+  width: 132px;
+  flex: none;
+}
+
+.equivalentsCodes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  min-width: 0;
+}
+
+.equivalentsCode {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  background: var(--card-sunken);
+  color: var(--ink-soft);
+  border-radius: var(--radius-pill);
+  padding: 3px 9px;
 }

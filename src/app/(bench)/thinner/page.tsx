@@ -42,16 +42,17 @@ export default function ThinnerPage(props: PageProps<"/thinner">) {
       </Suspense>
 
       <div className={styles.scrollArea}>
-        <div className={styles.grid}>
-          {/* Outside the content boundary on purpose: search is the one thing
-              that must work the instant the screen paints, and it needs
-              nothing from the database to do so. */}
-          <div className={styles.searchArea}>
-            <Suspense fallback={<SearchBoxFallback scope="desktop" />}>
-              <SearchArea scope="desktop" searchParams={props.searchParams} />
-            </Suspense>
-          </div>
+        {/* Outside the content boundary on purpose: search is the one thing
+            that must work the instant the screen paints, and it needs nothing
+            from the database to do so. Outside the *grid* too — it spans the
+            width above it, the way the Stash's and the Wishlist's do. */}
+        <div className={styles.searchArea}>
+          <Suspense fallback={<SearchBoxFallback scope="desktop" />}>
+            <SearchArea scope="desktop" searchParams={props.searchParams} />
+          </Suspense>
+        </div>
 
+        <div className={styles.grid}>
           <BenchError label="The bench">
             <Suspense fallback={<BenchSkeleton />}>
               <BenchContent searchParams={props.searchParams} />
