@@ -48,7 +48,7 @@ export async function KitDetailSection({ params }: { params: Promise<{ id: strin
 
   return (
     <>
-      <PhoneHeader title={title} trailing={headerActions} />
+      <PhoneHeader title={title} trailing={headerActions} stackTrailing />
       <DesktopHeader title={title} trailing={headerActions} />
 
       <div className={styles.scrollArea}>

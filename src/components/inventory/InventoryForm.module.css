@@ -41,6 +41,18 @@
   border-color: var(--accent);
 }
 
+/* A `type="date"` input's "/" separators aren't covered by the browser's own
+   dimming of an unfilled month/day/year segment — those go a lighter grey
+   on their own, the separators between them just inherit `.input`'s regular
+   ink colour, so an empty field reads as light digits around noticeably
+   darker slashes. Recolouring just the separator to the same muted tone
+   fixes that without touching the segments themselves (which would mean
+   fighting the browser's own fill-state logic to avoid a value that's
+   actually been entered rendering grey). */
+.input::-webkit-datetime-edit-text {
+  color: var(--muted);
+}
+
 .segmented {
   display: flex;
   flex-wrap: wrap;
@@ -112,13 +124,14 @@
 /* Every dialog's "Cancel" and the status stepper's "Move back to …" share
    this class, and none of them had any hover feedback at all — the resting
    state is already subtle (a thin border on `--muted` text), so with no
-   hover it just looks inert. Same neutral treatment `.iconButton:hover`
-   uses elsewhere, not an accent/ok/alert colour: this button never heads
-   toward a particular outcome, it just needs to read as clickable. */
+   hover it just looks inert. Same accent treatment every bordered
+   "default" button in the app hovers to (`.editButtonHover`,
+   `.manualActionButton` in Wishlist.module.css, `.iconButton` below) — one
+   hover rule for the whole family, not a different shade per button. */
 .ghostButton:hover {
-  border-color: var(--ink);
-  color: var(--ink);
-  background: var(--card-sunken);
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-tint);
 }
 
 .primaryButton {
@@ -171,10 +184,13 @@
 /* Reuses `.deleteButton`'s box entirely — its resting state (line-strong
    border, muted ink) is already the right look for Edit; only the hover
    colour needs to differ (accent, not alert), which this overrides when
-   paired with `.deleteButton` on the same element. */
+   paired with `.deleteButton` on the same element. Same accent/tint pair
+   as `.ghostButton:hover` and `.iconButton:hover` — one hover treatment
+   for every bordered "default" button, not a shade picked per caller. */
 .editButtonHover:hover {
   border-color: var(--accent);
   color: var(--accent);
+  background: var(--accent-tint);
 }
 
 /* ------------------------------------------------------------ paint picker */

@@ -1361,6 +1361,48 @@ foreign-code `codeGuess` (which Phase 5's chart may or may not additionally reso
 before) — matching the user's own description of the original good run ("only missing the ones
 where there wasn't a clear Tamiya label"). This still needs a real re-run to confirm outright.
 
+**Round 9 — a design-system inconsistency I introduced myself, plus a mobile layout fix.** Two
+unrelated reports, fixed together:
+
+- **Every "default" bordered/icon button had grown its own hover colour.** Across three
+  separate rounds, `.ghostButton` (Cancel, "Move back to …") and `.iconButton` (both copies,
+  `Inventory.module.css` and `Wishlist.module.css`) ended up hovering to `--card-sunken`/`--ink`
+  (a neutral tan/ink tint), while `.editButtonHover` and `.manualActionButton` — built later,
+  explicitly *as* "the same neutral treatment `.iconButton:hover` uses" — actually used
+  `--accent`/`--accent-tint` (blue) instead. Neither round noticed the two didn't match, because
+  each only looked at the one button it was fixing, not the family. Screenshotted directly:
+  "Move back to Stash" hovering tan next to "Mark built"'s blue read as arbitrary. Unified all
+  four call sites to the accent/accent-tint pair (`.editButtonHover` also gained the `background`
+  it had been missing, hovering to a text/border colour change alone) — one hover rule for every
+  bordered or icon-only "default" button in the app now, not a shade picked per caller, with
+  cross-references between the CSS comments so the next one to touch any of these sees the whole
+  family instead of just its own selector.
+- **The kit detail page's mobile header didn't budget for a long title.** `PhoneHeader`'s row
+  puts the title and `trailing` (Edit/Remove) side by side, `justify-content: space-between` —
+  fine for every other screen's short, fixed title ("Paints", "Wishlist"), wrong for a kit's own
+  name, which is user-entered and can run long enough to wrap three lines while squeezed against
+  the action buttons, stranding them halfway down the wrapped text. Added a `stackTrailing` prop
+  (default off, so every other `PhoneHeader` caller is unaffected) that switches the row to
+  `flex-direction: column` — title gets the full row width, `trailing` drops to its own line
+  below. `KitDetailSection` is the only caller that passes it.
+
+Also fixed in passing, from an unrelated report: a `type="date"` input's "/" separators aren't
+covered by the browser's own dimming of an empty month/day/year segment — Chromium visibly grays
+each field's placeholder digits but leaves `::-webkit-datetime-edit-text` (the separator) at the
+input's regular ink colour, so an untouched field read as light "mm/dd/yyyy" digits around
+noticeably darker slashes. Recoloured just that pseudo-element to `--muted`, in
+`InventoryForm.module.css`'s shared `.input` class — every date field in the app, not one dialog.
+
+Verified live: a local Postgres seeded with a kit whose real title is long enough to reproduce
+the wrap (the user's own screenshot's kit, "Lancia Delta S4 Martini Monte Carlo Rally 1986"),
+driven with a headless browser at a real phone viewport (390×844) — confirmed the title's
+bounding box now spans the row's full width and the Edit button's box sits strictly below the
+title's, not beside it. Computed styles for all three previously-mismatched hover states
+("Move back to Stash", the detail header's Edit, a plain trash icon button) came back byte-identical
+on `color`/`background`/`border-color` after hovering each. The date-input fix was checked
+visually — a fresh "Purchase & Dates" dialog's `mm`/`dd`/`yyyy` fields render as one consistent
+muted tone, slashes included.
+
 ---
 
 ## 8. Non-goals

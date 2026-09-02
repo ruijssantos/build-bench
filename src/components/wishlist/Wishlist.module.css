@@ -622,9 +622,13 @@
    state), wrong for a manual row's Open/Extract, which have nothing to do
    with "bought". Layered on top of `.boughtButton` for the same pill shape,
    this swaps the hover to the plain accent every other non-destructive,
-   not-already-done secondary action uses (`.editButtonHover`'s sibling). Not
-   applied to `.boughtButtonDone`: that one is *already* the ok/green "done"
-   state on purpose, same as a purchased kit. */
+   not-already-done secondary action uses — same accent/tint pair as
+   `.editButtonHover` and `.iconButton` below, `InventoryForm.module.css`'s
+   `.ghostButton`, and `Inventory.module.css`'s `.iconButton`: one hover
+   treatment for every bordered or icon-only "default" button in the app,
+   not a shade picked per caller. Not applied to `.boughtButtonDone`: that
+   one is *already* the ok/green "done" state on purpose, same as a
+   purchased kit. */
 .manualActionButton:hover {
   border-color: var(--accent);
   color: var(--accent);
@@ -651,8 +655,8 @@ a.iconButton {
 
 .iconButton:hover,
 a.iconButton:hover {
-  background: var(--card-sunken);
-  color: var(--ink);
+  background: var(--accent-tint);
+  color: var(--accent);
 }
 
 /* -------------------------------------------------------------- other items */
