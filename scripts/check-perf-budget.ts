@@ -46,8 +46,15 @@ const BUDGETS = {
    * label pills, and a touch more spacing in the upload dropzone — all in
    * the shared `Inventory`/`InventoryForm` stylesheets `/thinner` also
    * loads, so a few real lines there cost this budget even though none of
-   * them touch Thinner's own UI. */
-  cssGzip: 10.5 * 1024,
+   * them touch Thinner's own UI.
+   *
+   * 11.0 kB for Phase 6's Dashboard — the smallest of the four raises,
+   * +0.2 kB for a whole new screen, because `Dashboard.module.css` imports
+   * the wishlist's row and card vocabulary instead of restating it and only
+   * declares what the screen genuinely adds (stat tiles, its two-column
+   * split, three modifiers). The first draft, which restated them, cost
+   * more than this whole phase did. */
+  cssGzip: 11.0 * 1024,
 };
 
 interface Failure {
@@ -176,7 +183,7 @@ if (!blobPatternConfigured) {
 const appDir = join(BUILD_DIR, "server/app");
 const prerendered = readdirSync(appDir).filter((f) => f.endsWith(".html"));
 
-const ROUTES_THAT_MUST_PRERENDER = ["thinner", "inventory", "kits", "wishlist", "log", "login"];
+const ROUTES_THAT_MUST_PRERENDER = ["dashboard", "thinner", "inventory", "kits", "wishlist", "login"];
 
 for (const route of ROUTES_THAT_MUST_PRERENDER) {
   if (!prerendered.includes(`${route}.html`)) {

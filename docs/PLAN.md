@@ -3,10 +3,11 @@
 A companion app for 1:24 scale model car building, centred on a Tamiya 74540 HG Trigger
 airbrush workflow and pre-build kit research.
 
-**Status:** Phases 0–3 shipped (foundations, Thinner Bench, paint inventory, wishlist). Phase 4
-(stash) is next. This file is the standing architecture and technical approach — how the
-app is hosted, how data and screens are structured, and the rules any new phase builds
-against. It is not a decision log; for that, `git log docs/PLAN.md`.
+**Status:** Phases 0–6 shipped (foundations, Thinner Bench, paint inventory, wishlist, stash,
+cross-brand equivalence, dashboard). Phase 7 (kit research) is next. This file is the standing
+architecture and technical approach — how the app is hosted, how data and screens are
+structured, and the rules any new phase builds against. It is not a decision log; for that,
+`git log docs/PLAN.md`.
 
 Section numbers below are stable and cited from code (`schema.ts`, `PERFORMANCE.md`,
 `README.md` all reference specific `§N`s) — sections get edited, not renumbered.
@@ -385,11 +386,11 @@ build-bench/
 │   ├── app/
 │   │   ├── (bench)/                ← the authenticated app shell (nav rail + tab bar)
 │   │   │   ├── layout.tsx
+│   │   │   ├── dashboard/          ← the landing screen, Phase 6
 │   │   │   ├── thinner/            ← page.tsx + actions.ts
 │   │   │   ├── inventory/          ← the paint shelf, page.tsx + actions.ts
 │   │   │   ├── wishlist/           ← Phase 3
-│   │   │   ├── kits/               ← the stash, Phase 4
-│   │   │   └── log/                ← Phase 7
+│   │   │   └── kits/               ← the stash + /kits/[id], Phase 4a
 │   │   ├── api/                    ← only where a Server Action doesn't fit (search,
 │   │   │                             external callbacks, kit research's staged calls)
 │   │   ├── login/  ·  page.tsx  ·  layout.tsx  ·  manifest.ts
@@ -780,7 +781,7 @@ fallback when the direct path fails, and the UI says which path actually ran.
 Deep research — difficulty, fit issues with sources, a real build video — is explicitly
 **Phase 4b**, not built here: this phase ships only the free part, a plain YouTube search
 link built the way `paintSearchUrl` builds its shop link (`kitYoutubeSearchUrl`, no API, no
-key). Phase 6 below still owns the paid stages B/C research this link will eventually sit
+key). Phase 7 below still owns the paid stages B/C research this link will eventually sit
 beside.
 
 ### Phase 5 — Cross-brand equivalence ✅
@@ -790,13 +791,33 @@ manuals call out Mr. Color throughout — Phase 4a's own Unresolved bucket is ex
 this phase closes, without re-running extraction on a single manual. §7 has the build
 account: what shipped, what the data actually covers, and what's still open.
 
-### Phase 6 — Kit research
+### Phase 6 — Dashboard ✅
+`/dashboard`, and the screen the app now opens on (`/` redirects here; the Build Log's nav
+slot became this one, so the phone tab bar still holds five items plus Sign out). Five
+read-only modules over data Phases 2–5 already store, each behind its own `<Suspense>` inside
+its own `<BenchError>`: four linked stat tiles (shelf size, running low, stash, wishlist);
+**On the bench** — every `building` kit as a full card with its readiness line and start date;
+**What you could start** — stashed kits whose every called-for paint is already owned, which
+is the module that makes this screen a decision rather than a readout; **Next shop run** —
+missing paints across unfinished kits rolled up with how many kits each blocks, then bottles
+marked low, split because they are different errands; and a **Wishlist** glance.
+
+One new query (`listShopRunPaints`), no new tables and no migration — this phase is a
+composition over existing cached reads, and shares their cache entries rather than adding
+counts of its own. It is also the derived answer to the `shopping_list_item` table dropped in
+§7: nothing to tick stale, nothing to keep in sync.
+
+Deliberately read-only. Every module links into the screen that owns the thing; none of them
+mutate, so there is no write path here to keep consistent with four other screens.
+
+### Phase 7 — Kit research
 §5.1 stages B and C against a stash kit: difficulty, fit issues with sources, build video,
 manual link — Phase 4b. Optional enhancement — nothing depends on it.
 
-### Phase 7 — Build log
-Per-kit dated journal by stage, photos to Blob, research and manual attached to the kit. To
-be detailed when we get there.
+### Phase 8 — Build log
+Per-kit dated journal by stage, photos to Blob, research and manual attached to the kit.
+Deferred at the owner's request in favour of the Dashboard above, which took its nav slot;
+to be detailed when we get there.
 
 ---
 
@@ -1402,6 +1423,28 @@ title's, not beside it. Computed styles for all three previously-mismatched hove
 on `color`/`background`/`border-color` after hovering each. The date-input fix was checked
 visually — a fresh "Purchase & Dates" dialog's `mm`/`dd`/`yyyy` fields render as one consistent
 muted tone, slashes included.
+
+**Phase 6 (Dashboard)** was inserted into the plan rather than appended: it ships before kit
+research and the build log, so it takes the number that matches the build order, and those two
+shifted to 7 and 8. Safe to renumber because no shipped code cited either — every `Phase N` in
+a source comment points at 0–5. The Build Log lost its nav slot to this screen at the owner's
+request; `/log`'s `ComingSoon` stub and `LogIcon` are deleted rather than left unreachable, and
+Phase 8 re-adds both when it happens.
+
+Two calls the one-line spec didn't settle. **"Ready to build" is strict about a kit with no
+extracted paint list**: such a kit is *unknown*, not ready, so `isReadyToBuild` requires both
+"nothing missing" and "something was actually checked" — listing an un-extracted kit there
+would make the single claim that module exists to make untrue. And the **shop run excludes
+`built` kits** while `getStashReadiness` includes them: a finished kit's missing paints are a
+historical fact, not shopping. Only `stash` and `building` describe paint you still need.
+
+The CSS budget question `PERFORMANCE.md` §10 has been deferring since Phase 3 came up again and
+was answered the same way — raise, don't split — but the number moved by only 0.2 kB for a whole
+new screen. The first draft of `Dashboard.module.css` restated the card and row rules it needed
+and cost more than the finished phase does; rewriting it to import the wishlist's
+`.itemList`/`.itemRow`/`.itemBody`/`.itemTitle`/`.paintDot` and the `.moduleTitle` tier left
+only genuinely new surface. The rule worth keeping: check whether a card or row already exists
+before writing one.
 
 ---
 

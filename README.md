@@ -27,8 +27,14 @@ code resolves to its Tamiya equivalent automatically during extraction, so a
 Japanese kit's manual doesn't dead-end in the Unresolved bucket just for
 calling out the "wrong" brand.
 
+Most recently the dashboard (Phase 6), which is now the screen the app opens
+on: what's on the bench, which stashed kits have every paint they need
+already on the shelf, what to buy on the next shop run, and a wishlist
+glance — all read-only, all derived from what the earlier phases already
+store.
+
 Next is Phase 4b, deep kit research (difficulty, fit issues, a build video —
-§5.1 stages B/C), folded into Phase 6's scope.
+§5.1 stages B/C), folded into Phase 7's scope.
 
 ## Stack
 
