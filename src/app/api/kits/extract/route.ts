@@ -8,6 +8,7 @@ import { KIT_REQUIREMENTS_TAG, replaceManualPaintRequirements } from "@/db/repos
 import { kitTag } from "@/db/repositories/kits";
 import { MAX_MANUAL_UPLOAD_BYTES } from "@/domain/kit-manual";
 import { normalizeExtractedPaints, PaintExtractionResultSchema } from "@/domain/kit-paint-extraction";
+import { describeAnthropicError, logAnthropicError } from "@/lib/anthropic-errors";
 import { readCapped, safeFetch } from "@/lib/box-art";
 
 /**
@@ -205,16 +206,11 @@ export async function POST(request: NextRequest) {
       ownedCount: requirements.filter((r) => r.paintCode).length,
     });
   } catch (error) {
-    if (error instanceof Anthropic.AuthenticationError) {
-      return jsonError("Paint extraction isn't set up correctly — check the ANTHROPIC_API_KEY value.");
-    }
-    if (error instanceof Anthropic.RateLimitError) {
-      return jsonError("Paint extraction is rate-limited right now — try again in a moment.");
-    }
-    if (error instanceof Anthropic.APIError) {
-      return jsonError("Paint extraction hit a problem — try again.");
-    }
-    return jsonError("Paint extraction hit a problem — try again.");
+    // Same chain as `resolve/route.ts`, from the same place — see
+    // `describeAnthropicError` for what each status means and why an empty
+    // credit balance needed a branch of its own.
+    logAnthropicError("kits/extract", error);
+    return jsonError(describeAnthropicError(error, "Paint extraction"));
   } finally {
     // Best-effort: a file left behind counts against the org's storage quota
     // but never blocks anything, so a delete failure here shouldn't turn a

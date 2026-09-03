@@ -16,9 +16,9 @@ import styles from "./DesktopHeader.module.css";
  * `display: none`, which removes it from the accessibility tree as well as
  * the page, so there's never two.
  *
- * `trailing` is optional — Paints puts its Add button here; Thinner and the
- * ComingSoon placeholders have nothing to put beside the title and just omit
- * it, which collapses cleanly since the header is a flex row either way.
+ * `trailing` is optional — Paints puts its Add button here; Thinner has
+ * nothing to put beside the title and just omits it, which collapses cleanly
+ * since the header is a flex row either way.
  *
  * `trailing` sits right after the title on `.header`'s own `gap: 20px` —
  * not pushed to the far edge by a spacer. A trailing action reads as part of

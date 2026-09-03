@@ -23,6 +23,32 @@ export function formatIsoDate(iso: string | null): string | null {
   return `${Number(day)} ${MONTHS[monthIndex]} ${year}`;
 }
 
+/**
+ * The other direction: a `<input type="date">` value on its way *into* a
+ * Postgres `date` column, or `null`.
+ *
+ * The date fields on the kit detail page used to go in through `readText`,
+ * which trims and caps a string but has no opinion about what's in it. A
+ * browser's own date input can only ever produce "YYYY-MM-DD" or "", so from
+ * the screen that was always fine — but a Server Action is a public endpoint,
+ * and anything else reaching the column raises `invalid input syntax for type
+ * date` from Neon, which surfaces as an unhandled rejection rather than as
+ * one of this app's own error strings.
+ *
+ * Checked by round trip rather than by regex alone: "2026-02-31" matches any
+ * shape test you'd write and is not a day. `Date.UTC` normalises it to 3
+ * March, so re-formatting and comparing is what actually catches it.
+ */
+export function readIsoDate(raw: unknown): string | null {
+  if (typeof raw !== "string") return null;
+  const trimmed = raw.trim();
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) return null;
+
+  const [year, month, day] = trimmed.split("-").map(Number);
+  const parsed = new Date(Date.UTC(year, month - 1, day));
+  return parsed.toISOString().slice(0, 10) === trimmed ? trimmed : null;
+}
+
 /** A `timestamptz` column (`uploaded_at`, `paints_extracted_at`) → the same
  * display format, read in UTC so server and client agree. The day a manual
  * was uploaded doesn't need to be timezone-correct to the viewer; it needs to

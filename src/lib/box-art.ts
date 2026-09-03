@@ -146,7 +146,7 @@ export async function safeUrl(raw: string): Promise<URL | null> {
  * actually came from — the latter matters for resolving relative `og:image`
  * values against the page that declared them.
  *
- * Exported (with `safeUrl` and `readCapped` below) for `/api/kits/extract`
+ * Exported (with `readCapped` below) for `/api/kits/extract`
  * (docs/PLAN.md §6 Phase 4a): fetching a manual PDF back out of our own Blob
  * store is a much lower-stakes request than the arbitrary, model-chosen URLs
  * the rest of this file defends against — the URL came from our own upload,
@@ -575,6 +575,27 @@ async function storeImage(imageUrl: string): Promise<BoxArtResult> {
 }
 
 /**
+ * Is this a URL in our own Blob store — i.e. something this app put there and
+ * may therefore delete, or record as already-stored?
+ *
+ * Checked on the parsed *hostname*, never as a substring of the whole URL.
+ * `url.includes(".blob.vercel-storage.com")` — which two call sites used to do
+ * — is satisfied by `https://example.com/?ref=.blob.vercel-storage.com`, so it
+ * would wave through a foreign URL as one of ours: stored on the row as if it
+ * were re-hosted (leaving a hotlink to somebody else's server, which §2.4 says
+ * this app doesn't do) and later handed to `del`.
+ */
+export function isStoredBlobUrl(url: string | null): boolean {
+  if (!url) return false;
+  try {
+    const { hostname, protocol } = new URL(url);
+    return protocol === "https:" && hostname.endsWith(".blob.vercel-storage.com");
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Drops the stored blob when the kit that referenced it goes away. Without
  * this every mistaken add-then-remove leaves a permanently public object
  * that nothing in the app can list or reach again.
@@ -585,10 +606,8 @@ async function storeImage(imageUrl: string): Promise<BoxArtResult> {
  * delete-arbitrary-URL call.
  */
 export async function deleteBoxArt(imageUrl: string | null): Promise<void> {
-  if (!imageUrl) return;
+  if (!imageUrl || !isStoredBlobUrl(imageUrl)) return;
   try {
-    const parsed = new URL(imageUrl);
-    if (!parsed.hostname.endsWith(".blob.vercel-storage.com")) return;
     await del(imageUrl);
   } catch {
     // The row is going regardless; an orphaned blob is not worth failing on.

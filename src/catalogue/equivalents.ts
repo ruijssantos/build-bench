@@ -70,8 +70,6 @@ export function resolveForeignCode(raw: string): string | null {
   return candidates.find((code) => !SPRAY_LINES.has(linePrefix(code))) ?? candidates[0];
 }
 
-export const CATALOGUE_EQUIVALENTS_SIZE = (equivalentsSeed as SeedEquivalent[]).length;
-
 // ---------------------------------------------------------------------------
 // Tamiya → foreign, for the Thinner Bench's "Also sold as" card
 // ---------------------------------------------------------------------------
