@@ -1381,3 +1381,13 @@ a.iconButton:hover {
 .claimSource:hover {
   text-decoration: underline;
 }
+
+/* The research panel's action row, which sits at the very bottom after either
+   the empty card or the last claim. `.cardBody`'s own 6px gap is too tight
+   against a bordered block — and every block above this one is bordered, so
+   the button reads as stuck to the card above it rather than as its own row.
+   Its own class rather than a change to `.manualActions`, which a manual row
+   also uses in a context that has no such problem. */
+.researchActions {
+  margin-top: 10px;
+}

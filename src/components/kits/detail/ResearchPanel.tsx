@@ -35,7 +35,7 @@ export async function ResearchPanel({ kit }: { kit: KitRow }) {
             Search the web for what builders say about this kit — difficulty, fit issues to expect,
             and tips. Takes a couple of minutes and costs a little.
           </div>
-          <div className={styles.manualActions}>
+          <div className={`${styles.manualActions} ${styles.researchActions}`}>
             <ResearchRunner kitId={kit.id} hasResearch={false} />
           </div>
         </div>
@@ -140,7 +140,7 @@ export async function ResearchPanel({ kit }: { kit: KitRow }) {
             research row per kit, so there was never anything for a verified
             one to outrank, and what shipped was a button that turned green
             and did nothing else (§7). */}
-        <div className={styles.manualActions}>
+        <div className={`${styles.manualActions} ${styles.researchActions}`}>
           <ResearchRunner kitId={kit.id} hasResearch />
         </div>
       </div>
