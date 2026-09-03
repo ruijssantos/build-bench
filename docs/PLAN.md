@@ -812,9 +812,12 @@ counts of its own. It is also the derived answer to the `shopping_list_item` tab
 Deliberately read-only. Every module links into the screen that owns the thing; none of them
 mutate, so there is no write path here to keep consistent with four other screens.
 
-### Phase 7 — Kit research
-§5.1 stages B and C against a stash kit: difficulty, fit issues with sources, build video,
-manual link — Phase 4b. Optional enhancement — nothing depends on it.
+### Phase 7 — Kit research ✅
+§5.1 stages B and C against a stash kit: difficulty as a sourced consensus, fit issues and
+tips each carrying the URL they came from, a build video and a link to the instructions
+online. A Research panel on `/kits/[id]`, below Manuals and Paints. Optional enhancement —
+nothing else depends on it, and a kit with no research shows the panel's empty state plus the
+free YouTube search that has been there since Phase 4a. §7 has the build account.
 
 ### Phase 8 — Build log
 Per-kit dated journal by stage, photos to Blob, research and manual attached to the kit.
@@ -1528,6 +1531,59 @@ Three things were found and deliberately **not** changed:
 - **`/wishlist` initial JS is 149.8 kB against a 150.0 kB budget** — 0.2 kB. That is the number
   the next phase hits first, and `PERFORMANCE.md` §10's raise-or-split question will be about
   JavaScript rather than CSS when it does.
+
+### Phase 7 — what the spec didn't settle
+
+**Tips got a column of their own** (`kit_research.tips`, migration 0005 — the schema was
+otherwise already complete, which is why §5.1 could be built without touching it). §5.1 named
+only fit issues, and folding advice into them would have been wrong: "the bonnet sits proud
+unless the firewall is sanded" is a defect in the kit, "let the clear coat cure 48h before
+polishing" is technique, and a list that mixes them can't be read for either. Same row shape,
+so one component and one CSS rule render both.
+
+**§5.4 is enforced in `normalizeResearch`, not in the components.** A claim whose `sourceUrl`
+doesn't parse as an http(s) URL is *dropped* — not shown unsourced, not shown with a
+placeholder. Putting that in the domain layer rather than in the panel means the next screen
+to render these rows inherits the rule instead of having to remember it. `consensusLine`
+works the same way: it returns `null` when there is no difficulty or nothing was cited, so
+the "Intermediate · consensus from 4 sources" line is structurally incapable of degrading
+into a bare "Intermediate". Sources are counted by **distinct host** — three threads on one
+forum is one source agreeing with itself, and counting it as three is the exact false
+confidence §5.4 exists to prevent.
+
+**The build video is a link, not an embed.** §5.1 promised a build video and the earlier
+sketch of this phase wanted a click-to-load facade. A facade still needs YouTube's thumbnail,
+which means hotlinking it — §8 says the app doesn't do that — and a real player is more
+JavaScript than the entire app ships. On a phone at the bench the link opens the YouTube app,
+which is where you wanted to watch it. The free YouTube *search* link stays visible either
+way, as the fallback for a kit research found no video for.
+
+**No `fallbacks` parameter**, though the SDK offers server-side refusal fallbacks on Opus 5.
+A refusal on "what do builders say about this Tamiya kit" is not a failure mode this app has;
+`stop_reason: "refusal"` is handled explicitly instead, the same as in `kits/extract`.
+Revisit if one ever actually turns up.
+
+Verified against a real Postgres and a real browser, since none of the below is covered by
+any automated check. The pipeline's own two calls were **not** run — they cost real money on
+the owner's key — so the routes were exercised to the point where the API key is read: a
+valid kit reaches it, a wishlist or missing kit is refused, a malformed body is a 400, an
+unknown job id is refused, and an unauthenticated request is redirected by the proxy like
+every other route. What was driven end to end: the panel at 1280px and 390px against seeded
+research; the empty state on a kit with none; Verify, which flips, persists a reload and
+writes the row — with no client JavaScript, since it is a plain form action; and the delete
+ordering, run as raw SQL against the real foreign keys, because `kit_research.job_id`
+references `research_job(id)` NOT NULL and getting that order wrong is exactly the trap the
+note above `deleteKit` has been warning about since Phase 4a.
+
+One bug came out of that, and only from measuring: the source link — the load-bearing element
+of the whole feature — was an **11px line of text and therefore a 13px tap target** on a
+phone, less than a third of the 44px the app's own `.iconButton` comment says it designs for.
+Fixed with the padding/negative-margin pair that comment describes: ~37px to hit, no extra
+scrolling through six claims. It looked completely fine in the screenshot.
+
+The whole panel cost **+0.1 kB** of the CSS budget by reusing `.card`, `.paintBucket`,
+`.bucketHead`, `.boughtButton` and the rest of the existing vocabulary — the Phase 6 rule
+(check whether a card or row already exists before writing one) holding up a second time.
 
 ---
 

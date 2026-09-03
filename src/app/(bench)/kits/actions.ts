@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { after } from "next/server";
 
 import { createKitManual, deleteKitManual } from "@/db/repositories/kit-manuals";
+import { setResearchVerified } from "@/db/repositories/kit-research";
 import {
   createKit,
   deleteKit,
@@ -500,6 +501,31 @@ export async function createManualForKit(input: CreateManualInput): Promise<KitR
 
   updateTag(kitTag(input.kitId));
   return { ok: true };
+}
+
+// ---------------------------------------------------------------------------
+// Research
+// ---------------------------------------------------------------------------
+
+/**
+ * §5.4's Verify mark — the owner's own judgement on a set of synthesised
+ * claims, and the only thing on that panel that isn't a model's opinion.
+ *
+ * A `FormData` action rather than one taking arguments, so the button is a
+ * plain server-rendered `<form>` and the whole research panel ships no client
+ * JavaScript except the run button — same reasoning as `toggleRunningLow`.
+ * The current value rides along as a hidden field rather than being re-read
+ * here: it is what the button just rendered.
+ */
+export async function toggleResearchVerified(formData: FormData): Promise<void> {
+  const id = Number(formData.get("id"));
+  const kitId = Number(formData.get("kitId"));
+  if (!Number.isInteger(id) || !Number.isInteger(kitId)) return;
+
+  const verified = formData.get("verified") === "1";
+  await setResearchVerified(id, kitId, !verified);
+
+  updateTag(kitTag(kitId));
 }
 
 /** Removes a manual and its blob — the row is the only reference to it. */

@@ -172,46 +172,62 @@ export const kitManual = pgTable("kit_manual", {
   uploadedAt: timestamp("uploaded_at", { withTimezone: true }).defaultNow(),
 });
 
-export const researchJob = pgTable("research_job", {
-  // drives the staged pipeline — §5.1
-  id: uuid("id").primaryKey().defaultRandom(),
-  kitId: integer("kit_id").references(() => kit.id), // nullable: research before buying
-  query: text("query"),
-  stage: text("stage"), // resolve | investigate | extract | done | failed
-  stageStatus: jsonb("stage_status").$type<
-    Record<string, { ok: boolean; error?: string; durationMs?: number; tokens?: number }>
-  >(),
-  partial: jsonb("partial").$type<Record<string, unknown>>(), // accumulated result between stages
-  error: text("error"),
-  startedAt: timestamp("started_at", { withTimezone: true }).defaultNow(),
-  updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
-});
+export const researchJob = pgTable(
+  "research_job",
+  {
+    // drives the staged pipeline — §5.1
+    id: uuid("id").primaryKey().defaultRandom(),
+    kitId: integer("kit_id").references(() => kit.id), // nullable: research before buying
+    query: text("query"),
+    stage: text("stage"), // resolve | investigate | extract | done | failed
+    stageStatus: jsonb("stage_status").$type<
+      Record<string, { ok: boolean; error?: string; durationMs?: number; tokens?: number }>
+    >(),
+    partial: jsonb("partial").$type<Record<string, unknown>>(), // accumulated result between stages
+    error: text("error"),
+    startedAt: timestamp("started_at", { withTimezone: true }).defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
+  },
+  (table) => [index("research_job_kit_idx").on(table.kitId)],
+);
 
-export const kitResearch = pgTable("kit_research", {
-  // the finished, cached result
-  id: serial("id").primaryKey(),
-  kitId: integer("kit_id").references(() => kit.id),
-  jobId: uuid("job_id")
-    .notNull()
-    .references(() => researchJob.id),
-  resolvedBrand: text("resolved_brand"),
-  resolvedNumber: text("resolved_number"),
-  resolvedName: text("resolved_name"),
-  manualUrl: text("manual_url"), // a LINK it found; the app does not download it
-  difficulty: text("difficulty"), // beginner | intermediate | advanced
-  difficultyNote: text("difficulty_note"),
-  fitIssues: jsonb("fit_issues").$type<
-    Array<{ issue: string; severity: string; sourceUrl: string; confidence: number }>
-  >(),
-  buildVideoUrl: text("build_video_url"),
-  sources: jsonb("sources").$type<string[]>(),
-  modelUsed: text("model_used"),
-  inputTokens: integer("input_tokens"),
-  outputTokens: integer("output_tokens"),
-  verifiedByMe: boolean("verified_by_me").default(false), // §5.4
-  researchedAt: timestamp("researched_at", { withTimezone: true }).defaultNow(),
-  expiresAt: timestamp("expires_at", { withTimezone: true }),
-});
+export const kitResearch = pgTable(
+  "kit_research",
+  {
+    // the finished, cached result
+    id: serial("id").primaryKey(),
+    kitId: integer("kit_id").references(() => kit.id),
+    jobId: uuid("job_id")
+      .notNull()
+      .references(() => researchJob.id),
+    resolvedBrand: text("resolved_brand"),
+    resolvedNumber: text("resolved_number"),
+    resolvedName: text("resolved_name"),
+    manualUrl: text("manual_url"), // a LINK it found; the app does not download it
+    difficulty: text("difficulty"), // beginner | intermediate | advanced
+    difficultyNote: text("difficulty_note"),
+    fitIssues: jsonb("fit_issues").$type<
+      Array<{ issue: string; severity: string; sourceUrl: string; confidence: number }>
+    >(),
+    /** Build advice as opposed to problems — §5.1 stage C. A separate column
+     * from `fit_issues` because they are different claims: "the bonnet needs
+     * sanding to sit flush" is a defect in the kit, "let the clear coat cure
+     * 48h before polishing" is technique. Same shape, so one component renders
+     * both with the same source-link rule (§5.4). */
+    tips: jsonb("tips").$type<
+      Array<{ tip: string; category: string; sourceUrl: string; confidence: number }>
+    >(),
+    buildVideoUrl: text("build_video_url"),
+    sources: jsonb("sources").$type<string[]>(),
+    modelUsed: text("model_used"),
+    inputTokens: integer("input_tokens"),
+    outputTokens: integer("output_tokens"),
+    verifiedByMe: boolean("verified_by_me").default(false), // §5.4
+    researchedAt: timestamp("researched_at", { withTimezone: true }).defaultNow(),
+    expiresAt: timestamp("expires_at", { withTimezone: true }),
+  },
+  (table) => [index("kit_research_kit_idx").on(table.kitId)],
+);
 
 export const kitPaintRequirement = pgTable("kit_paint_requirement", {
   // the manual's paint callouts

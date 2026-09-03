@@ -1299,3 +1299,85 @@ a.iconButton:hover {
   letter-spacing: 0.04em;
   margin-top: 2px;
 }
+
+/* ----------------------------------------------------------------- research */
+
+/* The standing caveat above the claims — docs/PLAN.md §5.4. Deliberately not
+   an info panel or a callout box: this is the frame the whole panel is read
+   through, not a notice to dismiss, and a bordered box would invite exactly
+   the "seen it, ignore it" reflex the rule exists to prevent. */
+.researchCaveat,
+.researchNote {
+  margin: 0;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--muted-2);
+}
+
+.researchNote {
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+/* One claim — a fit issue or a tip. Same dashed treatment as `.unresolvedRow`,
+   which already means "this is provisional" everywhere else in the app. */
+.claimRow {
+  padding: 8px 10px;
+  border: 1px dashed var(--line-strong);
+  border-radius: 9px;
+}
+
+.claimRow + .claimRow {
+  margin-top: 6px;
+}
+
+.claimText {
+  display: block;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--ink);
+}
+
+.claimMeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 5px;
+}
+
+.claimTag {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--muted-2);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* The source link is the load-bearing element of this whole feature (§5.4) —
+   it reads as a link, at the same weight as the claim's own tag, never as an
+   afterthought tucked behind an icon.
+
+   The padding/negative-margin pair is the same trick `.iconButton` uses for
+   the same reason: measured on a phone, an 11px line of text is a 13px tap
+   target, and this is the one thing on the panel a person actually needs to
+   hit. The padding takes it to ~37px; the matching negative margin gives the
+   space back to the layout, so a bigger target costs no extra scrolling
+   through six claims. Overlapping the claim text above it is harmless —
+   that text isn't interactive. */
+.claimSource {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 6px;
+  margin: -12px -6px;
+  font-family: var(--font-ui);
+  font-size: 11px;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.claimSource:hover {
+  text-decoration: underline;
+}
