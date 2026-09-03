@@ -310,7 +310,9 @@ kit_research                       -- the finished, cached result
   sources         jsonb
   model_used      text
   input_tokens, output_tokens integer
-  verified_by_me  boolean          -- §5.4
+  verified_by_me  boolean          -- unused: §5.4's Verify action was built and
+                                   -- removed in Phase 7 (§7). Kept for a per-claim
+                                   -- version, which is what the rule really wanted
   researched_at, expires_at timestamptz
 
 kit_paint_requirement              -- the manual's paint callouts
@@ -721,7 +723,13 @@ Research output is synthesised from forum posts by a language model:
 - Every fit issue stores `source_url` and `confidence`; the UI renders the source as a link
   next to the claim. No unsourced assertion appears as fact.
 - Difficulty shows as "consensus from N sources," never a bare rating.
-- A **Verify** action sets `verified_by_me`; verified rows visually outrank unverified.
+- ~~A **Verify** action sets `verified_by_me`; verified rows visually outrank unverified.~~
+  **Not built, and struck rather than deleted so the reasoning survives.** Phase 7 shipped it
+  and it came straight back out (§7): the panel holds exactly one research row per kit, so
+  there is never anything for a verified row to outrank, and what the rule actually produced
+  was a button that turned green and changed nothing else. The idea is sound one level down —
+  a tick *per claim*, sorting verified issues and tips above unverified — and that is what to
+  build if this is ever wanted. `verified_by_me` stays in the schema, unused, for that day.
 
 ---
 
@@ -1574,9 +1582,24 @@ paying Opus to search for it is worse than merely storing it. `kit_research.buil
 and `manual_url` stay as unused columns: both predate this phase (`0000_init`), both are
 nullable, and dropping them would be a migration bought for nothing.
 
+**The Verify tick went the same way, and taught the more interesting lesson.** §5.4 asked for
+one — "verified rows visually outrank unverified" — and this phase implemented it faithfully:
+a form action, no client JavaScript, flips `verified_by_me`, persists, turns the button green.
+All of which worked, and none of which *meant* anything, because the panel holds exactly one
+research row per kit and a single row cannot outrank anything. The rule had been written for a
+shape the feature didn't end up having. Nobody noticed until it was on screen and the owner
+asked what it was for.
+
+Worth recording as a class of mistake rather than a one-off: **a spec line can be implemented
+correctly and still be dead**, and the check that catches it is not "does this work" but "what
+changes for the person looking at it". The idea underneath is fine one level down — a tick per
+*claim*, sorting verified issues and tips above the rest — and §5.4 now says so. That is a
+deliberate feature to build if it is ever wanted, not a line to re-implement.
+
 What's left is the part only research can produce — claims about the kit, each with a source.
 That is a better-shaped feature than the one specified: every link-out on the panel was a
-thing the app could already reach, and cutting them leaves nothing on it that isn't sourced.
+thing the app could already reach, every control on it did nothing, and cutting all of them
+leaves nothing on the panel that isn't a sourced claim.
 
 **No `fallbacks` parameter**, though the SDK offers server-side refusal fallbacks on Opus 5.
 A refusal on "what do builders say about this Tamiya kit" is not a failure mode this app has;
@@ -1589,8 +1612,9 @@ the owner's key — so the routes were exercised to the point where the API key 
 valid kit reaches it, a wishlist or missing kit is refused, a malformed body is a 400, an
 unknown job id is refused, and an unauthenticated request is redirected by the proxy like
 every other route. What was driven end to end: the panel at 1280px and 390px against seeded
-research; the empty state on a kit with none; Verify, which flips, persists a reload and
-writes the row — with no client JavaScript, since it is a plain form action; and the delete
+research; the empty state on a kit with none; the Verify tick, which flipped, persisted a
+reload and wrote the row with no client JavaScript (and has since been removed, above — it
+worked exactly as specified and that turned out not to be the question); and the delete
 ordering, run as raw SQL against the real foreign keys, because `kit_research.job_id`
 references `research_job(id)` NOT NULL and getting that order wrong is exactly the trap the
 note above `deleteKit` has been warning about since Phase 4a.

@@ -1,5 +1,4 @@
-import { toggleResearchVerified } from "@/app/(bench)/kits/actions";
-import { CheckIcon, ExternalLinkIcon } from "@/components/icons";
+import { ExternalLinkIcon } from "@/components/icons";
 import inventoryStyles from "@/components/inventory/Inventory.module.css";
 import styles from "@/components/wishlist/Wishlist.module.css";
 import { getKitResearch } from "@/db/repositories/kit-research";
@@ -47,7 +46,6 @@ export async function ResearchPanel({ kit }: { kit: KitRow }) {
   const issues = research.fitIssues ?? [];
   const tips = research.tips ?? [];
   const consensus = consensusLine(research.difficulty, research.sources?.length ?? 0);
-  const verified = research.verifiedByMe === true;
 
   return (
     <div className={styles.card}>
@@ -135,25 +133,14 @@ export async function ResearchPanel({ kit }: { kit: KitRow }) {
             "instructions online" button lower down is a second route to
             something the page already reaches. Research doesn't look for
             either any more (§7); what it produces is claims, and every one of
-            them carries its own source link. */}
-        <div className={styles.manualActions}>
-          {/* §5.4: verified rows outrank unverified, and this is the control
-              that says so. `.boughtButtonDone` is the app's existing green
-              "already done" state — the same one a bought kit wears. */}
-          <form action={toggleResearchVerified}>
-            <input type="hidden" name="id" value={research.id} />
-            <input type="hidden" name="kitId" value={kit.id} />
-            <input type="hidden" name="verified" value={verified ? "1" : "0"} />
-            <button
-              type="submit"
-              className={`${styles.boughtButton} ${verified ? styles.boughtButtonDone : styles.manualActionButton}`}
-              aria-pressed={verified}
-              title={verified ? "Un-verify this research" : "Mark this research as checked by you"}
-            >
-              <CheckIcon size={13} /> {verified ? "Verified by you" : "Verify"}
-            </button>
-          </form>
+            them carries its own source link.
 
+            Nor is there a Verify tick. §5.4 asked for one so that verified
+            rows could outrank unverified — but this panel holds exactly one
+            research row per kit, so there was never anything for a verified
+            one to outrank, and what shipped was a button that turned green
+            and did nothing else (§7). */}
+        <div className={styles.manualActions}>
           <ResearchRunner kitId={kit.id} hasResearch />
         </div>
       </div>

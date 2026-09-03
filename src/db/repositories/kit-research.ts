@@ -35,7 +35,6 @@ export interface KitResearchRow {
   modelUsed: string | null;
   inputTokens: number | null;
   outputTokens: number | null;
-  verifiedByMe: boolean | null;
   researchedAt: Date | null;
 }
 
@@ -65,7 +64,6 @@ async function queryKitResearch(kitId: number): Promise<KitResearchRow | undefin
       modelUsed: kitResearch.modelUsed,
       inputTokens: kitResearch.inputTokens,
       outputTokens: kitResearch.outputTokens,
-      verifiedByMe: kitResearch.verifiedByMe,
       researchedAt: kitResearch.researchedAt,
     })
     .from(kitResearch)
@@ -177,11 +175,6 @@ export interface SaveResearchInput extends NormalizedResearch {
  * — and that research cost real money — while a failed delete leaves a
  * superseded row that `getKitResearch` already ignores, since it reads the
  * newest by `researched_at`.
- *
- * `verified_by_me` deliberately does not carry over. A Verify mark is the
- * owner's judgement on *those* claims (§5.4); re-running research produces new
- * ones, and inheriting the tick would mark as checked a set of sentences
- * nobody has read.
  */
 export async function replaceKitResearch(input: SaveResearchInput): Promise<void> {
   const superseded = await db
@@ -200,22 +193,10 @@ export async function replaceKitResearch(input: SaveResearchInput): Promise<void
     modelUsed: input.modelUsed,
     inputTokens: input.inputTokens,
     outputTokens: input.outputTokens,
-    verifiedByMe: false,
     researchedAt: new Date(),
   });
 
   for (const row of superseded) {
     await db.delete(kitResearch).where(eq(kitResearch.id, row.id));
   }
-}
-
-/** §5.4's Verify action. Scoped by `kitId` so one kit's research id can't be
- * used to mark another kit's. */
-export async function setResearchVerified(id: number, kitId: number, verified: boolean): Promise<boolean> {
-  const rows = await db
-    .update(kitResearch)
-    .set({ verifiedByMe: verified })
-    .where(and(eq(kitResearch.id, id), eq(kitResearch.kitId, kitId)))
-    .returning({ id: kitResearch.id });
-  return rows.length > 0;
 }
