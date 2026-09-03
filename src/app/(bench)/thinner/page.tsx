@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { BenchError } from "@/components/bench/BenchError";
 import { DesktopHeader } from "@/components/bench/DesktopHeader";
 import { PhoneHeader, PhoneHeaderRigPill } from "@/components/bench/PhoneHeader";
-import { SearchIcon } from "@/components/icons";
+import { SearchFieldSkeleton } from "@/components/bench/SearchFieldSkeleton";
 import { BenchContent } from "@/components/thinner/BenchContent";
 import { LineToggle, SearchArea } from "@/components/thinner/BenchHeadings";
 import { BenchSkeleton } from "@/components/thinner/BenchSkeleton";
@@ -65,15 +65,14 @@ export default function ThinnerPage(props: PageProps<"/thinner">) {
 }
 
 /** The search box's own chrome, minus the resolved label — identical box, so
- * the prerendered shell reserves exactly the right space. */
+ * the prerendered shell reserves exactly the right space. The box itself is
+ * `SearchFieldSkeleton`, which reads the real component's stylesheet; only
+ * the phone/desktop wrappers are this screen's own. */
 function SearchBoxFallback({ scope }: { scope: "phone" | "desktop" }) {
   return (
     <div className={scope === "phone" ? searchStyles.onlyPhone : searchStyles.onlyDesktop}>
       <div className={searchStyles.wrap}>
-        <div className={`${searchStyles.box} ${scope === "desktop" ? searchStyles.boxDesktop : ""}`}>
-          <SearchIcon size={scope === "desktop" ? 18 : 19} className={searchStyles.icon} />
-          <span className={searchStyles.input} aria-hidden="true" />
-        </div>
+        <SearchFieldSkeleton />
       </div>
     </div>
   );

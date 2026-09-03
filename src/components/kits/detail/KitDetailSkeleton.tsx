@@ -28,42 +28,30 @@ export function KitDetailSkeleton() {
             <div className={styles.card}>
               <div className={`${styles.cardArt} ${styles.skeletonSwatch}`} />
               <div className={styles.cardBody}>
-                <span className={`${styles.cardName} ${styles.skeletonLine}`} style={{ width: "70%" }}>
-                  Kit name
-                </span>
-                <span className={`${styles.cardNumber} ${styles.skeletonLine}`} style={{ width: 60 }}>
-                  No.
-                </span>
+                <span className={`${styles.cardName} ${styles.skeletonLine}`} style={{ width: "70%" }} />
+                <span className={`${styles.cardNumber} ${styles.skeletonLine}`} style={{ width: 60 }} />
               </div>
             </div>
             <div className={styles.card}>
               <div className={styles.cardBody}>
-                <span className={`${styles.moduleTitle} ${styles.skeletonLine}`} style={{ width: 56 }}>
-                  Status
-                </span>
+                <span className={`${styles.moduleTitle} ${styles.skeletonLine}`} style={{ width: 56 }} />
               </div>
             </div>
             <div className={styles.card}>
               <div className={styles.cardBody}>
-                <span className={`${styles.moduleTitle} ${styles.skeletonLine}`} style={{ width: 120 }}>
-                  Purchase &amp; dates
-                </span>
+                <span className={`${styles.moduleTitle} ${styles.skeletonLine}`} style={{ width: 120 }} />
               </div>
             </div>
           </div>
           <div className={styles.mainCol}>
             <div className={styles.card}>
               <div className={styles.cardBody}>
-                <span className={`${styles.moduleTitle} ${styles.skeletonLine}`} style={{ width: 90 }}>
-                  Manuals
-                </span>
+                <span className={`${styles.moduleTitle} ${styles.skeletonLine}`} style={{ width: 90 }} />
               </div>
             </div>
             <div className={styles.card}>
               <div className={styles.cardBody}>
-                <span className={`${styles.moduleTitle} ${styles.skeletonLine}`} style={{ width: 70 }}>
-                  Paints
-                </span>
+                <span className={`${styles.moduleTitle} ${styles.skeletonLine}`} style={{ width: 70 }} />
               </div>
             </div>
           </div>

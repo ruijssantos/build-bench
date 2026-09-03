@@ -12,15 +12,11 @@ import bench from "./ThinnerBench.module.css";
  * from the same CSS the finished card does — the point of a skeleton here is
  * to hold the exact box, not to look busy.
  */
+// Empty on purpose — the height comes from `.block`'s own `1lh`, not from a
+// hidden character. See the note at the top of BenchSkeleton.module.css for
+// why the character had to go.
 function Line({ width, className }: { width: number; className: string }) {
-  // A digit, not a space: at the ratio numbers' size the two have noticeably
-  // different em boxes, and this placeholder's whole job is to be the exact
-  // height of what replaces it.
-  return (
-    <span className={`${className} ${styles.block}`} style={{ width }}>
-      0
-    </span>
-  );
+  return <span className={`${className} ${styles.block}`} style={{ width }} />;
 }
 
 export function BenchSkeleton() {

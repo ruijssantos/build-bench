@@ -1,15 +1,27 @@
 /*
  * Placeholders that borrow the real components' classes, so the reserved box
- * is the height the real card will be rather than a guess. `.block` only
- * hides the text inside an element that is otherwise styled and measured
- * exactly like its counterpart.
+ * is the height the real card will be rather than a guess.
+ *
+ * These used to hold a literal "0" and hide it with `color: transparent`,
+ * borrowing the real element's font metrics for their height. That was a
+ * cascade bet, and it lost: `.block` and the borrowed class (`SpecGrid`'s
+ * `.label`/`.value`) are both single class names, so whichever module the
+ * bundler emits last wins `color` — and SpecGrid's own colour won, painting
+ * a column of "0"s across the spec tiles.
+ *
+ * So there is no text any more. `1lh` is exactly one line box of whatever
+ * the borrowed class's font metrics are, which is the same height the text
+ * was producing, with nothing left to un-hide. `1em` is the fallback for
+ * browsers without the unit — close enough for a placeholder, since every
+ * one of these stands in for a single line.
  */
 .block {
   background: var(--card-sunken);
   border-radius: 6px;
-  color: transparent;
   display: inline-block;
   max-width: 100%;
+  height: 1em;
+  height: 1lh;
 }
 
 .swatch {
@@ -23,11 +35,12 @@
 }
 
 /* A single placeholder line inside an element that is already carrying the
-   real component's font metrics. */
+   real component's font metrics. Same no-text rule as `.block` above. */
 .line {
   display: block;
   background: var(--card-sunken);
   border-radius: 6px;
-  color: transparent;
   max-width: 100%;
+  height: 1em;
+  height: 1lh;
 }

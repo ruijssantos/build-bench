@@ -18,13 +18,9 @@ export function StatsSkeleton() {
     <div className={styles.stats} aria-hidden="true">
       {Array.from({ length: 4 }, (_, i) => (
         <div className={styles.stat} key={i}>
-          <span className={`${cardStyles.moduleTitle} ${cardStyles.skeletonLine}`} style={{ width: 76 }}>
-            Label
-          </span>
+          <span className={`${cardStyles.moduleTitle} ${cardStyles.skeletonLine}`} style={{ width: 76 }} />
           <span className={styles.statRow}>
-            <span className={`${styles.statValue} ${cardStyles.skeletonLine}`} style={{ width: 40 }}>
-              0
-            </span>
+            <span className={`${styles.statValue} ${cardStyles.skeletonLine}`} style={{ width: 40 }} />
           </span>
         </div>
       ))}
@@ -41,15 +37,9 @@ export function BenchSkeleton() {
       <div className={`${cardStyles.card} ${styles.benchCard}`}>
         <div className={`${cardStyles.cardArt} ${cardStyles.skeletonSwatch}`} />
         <div className={cardStyles.cardBody}>
-          <span className={`${cardStyles.cardBrand} ${cardStyles.skeletonLine}`} style={{ width: 64 }}>
-            Brand
-          </span>
-          <span className={`${cardStyles.cardName} ${cardStyles.skeletonLine}`} style={{ width: "60%" }}>
-            Name
-          </span>
-          <span className={`${cardStyles.cardNumber} ${cardStyles.skeletonLine}`} style={{ width: 48 }}>
-            No.
-          </span>
+          <span className={`${cardStyles.cardBrand} ${cardStyles.skeletonLine}`} style={{ width: 64 }} />
+          <span className={`${cardStyles.cardName} ${cardStyles.skeletonLine}`} style={{ width: "60%" }} />
+          <span className={`${cardStyles.cardNumber} ${cardStyles.skeletonLine}`} style={{ width: 48 }} />
         </div>
       </div>
     </div>
@@ -63,12 +53,8 @@ export function RowsSkeleton() {
         <div className={cardStyles.itemRow} key={i}>
           <span className={`${styles.thumb} ${cardStyles.skeletonSwatch}`} />
           <span className={cardStyles.itemBody}>
-            <span className={`${cardStyles.itemTitle} ${cardStyles.skeletonLine}`} style={{ width: "70%" }}>
-              Name
-            </span>
-            <span className={`${cardStyles.itemNotes} ${cardStyles.skeletonLine}`} style={{ width: "45%" }}>
-              Meta
-            </span>
+            <span className={`${cardStyles.itemTitle} ${cardStyles.skeletonLine}`} style={{ width: "70%" }} />
+            <span className={`${cardStyles.itemNotes} ${cardStyles.skeletonLine}`} style={{ width: "45%" }} />
           </span>
         </div>
       ))}

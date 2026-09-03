@@ -17,32 +17,22 @@ export function KitsSkeleton() {
   return (
     <>
       <div className={styles.subHead} aria-hidden="true">
-        <span className={`${styles.moduleTitle} ${styles.skeletonLine}`}>Saved kits</span>
+        <span className={`${styles.moduleTitle} ${styles.skeletonLine}`} />
       </div>
       <div className={styles.cardGrid} aria-hidden="true">
         {Array.from({ length: SKELETON_KIT_COUNT }, (_, i) => (
           <div className={styles.card} key={i}>
             <div className={`${styles.cardArt} ${styles.skeletonSwatch}`} />
             <div className={styles.cardBody}>
-              <span className={`${styles.cardBrand} ${styles.skeletonLine}`} style={{ width: 64 }}>
-                Brand
-              </span>
-              <span className={`${styles.cardName} ${styles.skeletonLine}`} style={{ width: "80%" }}>
-                Name
-              </span>
-              <span className={`${styles.cardNumber} ${styles.skeletonLine}`} style={{ width: 48 }}>
-                No.
-              </span>
+              <span className={`${styles.cardBrand} ${styles.skeletonLine}`} style={{ width: 64 }} />
+              <span className={`${styles.cardName} ${styles.skeletonLine}`} style={{ width: "80%" }} />
+              <span className={`${styles.cardNumber} ${styles.skeletonLine}`} style={{ width: 48 }} />
               <div className={styles.cardChips}>
-                <span className={`${styles.chip} ${styles.skeletonLine}`} style={{ width: 56 }}>
-                  Scale
-                </span>
+                <span className={`${styles.chip} ${styles.skeletonLine}`} style={{ width: 56 }} />
               </div>
             </div>
             <div className={styles.savedCardActions}>
-              <span className={`${styles.boughtButton} ${styles.skeletonLine}`} style={{ width: 96 }}>
-                Bought
-              </span>
+              <span className={`${styles.boughtButton} ${styles.skeletonLine}`} style={{ width: 96 }} />
             </div>
           </div>
         ))}

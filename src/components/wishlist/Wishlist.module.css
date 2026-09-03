@@ -794,12 +794,25 @@ a.iconButton:hover {
   background: var(--card-sunken);
 }
 
+/* Every skeleton in the app borrows a real component's class for its font
+   metrics and adds this one for the grey bar. It used to hold a hidden
+   character — real text, painted out with `color: transparent` — and that was
+   a cascade bet: both class names are single selectors, so whichever module
+   the bundler emits last wins `color`. On the Thinner Bench SpecGrid's own
+   `.label`/`.value` won, and a column of "0"s appeared across the spec tiles
+   while the page loaded.
+
+   So there is no text in any skeleton any more, and `1lh` supplies the height
+   the text used to — exactly one line box of whatever metrics the borrowed
+   class carries, so the reserved space is unchanged. `1em` is the fallback
+   for browsers without the unit. */
 .skeletonLine {
   display: inline-block;
   background: var(--card-sunken);
   border-radius: 6px;
-  color: transparent;
   max-width: 100%;
+  height: 1em;
+  height: 1lh;
 }
 
 .skeletonTick {
