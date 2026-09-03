@@ -63,7 +63,9 @@ Report, in prose:
 
 That is the whole job. Don't go looking for a build video or for the instructions online: the app already links out to YouTube and to Scalemates by itself, and has the uploaded manual besides. Spend the searches on what builders said instead.
 
-For every claim, name the URL you got it from, inline, right next to the claim. A claim you found in only one place is fine — say that it was one builder's experience. What is not fine is presenting something you inferred, or know generally about kits of this type, as though a source said it about this kit. If you found very little, report very little; a short honest answer is more useful than a padded one, because the person reading it is about to spend a weekend on this model.`;
+For every claim, write the full URL you got it from inline, right next to the claim, as plain text starting with https:// — not a footnote marker, not a bare domain, not a markdown link with the URL hidden behind text. A later step reads those URLs straight out of your prose and drops any claim it cannot find one for, so a claim whose URL is missing or abbreviated is a claim that gets thrown away.
+
+A claim you found in only one place is fine — say that it was one builder's experience. What is not fine is presenting something you inferred, or know generally about kits of this type, as though a source said it about this kit. If you found very little, report very little; a short honest answer is more useful than a padded one, because the person reading it is about to spend a weekend on this model.`;
 
 type InvestigateResponse = { ok: true; jobId: string } | { ok: false; error: string };
 
@@ -112,14 +114,38 @@ export async function POST(request: NextRequest) {
     output_config: { effort: "high" as const },
     system: SYSTEM_PROMPT,
     tools: [
-      { type: "web_search_20260209" as const, name: "web_search" as const, max_uses: MAX_SEARCHES },
+      {
+        type: "web_search_20260209" as const,
+        name: "web_search" as const,
+        max_uses: MAX_SEARCHES,
+        // `["direct"]`, not the default. On `web_search_20260209` and later
+        // `allowed_callers` defaults to `["code_execution_20260120"]` — the
+        // search runs *inside* code execution ("dynamic filtering"), which
+        // filters results down before they reach the model and saves tokens.
+        //
+        // That default broke this route in production and is worth spelling
+        // out. Two things change under dynamic filtering: the
+        // `web_search_tool_result` blocks arrive **nested inside the code
+        // execution result**, not at the top level of `response.content`; and
+        // the model reads filtered code output rather than search results it
+        // is citing directly, so the `web_search_result_location` citations
+        // this feature is built on largely stop appearing. Everything
+        // downstream — the source list, §5.4's whole trust surface — is
+        // downstream of those citations.
+        //
+        // Direct search costs more input tokens because every result lands in
+        // context. That is the right trade for a once-per-kit call whose
+        // entire output is claims-with-sources.
+        allowed_callers: ["direct" as const],
+      },
       {
         type: "web_fetch_20260209" as const,
         name: "web_fetch" as const,
         max_uses: MAX_FETCHES,
-        // The reason this stage exists in its own call (§5.2): citations are
-        // incompatible with structured output, and they are what stage C's
-        // source URLs are ultimately drawn from.
+        // Same reasoning, same default, same fix.
+        allowed_callers: ["direct" as const],
+        // Unlike web search — where citations are always on — web fetch's are
+        // opt-in and off by default.
         citations: { enabled: true },
       },
     ],
@@ -142,8 +168,18 @@ export async function POST(request: NextRequest) {
       resumes++;
     }
 
+    const { prose, sources } = collectProseAndSources(response);
+
+    /** Records the failure — but keeps whatever prose the run did produce.
+     * A truncated or paused write-up is still most of what was paid for, and
+     * leaving it on the job means the retry can go straight to stage C. */
     const failed = async (error: string) => {
-      await recordStage(jobId, "investigate", { ok: false, error, durationMs: Date.now() - startedAt });
+      await recordStage(
+        jobId,
+        "investigate",
+        { ok: false, error, durationMs: Date.now() - startedAt },
+        prose ? { prose, sources, inputTokens: response.usage.input_tokens, outputTokens: response.usage.output_tokens } : undefined,
+      );
       return jsonError(error);
     };
 
@@ -159,7 +195,10 @@ export async function POST(request: NextRequest) {
 
     // Web-tool errors arrive as HTTP 200 with an error object where a result
     // list belongs (§5.2), never as a throw. A success `content` is an array,
-    // an error `content` is an object — branch before indexing.
+    // an error `content` is an object — branch before indexing. This only sees
+    // top-level blocks, which is correct *because* `allowed_callers` is
+    // `["direct"]` above; under the dynamic-filtering default these blocks are
+    // nested inside a code execution result and this check would find nothing.
     const searchErrored = response.content.some(
       (block) =>
         (block.type === "web_search_tool_result" || block.type === "web_fetch_tool_result") &&
@@ -169,8 +208,6 @@ export async function POST(request: NextRequest) {
         "error_code" in block.content,
     );
 
-    const { prose, sources } = collectProseAndSources(response);
-
     if (!prose.trim()) {
       return failed(
         searchErrored
@@ -178,13 +215,21 @@ export async function POST(request: NextRequest) {
           : "Research came back empty — try again.",
       );
     }
-    // A write-up with no citations at all cannot survive §5.4: stage C would
-    // have nothing to attach to any claim, and `normalizeResearch` would drop
-    // every one of them. Better to say so now than to spend stage C finding out.
+    // No `sources.length === 0` gate here any more, and its removal is the
+    // point of this whole revision. It used to fail the run outright on the
+    // reasoning that §5.4 needs a source per claim, so a citation-less write-up
+    // was worthless — but that threw away the *prose*, which is where the URLs
+    // actually are (the prompt asks for them inline). Two real runs died that
+    // way after three minutes and ~€0.30 each, reporting "nothing it could
+    // cite" about kits that had plenty written about them.
+    //
+    // §5.4 is not enforced here and never needed to be: `normalizeResearch`
+    // drops any claim whose `sourceUrl` doesn't parse, so an genuinely
+    // unsourceable run still ends with nothing shown — just after a cheap
+    // stage C rather than instead of one. `sources` is an aid handed to stage
+    // C, not a gate.
     if (sources.length === 0) {
-      return failed(
-        "Research found nothing it could cite for this kit — nothing to show. Obscure or very new kits often have no build threads yet.",
-      );
+      console.warn(`[kits/research/investigate] no sources collected for job ${jobId} — stage C will work from the prose alone`);
     }
 
     await recordStage(
@@ -234,18 +279,57 @@ function collectProseAndSources(response: Anthropic.Message): { prose: string; s
   const sources = new Set<string>();
 
   for (const block of response.content) {
-    if (block.type !== "text") continue;
-    parts.push(block.text);
-
-    for (const citation of block.citations ?? []) {
-      // The citation union spans several location types and only the web ones
-      // carry a URL — checked structurally rather than by naming each member,
-      // so a new citation type doesn't break this loop.
-      if ("url" in citation && typeof citation.url === "string") {
-        sources.add(citation.url);
+    if (block.type === "text") {
+      parts.push(block.text);
+      for (const citation of block.citations ?? []) {
+        // The citation union spans several location types and only the web
+        // ones carry a URL — checked structurally rather than by naming each
+        // member, so a new citation type doesn't break this loop.
+        if ("url" in citation && typeof citation.url === "string") {
+          sources.add(citation.url);
+        }
       }
+      continue;
     }
+    collectUrlsFromBlock(block, sources);
   }
 
-  return { prose: parts.join("\n\n").trim(), sources: [...sources] };
+  const prose = parts.join("\n\n").trim();
+  // Last resort, and in practice a productive one: the system prompt asks for
+  // the URL inline next to each claim, so the prose is full of them even on a
+  // turn that produced no citation objects at all.
+  for (const url of prose.match(/https?:\/\/[^\s<>"')\]]+/g) ?? []) {
+    sources.add(url.replace(/[.,;:]+$/, ""));
+  }
+
+  return { prose, sources: [...sources] };
+}
+
+/**
+ * Every URL anywhere in a non-text block, however deeply nested.
+ *
+ * Written as a structural walk rather than as `if (block.type === …)` against
+ * each result shape, because the shapes are not stable ground: a
+ * `web_search_tool_result`'s `content` is a list of results on success and a
+ * single error object on failure; a `web_fetch_tool_result`'s is one object;
+ * and under dynamic filtering both arrive *nested inside* a code execution
+ * result rather than at the top level (see `allowed_callers` above). This
+ * route already lost two paid runs to assuming one of those shapes. Walking
+ * for `url` keys costs nothing and survives the next shape change too.
+ */
+function collectUrlsFromBlock(value: unknown, sources: Set<string>, depth = 0): void {
+  if (depth > 6 || value === null || typeof value !== "object") return;
+
+  if (Array.isArray(value)) {
+    for (const entry of value) collectUrlsFromBlock(entry, sources, depth + 1);
+    return;
+  }
+
+  for (const [key, entry] of Object.entries(value)) {
+    if (key === "url" && typeof entry === "string" && /^https?:\/\//.test(entry)) {
+      sources.add(entry);
+    } else if (typeof entry === "object") {
+      collectUrlsFromBlock(entry, sources, depth + 1);
+    }
+  }
 }

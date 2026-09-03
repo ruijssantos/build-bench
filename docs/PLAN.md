@@ -684,6 +684,15 @@ Verified against current API documentation, not recalled:
 - Stage B streams; use `.finalMessage()`
 - Handle `stop_reason: "pause_turn"` — a long server-tool turn can pause, and an unhandled
   pause returns a silently truncated answer with no error raised
+- **`allowed_callers: ["direct"]` on both web tools.** On `web_search_20260209` and later
+  this defaults to `["code_execution_20260120"]` — "dynamic filtering", where the search runs
+  inside code execution and only filtered results reach the model. It saves tokens and it
+  broke this pipeline (§7): under it the `web_search_tool_result` blocks arrive *nested inside
+  the code execution result* rather than at the top level, and the
+  `web_search_result_location` citations the trust surface is built on largely stop appearing.
+  Anything that reads citations or scans top-level blocks wants `["direct"]`
+- Citations are **always on for web search** and **off by default for web fetch** — the latter
+  needs `citations: { enabled: true }` on the tool
 - Server-tool errors return HTTP 200 with an error object in the result block, not an
   exception. On web search a success `content` is an array, an error `content` is an object
   — branch before indexing
@@ -1628,6 +1637,49 @@ scrolling through six claims. It looked completely fine in the screenshot.
 The whole panel cost **+0.1 kB** of the CSS budget by reusing `.card`, `.paintBucket`,
 `.bucketHead`, `.boughtButton` and the rest of the existing vocabulary — the Phase 6 rule
 (check whether a card or row already exists before writing one) holding up a second time.
+
+### Phase 7's first real runs failed, and why
+
+Two kits, both well documented, both ~3 minutes and ~€0.30, both ending in *"Research found
+nothing it could cite for this kit."* Three faults stacked, and only the third was mine
+alone — the first two are the kind of API default that does exactly what it says and still
+surprises you.
+
+**1. Dynamic filtering was on by default.** `web_search_20260209` and later default
+`allowed_callers` to `["code_execution_20260120"]`: the search runs *inside* code execution,
+which filters results before they reach the model. Sensible, cheaper — and it moves the
+`web_search_tool_result` blocks *inside* the code execution result, where this route's
+top-level scan never looked, and it changes what the model is citing from "these search
+results" to "this code output". The `web_search_result_location` citations this whole feature
+is built on stopped appearing. Fixed by asking for what the feature actually needs:
+`allowed_callers: ["direct"]` on both web tools, paying more input tokens on a once-per-kit
+call to get citations back.
+
+**2. The prompt was pulling the other way.** It told the model to "name the URL you got it
+from, **inline**, right next to the claim" — an instruction fully satisfied by typing a URL
+into prose, with no citation object anywhere. The code then looked only for citation objects.
+Two mechanisms for one job, and the prompt was steering away from the one being read.
+
+**3. Zero citations was a hard, terminal failure — and that was the real bug.** The gate
+reasoned that §5.4 needs a source per claim, so a citation-less write-up was worthless. But
+the URLs *were* there, in the prose, exactly as instructed; the run was fine and the gate
+threw it away, along with the write-up itself, which wasn't even saved on the failure path.
+§5.4 never needed enforcing there: `normalizeResearch` already drops any claim whose
+`sourceUrl` doesn't parse, so a genuinely unsourceable run still shows nothing — after a
+cheap stage C rather than in place of one.
+
+Source collection is now a structural walk for `url` keys at any depth, plus text-block
+citations, plus a regex over the prose, and it is an **aid handed to stage C, never a gate**.
+Failures keep their prose so a retry resumes at stage C. Verified against fixtures built from
+the documented block shapes — top-level results, results nested in a code execution block, a
+fetch result, an error object (which must not crash the walk), a citation, and inline URLs
+wrapped in parentheses or trailing a full stop: all seven URLs recovered, no crash.
+
+The lesson worth keeping is about defaults, not citations: **a server tool's defaults are part
+of its response shape.** This code was written against the documented shape and then run
+against a different one, because a default chose a different execution path. When a feature
+depends on a specific field appearing, pin the setting that produces it rather than accepting
+whatever is cheapest by default.
 
 ---
 

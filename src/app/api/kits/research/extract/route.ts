@@ -100,7 +100,18 @@ export async function POST(request: NextRequest) {
       messages: [
         {
           role: "user",
-          content: `Here is the research write-up for ${[kit.brand, kit.kitNumber, kit.name].filter(Boolean).join(" ")}.\n\nThese are the URLs it cited:\n${sources.map((s) => `- ${s}`).join("\n")}\n\n---\n\n${prose}`,
+          // The URL list is an aid, not the source of truth — it can legitimately
+          // be empty (see the note on the `sources` gate in `investigate`), in
+          // which case the write-up's own inline URLs are all there is, and
+          // that is enough.
+          content: [
+            `Here is the research write-up for ${[kit.brand, kit.kitNumber, kit.name].filter(Boolean).join(" ")}.`,
+            sources.length > 0
+              ? `These URLs were consulted — use them to resolve any link the write-up abbreviates:\n${sources.map((s) => `- ${s}`).join("\n")}`
+              : `No separate source list was captured for this run, so take every URL from the write-up itself.`,
+            "---",
+            prose,
+          ].join("\n\n"),
         },
       ],
     });
