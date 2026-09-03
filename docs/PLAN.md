@@ -1472,6 +1472,63 @@ when the chart has no rows, which is normal rather than a failure — coverage i
 bottle lines and thin on TS/AS, so a decanted spray usually shows no card at all. TS-8, the
 paint that prompted the report, is one of those.
 
+### The Phase 6 sweep
+
+A read of the whole tree at the owner's request, before the app settles as the base the build
+log and later features get built on. Four things came out of it.
+
+**An empty Anthropic balance had no error of its own.** Both paid routes ended in the same
+three-branch chain — key, rate limit, everything else — and "everything else" is where running
+out of credit landed, reported in the same words as a transient blip and logged nowhere at all.
+The API distinguishes these precisely and now so does `src/lib/anthropic-errors.ts`: 401 the key
+itself, **402 `billing_error` an empty balance or a payment problem**, 403 model/workspace
+access, 400 what a *self-imposed* spend limit returns, 429 either a real rate limit or the usage
+tier's monthly spend cap — told apart by whether a `retry-after` came with it, because the cap
+sends none and does not clear on its own. 402 is the one that needed saying out loud: the
+TypeScript SDK gives it no error class the way it does 401/403/429, so it lands on the base
+`APIError` and is only visible on `.status`. Every failure now also writes one line naming the
+status, the error type and the request ID, which is what an Anthropic support ticket wants and
+what neither route produced before.
+
+**Dead code, deleted.** `/api/paints/search` and the `searchCatalogue` it wrapped had had no
+caller since type-ahead moved into the browser in Phase 3 — and `src/catalogue/paints.ts` was
+still building a full search index at import time to serve it, on every cold start of a server
+that only ever wanted `getCataloguePaint`. The `ComingSoon` component and stylesheet went with
+`/log`'s stub and were never removed; three icons (`AlertIcon`, `EyeIcon`, `DownloadIcon`) were
+drafted for the manuals UI, which settled on `FileIcon`/`ExternalLinkIcon` instead; two exported
+catalogue-size constants had no readers.
+
+**Three input paths were trusting their caller.** The kit detail page's dates went in through
+`readText`, which caps a string's length and has no opinion about its content — from the screen
+always a browser date value, but a Server Action is a public endpoint and anything else reaches
+Neon as `invalid input syntax for type date`, i.e. an unhandled rejection rather than one of this
+app's own sentences (`readIsoDate` now validates by round trip, since "2026-02-31" passes every
+shape test you would write). Two call sites recognised our own Blob store by
+`url.includes(".blob.vercel-storage.com")`, which `https://example.com/?ref=.blob.vercel-storage.com`
+satisfies; `isStoredBlobUrl` checks the parsed hostname, the way `deleteBoxArt` already did. And
+a manual's `blobUrl` arrives from the client by design — the client is what ran the upload — but
+is now required to be in that store before it is written to a row `/api/kits/extract` will later
+fetch and send to Claude. Alongside those, `updateInventoryItem` returns whether a row was there,
+so editing a shelf entry someone else's tab already deleted stops reporting success.
+
+Three things were found and deliberately **not** changed:
+
+- **`paint_brand` and `paint_equivalent` are seeded and never read.** Every equivalence lookup in
+  the app — the Unresolved bucket, the "Also sold as" card — goes through
+  `src/catalogue/equivalents.ts` and the committed JSON behind it (§3.1). By the rig's own
+  reasoning (§2.3) that makes the two tables dead weight today. They are kept because
+  `paint_equivalent.source` already anticipates `claude-research` rows, and research-derived
+  equivalents *are* runtime data a compiled file cannot hold — Phase 7 either uses them or they
+  should go with it. The runbook step that claimed Phase 5 needed the seed to work was wrong and
+  is corrected in §9.5.
+- **`/api/login` has no rate limiting**, and is the one route outside the session check. A
+  passphrase behind an unthrottled endpoint is guessable given enough time; fixing it properly
+  needs somewhere to keep a counter, which is a decision (Vercel KV, a table, the platform's own
+  firewall) rather than an edit.
+- **`/wishlist` initial JS is 149.8 kB against a 150.0 kB budget** — 0.2 kB. That is the number
+  the next phase hits first, and `PERFORMANCE.md` §10's raise-or-split question will be about
+  JavaScript rather than CSS when it does.
+
 ---
 
 ## 8. Non-goals
@@ -1589,12 +1646,19 @@ vercel env pull .env.local
 # 5. Apply any pending migrations to the database those credentials point at.
 npm run db:migrate
 
-# 5.5. Re-run the seed — needed whenever a phase's *data* changed, not just
-#      its schema (Phase 5 is the first one since Phase 0: no new migration,
-#      but paint_brand and paint_equivalent are empty until this runs). Safe
-#      to run even when nothing changed — every table it touches upserts or
-#      is scoped by `source`, never blind-appends (see the file's own
-#      top-of-file comment for exactly how each table is kept re-run-safe).
+# 5.5. Re-run the seed when a phase changed seeded *data* rather than only
+#      schema — in practice, when `paint` gains codes the app needs to
+#      reference. Safe to run even when nothing changed: every table it
+#      touches upserts or is scoped by `source`, never blind-appends (see the
+#      file's own top-of-file comment for how each is kept re-run-safe).
+#      Note this is *not* what makes a phase's screens work: everything
+#      compiled from `seed/*.json` (the catalogue, ratio rules, the
+#      equivalence chart, the rig) is read straight off the committed file at
+#      build time, §3.1. Phase 5 was described here as needing the seed to
+#      populate paint_brand and paint_equivalent — those rows are real, but
+#      nothing in the app queries them; the "Also sold as" card and the
+#      Unresolved bucket both read `src/catalogue/equivalents.ts`. Corrected
+#      in the Phase 6 sweep (§7).
 npm run db:seed
 
 # 6. Run it.

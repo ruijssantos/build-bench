@@ -507,8 +507,7 @@ a.iconButton:hover {
 /* ------------------------------------------------------------- empty state */
 
 /* The true empty-shelf state — the only thing on the screen when there's
-   nothing on the shelf, centering a single card the way ComingSoon does for
-   a whole screen. */
+   nothing on the shelf, centering a single card in the whole content area. */
 .emptyState {
   display: flex;
   align-items: center;

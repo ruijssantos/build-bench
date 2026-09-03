@@ -5,6 +5,7 @@ import { updateTag } from "next/cache";
 import { getCataloguePaint } from "@/catalogue/paints";
 import { createOverride, overrideTag } from "@/db/repositories/ratio-overrides";
 import { normalizePaintCode } from "@/domain/paint-code";
+import { readText } from "@/lib/form-text";
 
 export interface SaveOverrideInput {
   code: string;
@@ -36,12 +37,13 @@ export async function saveRatioOverride(input: SaveOverrideInput): Promise<SaveO
     return { ok: false, error: "Enter two positive numbers." };
   }
 
-  const reason = input.reason?.trim();
   await createOverride({
     paintCode: code,
     paintParts: input.paintParts,
     thinnerParts: input.thinnerParts,
-    reason: reason ? reason : null,
+    // `readText` rather than a bare `trim()`: this was the one free-text field
+    // in the app going into a column with no length bound of its own.
+    reason: readText(input.reason, 500),
   });
 
   updateTag(overrideTag(code));

@@ -107,16 +107,6 @@ export function SortIcon(props: IconProps) {
   );
 }
 
-export function AlertIcon(props: IconProps) {
-  return (
-    <svg {...base(props, 2)}>
-      <circle cx="12" cy="12" r="9" />
-      <path d="M12 8v4.5" />
-      <path d="M12 16v.01" />
-    </svg>
-  );
-}
-
 export function PencilIcon(props: IconProps) {
   return (
     <svg {...base(props)}>
@@ -216,27 +206,6 @@ export function ChevronLeftIcon(props: IconProps) {
   return (
     <svg {...base(props)}>
       <path d="M15 18l-6-6 6-6" />
-    </svg>
-  );
-}
-
-/** A manual's inline-viewer toggle (desktop). */
-export function EyeIcon(props: IconProps) {
-  return (
-    <svg {...base(props)}>
-      <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z" />
-      <circle cx="12" cy="12" r="3" />
-    </svg>
-  );
-}
-
-/** A manual's download link (phone) and the upload dropzone's own glyph. */
-export function DownloadIcon(props: IconProps) {
-  return (
-    <svg {...base(props)}>
-      <path d="M12 4v12" />
-      <path d="M6 12l6 6 6-6" />
-      <path d="M4 20h16" />
     </svg>
   );
 }

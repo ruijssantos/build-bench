@@ -162,11 +162,16 @@ export interface UpdateInventoryItemInput {
  * the row being edited), so that second round trip was pure overhead on
  * every single "mark running low" tap.
  */
-export async function updateInventoryItem(id: number, patch: UpdateInventoryItemInput): Promise<void> {
-  await db
+/** Returns whether a row was actually there to update — the same signal every
+ * kit and wishlist mutation gives, so an edit submitted against a shelf entry
+ * that has since been removed says so instead of reporting success. */
+export async function updateInventoryItem(id: number, patch: UpdateInventoryItemInput): Promise<boolean> {
+  const rows = await db
     .update(inventoryItem)
     .set({ ...patch, updatedAt: new Date() })
-    .where(eq(inventoryItem.id, id));
+    .where(eq(inventoryItem.id, id))
+    .returning({ id: inventoryItem.id });
+  return rows.length > 0;
 }
 
 /**

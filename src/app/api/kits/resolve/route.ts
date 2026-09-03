@@ -9,6 +9,7 @@ import {
   ResolveResultSchema,
   type KitCandidate,
 } from "@/domain/kit-candidate";
+import { describeAnthropicError, logAnthropicError } from "@/lib/anthropic-errors";
 import { resolveBoxArtUrl } from "@/lib/box-art";
 
 /**
@@ -17,10 +18,10 @@ import { resolveBoxArtUrl } from "@/lib/box-art";
  * A route handler rather than a Server Action: this is a search, and
  * `src/app/api/` is where a search lives per docs/PLAN.md §4 ("only where a
  * Server Action doesn't fit — search, external callbacks, kit research's
- * staged calls"). Unlike `/api/paints/search`, every call here is a real,
- * paid ~10–20s round trip to Claude with web search — there is no local
- * index behind it — so this is submit-triggered from the client, never
- * per-keystroke.
+ * staged calls"). Unlike the paint type-ahead, which the browser answers off
+ * a compiled index, every call here is a real, paid ~10–20s round trip to
+ * Claude with web search — there is no local index behind it — so this is
+ * submit-triggered from the client, never per-keystroke.
  *
  * One request, one model call (plus the occasional `pause_turn` resume
  * below) — no `research_job` row. That table exists for the multi-stage
@@ -196,15 +197,10 @@ export async function POST(request: NextRequest) {
       candidates: await withResolvedArt(normalizeCandidates(response.parsed_output)),
     });
   } catch (error) {
-    if (error instanceof Anthropic.AuthenticationError) {
-      return jsonError("Kit search isn't set up correctly — check the ANTHROPIC_API_KEY value.");
-    }
-    if (error instanceof Anthropic.RateLimitError) {
-      return jsonError("Kit search is rate-limited right now — try again in a moment.");
-    }
-    if (error instanceof Anthropic.APIError) {
-      return jsonError("Kit search hit a problem — try again, or add the kit by hand.");
-    }
-    return jsonError("Kit search hit a problem — try again, or add the kit by hand.");
+    // Every branch — an empty credit balance included — is named and logged by
+    // `describeAnthropicError`, which is also where the reasoning for each
+    // lives. Before it, all of them shared one sentence and logged nothing.
+    logAnthropicError("kits/resolve", error);
+    return jsonError(`${describeAnthropicError(error, "Kit search")} You can also add the kit by hand.`);
   }
 }

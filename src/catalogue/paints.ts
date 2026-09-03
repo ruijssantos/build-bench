@@ -1,9 +1,5 @@
 import { normalizePaintCode } from "@/domain/paint-code";
-import {
-  buildPaintSearchIndex,
-  searchPaintIndex,
-  type SearchablePaint,
-} from "@/domain/paint-search";
+import { type SearchablePaint } from "@/domain/paint-search";
 
 import catalogueSeed from "../../seed/paints.tamiya.json";
 
@@ -62,15 +58,16 @@ const PAINTS: readonly CataloguePaint[] = (catalogueSeed as SeedPaint[]).map((ro
 }));
 
 const BY_CODE = new Map(PAINTS.map((row) => [row.code, row]));
-const INDEX = buildPaintSearchIndex(PAINTS);
 
 /** Accepts anything the user might type — "xf64", "XF 64" — not just "XF-64". */
 export function getCataloguePaint(code: string): CataloguePaint | undefined {
   return BY_CODE.get(normalizePaintCode(code));
 }
 
-export function searchCatalogue(query: string, limit = 8): CataloguePaint[] {
-  return searchPaintIndex(INDEX, query, limit);
-}
-
-export const CATALOGUE_SIZE = PAINTS.length;
+/* No search index here any more. This module used to build one at import time
+ * and expose `searchCatalogue` over it, for an `/api/paints/search` route the
+ * bench stopped calling once type-ahead moved into the browser
+ * (`src/components/thinner/paint-search-index.ts`, docs/PERFORMANCE.md §4).
+ * Nothing had called either since, so both went — and with them the cost of
+ * indexing the whole catalogue on every cold start of a server that only ever
+ * wanted `getCataloguePaint`. */

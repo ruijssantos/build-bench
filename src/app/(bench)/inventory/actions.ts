@@ -121,12 +121,13 @@ export async function editInventoryItem(input: EditInventoryItemInput): Promise<
     return { ok: false, error: "Quantity has to be a whole number, 1 or more." };
   }
 
-  await updateInventoryItem(input.id, {
+  const updated = await updateInventoryItem(input.id, {
     form: input.form as InventoryForm,
     state: (input.state as InventoryState | null) ?? null,
     quantity,
     notes: readText(input.notes),
   });
+  if (!updated) return { ok: false, error: "That shelf entry is gone." };
 
   invalidate(input.paintCode);
   return { ok: true };

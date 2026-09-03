@@ -73,8 +73,11 @@ is reached only through `await import()` from the search box, so the catalogue
 load. A keystroke and its results are the same frame — measured at 32 ms for
 the first suggestion, 102 ms on a throttled phone including the chunk fetch.
 
-Ranking lives in `src/domain/paint-search.ts` — pure, no data — so the server
-route (`/api/paints/search`) and the browser rank identically.
+Ranking lives in `src/domain/paint-search.ts` — pure, no data — so it can be
+built over any list of paints, wherever that list is held. A server route
+(`/api/paints/search`) once ranked the same way for the same query; it was
+deleted in the Phase 6 sweep, having had no caller since the index moved into
+the browser. Split the ranking out again the moment a second caller appears.
 
 **The rule: a dataset small enough to send is cheaper to send once than to
 query per interaction.** Re-check that when the catalogue grows; at a few

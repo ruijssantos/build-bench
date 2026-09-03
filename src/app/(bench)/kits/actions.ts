@@ -18,6 +18,7 @@ import {
   updateKitStatus,
   type KitRow,
 } from "@/db/repositories/kits";
+import { readIsoDate } from "@/domain/dates";
 import {
   isKitCategory,
   isStashStatus,
@@ -28,7 +29,7 @@ import {
   type StashStatus,
 } from "@/domain/kit";
 import type { KitCandidate } from "@/domain/kit-candidate";
-import { deleteBoxArt, saveBoxArt } from "@/lib/box-art";
+import { deleteBoxArt, isStoredBlobUrl, saveBoxArt } from "@/lib/box-art";
 import { readText } from "@/lib/form-text";
 
 /**
@@ -186,7 +187,7 @@ export async function addManualKit(input: AddManualKitInput, status: KitStatus):
 
   const scalematesUrl = readText(input.scalematesUrl, 500);
   const providedImage = readText(input.imageUrl ?? "", 2000);
-  const alreadyStored = providedImage?.includes(".blob.vercel-storage.com") ?? false;
+  const alreadyStored = isStoredBlobUrl(providedImage);
 
   const id = await createKit({
     brand,
@@ -439,11 +440,15 @@ export async function updateKitPurchaseAction(input: UpdateKitPurchaseActionInpu
     return { ok: false, error: "That kit is no longer in the stash." };
   }
 
+  // `readIsoDate`, not `readText`: these three go straight into `date`
+  // columns, and a value that isn't a date fails inside Neon rather than here
+  // — see `readIsoDate`'s own note. A malformed one reads as "cleared", which
+  // is what an empty input already meant.
   const updated = await updateKitPurchase(input.id, existing.status, {
     purchasedFrom: readText(input.purchasedFrom, 200),
-    purchasedAt: readText(input.purchasedAt, 10),
-    startedAt: readText(input.startedAt, 10),
-    completedAt: readText(input.completedAt, 10),
+    purchasedAt: readIsoDate(input.purchasedAt),
+    startedAt: readIsoDate(input.startedAt),
+    completedAt: readIsoDate(input.completedAt),
   });
   if (!updated) return { ok: false, error: "That kit is no longer in the stash." };
 
@@ -476,8 +481,14 @@ export async function createManualForKit(input: CreateManualInput): Promise<KitR
   const existing = await findKitById(input.kitId);
   if (!existing) return { ok: false, error: "That kit is no longer here." };
 
+  // The URL comes from the client, because the client is what ran the upload
+  // (see the note above). It still has to be *our* Blob store: this row is
+  // what `/api/kits/extract` later fetches and sends to Claude at the owner's
+  // expense, and what `deleteManual` later hands to `del`.
   const blobUrl = readText(input.blobUrl, 2000);
-  if (!blobUrl) return { ok: false, error: "That upload didn't come through — try again." };
+  if (!blobUrl || !isStoredBlobUrl(blobUrl)) {
+    return { ok: false, error: "That upload didn't come through — try again." };
+  }
 
   await createKitManual({
     kitId: input.kitId,

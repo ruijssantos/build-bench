@@ -5,7 +5,7 @@ import styles from "./Inventory.module.css";
 /**
  * The true empty state — no rows in `inventory_item` at all.
  *
- * Same card language as `ComingSoon`: icon, title, one line of description,
+ * The app's empty-state card language: icon, title, one line of description,
  * centered. Says only what a user needs to hear (use Add) — nothing about
  * how the shelf gets seeded, which is an implementation detail, not a
  * product message.
