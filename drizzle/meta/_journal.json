@@ -36,6 +36,13 @@
       "when": 1788012475330,
       "tag": "0004_kit_status_dates_and_manual_label",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1788556800000,
+      "tag": "0005_paints_drop_open_state",
+      "breakpoints": true
     }
   ]
 }

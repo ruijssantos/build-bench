@@ -245,7 +245,7 @@ inventory_item                     -- the paint shelf
   paint_code      text FK paint
   form            text             -- bottle | spray_can | decanted_jar
   decanted_from   text NULL FK     -- TS-8 can → decanted jar, keeps the lineage
-  state           text             -- open | low (unset reads as "In Stock")
+  state           text             -- low (unset reads as "In Stock")
   quantity        integer
   purchased_from  text             -- a shop name, free text
   purchased_at    date
@@ -744,7 +744,7 @@ The full Tamiya catalogue with generation and CI verification. Paint lookup, fam
 rules, cup-fill visualiser, `ratio_override` editing, the 74540 dry-tip panel.
 
 ### Phase 2 — Paint inventory ✅
-The paint shelf: CRUD over form/state (`open`/`low`), sortable table, one-tap running low,
+The paint shelf: CRUD over form/state (`low`), sortable table, one-tap running low,
 "do I own this?" on the Thinner Bench card.
 
 ### Phase 3 — Wishlist ✅
@@ -831,7 +831,9 @@ flagged as such in `scripts/build-catalogue.ts`'s own comments — fix by eye ag
 bottle whenever convenient, no phase attached. Phase 2 shipped with two deviations from the
 original one-line spec, both made during review: `inventory_item.location` was dropped
 entirely (a real migration, not just UI), and `state` was trimmed to two values
-(`open`/`low`, unset reads as "In Stock").
+(`open`/`low`, unset reads as "In Stock"). `open` was later dropped too, at the owner's
+request: it read as redundant with the unset default, so `state` is now just `low`
+(a real migration again, moving every existing `open` row to unset).
 
 After Phase 2, the airbrush feature was cut (§8) and the plan re-cut around the wishlist and
 the stash. That removed four tables — `airbrush`, `maintenance_log`, `spray_session`,

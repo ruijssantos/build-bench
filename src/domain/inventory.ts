@@ -14,11 +14,12 @@ export const INVENTORY_FORMS = ["bottle", "spray_can", "decanted_jar"] as const;
 export type InventoryForm = (typeof INVENTORY_FORMS)[number];
 
 /**
- * Two explicit states, plus the unset default — trimmed from an original
- * four (sealed/open/low/empty) at the owner's request: sealed adds nothing
- * over the unset default, and empty adds nothing over just removing the row.
+ * One explicit state, plus the unset default — trimmed from an original
+ * four (sealed/open/low/empty) at the owner's request: sealed and open add
+ * nothing over the unset default, and empty adds nothing over just removing
+ * the row.
  */
-export const INVENTORY_STATES = ["open", "low"] as const;
+export const INVENTORY_STATES = ["low"] as const;
 export type InventoryState = (typeof INVENTORY_STATES)[number];
 
 export function isInventoryForm(value: unknown): value is InventoryForm {
@@ -43,7 +44,7 @@ export function formLabel(form: string | null): string {
 }
 
 /** "Bottle", "Spray Can", "Decanted Jar" — Title Case, matching
- * `stateLabel`'s "In Stock" / "Open" / "Low" on the same Add/Edit form. Only
+ * `stateLabel`'s "In Stock" / "Low" on the same Add/Edit form. Only
  * the standalone Form control wants this; every other use of `formLabel` is
  * inline body copy, where lower case reads naturally. */
 export function formLabelTitleCase(form: string | null): string {
@@ -60,7 +61,6 @@ export function formLabelTitleCase(form: string | null): string {
  * nobody has said otherwise, which is exactly "in stock".
  */
 const STATE_LABEL: Record<InventoryState, string> = {
-  open: "Open",
   low: "Low",
 };
 
@@ -72,11 +72,10 @@ export function isRunningLow(state: string | null): boolean {
   return state === "low";
 }
 
-/** What a "Running low" toggle flips to. Clearing `low` lands on `open`,
- * because a bottle you have just topped up your opinion of is, by definition,
- * one you have opened. */
-export function toggledLowState(state: string | null): InventoryState {
-  return isRunningLow(state) ? "open" : "low";
+/** What a "Running low" toggle flips to. Clearing `low` lands on `null`
+ * ("In Stock") — there's no state left in between. */
+export function toggledLowState(state: string | null): InventoryState | null {
+  return isRunningLow(state) ? null : "low";
 }
 
 /** Pill labels for the family filters. `familyLabel` in the Thinner Bench
