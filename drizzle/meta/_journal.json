@@ -40,8 +40,15 @@
     {
       "idx": 5,
       "version": "7",
-      "when": 1788472878814,
-      "tag": "0005_kit_research_tips",
+      "when": 1788556800000,
+      "tag": "0005_paints_drop_open_state",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1788556801000,
+      "tag": "0006_kit_research_tips",
       "breakpoints": true
     }
   ]

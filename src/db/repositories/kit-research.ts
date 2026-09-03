@@ -31,7 +31,6 @@ export interface KitResearchRow {
   difficultyNote: string | null;
   fitIssues: Array<{ issue: string; severity: string; sourceUrl: string; confidence: number }> | null;
   tips: Array<{ tip: string; category: string; sourceUrl: string; confidence: number }> | null;
-  buildVideoUrl: string | null;
   manualUrl: string | null;
   sources: string[] | null;
   modelUsed: string | null;
@@ -63,7 +62,6 @@ async function queryKitResearch(kitId: number): Promise<KitResearchRow | undefin
       difficultyNote: kitResearch.difficultyNote,
       fitIssues: kitResearch.fitIssues,
       tips: kitResearch.tips,
-      buildVideoUrl: kitResearch.buildVideoUrl,
       manualUrl: kitResearch.manualUrl,
       sources: kitResearch.sources,
       modelUsed: kitResearch.modelUsed,
@@ -200,7 +198,6 @@ export async function replaceKitResearch(input: SaveResearchInput): Promise<void
     difficultyNote: input.difficultyNote,
     fitIssues: input.fitIssues,
     tips: input.tips,
-    buildVideoUrl: input.buildVideoUrl,
     manualUrl: input.manualUrl,
     sources: input.sources,
     modelUsed: input.modelUsed,

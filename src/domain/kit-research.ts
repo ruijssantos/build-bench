@@ -143,7 +143,6 @@ export const KitResearchSchema = z.object({
       }),
     )
     .describe("Build advice for this kit, as opposed to defects. Empty array if none were found."),
-  buildVideoUrl: z.string().nullable().describe("A full build video for this exact kit, or null"),
   manualUrl: z.string().nullable().describe("A link to the instructions online, or null"),
 });
 
@@ -169,7 +168,6 @@ export interface NormalizedResearch {
   difficultyNote: string | null;
   fitIssues: Array<{ issue: string; severity: string; sourceUrl: string; confidence: number }>;
   tips: Array<{ tip: string; category: string; sourceUrl: string; confidence: number }>;
-  buildVideoUrl: string | null;
   manualUrl: string | null;
 }
 
@@ -281,7 +279,6 @@ export function normalizeResearch(raw: RawKitResearch): NormalizedResearch {
     difficultyNote: difficulty ? trimText(raw.difficultyNote, 300) : null,
     fitIssues,
     tips,
-    buildVideoUrl: usableLink(raw.buildVideoUrl),
     manualUrl: usableLink(raw.manualUrl),
   };
 }

@@ -11,7 +11,10 @@ import { describeAnthropicError, logAnthropicError } from "@/lib/anthropic-error
  *
  * The expensive one: Opus 5 with web search and web fetch, reading forum
  * threads and review blogs about one specific kit and writing up what builders
- * actually say about it. Free-form prose **with citations**, not structured
+ * actually say about it. §5.1 also listed "a build video" among what this
+ * stage finds; it doesn't, because the kit page has had its own YouTube search
+ * since Phase 4a and a second video link on the same screen is a duplicate
+ * either way — so this stops short of paying to look for one. Free-form prose **with citations**, not structured
  * output, because structured outputs and citations are mutually exclusive
  * (§5.2) and citations are the entire basis of §5.4's trust rules — a claim
  * with no source doesn't get shown at all.
@@ -48,7 +51,7 @@ const MAX_FETCHES = 4;
 
 const SYSTEM_PROMPT = `You research a specific scale-model kit for a hobbyist about to build it. Everything you report will be shown to that person next to a link to where it came from, so a claim you cannot source is a claim not worth making.
 
-Search for what builders say about this exact kit — build threads, forum posts, review blogs, YouTube build videos. Scalemates is a good index but blocks automated fetching, so prefer forums (Britmodeller, Model Cars Magazine, Scale Auto, FineScale, Reddit r/modelmakers), review sites, and manufacturers' own pages.
+Search for what builders say about this exact kit — build threads, forum posts, review blogs. Scalemates is a good index but blocks automated fetching, so prefer forums (Britmodeller, Model Cars Magazine, Scale Auto, FineScale, Reddit r/modelmakers), review sites, and manufacturers' own pages.
 
 Report, in prose:
 
@@ -58,9 +61,9 @@ Report, in prose:
 
 3. **Tips** — build advice as distinct from defects. Technique, ordering, a paint that works better than the box calls for, a tool that makes one step tractable. Categorise each as prep, paint, decals, assembly, tools or reference.
 
-4. **A full build video** for this exact kit, if one exists — a URL.
+4. **A link to the instructions** online, if you find one. Do not summarise the instructions; this app has the manual already.
 
-5. **A link to the instructions** online, if you find one. Do not summarise the instructions; this app has the manual already.
+Do not go looking for a build video — the app already has its own link out to YouTube and does not need a second one.
 
 For every claim in sections 1–3, name the URL you got it from, inline, right next to the claim. A claim you found in only one place is fine — say that it was one builder's experience. What is not fine is presenting something you inferred, or know generally about kits of this type, as though a source said it about this kit. If you found very little, report very little; a short honest answer is more useful than a padded one, because the person reading it is about to spend a weekend on this model.`;
 

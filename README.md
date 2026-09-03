@@ -35,7 +35,7 @@ store.
 
 Most recently kit research (Phase 7): a Research panel on each stash kit that
 searches the web for what other builders say about it — difficulty, fit issues
-to expect, tips, and a build video. Everything it reports carries a link to the
+to expect, and tips. Everything it reports carries a link to the
 source it came from, difficulty only ever appears as a consensus across a
 counted number of sources, and a Verify tick marks what you have checked
 yourself (`docs/PLAN.md` §5.4). It is synthesised from forum posts, and the

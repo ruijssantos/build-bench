@@ -37,7 +37,8 @@ Rules:
 - confidence is 0-1: use the write-up's own hedging as your guide. "Several builders report" is high; "one person mentioned" is low.
 - severity is minor, moderate or major. category is prep, paint, decals, assembly, tools or reference.
 - difficulty is beginner, intermediate or advanced, or null if the write-up says sources disagreed.
-- Empty arrays are correct and expected when the write-up found no issues or no tips.`;
+- Empty arrays are correct and expected when the write-up found no issues or no tips.
+- Ignore any build video the write-up happens to mention. The app links out to YouTube by itself and has no field for one.`;
 
 interface ExtractResponse {
   ok: boolean;

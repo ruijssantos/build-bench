@@ -245,7 +245,7 @@ inventory_item                     -- the paint shelf
   paint_code      text FK paint
   form            text             -- bottle | spray_can | decanted_jar
   decanted_from   text NULL FK     -- TS-8 can → decanted jar, keeps the lineage
-  state           text             -- open | low (unset reads as "In Stock")
+  state           text             -- low (unset reads as "In Stock")
   quantity        integer
   purchased_from  text             -- a shop name, free text
   purchased_at    date
@@ -304,7 +304,9 @@ kit_research                       -- the finished, cached result
   difficulty      text             -- beginner | intermediate | advanced
   difficulty_note text
   fit_issues      jsonb            -- [{issue, severity, source_url, confidence}]
-  build_video_url text
+  tips            jsonb            -- [{tip, category, source_url, confidence}], §7
+  build_video_url text             -- unused: nothing writes or reads it (§7). Kept
+                                   -- because it costs nothing and predates Phase 7
   sources         jsonb
   model_used      text
   input_tokens, output_tokens integer
@@ -744,7 +746,7 @@ The full Tamiya catalogue with generation and CI verification. Paint lookup, fam
 rules, cup-fill visualiser, `ratio_override` editing, the 74540 dry-tip panel.
 
 ### Phase 2 — Paint inventory ✅
-The paint shelf: CRUD over form/state (`open`/`low`), sortable table, one-tap running low,
+The paint shelf: CRUD over form/state (`low`), sortable table, one-tap running low,
 "do I own this?" on the Thinner Bench card.
 
 ### Phase 3 — Wishlist ✅
@@ -814,10 +816,10 @@ mutate, so there is no write path here to keep consistent with four other screen
 
 ### Phase 7 — Kit research ✅
 §5.1 stages B and C against a stash kit: difficulty as a sourced consensus, fit issues and
-tips each carrying the URL they came from, a build video and a link to the instructions
-online. A Research panel on `/kits/[id]`, below Manuals and Paints. Optional enhancement —
-nothing else depends on it, and a kit with no research shows the panel's empty state plus the
-free YouTube search that has been there since Phase 4a. §7 has the build account.
+tips each carrying the URL they came from, and a link to the instructions online. A Research
+panel on `/kits/[id]`, below Manuals and Paints. **No build video**, unlike §5.1's original
+sketch — the kit page has had its own YouTube search since Phase 4a and a second video link
+on the same screen is a duplicate (§7). Optional enhancement — nothing else depends on it. §7 has the build account.
 
 ### Phase 8 — Build log
 Per-kit dated journal by stage, photos to Blob, research and manual attached to the kit.
@@ -834,7 +836,9 @@ flagged as such in `scripts/build-catalogue.ts`'s own comments — fix by eye ag
 bottle whenever convenient, no phase attached. Phase 2 shipped with two deviations from the
 original one-line spec, both made during review: `inventory_item.location` was dropped
 entirely (a real migration, not just UI), and `state` was trimmed to two values
-(`open`/`low`, unset reads as "In Stock").
+(`open`/`low`, unset reads as "In Stock"). `open` was later dropped too, at the owner's
+request: it read as redundant with the unset default, so `state` is now just `low`
+(a real migration again, moving every existing `open` row to unset).
 
 After Phase 2, the airbrush feature was cut (§8) and the plan re-cut around the wishlist and
 the stash. That removed four tables — `airbrush`, `maintenance_log`, `spray_session`,
@@ -1534,7 +1538,7 @@ Three things were found and deliberately **not** changed:
 
 ### Phase 7 — what the spec didn't settle
 
-**Tips got a column of their own** (`kit_research.tips`, migration 0005 — the schema was
+**Tips got a column of their own** (`kit_research.tips`, migration 0006 — the schema was
 otherwise already complete, which is why §5.1 could be built without touching it). §5.1 named
 only fit issues, and folding advice into them would have been wrong: "the bonnet sits proud
 unless the firewall is sanded" is a defect in the kit, "let the clear coat cure 48h before
@@ -1551,12 +1555,17 @@ into a bare "Intermediate". Sources are counted by **distinct host** — three t
 forum is one source agreeing with itself, and counting it as three is the exact false
 confidence §5.4 exists to prevent.
 
-**The build video is a link, not an embed.** §5.1 promised a build video and the earlier
-sketch of this phase wanted a click-to-load facade. A facade still needs YouTube's thumbnail,
-which means hotlinking it — §8 says the app doesn't do that — and a real player is more
-JavaScript than the entire app ships. On a phone at the bench the link opens the YouTube app,
-which is where you wanted to watch it. The free YouTube *search* link stays visible either
-way, as the fallback for a kit research found no video for.
+**There is no build video, in the end.** §5.1 promised one and this phase shipped it as a
+link (an embed was never on: a click-to-load facade still needs YouTube's thumbnail
+hotlinked, which §8 rules out, and a real player is more JavaScript than the whole app
+ships). The owner cut it on sight, correctly: `IdentityPanel` has had a **Search YouTube**
+button at the top of this page since Phase 4a, so a video button lower down is a second
+YouTube-shaped thing on one screen whether it points at a search or at one specific build.
+Both the button and its empty-state twin are gone, and stage B is told not to look for a
+video at all — collecting a field nothing renders would be the same dead weight the Phase 6
+sweep spent a commit removing. `kit_research.build_video_url` stays as an unused column: it
+predates this phase (`0000_init`), it is nullable, and dropping it would be a migration
+bought for nothing.
 
 **No `fallbacks` parameter**, though the SDK offers server-side refusal fallbacks on Opus 5.
 A refusal on "what do builders say about this Tamiya kit" is not a failure mode this app has;
@@ -1736,6 +1745,8 @@ additive and none drops a column another deploy might still be reading.
 | `0002_drop_airbrush_and_shopping` | drops four tables, retypes `purchased_from` | Phase 2 |
 | `0003_wishlist_and_stash` | `wishlist_item`; `kit.category`/`scalemates_url`/`image_url` | Phase 3 |
 | `0004_kit_status_dates_and_manual_label` | `kit.started_at`/`completed_at`, `kit_manual.label` | Phase 4a |
+| `0005_paints_drop_open_state` | moves every `inventory_item.state = 'open'` row to unset | Paints "Open" state removal |
+| `0006_kit_research_tips` | `kit_research.tips`, plus a `kit_id` index on `kit_research` and `research_job` | Phase 7 |
 
 **Phase 5 added no migration** — `paint_brand` and `paint_equivalent` have existed since
 `0000_init` and were simply empty. What it needs instead is exactly step 5.5 above: a re-seed,

@@ -5,7 +5,6 @@ import styles from "@/components/wishlist/Wishlist.module.css";
 import { getKitResearch } from "@/db/repositories/kit-research";
 import type { KitRow } from "@/db/repositories/kits";
 import { formatTimestampDate } from "@/domain/dates";
-import { kitYoutubeSearchUrl } from "@/domain/kit";
 import { consensusLine, severityLabel, sourceHost, tipCategoryLabel } from "@/domain/kit-research";
 
 import { ResearchRunner } from "./ResearchRunner";
@@ -28,12 +27,6 @@ import { ResearchRunner } from "./ResearchRunner";
 export async function ResearchPanel({ kit }: { kit: KitRow }) {
   const research = await getKitResearch(kit.id);
 
-  // Always available, researched or not, and deliberately not gated behind a
-  // successful run: it's free, it needs no API, and it is the honest fallback
-  // for a kit obscure enough that research finds nothing (§6 Phase 4a shipped
-  // it for exactly that reason).
-  const youtubeSearch = kitYoutubeSearchUrl(kit.brand, kit.kitNumber, kit.name);
-
   if (!research) {
     return (
       <div className={styles.card}>
@@ -45,14 +38,6 @@ export async function ResearchPanel({ kit }: { kit: KitRow }) {
           </div>
           <div className={styles.manualActions}>
             <ResearchRunner kitId={kit.id} hasResearch={false} />
-            <a
-              className={`${styles.boughtButton} ${styles.manualActionButton}`}
-              href={youtubeSearch}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <ExternalLinkIcon size={13} /> Search YouTube
-            </a>
           </div>
         </div>
       </div>
@@ -144,32 +129,12 @@ export async function ResearchPanel({ kit }: { kit: KitRow }) {
           </div>
         ) : null}
 
+        {/* No video button here. `IdentityPanel` already puts a YouTube search
+            at the top of this page, and a second YouTube-shaped button on the
+            same screen is a duplicate whether it points at a search or at one
+            specific build — so research doesn't look for a video at all any
+            more (§7). */}
         <div className={styles.manualActions}>
-          {/* The build video is a link, not an embed. A YouTube player is more
-              JavaScript than this entire app ships, a click-to-load facade
-              still needs its thumbnail hotlinked (§8 says no), and on a phone
-              at the bench the link opens the YouTube app — which is where you
-              wanted to watch it anyway. */}
-          {research.buildVideoUrl ? (
-            <a
-              className={`${styles.boughtButton} ${styles.manualActionButton}`}
-              href={research.buildVideoUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <ExternalLinkIcon size={13} /> Build video
-            </a>
-          ) : (
-            <a
-              className={`${styles.boughtButton} ${styles.manualActionButton}`}
-              href={youtubeSearch}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <ExternalLinkIcon size={13} /> Search YouTube
-            </a>
-          )}
-
           {research.manualUrl ? (
             <a
               className={`${styles.boughtButton} ${styles.manualActionButton}`}
