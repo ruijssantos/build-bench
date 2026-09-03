@@ -129,23 +129,14 @@ export async function ResearchPanel({ kit }: { kit: KitRow }) {
           </div>
         ) : null}
 
-        {/* No video button here. `IdentityPanel` already puts a YouTube search
-            at the top of this page, and a second YouTube-shaped button on the
-            same screen is a duplicate whether it points at a search or at one
-            specific build — so research doesn't look for a video at all any
-            more (§7). */}
+        {/* No link-out buttons here. `IdentityPanel` already carries Scalemates
+            and a YouTube search at the top of this page, and the Manuals panel
+            holds the real, uploaded instructions — so a "build video" or an
+            "instructions online" button lower down is a second route to
+            something the page already reaches. Research doesn't look for
+            either any more (§7); what it produces is claims, and every one of
+            them carries its own source link. */}
         <div className={styles.manualActions}>
-          {research.manualUrl ? (
-            <a
-              className={`${styles.boughtButton} ${styles.manualActionButton}`}
-              href={research.manualUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <ExternalLinkIcon size={13} /> Instructions online
-            </a>
-          ) : null}
-
           {/* §5.4: verified rows outrank unverified, and this is the control
               that says so. `.boughtButtonDone` is the app's existing green
               "already done" state — the same one a bought kit wears. */}

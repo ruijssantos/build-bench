@@ -300,13 +300,13 @@ kit_research                       -- the finished, cached result
   kit_id          integer NULL FK
   job_id          uuid FK research_job
   resolved_brand, resolved_number, resolved_name text
-  manual_url      text             -- a LINK it found; the app does not download it
+  manual_url      text             -- unused: nothing writes or reads it (§7)
   difficulty      text             -- beginner | intermediate | advanced
   difficulty_note text
   fit_issues      jsonb            -- [{issue, severity, source_url, confidence}]
   tips            jsonb            -- [{tip, category, source_url, confidence}], §7
-  build_video_url text             -- unused: nothing writes or reads it (§7). Kept
-                                   -- because it costs nothing and predates Phase 7
+  build_video_url text             -- unused, as above. Both kept because they cost
+                                   -- nothing and predate Phase 7
   sources         jsonb
   model_used      text
   input_tokens, output_tokens integer
@@ -815,11 +815,12 @@ Deliberately read-only. Every module links into the screen that owns the thing; 
 mutate, so there is no write path here to keep consistent with four other screens.
 
 ### Phase 7 — Kit research ✅
-§5.1 stages B and C against a stash kit: difficulty as a sourced consensus, fit issues and
-tips each carrying the URL they came from, and a link to the instructions online. A Research
-panel on `/kits/[id]`, below Manuals and Paints. **No build video**, unlike §5.1's original
-sketch — the kit page has had its own YouTube search since Phase 4a and a second video link
-on the same screen is a duplicate (§7). Optional enhancement — nothing else depends on it. §7 has the build account.
+§5.1 stages B and C against a stash kit, narrowed to what only research can produce:
+difficulty as a sourced consensus, and fit issues and tips each carrying the URL they came
+from. A Research panel on `/kits/[id]`, below Manuals and Paints. **No build video and no
+instructions link**, unlike §5.1's original sketch — the kit page already reaches YouTube and
+Scalemates from `IdentityPanel`, and the uploaded manual is right there in the Manuals panel
+(§7). Optional enhancement — nothing else depends on it. §7 has the build account.
 
 ### Phase 8 — Build log
 Per-kit dated journal by stage, photos to Blob, research and manual attached to the kit.
@@ -1555,17 +1556,27 @@ into a bare "Intermediate". Sources are counted by **distinct host** — three t
 forum is one source agreeing with itself, and counting it as three is the exact false
 confidence §5.4 exists to prevent.
 
-**There is no build video, in the end.** §5.1 promised one and this phase shipped it as a
-link (an embed was never on: a click-to-load facade still needs YouTube's thumbnail
-hotlinked, which §8 rules out, and a real player is more JavaScript than the whole app
-ships). The owner cut it on sight, correctly: `IdentityPanel` has had a **Search YouTube**
-button at the top of this page since Phase 4a, so a video button lower down is a second
-YouTube-shaped thing on one screen whether it points at a search or at one specific build.
-Both the button and its empty-state twin are gone, and stage B is told not to look for a
-video at all — collecting a field nothing renders would be the same dead weight the Phase 6
-sweep spent a commit removing. `kit_research.build_video_url` stays as an unused column: it
-predates this phase (`0000_init`), it is nullable, and dropping it would be a migration
-bought for nothing.
+**Both of §5.1's link-outs were cut on sight, and both deserved it.** The phase shipped a
+build video and an "instructions online" link, per §5.1's original list. The owner removed
+each within a minute of seeing it, for the same reason in both cases: **the page already gets
+there.** `IdentityPanel` has carried Scalemates and a YouTube search since Phase 4a, and the
+Manuals panel holds the real, uploaded instructions — so a video button or an instructions
+button lower down the same screen is a second route to something one scroll up already does.
+(The video was a link rather than an embed for its own reasons: a click-to-load facade still
+needs YouTube's thumbnail hotlinked, which §8 rules out, and a real player is more JavaScript
+than the whole app ships. Moot now.)
+
+The fields went with the buttons rather than lingering behind them. Stage B is told not to
+look for either, stage C to ignore them if the write-up mentions them, and `buildVideoUrl` /
+`manualUrl` are out of the Zod schema, the normaliser and the repository — collecting a field
+nothing renders is exactly the dead weight the Phase 6 sweep spent a commit removing, and
+paying Opus to search for it is worse than merely storing it. `kit_research.build_video_url`
+and `manual_url` stay as unused columns: both predate this phase (`0000_init`), both are
+nullable, and dropping them would be a migration bought for nothing.
+
+What's left is the part only research can produce — claims about the kit, each with a source.
+That is a better-shaped feature than the one specified: every link-out on the panel was a
+thing the app could already reach, and cutting them leaves nothing on it that isn't sourced.
 
 **No `fallbacks` parameter**, though the SDK offers server-side refusal fallbacks on Opus 5.
 A refusal on "what do builders say about this Tamiya kit" is not a failure mode this app has;

@@ -61,11 +61,9 @@ Report, in prose:
 
 3. **Tips** — build advice as distinct from defects. Technique, ordering, a paint that works better than the box calls for, a tool that makes one step tractable. Categorise each as prep, paint, decals, assembly, tools or reference.
 
-4. **A link to the instructions** online, if you find one. Do not summarise the instructions; this app has the manual already.
+That is the whole job. Don't go looking for a build video or for the instructions online: the app already links out to YouTube and to Scalemates by itself, and has the uploaded manual besides. Spend the searches on what builders said instead.
 
-Do not go looking for a build video — the app already has its own link out to YouTube and does not need a second one.
-
-For every claim in sections 1–3, name the URL you got it from, inline, right next to the claim. A claim you found in only one place is fine — say that it was one builder's experience. What is not fine is presenting something you inferred, or know generally about kits of this type, as though a source said it about this kit. If you found very little, report very little; a short honest answer is more useful than a padded one, because the person reading it is about to spend a weekend on this model.`;
+For every claim, name the URL you got it from, inline, right next to the claim. A claim you found in only one place is fine — say that it was one builder's experience. What is not fine is presenting something you inferred, or know generally about kits of this type, as though a source said it about this kit. If you found very little, report very little; a short honest answer is more useful than a padded one, because the person reading it is about to spend a weekend on this model.`;
 
 type InvestigateResponse = { ok: true; jobId: string } | { ok: false; error: string };
 

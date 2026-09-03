@@ -143,7 +143,6 @@ export const KitResearchSchema = z.object({
       }),
     )
     .describe("Build advice for this kit, as opposed to defects. Empty array if none were found."),
-  manualUrl: z.string().nullable().describe("A link to the instructions online, or null"),
 });
 
 export type RawKitResearch = z.infer<typeof KitResearchSchema>;
@@ -168,7 +167,6 @@ export interface NormalizedResearch {
   difficultyNote: string | null;
   fitIssues: Array<{ issue: string; severity: string; sourceUrl: string; confidence: number }>;
   tips: Array<{ tip: string; category: string; sourceUrl: string; confidence: number }>;
-  manualUrl: string | null;
 }
 
 /** A claim's source has to be a real, public http(s) URL to be a source at
@@ -184,12 +182,6 @@ function usableSourceUrl(raw: unknown): string | null {
   } catch {
     return null;
   }
-}
-
-/** Same treatment for the two standalone links, which are shown as links and
- * so face exactly the same test. */
-function usableLink(raw: unknown): string | null {
-  return usableSourceUrl(raw);
 }
 
 function clampConfidence(value: unknown): number {
@@ -279,7 +271,6 @@ export function normalizeResearch(raw: RawKitResearch): NormalizedResearch {
     difficultyNote: difficulty ? trimText(raw.difficultyNote, 300) : null,
     fitIssues,
     tips,
-    manualUrl: usableLink(raw.manualUrl),
   };
 }
 
