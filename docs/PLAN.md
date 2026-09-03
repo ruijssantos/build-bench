@@ -245,7 +245,7 @@ inventory_item                     -- the paint shelf
   paint_code      text FK paint
   form            text             -- bottle | spray_can | decanted_jar
   decanted_from   text NULL FK     -- TS-8 can → decanted jar, keeps the lineage
-  state           text             -- open | low (unset reads as "In Stock")
+  state           text             -- low (unset reads as "In Stock")
   quantity        integer
   purchased_from  text             -- a shop name, free text
   purchased_at    date
@@ -744,7 +744,7 @@ The full Tamiya catalogue with generation and CI verification. Paint lookup, fam
 rules, cup-fill visualiser, `ratio_override` editing, the 74540 dry-tip panel.
 
 ### Phase 2 — Paint inventory ✅
-The paint shelf: CRUD over form/state (`open`/`low`), sortable table, one-tap running low,
+The paint shelf: CRUD over form/state (`low`), sortable table, one-tap running low,
 "do I own this?" on the Thinner Bench card.
 
 ### Phase 3 — Wishlist ✅
@@ -831,7 +831,9 @@ flagged as such in `scripts/build-catalogue.ts`'s own comments — fix by eye ag
 bottle whenever convenient, no phase attached. Phase 2 shipped with two deviations from the
 original one-line spec, both made during review: `inventory_item.location` was dropped
 entirely (a real migration, not just UI), and `state` was trimmed to two values
-(`open`/`low`, unset reads as "In Stock").
+(`open`/`low`, unset reads as "In Stock"). `open` was later dropped too, at the owner's
+request: it read as redundant with the unset default, so `state` is now just `low`
+(a real migration again, moving every existing `open` row to unset).
 
 After Phase 2, the airbrush feature was cut (§8) and the plan re-cut around the wishlist and
 the stash. That removed four tables — `airbrush`, `maintenance_log`, `spray_session`,
@@ -1680,6 +1682,7 @@ additive and none drops a column another deploy might still be reading.
 | `0002_drop_airbrush_and_shopping` | drops four tables, retypes `purchased_from` | Phase 2 |
 | `0003_wishlist_and_stash` | `wishlist_item`; `kit.category`/`scalemates_url`/`image_url` | Phase 3 |
 | `0004_kit_status_dates_and_manual_label` | `kit.started_at`/`completed_at`, `kit_manual.label` | Phase 4a |
+| `0005_paints_drop_open_state` | moves every `inventory_item.state = 'open'` row to unset | Paints "Open" state removal |
 
 **Phase 5 added no migration** — `paint_brand` and `paint_equivalent` have existed since
 `0000_init` and were simply empty. What it needs instead is exactly step 5.5 above: a re-seed,
