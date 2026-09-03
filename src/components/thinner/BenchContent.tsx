@@ -1,5 +1,6 @@
 import { AdditiveCard } from "./AdditiveCard";
 import { BenchNotes } from "./BenchNotes";
+import { EquivalentsCard } from "./EquivalentsCard";
 import { RatioHero } from "./RatioHero";
 import { SpecGrid } from "./SpecGrid";
 import { resolveBenchParams, type BenchSearchParams } from "./bench-params";
@@ -56,16 +57,18 @@ export async function BenchContent({ searchParams }: { searchParams: Promise<Ben
           ownership={bundle.ownership}
         />
       </div>
-      <div className={styles.specsArea}>
+      <div className={styles.sideArea}>
         <SpecGrid
           psiText={bundle.effectiveRatio.psiText}
           distanceText={bundle.effectiveRatio.distanceText}
           coatsText={bundle.effectiveRatio.coatsText}
           thinnerType={bundle.ratioRule?.thinnerType ?? null}
         />
-      </div>
-      <div className={styles.notesArea}>
         <BenchNotes notes={bundle.effectiveRatio.notes} />
+        {/* Renders nothing when the chart has no rows for this code — see
+            `EquivalentsCard`. Free to call either way: compiled catalogue,
+            no query. */}
+        <EquivalentsCard code={bundle.paint.code} />
       </div>
     </>
   );

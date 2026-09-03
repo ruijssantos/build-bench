@@ -16,9 +16,7 @@ export function OtherItemsSkeleton() {
         <div className={styles.itemRow} key={i}>
           <span className={`${styles.itemTick} ${styles.skeletonTick}`} />
           <div className={styles.itemBody}>
-            <span className={`${styles.itemTitle} ${styles.skeletonLine}`} style={{ width: i === 1 ? "40%" : "60%" }}>
-              Item
-            </span>
+            <span className={`${styles.itemTitle} ${styles.skeletonLine}`} style={{ width: i === 1 ? "40%" : "60%" }} />
           </div>
         </div>
       ))}

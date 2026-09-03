@@ -5,9 +5,12 @@
   min-width: 0;
 }
 
+/* Stays 2×2 on desktop rather than widening to 1×4. These tiles hold six
+   characters ("18–22 psi"); across the full width of the column beside the
+   hero each one was ~500px of mostly air, and stacking them two-up also gives
+   the column the height it needs to sit better against a 600px hero. */
 @media (min-width: 900px) {
   .grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 12px;
   }
 }

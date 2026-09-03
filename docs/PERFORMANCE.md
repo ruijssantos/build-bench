@@ -286,7 +286,7 @@ shell and accept the gap.
 | `/wishlist` initial JS, gzipped | 150 kB | 149.4 kB |
 | `/thinner` static shell, gzipped | 8 kB | 3.4 kB |
 | `/wishlist` static shell, gzipped | 8 kB | 3.3 kB |
-| CSS, gzipped (shared by both) | 10.5 kB | 10.4 kB |
+| CSS, gzipped (shared by both) | 11.0 kB | 10.6 kB |
 | Paint catalogue in an eagerly-loaded chunk | never | behind its dynamic import |
 | `images.remotePatterns` covers the Blob store | required | configured |
 | Every app route ships a static shell | all 6 | all 6 |
@@ -322,12 +322,22 @@ below as the one likely to force the question, and the question was answered:
 raise the number, deliberately, rather than split the group now. That is the
 deal the grouping makes — a navigation between bench screens fetches no new
 CSS at all — but it does mean the budget is a shared allowance, and Phases
-5–8 each spend from it too. The next change to push past 10.0 kB is the one
-that has to decide, again, whether to raise the number a fourth time or
-actually split the group — at some point a screen this different in kind
-(the app's first detail route, likely joined by more in Phases 6–7) may be
-better served by its own stylesheet than by keeping stretching one shared by
-five very different screens.
+5–8 each spend from it too.
+
+Phase 6's Dashboard is the fourth move, 10.5 → 11.0 kB, and the smallest:
++0.2 kB for a whole new screen. That is the grouping paying off rather than
+straining. The first draft of `Dashboard.module.css` restated the card and
+row rules it needed and came in at +0.3 kB over the then-budget; rewriting it
+to import `Wishlist.module.css`'s `.itemList`/`.itemRow`/`.itemBody`/
+`.itemTitle`/`.itemNotes`/`.paintDot` and the `.moduleTitle` tier — the same
+cross-folder move `EmptyKits` and `StashKitCard` already make — left only
+what the screen genuinely adds: four stat tiles, a two-column desktop split,
+and three modifiers. **The rule that fell out of it, worth applying before
+the next raise: when a new screen's stylesheet needs a card or a row, check
+whether one exists before writing one.** The split question stays open and
+unchanged — at some point a screen different enough in kind may be better
+served by its own stylesheet than by stretching one shared by six — but this
+phase was not it.
 
 A round of preview polish right after Phase 4a shipped (a bordered Edit
 button to match Delete on the kit detail header, a pointer cursor on the

@@ -61,11 +61,12 @@ export function WishlistIcon(props: IconProps) {
   );
 }
 
-export function LogIcon(props: IconProps) {
+/** The Dashboard tab — the screen the app opens on. */
+export function HomeIcon(props: IconProps) {
   return (
     <svg {...base(props)}>
-      <path d="M5 4h11a2 2 0 0 1 2 2v14H7a2 2 0 0 1-2-2V4z" />
-      <path d="M9 8h6M9 12h4" />
+      <path d="M4 11l8-6.5 8 6.5" />
+      <path d="M6.5 9.5V19a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V9.5" />
     </svg>
   );
 }

@@ -1,3 +1,4 @@
+import brandsSeed from "../../seed/paint-brands.json";
 import equivalentsSeed from "../../seed/equivalents.json";
 
 /**
@@ -16,9 +17,13 @@ import equivalentsSeed from "../../seed/equivalents.json";
  * prefers the bottle/lacquer form (X, XF, LP) over a spray can (TS, AS) —
  * that's the format the Thinner Bench's own ratio calculator is built
  * around, and it's the more broadly useful "buy this" answer when someone
- * owns neither. A caller that genuinely needs every candidate, not just the
- * preferred one, should read `seed/equivalents.json` directly rather than
- * extend this function's return shape for a need that doesn't exist yet.
+ * owns neither.
+ *
+ * The reverse direction — one Tamiya code to every brand that sells a match —
+ * is `getEquivalentsFor` at the bottom of this file. That need did not exist
+ * when this file was written (the note here used to say so); the Thinner
+ * Bench's "Also sold as" card created it, and both directions belong in one
+ * module reading one seed file rather than two half-indexes of the same data.
  */
 
 interface SeedEquivalent {
@@ -66,3 +71,62 @@ export function resolveForeignCode(raw: string): string | null {
 }
 
 export const CATALOGUE_EQUIVALENTS_SIZE = (equivalentsSeed as SeedEquivalent[]).length;
+
+// ---------------------------------------------------------------------------
+// Tamiya → foreign, for the Thinner Bench's "Also sold as" card
+// ---------------------------------------------------------------------------
+
+interface SeedBrand {
+  key: string;
+  label: string;
+  sort: number;
+}
+
+export interface BrandEquivalents {
+  brandKey: string;
+  /** "Gunze/Mr. Hobby", "AMMO by Mig" — from `seed/paint-brands.json`. */
+  label: string;
+  /** Every code this brand sells that matches, in the order the chart lists
+   * them: Mr. Color's C/H/N ranges are the same shade in three product lines,
+   * and which one is on the shelf differs by shop. */
+  codes: string[];
+}
+
+const BRANDS = new Map((brandsSeed as SeedBrand[]).map((b) => [b.key, b]));
+
+/**
+ * Brand display order is `sort` from `seed/paint-brands.json` — the call
+ * documented in docs/PLAN.md §2.2: Gunze first because Japanese car kits call
+ * Mr. Color throughout, Revell second because Revell kits fill European
+ * shops. It is data, so re-ordering it is a seed edit, not a code change.
+ */
+const BY_TAMIYA_CODE = new Map<string, BrandEquivalents[]>();
+for (const e of equivalentsSeed as SeedEquivalent[]) {
+  const brand = BRANDS.get(e.brand);
+  // A brand missing from the seed is a CI failure in `verify-catalogue.ts`,
+  // not something to render — skip rather than invent a label for it.
+  if (!brand) continue;
+
+  const groups = BY_TAMIYA_CODE.get(e.tamiya_code) ?? [];
+  const existing = groups.find((g) => g.brandKey === e.brand);
+  if (existing) {
+    if (!existing.codes.includes(e.foreign_code)) existing.codes.push(e.foreign_code);
+  } else {
+    groups.push({ brandKey: e.brand, label: brand.label, codes: [e.foreign_code] });
+  }
+  BY_TAMIYA_CODE.set(e.tamiya_code, groups);
+}
+
+for (const groups of BY_TAMIYA_CODE.values()) {
+  groups.sort((a, b) => (BRANDS.get(a.brandKey)?.sort ?? 0) - (BRANDS.get(b.brandKey)?.sort ?? 0));
+}
+
+/**
+ * Every brand that sells a match for this Tamiya code, in display order —
+ * empty when the chart has no row for it, which is common and not an error.
+ * Coverage is uneven by line: the bottle ranges are well covered, the TS/AS
+ * spray cans barely at all, so a decanted spray usually returns nothing.
+ */
+export function getEquivalentsFor(tamiyaCode: string): BrandEquivalents[] {
+  return BY_TAMIYA_CODE.get(tamiyaCode) ?? [];
+}
