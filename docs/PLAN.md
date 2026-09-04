@@ -209,22 +209,10 @@ ratio_override                     -- user corrections
   reason          text
   created_at      timestamptz
 
-paint_brand                        -- display ordering, §2.2
-  key             text PK          -- gunze_mr_hobby | revell | vallejo | ammo | ...
-  label           text
-  sort            integer
-
-paint_equivalent                   -- cross-brand, both directions
-  id              serial PK
-  brand           text FK paint_brand
-  foreign_code    text             -- "H12"
-  foreign_name    text
-  tamiya_code     text FK paint
-  match_quality   text             -- exact | close | approximate
-  source          text             -- cybermodeler | manufacturer | claude-research
-  notes           text
-  INDEX (brand, foreign_code)      -- foreign → Tamiya, the lookup that's actually made
-  INDEX (tamiya_code)              -- Tamiya → foreign
+(The cross-brand chart is *not* a table. `paint_brand` and `paint_equivalent`
+were dropped in 0007 — seeded since 0000_init and never read. Every lookup goes
+through `src/catalogue/equivalents.ts`, which imports seed/equivalents.json and
+seed/paint-brands.json at module scope. Same rule as the rig below.)
 
 rig                                -- seed/rig.json → src/catalogue/rig.ts, §2.3
   model           text             -- "Tamiya 74540 HG Trigger"
@@ -281,7 +269,8 @@ kit_manual                         -- user-uploaded, §4.3 — never auto-downlo
   blob_url        text             -- Vercel Blob
   filename        text
   size_bytes      integer
-  page_count      integer NULL
+  page_count      integer NULL     -- written by extraction, which counts to trim
+  paint_chart_found boolean NULL   -- did the pages read hold the paint chart? §4.3
   paints_extracted_at timestamptz NULL
   uploaded_at     timestamptz
 
@@ -299,27 +288,22 @@ kit_research                       -- the finished, cached result
   id              serial PK
   kit_id          integer NULL FK
   job_id          uuid FK research_job
-  resolved_brand, resolved_number, resolved_name text
-  manual_url      text             -- a LINK it found; the app does not download it
   difficulty      text             -- beginner | intermediate | advanced
   difficulty_note text
   fit_issues      jsonb            -- [{issue, severity, source_url, confidence}]
-  build_video_url text
+  tips            jsonb            -- [{tip, category, source_url, confidence}]
   sources         jsonb
   model_used      text
   input_tokens, output_tokens integer
-  verified_by_me  boolean          -- §5.4
-  researched_at, expires_at timestamptz
+  researched_at   timestamptz
 
 kit_paint_requirement              -- the manual's paint callouts
   id              serial PK
   kit_id          integer FK
-  manual_id       integer NULL FK kit_manual
+  manual_id       integer NULL FK
   raw_label       text             -- exactly as printed: "X-11 CHROME SILVER"
   paint_code      text NULL FK     -- resolved; null if unresolvable
-  part_hint       text
   source          text             -- manual_pdf | research | manual_entry
-  confidence      real
 
 build_log_entry
   id              serial PK
@@ -593,7 +577,20 @@ straight to the stored PDF — the browser's own viewer, in a new tab, phone and
 an earlier desktop-only inline `<iframe>` toggle duplicated that for no real benefit and was
 removed (§7 round 5). An **Extract paint list** action uploads the stored PDF to Claude through
 the Files API and writes `kit_paint_requirement` rows, feeding the shopping list. Kit research
-still *reports* a manual URL when it finds one, as a link — it never fetches it.
+neither fetches a manual nor links to one (§7).
+
+**Extraction reads the first `DEFAULT_EXTRACT_PAGES` pages, not the whole file.** Every page of
+a PDF is converted to an image *and* has its text extracted, so a page costs 1,500–3,000 text
+tokens plus image tokens whether or not it says anything — and on these manuals the paint chart
+(every colour, its code, the cross-brand equivalence table, any custom mixes) sits in the front
+matter, while the assembly steps after it only re-use codes that chart already named. Reading
+twenty pages of exploded diagrams to find a table on page two is most of the bill.
+
+The API has no page-range parameter, so `src/lib/pdf-pages.ts` trims the PDF with `pdf-lib`
+before it is uploaded. That rule is about the common case, not every boxing, so it is a default
+with a way out rather than a cap: extraction reports `foundPaintChart`, the answer lands on
+`kit_manual.paint_chart_found`, and a `false` puts a **"read the whole manual"** link on the
+manual row. The expensive path exists and costs what it costs — it just has to be asked for.
 
 ---
 
@@ -680,6 +677,15 @@ Verified against current API documentation, not recalled:
 - Stage B streams; use `.finalMessage()`
 - Handle `stop_reason: "pause_turn"` — a long server-tool turn can pause, and an unhandled
   pause returns a silently truncated answer with no error raised
+- **`allowed_callers: ["direct"]` on both web tools.** On `web_search_20260209` and later
+  this defaults to `["code_execution_20260120"]` — "dynamic filtering", where the search runs
+  inside code execution and only filtered results reach the model. It saves tokens and it
+  broke this pipeline (§7): under it the `web_search_tool_result` blocks arrive *nested inside
+  the code execution result* rather than at the top level, and the
+  `web_search_result_location` citations the trust surface is built on largely stop appearing.
+  Anything that reads citations or scans top-level blocks wants `["direct"]`
+- Citations are **always on for web search** and **off by default for web fetch** — the latter
+  needs `citations: { enabled: true }` on the tool
 - Server-tool errors return HTTP 200 with an error object in the result block, not an
   exception. On web search a success `content` is an array, an error `content` is an object
   — branch before indexing
@@ -699,15 +705,21 @@ models:
   and ~1–1.5K output tokens (a short candidate list plus some thinking) on Sonnet 5 ($2/$10
   per MTok) comes to roughly **$0.02–0.05 per search**. Not cached — every search is a fresh
   call, since the query itself changes each time.
-- **Stages B+C (Phase 6, per kit researched).** Roughly **€0.20–0.45 per newly researched
-  kit** (Opus 5 at $5/$25 per MTok; search results dominate input tokens, and stage B's long
-  cited synthesis dominates output). Cached in `kit_research`, re-run only on an explicit
-  Refresh.
+- **Stages B+C (Phase 7, per kit researched).** This estimate was **€0.20–0.45 per kit** and
+  the first real run cost **$1.60** — roughly 4× out, with the write-up citing 39 sources for
+  one kit. The estimate wasn't wrong about the shape (search results dominate input); it was
+  wrong about the volume, and about what a server-side tool loop does with it: every search
+  and fetch result stays in context and is re-billed on every later iteration of the same
+  turn, so cost grows with roughly the square of the loop's depth, not linearly with the
+  number of searches. §7 has what was changed and why. The configuration is now Sonnet 5 at
+  `medium` effort, 3 searches, 2 fetches capped at 6K tokens each, and prompt caching on;
+  **re-baseline the figure here from `kit_research.input_tokens` / `output_tokens` after the
+  next few runs** rather than trusting another estimate.
 
-Every call records its own token counts regardless of stage. At personal-hobby volumes —
-searching a handful of kits a week, plus retries for typos — stage A alone is pocket change;
-even a month of active kit research through stages B/C stays well under what the Vercel and
-Neon bills already are.
+Every call records its own token counts regardless of stage, and those two columns are the
+measurement — not this section. At personal-hobby volumes (a handful of kits a week) stage A
+is pocket change either way; stage B is the one worth watching, and the only one where a
+config change moves the bill.
 
 **Billed to your own Anthropic account**, pay-as-you-go, through the `ANTHROPIC_API_KEY` set
 in Vercel's env vars (§9.2) — the app has no billing of its own, no markup, no bundling.
@@ -719,7 +731,13 @@ Research output is synthesised from forum posts by a language model:
 - Every fit issue stores `source_url` and `confidence`; the UI renders the source as a link
   next to the claim. No unsourced assertion appears as fact.
 - Difficulty shows as "consensus from N sources," never a bare rating.
-- A **Verify** action sets `verified_by_me`; verified rows visually outrank unverified.
+- ~~A **Verify** action sets `verified_by_me`; verified rows visually outrank unverified.~~
+  **Not built, and struck rather than deleted so the reasoning survives.** Phase 7 shipped it
+  and it came straight back out (§7): the panel holds exactly one research row per kit, so
+  there is never anything for a verified row to outrank, and what the rule actually produced
+  was a button that turned green and changed nothing else. The idea is sound one level down —
+  a tick *per claim*, sorting verified issues and tips above unverified — and that is what to
+  build if this is ever wanted. `verified_by_me` stays in the schema, unused, for that day.
 
 ---
 
@@ -812,9 +830,13 @@ counts of its own. It is also the derived answer to the `shopping_list_item` tab
 Deliberately read-only. Every module links into the screen that owns the thing; none of them
 mutate, so there is no write path here to keep consistent with four other screens.
 
-### Phase 7 — Kit research
-§5.1 stages B and C against a stash kit: difficulty, fit issues with sources, build video,
-manual link — Phase 4b. Optional enhancement — nothing depends on it.
+### Phase 7 — Kit research ✅
+§5.1 stages B and C against a stash kit, narrowed to what only research can produce:
+difficulty as a sourced consensus, and fit issues and tips each carrying the URL they came
+from. A Research panel on `/kits/[id]`, below Manuals and Paints. **No build video and no
+instructions link**, unlike §5.1's original sketch — the kit page already reaches YouTube and
+Scalemates from `IdentityPanel`, and the uploaded manual is right there in the Manuals panel
+(§7). Optional enhancement — nothing else depends on it. §7 has the build account.
 
 ### Phase 8 — Build log
 Per-kit dated journal by stage, photos to Blob, research and manual attached to the kit.
@@ -1531,6 +1553,209 @@ Three things were found and deliberately **not** changed:
   the next phase hits first, and `PERFORMANCE.md` §10's raise-or-split question will be about
   JavaScript rather than CSS when it does.
 
+### Phase 7 — what the spec didn't settle
+
+**Tips got a column of their own** (`kit_research.tips`, migration 0006 — the schema was
+otherwise already complete, which is why §5.1 could be built without touching it). §5.1 named
+only fit issues, and folding advice into them would have been wrong: "the bonnet sits proud
+unless the firewall is sanded" is a defect in the kit, "let the clear coat cure 48h before
+polishing" is technique, and a list that mixes them can't be read for either. Same row shape,
+so one component and one CSS rule render both.
+
+**§5.4 is enforced in `normalizeResearch`, not in the components.** A claim whose `sourceUrl`
+doesn't parse as an http(s) URL is *dropped* — not shown unsourced, not shown with a
+placeholder. Putting that in the domain layer rather than in the panel means the next screen
+to render these rows inherits the rule instead of having to remember it. `consensusLine`
+works the same way: it returns `null` when there is no difficulty or nothing was cited, so
+the "Intermediate · consensus from 4 sources" line is structurally incapable of degrading
+into a bare "Intermediate". Sources are counted by **distinct host** — three threads on one
+forum is one source agreeing with itself, and counting it as three is the exact false
+confidence §5.4 exists to prevent.
+
+**Both of §5.1's link-outs were cut on sight, and both deserved it.** The phase shipped a
+build video and an "instructions online" link, per §5.1's original list. The owner removed
+each within a minute of seeing it, for the same reason in both cases: **the page already gets
+there.** `IdentityPanel` has carried Scalemates and a YouTube search since Phase 4a, and the
+Manuals panel holds the real, uploaded instructions — so a video button or an instructions
+button lower down the same screen is a second route to something one scroll up already does.
+(The video was a link rather than an embed for its own reasons: a click-to-load facade still
+needs YouTube's thumbnail hotlinked, which §8 rules out, and a real player is more JavaScript
+than the whole app ships. Moot now.)
+
+The fields went with the buttons rather than lingering behind them. Stage B is told not to
+look for either, stage C to ignore them if the write-up mentions them, and `buildVideoUrl` /
+`manualUrl` are out of the Zod schema, the normaliser and the repository — collecting a field
+nothing renders is exactly the dead weight the Phase 6 sweep spent a commit removing, and
+paying Opus to search for it is worse than merely storing it. `kit_research.build_video_url`
+and `manual_url` stay as unused columns: both predate this phase (`0000_init`), both are
+nullable, and dropping them would be a migration bought for nothing.
+
+**The Verify tick went the same way, and taught the more interesting lesson.** §5.4 asked for
+one — "verified rows visually outrank unverified" — and this phase implemented it faithfully:
+a form action, no client JavaScript, flips `verified_by_me`, persists, turns the button green.
+All of which worked, and none of which *meant* anything, because the panel holds exactly one
+research row per kit and a single row cannot outrank anything. The rule had been written for a
+shape the feature didn't end up having. Nobody noticed until it was on screen and the owner
+asked what it was for.
+
+Worth recording as a class of mistake rather than a one-off: **a spec line can be implemented
+correctly and still be dead**, and the check that catches it is not "does this work" but "what
+changes for the person looking at it". The idea underneath is fine one level down — a tick per
+*claim*, sorting verified issues and tips above the rest — and §5.4 now says so. That is a
+deliberate feature to build if it is ever wanted, not a line to re-implement.
+
+What's left is the part only research can produce — claims about the kit, each with a source.
+That is a better-shaped feature than the one specified: every link-out on the panel was a
+thing the app could already reach, every control on it did nothing, and cutting all of them
+leaves nothing on the panel that isn't a sourced claim.
+
+**No `fallbacks` parameter**, though the SDK offers server-side refusal fallbacks on Opus 5.
+A refusal on "what do builders say about this Tamiya kit" is not a failure mode this app has;
+`stop_reason: "refusal"` is handled explicitly instead, the same as in `kits/extract`.
+Revisit if one ever actually turns up.
+
+Verified against a real Postgres and a real browser, since none of the below is covered by
+any automated check. The pipeline's own two calls were **not** run — they cost real money on
+the owner's key — so the routes were exercised to the point where the API key is read: a
+valid kit reaches it, a wishlist or missing kit is refused, a malformed body is a 400, an
+unknown job id is refused, and an unauthenticated request is redirected by the proxy like
+every other route. What was driven end to end: the panel at 1280px and 390px against seeded
+research; the empty state on a kit with none; the Verify tick, which flipped, persisted a
+reload and wrote the row with no client JavaScript (and has since been removed, above — it
+worked exactly as specified and that turned out not to be the question); and the delete
+ordering, run as raw SQL against the real foreign keys, because `kit_research.job_id`
+references `research_job(id)` NOT NULL and getting that order wrong is exactly the trap the
+note above `deleteKit` has been warning about since Phase 4a.
+
+One bug came out of that, and only from measuring: the source link — the load-bearing element
+of the whole feature — was an **11px line of text and therefore a 13px tap target** on a
+phone, less than a third of the 44px the app's own `.iconButton` comment says it designs for.
+Fixed with the padding/negative-margin pair that comment describes: ~37px to hit, no extra
+scrolling through six claims. It looked completely fine in the screenshot.
+
+The whole panel cost **+0.1 kB** of the CSS budget by reusing `.card`, `.paintBucket`,
+`.bucketHead`, `.boughtButton` and the rest of the existing vocabulary — the Phase 6 rule
+(check whether a card or row already exists before writing one) holding up a second time.
+
+### Phase 7's first real runs failed, and why
+
+Two kits, both well documented, both ~3 minutes and ~€0.30, both ending in *"Research found
+nothing it could cite for this kit."* Three faults stacked, and only the third was mine
+alone — the first two are the kind of API default that does exactly what it says and still
+surprises you.
+
+**1. Dynamic filtering was on by default.** `web_search_20260209` and later default
+`allowed_callers` to `["code_execution_20260120"]`: the search runs *inside* code execution,
+which filters results before they reach the model. Sensible, cheaper — and it moves the
+`web_search_tool_result` blocks *inside* the code execution result, where this route's
+top-level scan never looked, and it changes what the model is citing from "these search
+results" to "this code output". The `web_search_result_location` citations this whole feature
+is built on stopped appearing. Fixed by asking for what the feature actually needs:
+`allowed_callers: ["direct"]` on both web tools, paying more input tokens on a once-per-kit
+call to get citations back.
+
+**2. The prompt was pulling the other way.** It told the model to "name the URL you got it
+from, **inline**, right next to the claim" — an instruction fully satisfied by typing a URL
+into prose, with no citation object anywhere. The code then looked only for citation objects.
+Two mechanisms for one job, and the prompt was steering away from the one being read.
+
+**3. Zero citations was a hard, terminal failure — and that was the real bug.** The gate
+reasoned that §5.4 needs a source per claim, so a citation-less write-up was worthless. But
+the URLs *were* there, in the prose, exactly as instructed; the run was fine and the gate
+threw it away, along with the write-up itself, which wasn't even saved on the failure path.
+§5.4 never needed enforcing there: `normalizeResearch` already drops any claim whose
+`sourceUrl` doesn't parse, so a genuinely unsourceable run still shows nothing — after a
+cheap stage C rather than in place of one.
+
+Source collection is now a structural walk for `url` keys at any depth, plus text-block
+citations, plus a regex over the prose, and it is an **aid handed to stage C, never a gate**.
+Failures keep their prose so a retry resumes at stage C. Verified against fixtures built from
+the documented block shapes — top-level results, results nested in a code execution block, a
+fetch result, an error object (which must not crash the walk), a citation, and inline URLs
+wrapped in parentheses or trailing a full stop: all seven URLs recovered, no crash.
+
+The lesson worth keeping is about defaults, not citations: **a server tool's defaults are part
+of its response shape.** This code was written against the documented shape and then run
+against a different one, because a default chose a different execution path. When a feature
+depends on a specific field appearing, pin the setting that produces it rather than accepting
+whatever is cheapest by default.
+
+### And then it cost $1.60 a kit
+
+The run that finally worked read **39 sources** and billed $1.60 — against §5.3's estimate of
+€0.20–0.45. The owner's instinct was to cut the output ("I probably wouldn't need so much
+info, or links to the sources"), and the output was the wrong end: all seven fit issues,
+twelve tips and every source link together are a few hundred output tokens, perhaps a tenth of
+the bill. **The money went into the reading, not the writing** — roughly 280K input tokens.
+
+Three causes, and the first two came from the fix directly above:
+
+1. **`max_content_tokens` was unset on web fetch.** Every fetched page entered context whole;
+   a long forum thread is ~25K tokens and a PDF can reach 125K. Capped at 6K.
+2. **Dynamic filtering had been pinned off on *both* web tools** to rescue citations — right
+   for web search, where `web_search_result_location` lives, and pointless for web fetch,
+   whose source URL is the URL it was handed, sitting in the result block that
+   `collectUrlsFromBlock` already reads at any depth. Fetch is back on the filtering default;
+   search stays direct. The asymmetry is the whole insight, and it was available at the time
+   the pin was written.
+3. **The loop compounds and nothing was cached.** Every search and fetch result is resent on
+   each later iteration of the same turn at full price. Top-level `cache_control` reprices the
+   accumulated prefix at ~0.1× (Sonnet 5's minimum cacheable prefix is 1024 tokens, which the
+   system prompt plus tool definitions clears — worth checking, since a shorter prefix caches
+   silently not at all).
+
+Then the deliberate cuts: searches 6 → 3, fetches 4 → 2, claim caps 12 → 5 issues and 6 tips
+(the run hit the 12 exactly, so it was already truncating), and the prompt now says the limits
+are a brief rather than a quota to fill. **Sonnet 5 at `medium` effort** replaced Opus 5 at
+`high`, at the owner's choice — the recommendation was to try everything above it first, since
+model choice is the one lever that lowers the ceiling; the measured curve for research-shaped
+work is nearly flat (`medium` matching the default's accuracy at 70–85% of cost), which is
+what made it a reasonable call rather than a purely thrifty one.
+
+Two things to carry forward. **The cheap fix and the expensive fix can be the same edit** — the
+`allowed_callers` pin bought citations and cost 4× the bill, and nobody separated the two
+halves until the invoice arrived. And when someone reports a cost problem, **check which end
+of the pipe the tokens are actually in** before agreeing with the proposed cut: this one would
+have removed the source links, kept the 39-source read, and saved almost nothing.
+
+### Extraction reads five pages, and the dead schema is gone
+
+Two changes that came out of asking the same cost question of the other two paid routes.
+
+**Kit lookup was left alone, deliberately.** It is $0.02–0.05 a search on a handful of searches
+a week, and its one obvious lever doesn't fire: the stable prefix is ~550 tokens of system
+prompt plus a small tool definition, under Sonnet 5's 1024-token minimum, so a `cache_control`
+marker there would cache nothing at all — silently, with no error. Padding a prompt to reach a
+cache minimum means paying for the padding forever. Nothing to do here is the honest finding.
+
+**Extraction now reads the first five pages.** The owner supplied the domain rule and it is a
+good one: these manuals print the paint chart in the front matter, and the assembly steps that
+follow re-use codes that chart already named rather than introducing new ones. Every page costs
+image tokens *and* text tokens, so the pages after the chart were the bill. The API has no
+page-range parameter — the caller has to hand it a shorter document — so `src/lib/pdf-pages.ts`
+trims with `pdf-lib` before upload.
+
+It is a default with a way out, not a cap, because the rule is about the common case and a few
+boxings print their chart at the back. Extraction reports `foundPaintChart`; a `false` puts a
+"read the whole manual" link on the row. A hard cap would have failed the other way — a short
+paint list, no error, and the discovery happening at the bench, which is the same failure as a
+wrong code.
+
+**And the dead schema went** — the running catalogue this file kept accumulating, finally
+cashed in (0007). `paint_brand` and `paint_equivalent`: seeded since 0000_init, never read,
+kept through the Phase 6 sweep on the argument that Phase 7 might write `claude-research` rows
+into them. Phase 7 shipped and doesn't, so the argument expired. `part_hint`: extracted on
+every run, stored, rendered nowhere — the owner's call to drop it, and the useful part is that
+it was also the *only* thing the assembly pages uniquely provided, which is what made the
+five-page window cost nothing real. Then `confidence`, `decanted_from`, and seven `kit_research`
+columns nothing had ever written.
+
+The pattern worth naming: **every one of these was noticed and then kept**, each time for a
+plausible future. Three sessions of "kept because Phase N might want it" is how a schema
+acquires ten columns that describe nothing. The rule that would have prevented all of it is the
+one `deleteKit` already states for its own children — add the column in the commit that starts
+writing it.
+
 ---
 
 ## 8. Non-goals
@@ -1683,6 +1908,8 @@ additive and none drops a column another deploy might still be reading.
 | `0003_wishlist_and_stash` | `wishlist_item`; `kit.category`/`scalemates_url`/`image_url` | Phase 3 |
 | `0004_kit_status_dates_and_manual_label` | `kit.started_at`/`completed_at`, `kit_manual.label` | Phase 4a |
 | `0005_paints_drop_open_state` | moves every `inventory_item.state = 'open'` row to unset | Paints "Open" state removal |
+| `0006_kit_research_tips` | `kit_research.tips`, plus a `kit_id` index on `kit_research` and `research_job` | Phase 7 |
+| `0007_drop_dead_columns` | drops `paint_brand`, `paint_equivalent` and ten unread columns; adds `kit_manual.paint_chart_found` | Phase 7 cleanup |
 
 **Phase 5 added no migration** — `paint_brand` and `paint_equivalent` have existed since
 `0000_init` and were simply empty. What it needs instead is exactly step 5.5 above: a re-seed,

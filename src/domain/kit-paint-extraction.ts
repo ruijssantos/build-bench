@@ -18,11 +18,24 @@ import { resolveForeignCode } from "@/catalogue/equivalents";
 const ExtractedPaintWireSchema = z.object({
   rawLabel: z.string(),
   codeGuess: z.string().nullish(),
-  partHint: z.string().nullish(),
 });
 
 export const PaintExtractionResultSchema = z.object({
   requirements: z.array(ExtractedPaintWireSchema),
+  /**
+   * Did the pages it was given actually contain the kit's paint chart?
+   *
+   * Extraction reads only the first few pages by default
+   * (`DEFAULT_EXTRACT_PAGES`), on the rule that the chart lives in the front
+   * matter. This is how the app finds out when that rule didn't hold for a
+   * particular boxing — without it, a chart at the back of the manual would
+   * come back as a short list and no error, which is the same thing as being
+   * wrong quietly. The route turns a `false` here into an offer to read the
+   * whole file.
+   */
+  foundPaintChart: z
+    .boolean()
+    .describe("true if these pages contained the kit's paint/colour chart, false if not"),
 });
 
 export interface ExtractedPaintRequirement {
@@ -33,7 +46,6 @@ export interface ExtractedPaintRequirement {
    * for a code the cross-reference chart never covered is the expected
    * case, not an error. */
   paintCode: string | null;
-  partHint: string | null;
 }
 
 /** A Tamiya-code-shaped token inside a raw label — "X-11 CHROME SILVER" or
@@ -78,7 +90,6 @@ function normalizeExtractedPaint(
   return {
     rawLabel,
     paintCode: resolveCode(rawLabel, raw.codeGuess),
-    partHint: clean(raw.partHint, 200),
   };
 }
 

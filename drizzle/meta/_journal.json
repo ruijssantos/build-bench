@@ -43,6 +43,20 @@
       "when": 1788556800000,
       "tag": "0005_paints_drop_open_state",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1788556801000,
+      "tag": "0006_kit_research_tips",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1788544330404,
+      "tag": "0007_drop_dead_columns",
+      "breakpoints": true
     }
   ]
 }

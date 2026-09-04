@@ -22,6 +22,9 @@ export interface KitManualRow {
   sizeBytes: number | null;
   pageCount: number | null;
   paintsExtractedAt: Date | null;
+  /** `false` when the last extraction read a page window that didn't contain
+   * the paint chart — the signal behind the "read the whole manual" offer. */
+  paintChartFound: boolean | null;
   uploadedAt: Date | null;
 }
 
@@ -92,11 +95,34 @@ export async function deleteKitManual(id: number, kitId: number): Promise<{ blob
   return rows[0] ?? null;
 }
 
-/** Stamped once extraction finishes writing `kit_paint_requirement` rows for
- * this manual — the detail page's "Extracted · <date>" line. */
-export async function markManualPaintsExtracted(id: number, kitId: number): Promise<void> {
+/**
+ * Stamped once extraction finishes writing `kit_paint_requirement` rows for
+ * this manual — the detail page's "Extracted · <date>" line.
+ *
+ * `paintChartFound` records whether the pages extraction actually read
+ * contained the kit's paint chart. `false` is what turns on the offer to read
+ * the whole manual: extraction reads only the first few pages by default
+ * (`DEFAULT_EXTRACT_PAGES`), and a boxing that prints its chart at the back
+ * would otherwise come back as a short list with no indication anything was
+ * missed.
+ */
+export async function markManualPaintsExtracted(
+  id: number,
+  kitId: number,
+  paintChartFound: boolean,
+): Promise<void> {
   await db
     .update(kitManual)
-    .set({ paintsExtractedAt: new Date() })
+    .set({ paintsExtractedAt: new Date(), paintChartFound })
+    .where(and(eq(kitManual.id, id), eq(kitManual.kitId, kitId)));
+}
+
+/** Written whenever extraction opens the PDF — it has to count the pages to
+ * trim them anyway, so this costs nothing and lets the UI say how much of the
+ * manual was read. */
+export async function setManualPageCount(id: number, kitId: number, pageCount: number): Promise<void> {
+  await db
+    .update(kitManual)
+    .set({ pageCount })
     .where(and(eq(kitManual.id, id), eq(kitManual.kitId, kitId)));
 }

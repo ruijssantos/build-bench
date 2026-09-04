@@ -3,7 +3,7 @@ import { cacheLife, cacheTag } from "next/cache";
 import { connection } from "next/server";
 
 import { db } from "@/db/client";
-import { kit, kitManual, kitPaintRequirement } from "@/db/schema";
+import { kit, kitManual, kitPaintRequirement, kitResearch, researchJob } from "@/db/schema";
 import type { KitCategory, KitStatus } from "@/domain/kit";
 
 /**
@@ -210,11 +210,15 @@ export async function updateKitStatus(id: number, from: KitStatus, to: KitStatus
  * recoverable as possible: requirements (re-derivable by re-extracting), then
  * manuals (the row, whose blob the caller then drops), then the kit itself.
  *
- * `build_log_entry`, `research_job` and `kit_research` also reference `kit`
- * and are deliberately *not* handled here: nothing in the app writes them yet.
- * Phase 6 and Phase 7 each need to add their table to this function in the
- * same commit that starts writing it, or deleting a kit will start failing
- * again the same way.
+ * `kit_research` and `research_job` joined that list in Phase 7 — the commit
+ * that started writing them, exactly as the note here used to demand. They go
+ * in that order because `kit_research.job_id` references `research_job(id)`
+ * NOT NULL, so the job cannot go first.
+ *
+ * `build_log_entry` (and `build_photo` behind it) still reference `kit` and
+ * are deliberately *not* handled here: nothing writes them yet. Phase 8 needs
+ * to add them to this function in the same commit that starts writing them,
+ * or deleting a kit will start failing again the same way.
  */
 export async function deleteKit(
   id: number,
@@ -230,6 +234,8 @@ export async function deleteKit(
   if (target.length === 0) return null;
 
   await db.delete(kitPaintRequirement).where(eq(kitPaintRequirement.kitId, id));
+  await db.delete(kitResearch).where(eq(kitResearch.kitId, id));
+  await db.delete(researchJob).where(eq(researchJob.kitId, id));
   const removedManuals = await db
     .delete(kitManual)
     .where(eq(kitManual.kitId, id))

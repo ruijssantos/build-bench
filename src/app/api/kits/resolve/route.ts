@@ -9,7 +9,7 @@ import {
   ResolveResultSchema,
   type KitCandidate,
 } from "@/domain/kit-candidate";
-import { describeAnthropicError, logAnthropicError } from "@/lib/anthropic-errors";
+import { describeAnthropicError, logAnthropicError, webToolErrored } from "@/lib/anthropic-errors";
 import { resolveBoxArtUrl } from "@/lib/box-art";
 
 /**
@@ -172,13 +172,15 @@ export async function POST(request: NextRequest) {
     }
 
     // Web search errors return HTTP 200 with an error object in the result
-    // block rather than throwing (docs/PLAN.md §5.2) — a success `content`
-    // is an array, an error `content` is an object, so branch before
-    // indexing. Not fatal on its own: Claude still answers with whatever it
-    // found, which the empty-candidates path already covers.
-    const searchToolErrored = response.content.some(
-      (block) => block.type === "web_search_tool_result" && !Array.isArray(block.content),
-    );
+    // block rather than throwing (docs/PLAN.md §5.2). Not fatal on its own:
+    // Claude still answers with whatever it found, which the empty-candidates
+    // path already covers.
+    //
+    // `webToolErrored` walks the response rather than scanning its top level,
+    // because `web_search_20260209` defaults to running inside code execution
+    // and its result blocks nest there — the top-level check this replaces
+    // could never fire. See that helper for the full account.
+    const searchToolErrored = webToolErrored(response.content);
 
     if (!response.parsed_output) {
       return jsonError(
