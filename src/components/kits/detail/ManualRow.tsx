@@ -8,7 +8,7 @@ import { CheckIcon, ExternalLinkIcon, FileIcon, TrashIcon } from "@/components/i
 import styles from "@/components/wishlist/Wishlist.module.css";
 import type { KitManualRow } from "@/db/repositories/kit-manuals";
 import { formatTimestampDate } from "@/domain/dates";
-import { manualLabel } from "@/domain/kit-manual";
+import { DEFAULT_EXTRACT_PAGES, manualLabel } from "@/domain/kit-manual";
 
 function formatBytes(bytes: number | null): string {
   if (!bytes) return "";
@@ -29,14 +29,14 @@ export function ManualRow({ manual, kitId }: { manual: KitManualRow; kitId: numb
   const [pendingDelete, startDelete] = useTransition();
   const [deleteError, setDeleteError] = useState<string | null>(null);
 
-  async function runExtract() {
+  async function runExtract(wholeManual = false) {
     setExtractError(null);
     startExtract(async () => {
       try {
         const res = await fetch("/api/kits/extract", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ manualId: manual.id, kitId }),
+          body: JSON.stringify({ manualId: manual.id, kitId, wholeManual }),
         });
         const data = (await res.json()) as { ok: boolean; error?: string };
         if (!data.ok) {
@@ -82,7 +82,9 @@ export function ManualRow({ manual, kitId }: { manual: KitManualRow; kitId: numb
           </div>
           <div className={styles.manualName}>{manual.filename ?? "manual.pdf"}</div>
           <div className={styles.manualMeta}>
-            {formatBytes(manual.sizeBytes)} · uploaded {formatTimestampDate(manual.uploadedAt)}
+            {formatBytes(manual.sizeBytes)}
+            {manual.pageCount ? ` · ${manual.pageCount} page${manual.pageCount === 1 ? "" : "s"}` : ""} · uploaded{" "}
+            {formatTimestampDate(manual.uploadedAt)}
             {manual.paintsExtractedAt ? ` · paints extracted ${formatTimestampDate(manual.paintsExtractedAt)}` : ""}
           </div>
         </div>
@@ -112,7 +114,7 @@ export function ManualRow({ manual, kitId }: { manual: KitManualRow; kitId: numb
             type="button"
             className={`${styles.boughtButton} ${styles.boughtButtonDone}`}
             disabled={extracting}
-            onClick={() => void runExtract()}
+            onClick={() => void runExtract(false)}
           >
             <CheckIcon size={13} /> {extracting ? "Re-extracting…" : "Extracted — re-run"}
           </button>
@@ -121,12 +123,32 @@ export function ManualRow({ manual, kitId }: { manual: KitManualRow; kitId: numb
             type="button"
             className={`${styles.boughtButton} ${styles.manualActionButton}`}
             disabled={extracting}
-            onClick={() => void runExtract()}
+            onClick={() => void runExtract(false)}
           >
             <FileIcon size={13} /> {extracting ? "Extracting…" : "Extract paint list"}
           </button>
         )}
       </div>
+
+      {/* The escape hatch. Extraction reads the first few pages by default,
+          because that is where these manuals print their paint chart — and
+          when a boxing doesn't, this is how that becomes visible instead of
+          arriving as a quietly short list. Reading everything is the
+          expensive path, so it happens only when asked for. */}
+      {manual.paintsExtractedAt && manual.paintChartFound === false ? (
+        <div className={styles.manualMeta}>
+          No paint chart in the first {DEFAULT_EXTRACT_PAGES} pages
+          {manual.pageCount ? ` of ${manual.pageCount}` : ""} — this manual may print it further in.{" "}
+          <button
+            type="button"
+            className={styles.linkButton}
+            disabled={extracting}
+            onClick={() => void runExtract(true)}
+          >
+            {extracting ? "Reading…" : "Read the whole manual"}
+          </button>
+        </div>
+      ) : null}
 
       {extractError ? <div className={styles.cardError}>{extractError}</div> : null}
       {deleteError ? <div className={styles.cardError}>{deleteError}</div> : null}

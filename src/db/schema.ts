@@ -66,35 +66,19 @@ export const ratioOverride = pgTable("ratio_override", {
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
 });
 
-export const paintBrand = pgTable("paint_brand", {
-  // gunze_mr_hobby | revell | vallejo | ammo | testors | lifecolor | xtracolour |
-  // hataka | mission — display ordering, §2.2
-  key: text("key").primaryKey(),
-  label: text("label").notNull(),
-  sort: integer("sort").notNull(),
-});
-
-export const paintEquivalent = pgTable(
-  "paint_equivalent",
-  {
-    id: serial("id").primaryKey(),
-    brand: text("brand")
-      .notNull()
-      .references(() => paintBrand.key),
-    foreignCode: text("foreign_code").notNull(), // "H12"
-    foreignName: text("foreign_name"),
-    tamiyaCode: text("tamiya_code")
-      .notNull()
-      .references(() => paint.code), // the direction you need
-    matchQuality: text("match_quality"), // exact | close | approximate
-    source: text("source"), // cybermodeler | manufacturer | claude-research
-    notes: text("notes"),
-  },
-  (table) => [
-    index("paint_equivalent_brand_foreign_code_idx").on(table.brand, table.foreignCode),
-    index("paint_equivalent_tamiya_code_idx").on(table.tamiyaCode),
-  ],
-);
+/*
+ * `paint_brand` and `paint_equivalent` used to live here — the cross-brand
+ * chart as tables, seeded from `seed/equivalents.json` and
+ * `seed/paint-brands.json`. Both were dropped in migration 0007: nothing ever
+ * read them. Every lookup in the app goes through `src/catalogue/
+ * equivalents.ts`, which imports those same JSON files at module scope, per
+ * the reference-data rule (§3.1, PERFORMANCE.md §2) — a chart that only
+ * changes on deploy is read from the committed file, not queried.
+ *
+ * They survived the Phase 6 sweep on the argument that Phase 7's research
+ * might write `claude-research` rows into them. Phase 7 shipped and doesn't.
+ * The JSON files stay; only the tables went.
+ */
 
 // ---------------------------------------------------------------------------
 // 3.2 Your data — read/write
@@ -106,7 +90,6 @@ export const inventoryItem = pgTable("inventory_item", {
     .notNull()
     .references(() => paint.code),
   form: text("form"), // bottle | spray_can | decanted_jar
-  decantedFrom: text("decanted_from").references(() => paint.code), // TS-8 can → decanted jar
   state: text("state"), // low (null reads as "in stock")
   quantity: integer("quantity"),
   purchasedFrom: text("purchased_from"), // a shop name, free text — §8, no pricing
@@ -167,8 +150,11 @@ export const kitManual = pgTable("kit_manual", {
   filename: text("filename"),
   label: text("label"), // "Instructions" | "Decal guide" | "Painting guide" | free text
   sizeBytes: integer("size_bytes"),
-  pageCount: integer("page_count"),
+  pageCount: integer("page_count"), // written by extraction, which counts to trim
   paintsExtractedAt: timestamp("paints_extracted_at", { withTimezone: true }),
+  /** Did the pages extraction read contain the kit's paint chart? Null until
+   * extracted; false is what offers a full-manual re-read (§4.3). */
+  paintChartFound: boolean("paint_chart_found"),
   uploadedAt: timestamp("uploaded_at", { withTimezone: true }).defaultNow(),
 });
 
@@ -200,10 +186,6 @@ export const kitResearch = pgTable(
     jobId: uuid("job_id")
       .notNull()
       .references(() => researchJob.id),
-    resolvedBrand: text("resolved_brand"),
-    resolvedNumber: text("resolved_number"),
-    resolvedName: text("resolved_name"),
-    manualUrl: text("manual_url"), // a LINK it found; the app does not download it
     difficulty: text("difficulty"), // beginner | intermediate | advanced
     difficultyNote: text("difficulty_note"),
     fitIssues: jsonb("fit_issues").$type<
@@ -217,14 +199,11 @@ export const kitResearch = pgTable(
     tips: jsonb("tips").$type<
       Array<{ tip: string; category: string; sourceUrl: string; confidence: number }>
     >(),
-    buildVideoUrl: text("build_video_url"),
     sources: jsonb("sources").$type<string[]>(),
     modelUsed: text("model_used"),
     inputTokens: integer("input_tokens"),
     outputTokens: integer("output_tokens"),
-    verifiedByMe: boolean("verified_by_me").default(false), // §5.4
     researchedAt: timestamp("researched_at", { withTimezone: true }).defaultNow(),
-    expiresAt: timestamp("expires_at", { withTimezone: true }),
   },
   (table) => [index("kit_research_kit_idx").on(table.kitId)],
 );
@@ -238,9 +217,7 @@ export const kitPaintRequirement = pgTable("kit_paint_requirement", {
   manualId: integer("manual_id").references(() => kitManual.id),
   rawLabel: text("raw_label"), // exactly as printed: "X-11 CHROME SILVER"
   paintCode: text("paint_code").references(() => paint.code), // resolved; null if unresolvable
-  partHint: text("part_hint"),
   source: text("source"), // manual_pdf | research | manual_entry
-  confidence: real("confidence"),
 });
 
 export const buildLogEntry = pgTable("build_log_entry", {

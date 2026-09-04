@@ -209,22 +209,10 @@ ratio_override                     -- user corrections
   reason          text
   created_at      timestamptz
 
-paint_brand                        -- display ordering, §2.2
-  key             text PK          -- gunze_mr_hobby | revell | vallejo | ammo | ...
-  label           text
-  sort            integer
-
-paint_equivalent                   -- cross-brand, both directions
-  id              serial PK
-  brand           text FK paint_brand
-  foreign_code    text             -- "H12"
-  foreign_name    text
-  tamiya_code     text FK paint
-  match_quality   text             -- exact | close | approximate
-  source          text             -- cybermodeler | manufacturer | claude-research
-  notes           text
-  INDEX (brand, foreign_code)      -- foreign → Tamiya, the lookup that's actually made
-  INDEX (tamiya_code)              -- Tamiya → foreign
+(The cross-brand chart is *not* a table. `paint_brand` and `paint_equivalent`
+were dropped in 0007 — seeded since 0000_init and never read. Every lookup goes
+through `src/catalogue/equivalents.ts`, which imports seed/equivalents.json and
+seed/paint-brands.json at module scope. Same rule as the rig below.)
 
 rig                                -- seed/rig.json → src/catalogue/rig.ts, §2.3
   model           text             -- "Tamiya 74540 HG Trigger"
@@ -281,7 +269,8 @@ kit_manual                         -- user-uploaded, §4.3 — never auto-downlo
   blob_url        text             -- Vercel Blob
   filename        text
   size_bytes      integer
-  page_count      integer NULL
+  page_count      integer NULL     -- written by extraction, which counts to trim
+  paint_chart_found boolean NULL   -- did the pages read hold the paint chart? §4.3
   paints_extracted_at timestamptz NULL
   uploaded_at     timestamptz
 
@@ -299,31 +288,22 @@ kit_research                       -- the finished, cached result
   id              serial PK
   kit_id          integer NULL FK
   job_id          uuid FK research_job
-  resolved_brand, resolved_number, resolved_name text
-  manual_url      text             -- unused: nothing writes or reads it (§7)
   difficulty      text             -- beginner | intermediate | advanced
   difficulty_note text
   fit_issues      jsonb            -- [{issue, severity, source_url, confidence}]
-  tips            jsonb            -- [{tip, category, source_url, confidence}], §7
-  build_video_url text             -- unused, as above. Both kept because they cost
-                                   -- nothing and predate Phase 7
+  tips            jsonb            -- [{tip, category, source_url, confidence}]
   sources         jsonb
   model_used      text
   input_tokens, output_tokens integer
-  verified_by_me  boolean          -- unused: §5.4's Verify action was built and
-                                   -- removed in Phase 7 (§7). Kept for a per-claim
-                                   -- version, which is what the rule really wanted
-  researched_at, expires_at timestamptz
+  researched_at   timestamptz
 
 kit_paint_requirement              -- the manual's paint callouts
   id              serial PK
   kit_id          integer FK
-  manual_id       integer NULL FK kit_manual
+  manual_id       integer NULL FK
   raw_label       text             -- exactly as printed: "X-11 CHROME SILVER"
   paint_code      text NULL FK     -- resolved; null if unresolvable
-  part_hint       text
   source          text             -- manual_pdf | research | manual_entry
-  confidence      real
 
 build_log_entry
   id              serial PK
@@ -597,7 +577,20 @@ straight to the stored PDF — the browser's own viewer, in a new tab, phone and
 an earlier desktop-only inline `<iframe>` toggle duplicated that for no real benefit and was
 removed (§7 round 5). An **Extract paint list** action uploads the stored PDF to Claude through
 the Files API and writes `kit_paint_requirement` rows, feeding the shopping list. Kit research
-still *reports* a manual URL when it finds one, as a link — it never fetches it.
+neither fetches a manual nor links to one (§7).
+
+**Extraction reads the first `DEFAULT_EXTRACT_PAGES` pages, not the whole file.** Every page of
+a PDF is converted to an image *and* has its text extracted, so a page costs 1,500–3,000 text
+tokens plus image tokens whether or not it says anything — and on these manuals the paint chart
+(every colour, its code, the cross-brand equivalence table, any custom mixes) sits in the front
+matter, while the assembly steps after it only re-use codes that chart already named. Reading
+twenty pages of exploded diagrams to find a table on page two is most of the bill.
+
+The API has no page-range parameter, so `src/lib/pdf-pages.ts` trims the PDF with `pdf-lib`
+before it is uploaded. That rule is about the common case, not every boxing, so it is a default
+with a way out rather than a cap: extraction reports `foundPaintChart`, the answer lands on
+`kit_manual.paint_chart_found`, and a `false` puts a **"read the whole manual"** link on the
+manual row. The expensive path exists and costs what it costs — it just has to be asked for.
 
 ---
 
@@ -1725,6 +1718,44 @@ halves until the invoice arrived. And when someone reports a cost problem, **che
 of the pipe the tokens are actually in** before agreeing with the proposed cut: this one would
 have removed the source links, kept the 39-source read, and saved almost nothing.
 
+### Extraction reads five pages, and the dead schema is gone
+
+Two changes that came out of asking the same cost question of the other two paid routes.
+
+**Kit lookup was left alone, deliberately.** It is $0.02–0.05 a search on a handful of searches
+a week, and its one obvious lever doesn't fire: the stable prefix is ~550 tokens of system
+prompt plus a small tool definition, under Sonnet 5's 1024-token minimum, so a `cache_control`
+marker there would cache nothing at all — silently, with no error. Padding a prompt to reach a
+cache minimum means paying for the padding forever. Nothing to do here is the honest finding.
+
+**Extraction now reads the first five pages.** The owner supplied the domain rule and it is a
+good one: these manuals print the paint chart in the front matter, and the assembly steps that
+follow re-use codes that chart already named rather than introducing new ones. Every page costs
+image tokens *and* text tokens, so the pages after the chart were the bill. The API has no
+page-range parameter — the caller has to hand it a shorter document — so `src/lib/pdf-pages.ts`
+trims with `pdf-lib` before upload.
+
+It is a default with a way out, not a cap, because the rule is about the common case and a few
+boxings print their chart at the back. Extraction reports `foundPaintChart`; a `false` puts a
+"read the whole manual" link on the row. A hard cap would have failed the other way — a short
+paint list, no error, and the discovery happening at the bench, which is the same failure as a
+wrong code.
+
+**And the dead schema went** — the running catalogue this file kept accumulating, finally
+cashed in (0007). `paint_brand` and `paint_equivalent`: seeded since 0000_init, never read,
+kept through the Phase 6 sweep on the argument that Phase 7 might write `claude-research` rows
+into them. Phase 7 shipped and doesn't, so the argument expired. `part_hint`: extracted on
+every run, stored, rendered nowhere — the owner's call to drop it, and the useful part is that
+it was also the *only* thing the assembly pages uniquely provided, which is what made the
+five-page window cost nothing real. Then `confidence`, `decanted_from`, and seven `kit_research`
+columns nothing had ever written.
+
+The pattern worth naming: **every one of these was noticed and then kept**, each time for a
+plausible future. Three sessions of "kept because Phase N might want it" is how a schema
+acquires ten columns that describe nothing. The rule that would have prevented all of it is the
+one `deleteKit` already states for its own children — add the column in the commit that starts
+writing it.
+
 ---
 
 ## 8. Non-goals
@@ -1878,6 +1909,7 @@ additive and none drops a column another deploy might still be reading.
 | `0004_kit_status_dates_and_manual_label` | `kit.started_at`/`completed_at`, `kit_manual.label` | Phase 4a |
 | `0005_paints_drop_open_state` | moves every `inventory_item.state = 'open'` row to unset | Paints "Open" state removal |
 | `0006_kit_research_tips` | `kit_research.tips`, plus a `kit_id` index on `kit_research` and `research_job` | Phase 7 |
+| `0007_drop_dead_columns` | drops `paint_brand`, `paint_equivalent` and ten unread columns; adds `kit_manual.paint_chart_found` | Phase 7 cleanup |
 
 **Phase 5 added no migration** — `paint_brand` and `paint_equivalent` have existed since
 `0000_init` and were simply empty. What it needs instead is exactly step 5.5 above: a re-seed,
