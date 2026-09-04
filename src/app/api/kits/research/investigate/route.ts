@@ -4,25 +4,27 @@ import { NextResponse, type NextRequest } from "next/server";
 import { createResearchJob, recordStage } from "@/db/repositories/kit-research";
 import { getKitById } from "@/db/repositories/kits";
 import { isStashStatus } from "@/domain/kit";
-import { describeAnthropicError, logAnthropicError } from "@/lib/anthropic-errors";
+import { describeAnthropicError, logAnthropicError, webToolErrored } from "@/lib/anthropic-errors";
 
 /**
  * Kit research, stage B — docs/PLAN.md §5.1, §5.4, §6 Phase 7.
  *
- * The expensive one: Opus 5 with web search and web fetch, reading forum
- * threads and review blogs about one specific kit and writing up what builders
- * actually say about it. §5.1 also listed "a build video" among what this
- * stage finds; it doesn't, because the kit page has had its own YouTube search
- * since Phase 4a and a second video link on the same screen is a duplicate
- * either way — so this stops short of paying to look for one. Free-form prose **with citations**, not structured
- * output, because structured outputs and citations are mutually exclusive
- * (§5.2) and citations are the entire basis of §5.4's trust rules — a claim
- * with no source doesn't get shown at all.
+ * The expensive one: web search and web fetch, reading forum threads and
+ * review blogs about one specific kit and writing up what builders actually
+ * say about it. Free-form prose **with citations**, not structured output,
+ * because structured outputs and citations are mutually exclusive (§5.2) and
+ * citations are the entire basis of §5.4's trust rules — a claim with no
+ * source doesn't get shown at all.
+ *
+ * §5.1 also listed "a build video" and a link to the instructions among what
+ * this stage finds. It looks for neither: the kit page reaches YouTube and
+ * Scalemates on its own, and the uploaded manual is right there (§7).
  *
  * The typed JSON comes from stage C, a second, cheap call over this one's
  * prose. Splitting them is what makes a failure survivable: stage C failing
- * costs cents to retry, where re-running this costs the whole ~€0.20–0.45
- * (§5.3) and two to three minutes of the owner's afternoon.
+ * costs cents to retry, where re-running this costs the whole of stage B —
+ * minutes of the owner's afternoon and the bulk of the per-kit price (§5.3,
+ * and §7 for what that price turned out to be).
  *
  * Mechanics inherited from `../../resolve/route.ts`, which established them:
  * the `pause_turn` resume loop, the structural web-search-error check, typed
@@ -231,24 +233,12 @@ export async function POST(request: NextRequest) {
     }
 
     // Web-tool errors arrive as HTTP 200 with an error object where a result
-    // list belongs (§5.2), never as a throw. A success `content` is an array,
-    // an error `content` is an object — branch before indexing.
-    //
-    // Top-level only, which now catches *search* errors but not fetch ones:
-    // search is pinned to `["direct"]` so its blocks are top-level, while
-    // fetch runs under dynamic filtering and its blocks nest inside a code
-    // execution result. That asymmetry is deliberate and costs little — this
-    // flag only picks which of two error sentences to show on an already-
-    // failing run, and search is the tool whose failure actually empties the
-    // write-up.
-    const searchErrored = response.content.some(
-      (block) =>
-        (block.type === "web_search_tool_result" || block.type === "web_fetch_tool_result") &&
-        !Array.isArray(block.content) &&
-        typeof block.content === "object" &&
-        block.content !== null &&
-        "error_code" in block.content,
-    );
+    // list belongs (§5.2), never as a throw. `webToolErrored` walks for that
+    // shape at any depth, which matters here because the two tools sit on
+    // opposite settings: search is pinned to `["direct"]` so its blocks are
+    // top-level, while fetch runs under dynamic filtering and nests inside a
+    // code execution result. One helper covers both.
+    const searchErrored = webToolErrored(response.content);
 
     if (!prose.trim()) {
       return failed(
