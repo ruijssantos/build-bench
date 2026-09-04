@@ -42,12 +42,26 @@ export const maxDuration = 300;
 
 const MAX_RESUMES = 3;
 
-/** §5.1's number. Six searches is enough to find a build thread, a review and
- * a video for a kit that has them, and a kit that has none of those isn't
- * helped by a seventh. */
-const MAX_SEARCHES = 6;
+/**
+ * Both were higher (6 and 4) and the first real run read **39 sources** for
+ * one kit, at $1.60 — see §7. A weekend build needs the two or three threads
+ * that actually say something, not the long tail; and every result stays in
+ * context for every later iteration of the server-side loop, so each extra
+ * search is re-billed for the rest of the turn rather than paid for once.
+ */
+const MAX_SEARCHES = 3;
 
-const MAX_FETCHES = 4;
+const MAX_FETCHES = 2;
+
+/**
+ * A hard ceiling on what one fetched page may contribute.
+ *
+ * Unset — as this was — a fetch pulls the whole page in: a long forum thread
+ * runs ~25k tokens and a PDF can reach 125k, times the loop that resends it.
+ * 6k is roughly a substantial forum thread's worth of actual discussion,
+ * which is what this is reading for.
+ */
+const MAX_FETCH_TOKENS = 6000;
 
 const SYSTEM_PROMPT = `You research a specific scale-model kit for a hobbyist about to build it. Everything you report will be shown to that person next to a link to where it came from, so a claim you cannot source is a claim not worth making.
 
@@ -57,9 +71,11 @@ Report, in prose:
 
 1. **Difficulty** — beginner, intermediate or advanced, as the consensus across what you actually read. One sentence on why. If sources genuinely disagree, say so rather than picking a side.
 
-2. **Fit issues** — specific problems builders hit with this kit. "The bonnet sits proud unless the firewall is sanded" is useful; "some parts need cleanup" is true of every kit ever made and is not. Give each one a severity: minor, moderate or major. Skip this entirely if the kit has a reputation for going together well — an empty list is a real and welcome answer, not a failed search.
+2. **Fit issues** — at most 5, and fewer is better. Specific problems builders hit with this kit: "the bonnet sits proud unless the firewall is sanded" is useful; "some parts need cleanup" is true of every kit ever made and is not. Give each one a severity: minor, moderate or major. Skip this entirely if the kit has a reputation for going together well — an empty list is a real and welcome answer, not a failed search.
 
-3. **Tips** — build advice as distinct from defects. Technique, ordering, a paint that works better than the box calls for, a tool that makes one step tractable. Categorise each as prep, paint, decals, assembly, tools or reference.
+3. **Tips** — at most 6, and fewer is better. Build advice as distinct from defects: technique, ordering, a paint that works better than the box calls for, a tool that makes one step tractable. Categorise each as prep, paint, decals, assembly, tools or reference.
+
+Those limits are the brief, not a ceiling to fill. This is read by someone about to spend a weekend at a bench, who wants the two or three things that will actually catch them out — not a literature review. Three sharp findings beat a dozen padded ones, and a minor point that applies to every plastic kit ever moulded is noise wherever you put it. Search only as much as it takes; you have a small budget of searches on purpose.
 
 That is the whole job. Don't go looking for a build video or for the instructions online: the app already links out to YouTube and to Scalemates by itself, and has the uploaded manual besides. Spend the searches on what builders said instead.
 
@@ -108,10 +124,23 @@ export async function POST(request: NextRequest) {
   const client = new Anthropic();
 
   const requestParams = {
-    model: "claude-opus-5",
+    // Sonnet 5 at `medium`, not Opus 5 at `high` — the owner's call after the
+    // first runs came in at $1.60 a kit (§7). Anthropic's measured curve for
+    // research-shaped work is nearly flat: `medium` matched the default's
+    // accuracy at 70–85% of its cost, and the default bought nothing
+    // measurable above it on any of the four benchmarks. Sonnet is 2.5×
+    // cheaper per token again. Re-tune here first if quality slips — effort
+    // before model, per the cost guide's own ordering.
+    model: "claude-sonnet-5",
     max_tokens: 16000,
     thinking: { type: "adaptive" as const },
-    output_config: { effort: "high" as const },
+    output_config: { effort: "medium" as const },
+    // Auto-caches the last cacheable block, which in a resume loop is the
+    // accumulated conversation — repriced at ~0.1× instead of full rate on
+    // every subsequent iteration. Sonnet 5's minimum cacheable prefix is 1024
+    // tokens; the system prompt plus these tool definitions clears it, so this
+    // is a real entry rather than a silent no-op.
+    cache_control: { type: "ephemeral" as const },
     system: SYSTEM_PROMPT,
     tools: [
       {
@@ -142,10 +171,18 @@ export async function POST(request: NextRequest) {
         type: "web_fetch_20260209" as const,
         name: "web_fetch" as const,
         max_uses: MAX_FETCHES,
-        // Same reasoning, same default, same fix.
-        allowed_callers: ["direct" as const],
+        // **Not** pinned to `["direct"]`, unlike web search above — this one
+        // keeps the dynamic-filtering default, and the asymmetry is the point.
+        // Web search needs direct because that is where
+        // `web_search_result_location` citations come from. Web fetch doesn't:
+        // its source URL is the URL it was asked to fetch, sitting right there
+        // in the `web_fetch_tool_result` block, which `collectUrlsFromBlock`
+        // reads at any nesting depth. Pinning this one too — as the previous
+        // commit did — bought nothing and paid full-page prices for it.
+        max_content_tokens: MAX_FETCH_TOKENS,
         // Unlike web search — where citations are always on — web fetch's are
-        // opt-in and off by default.
+        // opt-in and off by default. Kept: they cost nothing extra and give
+        // stage C a `cited_text` to hang a claim on when it has one.
         citations: { enabled: true },
       },
     ],
@@ -195,10 +232,15 @@ export async function POST(request: NextRequest) {
 
     // Web-tool errors arrive as HTTP 200 with an error object where a result
     // list belongs (§5.2), never as a throw. A success `content` is an array,
-    // an error `content` is an object — branch before indexing. This only sees
-    // top-level blocks, which is correct *because* `allowed_callers` is
-    // `["direct"]` above; under the dynamic-filtering default these blocks are
-    // nested inside a code execution result and this check would find nothing.
+    // an error `content` is an object — branch before indexing.
+    //
+    // Top-level only, which now catches *search* errors but not fetch ones:
+    // search is pinned to `["direct"]` so its blocks are top-level, while
+    // fetch runs under dynamic filtering and its blocks nest inside a code
+    // execution result. That asymmetry is deliberate and costs little — this
+    // flag only picks which of two error sentences to show on an already-
+    // failing run, and search is the tool whose failure actually empties the
+    // write-up.
     const searchErrored = response.content.some(
       (block) =>
         (block.type === "web_search_tool_result" || block.type === "web_fetch_tool_result") &&

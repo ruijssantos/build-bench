@@ -14,8 +14,10 @@ import { z } from "zod";
  *     any claim whose source URL doesn't survive parsing — an unsourced tip is
  *     not a weaker tip, it is one this app declines to show;
  *   - difficulty is only ever rendered alongside how many sources agreed
- *     (`consensusLine`), never as a bare rating;
- *   - `verified_by_me` is the owner's own mark and outranks everything.
+ *     (`consensusLine`), never as a bare rating.
+ *
+ * §5.4 also asked for a Verify mark; it was built and removed (§7) — one
+ * research row per kit left it nothing to outrank.
  */
 
 // ---------------------------------------------------------------------------
@@ -220,10 +222,18 @@ function coerceCategory(raw: unknown): string {
   return isTipCategory(value) ? value : "reference";
 }
 
-/** No single kit needs more than this to be worth reading, and a run that
- * returns forty tips has stopped being useful anyway. Highest confidence
- * first, so a cap trims the weakest rather than an arbitrary tail. */
-const MAX_CLAIMS = 12;
+/**
+ * What a person will actually read before starting a build. Highest
+ * confidence first, so the cap trims the weakest rather than an arbitrary
+ * tail.
+ *
+ * Both were one shared cap of 12, and the first real run came back with
+ * exactly 12 tips — i.e. it was already truncating, and the panel was longer
+ * than anyone wanted to read (§7). Stage B's prompt now asks for these same
+ * numbers, so this is the backstop rather than the mechanism.
+ */
+const MAX_ISSUES = 5;
+const MAX_TIPS = 6;
 
 /**
  * Coerces stage C's answer into what the database stores, dropping every claim
@@ -246,7 +256,7 @@ export function normalizeResearch(raw: RawKitResearch): NormalizedResearch {
         SEVERITY_RANK[a.severity as IssueSeverity] - SEVERITY_RANK[b.severity as IssueSeverity] ||
         b.confidence - a.confidence,
     )
-    .slice(0, MAX_CLAIMS);
+    .slice(0, MAX_ISSUES);
 
   const tips = raw.tips
     .map((row) => {
@@ -257,7 +267,7 @@ export function normalizeResearch(raw: RawKitResearch): NormalizedResearch {
     })
     .filter((row): row is NonNullable<typeof row> => row !== null)
     .sort((a, b) => b.confidence - a.confidence)
-    .slice(0, MAX_CLAIMS);
+    .slice(0, MAX_TIPS);
 
   const difficulty =
     typeof raw.difficulty === "string" && isResearchDifficulty(raw.difficulty.trim().toLowerCase())

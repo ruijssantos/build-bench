@@ -712,15 +712,21 @@ models:
   and ~1–1.5K output tokens (a short candidate list plus some thinking) on Sonnet 5 ($2/$10
   per MTok) comes to roughly **$0.02–0.05 per search**. Not cached — every search is a fresh
   call, since the query itself changes each time.
-- **Stages B+C (Phase 6, per kit researched).** Roughly **€0.20–0.45 per newly researched
-  kit** (Opus 5 at $5/$25 per MTok; search results dominate input tokens, and stage B's long
-  cited synthesis dominates output). Cached in `kit_research`, re-run only on an explicit
-  Refresh.
+- **Stages B+C (Phase 7, per kit researched).** This estimate was **€0.20–0.45 per kit** and
+  the first real run cost **$1.60** — roughly 4× out, with the write-up citing 39 sources for
+  one kit. The estimate wasn't wrong about the shape (search results dominate input); it was
+  wrong about the volume, and about what a server-side tool loop does with it: every search
+  and fetch result stays in context and is re-billed on every later iteration of the same
+  turn, so cost grows with roughly the square of the loop's depth, not linearly with the
+  number of searches. §7 has what was changed and why. The configuration is now Sonnet 5 at
+  `medium` effort, 3 searches, 2 fetches capped at 6K tokens each, and prompt caching on;
+  **re-baseline the figure here from `kit_research.input_tokens` / `output_tokens` after the
+  next few runs** rather than trusting another estimate.
 
-Every call records its own token counts regardless of stage. At personal-hobby volumes —
-searching a handful of kits a week, plus retries for typos — stage A alone is pocket change;
-even a month of active kit research through stages B/C stays well under what the Vercel and
-Neon bills already are.
+Every call records its own token counts regardless of stage, and those two columns are the
+measurement — not this section. At personal-hobby volumes (a handful of kits a week) stage A
+is pocket change either way; stage B is the one worth watching, and the only one where a
+config change moves the bill.
 
 **Billed to your own Anthropic account**, pay-as-you-go, through the `ANTHROPIC_API_KEY` set
 in Vercel's env vars (§9.2) — the app has no billing of its own, no markup, no bundling.
@@ -1680,6 +1686,44 @@ of its response shape.** This code was written against the documented shape and 
 against a different one, because a default chose a different execution path. When a feature
 depends on a specific field appearing, pin the setting that produces it rather than accepting
 whatever is cheapest by default.
+
+### And then it cost $1.60 a kit
+
+The run that finally worked read **39 sources** and billed $1.60 — against §5.3's estimate of
+€0.20–0.45. The owner's instinct was to cut the output ("I probably wouldn't need so much
+info, or links to the sources"), and the output was the wrong end: all seven fit issues,
+twelve tips and every source link together are a few hundred output tokens, perhaps a tenth of
+the bill. **The money went into the reading, not the writing** — roughly 280K input tokens.
+
+Three causes, and the first two came from the fix directly above:
+
+1. **`max_content_tokens` was unset on web fetch.** Every fetched page entered context whole;
+   a long forum thread is ~25K tokens and a PDF can reach 125K. Capped at 6K.
+2. **Dynamic filtering had been pinned off on *both* web tools** to rescue citations — right
+   for web search, where `web_search_result_location` lives, and pointless for web fetch,
+   whose source URL is the URL it was handed, sitting in the result block that
+   `collectUrlsFromBlock` already reads at any depth. Fetch is back on the filtering default;
+   search stays direct. The asymmetry is the whole insight, and it was available at the time
+   the pin was written.
+3. **The loop compounds and nothing was cached.** Every search and fetch result is resent on
+   each later iteration of the same turn at full price. Top-level `cache_control` reprices the
+   accumulated prefix at ~0.1× (Sonnet 5's minimum cacheable prefix is 1024 tokens, which the
+   system prompt plus tool definitions clears — worth checking, since a shorter prefix caches
+   silently not at all).
+
+Then the deliberate cuts: searches 6 → 3, fetches 4 → 2, claim caps 12 → 5 issues and 6 tips
+(the run hit the 12 exactly, so it was already truncating), and the prompt now says the limits
+are a brief rather than a quota to fill. **Sonnet 5 at `medium` effort** replaced Opus 5 at
+`high`, at the owner's choice — the recommendation was to try everything above it first, since
+model choice is the one lever that lowers the ceiling; the measured curve for research-shaped
+work is nearly flat (`medium` matching the default's accuracy at 70–85% of cost), which is
+what made it a reasonable call rather than a purely thrifty one.
+
+Two things to carry forward. **The cheap fix and the expensive fix can be the same edit** — the
+`allowed_callers` pin bought citations and cost 4× the bill, and nobody separated the two
+halves until the invoice arrived. And when someone reports a cost problem, **check which end
+of the pipe the tokens are actually in** before agreeing with the proposed cut: this one would
+have removed the source links, kept the 39-source read, and saved almost nothing.
 
 ---
 

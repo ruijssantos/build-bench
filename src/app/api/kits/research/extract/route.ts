@@ -23,8 +23,9 @@ import { describeAnthropicError, logAnthropicError } from "@/lib/anthropic-error
  *
  * Cheap on purpose. This is the stage that fails — a schema that doesn't
  * validate, a model that answers in the wrong shape — and it is separated from
- * stage B so that failing costs cents rather than the whole ~€0.20–0.45 run
- * (§5.3). The client retries this one alone against the same `research_job`.
+ * stage B so that failing costs cents rather than the whole of stage B's run
+ * (§5.3, §7). The client retries this one alone against the same
+ * `research_job`.
  */
 
 export const maxDuration = 300;
@@ -90,11 +91,12 @@ export async function POST(request: NextRequest) {
 
   try {
     const response = await client.messages.parse({
-      model: "claude-opus-5",
+      // Sonnet 5, matching stage B. This stage is reformatting text that is
+      // already in front of it — the judgement was spent upstream — so it was
+      // the safest half of the model change to make.
+      model: "claude-sonnet-5",
       max_tokens: 16000,
       thinking: { type: "adaptive" },
-      // Lower than stage B's `high`: this is reformatting text that is already
-      // in front of it, not synthesis. The judgement was spent upstream.
       output_config: { effort: "medium", format: zodOutputFormat(KitResearchSchema) },
       system: SYSTEM_PROMPT,
       messages: [
@@ -150,7 +152,7 @@ export async function POST(request: NextRequest) {
       kitId: kitId as number,
       jobId,
       sources,
-      modelUsed: "claude-opus-5",
+      modelUsed: "claude-sonnet-5",
       // Both stages' tokens, because what the owner spent on this research is
       // one number, not two — §5.3 wants the per-kit cost legible.
       inputTokens: stageBInput + response.usage.input_tokens,
