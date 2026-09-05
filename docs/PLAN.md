@@ -1756,6 +1756,25 @@ acquires ten columns that describe nothing. The rule that would have prevented a
 one `deleteKit` already states for its own children — add the column in the commit that starts
 writing it.
 
+**Then 0007 shipped stranded, and `Migrations applied.` said otherwise.** Its journal `when`
+landed *behind* 0006's, because 0006's had been set by hand to clear main's 0005 after the
+numbering collision and 0007 was left with whatever `db:generate` stamped. drizzle gates on a
+single `max(created_at) < when` comparison, so on any database that had already recorded 0005
+— which is every database main had been deployed to — 0007 was skipped, permanently, and the
+run reported success. §9.5 has the mechanism and the fix.
+
+Two things went wrong, and only one was the bug. The bug was a timestamp. The reason it could
+have gone to production undetected is that **the migration step had no observable outcome**:
+one hardcoded success line, printed before anything was checked, for a step whose entire job is
+to change state. Every other risky path in this app was made to report what actually happened —
+§7's own rule that every failure returns a reason — and the one that rewrites the shared schema
+was exempt. `npm run db:verify` (`scripts/verify-schema.mts`) closes that: it names stranded
+migrations, and it diffs the live tables against the generated snapshot, so a half-applied
+migration against Neon's non-transactional driver shows up as drift rather than as silence.
+Verified by rebuilding both starting states on a local Postgres — one that had seen 0005 and
+one that hadn't — reproducing the skip, then confirming the corrected journal repairs the first
+and replays harmlessly on the second.
+
 ---
 
 ## 8. Non-goals
@@ -1873,6 +1892,12 @@ vercel env pull .env.local
 # 5. Apply any pending migrations to the database those credentials point at.
 npm run db:migrate
 
+# 5a. Check that step 5 actually did what it said. `db:migrate` prints
+#     "Migrations applied." whether it applied eight migrations or none, so
+#     this is the step that answers "did it work?" — see the note below on
+#     what it catches. Read-only; safe against production.
+npm run db:verify
+
 # 5.5. Re-run the seed when a phase changed seeded *data* rather than only
 #      schema — in practice, when `paint` gains codes the app needs to
 #      reference. Safe to run even when nothing changed: every table it
@@ -1897,6 +1922,28 @@ already up to date is a no-op. One database backs development, preview and produ
 (§9.2 connects a single Neon instance to the project), so this one run covers all three — and,
 by the same token, it is the *shared* schema being changed, which is why every migration is
 additive and none drops a column another deploy might still be reading.
+
+**Why step 5a exists: `Migrations applied.` is not evidence.** drizzle's migrator decides what
+to run with one comparison — `max(created_at)` already in the database against each journal
+entry's `when` — and it reads that maximum *once*, before the loop. It keeps no record of which
+migrations ran individually. So a journal entry whose `when` is *older* than something already
+recorded is skipped in silence, and stays skipped on every future run, because the maximum only
+ever climbs. The success line prints regardless.
+
+That is not hypothetical: `0007_drop_dead_columns` shipped with a `when` three and a half hours
+*behind* `0006`, because 0006's timestamp had been set by hand to sit above main's `0005` after
+a numbering collision, and 0007 kept whatever `db:generate` gave it. On a database that had
+already recorded 0005, 0007 was skipped and could never have been applied. Corrected by raising
+0007's `when` in `drizzle/meta/_journal.json`; safe to do because the migrator never re-reads
+the hash it stored, and because 0007 is replay-safe, so a database that *had* applied it simply
+applies it again to no effect. `db:verify` now names this condition explicitly ("STRANDED") and
+tells you which number to raise the timestamp above.
+
+The lesson generalises past this one bug: **a migration's `when` must be greater than every
+`when` before it in the journal.** Nothing enforces that — not `db:generate`, which stamps the
+current clock and so gets it right only by accident, and not the migrator, which treats the
+violation as an instruction rather than an error. Any time a migration is renumbered or a
+journal is merged by hand, check the ordering.
 
 **The migration ledger.** What exists, and what each one is needed by:
 

@@ -11,6 +11,7 @@
     "perf:budget": "tsx scripts/check-perf-budget.ts",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx scripts/migrate.mts",
+    "db:verify": "tsx scripts/verify-schema.mts",
     "db:seed": "tsx scripts/seed.mts",
     "catalogue:build": "tsx scripts/build-catalogue.ts",
     "catalogue:verify": "tsx scripts/verify-catalogue.ts",
