@@ -30,7 +30,6 @@ export interface InventoryItemRow {
   id: number;
   paintCode: string;
   form: string | null;
-  decantedFrom: string | null;
   state: string | null;
   quantity: number | null;
   notes: string | null;
@@ -56,7 +55,6 @@ const ITEM_COLUMNS = {
   id: inventoryItem.id,
   paintCode: inventoryItem.paintCode,
   form: inventoryItem.form,
-  decantedFrom: inventoryItem.decantedFrom,
   state: inventoryItem.state,
   quantity: inventoryItem.quantity,
   notes: inventoryItem.notes,

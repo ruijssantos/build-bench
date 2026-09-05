@@ -25,9 +25,7 @@ export interface PaintRequirementRow {
   manualId: number | null;
   rawLabel: string | null;
   paintCode: string | null;
-  partHint: string | null;
   source: string | null;
-  confidence: number | null;
 }
 
 export async function listKitPaintRequirements(kitId: number): Promise<PaintRequirementRow[]> {
@@ -46,7 +44,6 @@ async function queryKitPaintRequirements(kitId: number): Promise<PaintRequiremen
 export interface NewPaintRequirement {
   rawLabel: string;
   paintCode: string | null;
-  partHint: string | null;
 }
 
 /**
@@ -83,7 +80,6 @@ export async function replaceManualPaintRequirements(
         manualId,
         rawLabel: row.rawLabel,
         paintCode: row.paintCode,
-        partHint: row.partHint,
         source: "manual_pdf",
       })),
     );

@@ -16,15 +16,22 @@ import { ManualsPanel } from "./ManualsPanel";
 import { ManualsSkeleton } from "./ManualsSkeleton";
 import { PaintsPanel } from "./PaintsPanel";
 import { PaintsSkeleton } from "./PaintsSkeleton";
+import { ResearchPanel } from "./ResearchPanel";
+import { ResearchSkeleton } from "./ResearchSkeleton";
 import { StatusPanel } from "./StatusPanel";
 
 /**
  * `/kits/[id]` — docs/PLAN.md §6 Phase 4a, the app's first detail route.
  * The one query every other panel on this page needs (the kit row itself)
- * sits here; Manuals and Paints need queries of their own, so each gets its
- * own nested <Suspense>+<BenchError> rather than waiting on this one
+ * sits here; Manuals, Paints and Research need queries of their own, so each
+ * gets its own nested <Suspense>+<BenchError> rather than waiting on this one
  * (docs/PERFORMANCE.md §5) — a slow paint-requirements query never holds up
  * the identity, status or purchase panels.
+ *
+ * Research goes last of the three deliberately. Manuals and Paints are the
+ * kit's own facts; Research is what strangers on the internet think of it
+ * (§5.4), and it reads better as the thing you scroll down to than as
+ * something competing with the paint list for the top of the column.
  *
  * A wishlist-status kit reads back fine from `getKitById` (it's the same
  * table) but isn't shown here — the Wishlist screen, not this one, owns
@@ -67,6 +74,11 @@ export async function KitDetailSection({ params }: { params: Promise<{ id: strin
             <BenchError label="Paints">
               <Suspense fallback={<PaintsSkeleton />}>
                 <PaintsPanel kitId={kit.id} />
+              </Suspense>
+            </BenchError>
+            <BenchError label="Research">
+              <Suspense fallback={<ResearchSkeleton />}>
+                <ResearchPanel kit={kit} />
               </Suspense>
             </BenchError>
           </div>

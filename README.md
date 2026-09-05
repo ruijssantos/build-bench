@@ -33,8 +33,15 @@ already on the shelf, what to buy on the next shop run, and a wishlist
 glance — all read-only, all derived from what the earlier phases already
 store.
 
-Next is Phase 4b, deep kit research (difficulty, fit issues, a build video —
-§5.1 stages B/C), folded into Phase 7's scope.
+Most recently kit research (Phase 7): a Research panel on each stash kit that
+searches the web for what other builders say about it — difficulty, fit issues
+to expect, and tips. Everything it reports carries a link to the
+source it came from, and difficulty only ever appears as a consensus across a
+counted number of sources (`docs/PLAN.md` §5.4). It is synthesised from forum
+posts, and the screen never lets you forget that.
+
+Next is Phase 8, the build log — a per-kit dated journal with photos, to be
+detailed when we get there.
 
 ## Stack
 

@@ -105,6 +105,42 @@ export function logAnthropicError(scope: string, error: unknown): void {
   );
 }
 
+/**
+ * Did a web search or web fetch fail inside an otherwise-successful response?
+ *
+ * Server-tool errors never throw: they arrive as HTTP 200 with an error object
+ * where a result list belongs (docs/PLAN.md §5.2). Both paid research routes
+ * use this to pick between "the search broke" and "the model answered oddly",
+ * which are different things to tell someone.
+ *
+ * Recursive, and that is the whole point. Both routes originally scanned only
+ * the top level of `response.content`, which was correct against the documented
+ * shape and wrong in practice: `web_search_20260209` and `web_fetch_20260209`
+ * default to running inside code execution ("dynamic filtering"), and their
+ * result blocks then nest inside a code execution result where a top-level
+ * scan never finds them. `/api/kits/research/investigate` hit that hard enough
+ * to lose two paid runs (§7); the same dead check sat unnoticed in
+ * `/api/kits/resolve`, whose flag simply never fired. Walking for the error
+ * shape works under either setting, so neither route has to care which one it
+ * is using.
+ */
+export function webToolErrored(value: unknown, depth = 0): boolean {
+  if (depth > 6 || value === null || typeof value !== "object") return false;
+
+  if (Array.isArray(value)) {
+    return value.some((entry) => webToolErrored(entry, depth + 1));
+  }
+
+  const record = value as Record<string, unknown>;
+  // The error object itself: `{ type: "web_search_tool_result_error",
+  // error_code: "max_uses_exceeded" }` and its web-fetch twin. Matched on
+  // `error_code` rather than on the exact `type` string, so a third web tool
+  // with the same shape is covered without another edit here.
+  if (typeof record.error_code === "string") return true;
+
+  return Object.values(record).some((entry) => webToolErrored(entry, depth + 1));
+}
+
 function truncate(message: string): string {
   return message.length > 300 ? `${message.slice(0, 300)}…` : message;
 }
