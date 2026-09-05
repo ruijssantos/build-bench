@@ -1775,6 +1775,15 @@ Verified by rebuilding both starting states on a local Postgres — one that had
 one that hadn't — reproducing the skip, then confirming the corrected journal repairs the first
 and replays harmlessly on the second.
 
+**And the fix was pushed to a branch that had already merged.** #44's state was read at the
+start of the turn, when it was open, and still believed half an hour later — by which time the
+owner had merged it and moved on. The same mistake had been made on #40 and called out then, so
+the correction that was actually needed wasn't "check the PR" (it *was* checked) but "a PR's
+state is only true at the moment you read it". Both that and the journal-ordering invariant now
+live in `AGENTS.md`, which is loaded into every session automatically — unlike this file, which
+has to be gone looking for. That is the general shape: a lesson written only into the narrative
+is a lesson that has to be remembered, and this one had already proved it wouldn't be.
+
 ---
 
 ## 8. Non-goals
