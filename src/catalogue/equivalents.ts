@@ -12,12 +12,11 @@ import equivalentsSeed from "../../seed/equivalents.json";
  * A code sometimes maps to more than one Tamiya paint — a shade often has
  * both a bottle code and a spray-can code (Mr. Color C335 is both Tamiya
  * AS-11 and XF-83, the spray and bottle versions of the same Medium Sea
- * Gray). `resolveForeignCode` has to return one, since the thing calling it
- * (`domain/kit-paint-extraction.ts`) wants a single `paintCode`, so it
- * prefers the bottle/lacquer form (X, XF, LP) over a spray can (TS, AS) —
- * that's the format the Thinner Bench's own ratio calculator is built
- * around, and it's the more broadly useful "buy this" answer when someone
- * owns neither.
+ * Gray), and the Gunze codes typically offer an acrylic and a lacquer.
+ * `resolveForeignCode` has to return one, since the thing calling it
+ * (`domain/kit-paint-extraction.ts`) wants a single `paintCode`; which one,
+ * and why it is not simply the chart's first row, is `LINE_PREFERENCE`
+ * below.
  *
  * The reverse direction — one Tamiya code to every brand that sells a match —
  * is `getEquivalentsFor` at the bottom of this file. That need did not exist
@@ -35,18 +34,57 @@ interface SeedEquivalent {
   source: string;
 }
 
-const SPRAY_LINES = new Set(["TS", "AS"]);
+/**
+ * Which Tamiya line to prefer when the chart offers several for one foreign
+ * code, best first.
+ *
+ * The chart's own row order is not a preference, it is just the order
+ * Cybermodeler happens to list things in, and taking "the first one that
+ * isn't a spray can" from it put **LP** — the lacquer line — ahead of X/XF
+ * on every Gunze code that has both. That is the wrong answer for the
+ * question this app asks. `X`/`XF` is the acrylic range the shelf is stocked
+ * from (§2.1: 29 of 33 bottles) and the one the Thinner Bench's ratio rules
+ * are built around; LP is a different product needing different thinner.
+ * Resolving `H8` to `LP-11` when `X-11` is in the rack doesn't just pick an
+ * odd synonym — it reports a paint you own as one you have to go and buy,
+ * which is precisely the mistake the Owned/Missing split exists to prevent.
+ *
+ * Sprays stay last, for the reason the old rule had them last: a decanted
+ * TS/AS can is a real way to get a colour, but it is the awkward one, and
+ * "buy this" should name a bottle whenever a bottle exists.
+ */
+const LINE_PREFERENCE = ["X", "XF", "LP", "PS", "TS", "AS"];
 
-function linePrefix(code: string): string {
-  return code.split("-")[0];
+const LINE_RANK = new Map(LINE_PREFERENCE.map((line, index) => [line, index]));
+
+/** Lower is better; an unknown line sorts last rather than throwing. */
+function lineRank(code: string): number {
+  return LINE_RANK.get(code.split("-")[0]) ?? LINE_PREFERENCE.length;
 }
 
 /** Normalizes a foreign code for lookup — not `normalizePaintCode` (that
  * inserts a Tamiya-style "LETTERS-NUMBER" hyphen these codes don't follow:
- * "UA507", "MMP049", "32167" aren't shaped like "XF-64"). Just enough to
- * match on the code as printed, case- and whitespace-insensitively. */
+ * "UA507", "MMP049", "32167" aren't shaped like "XF-64").
+ *
+ * Case and whitespace, and then the one difference that actually breaks
+ * matching in practice: **zero padding**. Cybermodeler writes Gunze's codes
+ * padded to three digits — `H004`, `C068` — and no bottle, box or manual
+ * does. A Japanese kit calls out `H4`, which is the exact case this chart
+ * exists to serve, and it missed every one of them until this was fixed
+ * (docs/PLAN.md §7).
+ *
+ * The padding is only stripped from a LETTERS+DIGITS code, never a bare
+ * numeric one. That restriction is the whole safety argument: this index is
+ * deliberately brand-agnostic (see `resolveForeignCode`), and the codes that
+ * are *only* digits are the ones that genuinely collide across brands —
+ * AMMO's `0032` and Mr. Paint's `032` are different paints, and un-padding
+ * them merges Gloss White into Flat Aluminium. With the letter prefix
+ * required, the chart's 713 distinct keys stay 713.
+ */
 function foreignKey(raw: string): string {
-  return raw.toUpperCase().replace(/\s+/g, "");
+  const key = raw.toUpperCase().replace(/\s+/g, "");
+  const prefixed = /^([A-Z]+)0*(\d+)$/.exec(key);
+  return prefixed ? `${prefixed[1]}${prefixed[2]}` : key;
 }
 
 const BY_FOREIGN_CODE = new Map<string, string[]>();
@@ -67,7 +105,8 @@ for (const e of equivalentsSeed as SeedEquivalent[]) {
 export function resolveForeignCode(raw: string): string | null {
   const candidates = BY_FOREIGN_CODE.get(foreignKey(raw));
   if (!candidates) return null;
-  return candidates.find((code) => !SPRAY_LINES.has(linePrefix(code))) ?? candidates[0];
+  // Strictly-less keeps the chart's own order as the tiebreak within a line.
+  return candidates.reduce((best, code) => (lineRank(code) < lineRank(best) ? code : best));
 }
 
 // ---------------------------------------------------------------------------

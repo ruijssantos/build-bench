@@ -1,5 +1,7 @@
 import { readFileSync } from "node:fs";
 
+import { resolveForeignCode } from "../src/catalogue/equivalents";
+
 /**
  * CI gate — docs/PLAN.md §2.2. Fails the build if any paint code the app
  * actually needs is missing from seed/paints.tamiya.json, and reports
@@ -97,10 +99,41 @@ if (badEquivalentBrands.length > 0) {
   for (const e of badEquivalentBrands.slice(0, 20)) console.error(`  - ${e.brand}`);
 }
 
+// 4. A foreign code must still resolve when written the way it is *printed*.
+// The chart stores Gunze's codes zero-padded to three digits ("H004"); no
+// bottle, box or manual writes them that way, and a Japanese kit's paint
+// table says "H4". That mismatch made `resolveForeignCode` miss every Gunze
+// callout in the app's first real extraction while every row above passed —
+// the FK checks confirm the chart is internally consistent, which says
+// nothing about whether it can be looked up. Both directions are the point,
+// so the lookup gets a gate of its own.
+//
+// The expected Tamiya code is asserted too, not just "something resolved":
+// the same extraction returned LP codes for a shelf stocked entirely in
+// X/XF, which is a wrong answer rather than a missing one, and the sort of
+// thing a bare truthiness check waves through.
+const PRINTED_CODE_CASES: Array<[foreign: string, tamiya: string]> = [
+  ["H4", "X-8"], // Gunze Aqueous, as a Fujimi table prints it
+  ["H12", "XF-1"],
+  ["H92", "X-26"],
+  ["C001", "X-2"], // and as the chart itself stores it — both must work
+];
+const unresolvable = PRINTED_CODE_CASES.filter(
+  ([foreign, tamiya]) => resolveForeignCode(foreign) !== tamiya,
+);
+if (unresolvable.length > 0) {
+  failed = true;
+  console.error(`\n✗ ${unresolvable.length} foreign code(s) no longer resolve as expected:`);
+  for (const [foreign, tamiya] of unresolvable) {
+    console.error(`  - ${foreign} → ${resolveForeignCode(foreign) ?? "null"}, expected ${tamiya}`);
+  }
+}
+
 if (!failed) {
   console.log(
-    "✓ Every known-inventory code is present, every paint's family resolves to a ratio rule, and every " +
-      `equivalent (${equivalents.length}) resolves to a real catalogue code and brand.`,
+    "✓ Every known-inventory code is present, every paint's family resolves to a ratio rule, every " +
+      `equivalent (${equivalents.length}) resolves to a real catalogue code and brand, and foreign ` +
+      "codes resolve as printed.",
   );
 }
 
