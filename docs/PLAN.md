@@ -1784,6 +1784,35 @@ live in `AGENTS.md`, which is loaded into every session automatically — unlike
 has to be gone looking for. That is the general shape: a lesson written only into the narrative
 is a lesson that has to be remembered, and this one had already proved it wouldn't be.
 
+**The cross-brand chart had never once been looked up successfully.** The first real extraction
+— a Fujimi Ferrari 330 P4, whose paint table calls out Gunze Aqueous throughout — returned all
+ten callouts correctly and resolved none of them. Two separate faults in `resolveForeignCode`,
+either of which alone was enough:
+
+1. **Zero padding.** Cybermodeler stores Gunze's codes padded to three digits, `H004`; the
+   bottle, the box and every manual print `H4`. `foreignKey` normalised case and whitespace and
+   stopped there, so the lookup missed every Gunze code there has ever been.
+2. **Line preference.** With the padding fixed, eight of ten resolved — to `LP`, the lacquer
+   line, because "first row that isn't a spray can" took whatever order Cybermodeler happened
+   to list. The shelf (§2.1) is 29 of 33 bottles in `X`/`XF` and holds **all eight** of the
+   acrylics those codes also map to. So the screen would have gone from "10 unresolved" to
+   "8 to buy" — every one of them already in the rack.
+
+The second is the more instructive failure, because it is the one that looks like success. A
+missing answer announces itself; a confident wrong one gets acted on, and the action here is
+driving to a shop. Phase 5 shipped this chart, §9.5 documents it, and it was never exercised
+against a real Japanese manual — the `verify-catalogue` gate checked that every row's Tamiya
+code and brand were real, which is a statement about the chart's internal consistency and says
+nothing about whether anything can be found in it. That gate now also resolves a handful of
+codes *as printed* and asserts which Tamiya paint comes back, and was confirmed to fail when
+each fault is put back.
+
+`H38` (Steel Red) and `H86` (Red Madder) still resolve to nothing: the Cybermodeler chart has
+no row for either, in any range, and the manual prints no Mr. Color number beside them to try
+instead. That is the honest gap the Unresolved bucket exists for, and the right outcome — as is
+dropping the table's eleventh row, `H A = H8 + H9 (1:1)`, which is a mixing instruction rather
+than a paint to own.
+
 ---
 
 ## 8. Non-goals
