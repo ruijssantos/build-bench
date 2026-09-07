@@ -6,6 +6,7 @@ import { paintSearchUrl } from "@/domain/inventory";
 import { bucketPaintRequirements, readinessCounts } from "@/domain/kit-paints";
 
 import { ReadyLine } from "../ReadyLine";
+import { DismissUnresolved } from "./DismissUnresolved";
 
 /**
  * Paints vs. the shelf — docs/PLAN.md §6 Phase 4a. This kit's own extracted
@@ -116,12 +117,14 @@ export async function PaintsPanel({ kitId }: { kitId: number }) {
                     />
                     <span>
                       {match.code} {match.name}
-                      {match.finish ? ` · ${match.finish}` : ""}
                       {match.owned ? " · on the shelf" : ""}
                     </span>
                     <span className={styles.closestDelta}>ΔE {match.deltaE.toFixed(1)}</span>
                   </div>
                 ))}
+                <div className={styles.closestRow}>
+                  <DismissUnresolved kitId={kitId} rawLabel={u.rawLabel} />
+                </div>
               </div>
             ))}
           </div>

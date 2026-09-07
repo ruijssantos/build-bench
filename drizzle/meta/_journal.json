@@ -57,6 +57,13 @@
       "when": 1788556802000,
       "tag": "0007_drop_dead_columns",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1788817719738,
+      "tag": "0008_dismiss_paint_requirement",
+      "breakpoints": true
     }
   ]
 }

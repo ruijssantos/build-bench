@@ -1322,6 +1322,16 @@ a.iconButton:hover {
   color: var(--muted-2);
 }
 
+/* Same fix, same reason as `.claimSource` above: `.linkButton` alone renders
+   a 43 x 13px target, which is a miss waiting to happen on a phone. Padding
+   takes it to ~37px and the matching negative margin hands the space back, so
+   the row spacing is unchanged. Overlapping the suggestion above it is
+   harmless — that text isn't interactive. */
+.dismissAction {
+  padding: 12px 6px;
+  margin: -12px -6px;
+}
+
 /* ----------------------------------------------------------------- research */
 
 /* The standing caveat above the claims — docs/PLAN.md §5.4. Deliberately not

@@ -21,8 +21,9 @@ import gunzeSeed from "../../seed/gunze-colours.json";
  *    that.
  *  - Distance knows nothing about finish, metallic flake, or transparency.
  *    A clear orange and an opaque orange can sit a couple of ΔE apart and
- *    behave nothing alike on the model. The finish is rendered alongside every
- *    suggestion so the reader can apply the judgement the number can't.
+ *    behave nothing alike on the model. Nothing here can close that gap; the
+ *    caption says these are colour matches and not chart matches precisely so
+ *    the reader still applies the judgement the number can't.
  *
  * CIEDE2000 rather than plain Euclidean RGB distance because RGB distance is
  * badly non-uniform — it rates two dark colours as far apart as two mid greens
@@ -48,9 +49,6 @@ export interface ColourMatch {
    * one shade across several lines, so without grouping a top-3 list spends
    * two of its slots repeating a colour. */
   alsoAs: string[];
-  /** Tamiya's own `finish` — gloss | flat | semi | metallic | clear. Null
-   * for the handful of catalogue rows that don't carry one. */
-  finish: string | null;
   /** CIEDE2000. Under ~2 is a close match, ~5 is recognisably the same
    * colour, past ~10 it is a different colour that happens to be nearest. */
   deltaE: number;
@@ -179,23 +177,11 @@ export function gunzeColour(rawCode: string): string | null {
   return GUNZE_HEX.get(prefixed ? `${prefixed[1]}${prefixed[2]}` : key) ?? null;
 }
 
-const TAMIYA_LAB: Array<{
-  code: string;
-  name: string;
-  hex: string;
-  finish: string | null;
-  lab: Lab;
-}> = [];
+const TAMIYA_LAB: Array<{ code: string; name: string; hex: string; lab: Lab }> = [];
 for (const paint of CATALOGUE) {
   const lab = hexToLab(paint.hex);
   if (lab) {
-    TAMIYA_LAB.push({
-      code: paint.code,
-      name: paint.name,
-      hex: paint.hex,
-      finish: paint.finish,
-      lab,
-    });
+    TAMIYA_LAB.push({ code: paint.code, name: paint.name, hex: paint.hex, lab });
   }
 }
 
@@ -265,7 +251,6 @@ export function nearestTamiyaPaints(
         hex: lead.hex,
         owned: ownedCodes.has(lead.code),
         alsoAs: ranked.slice(1).map((p) => p.code),
-        finish: lead.finish,
         deltaE,
       };
     });

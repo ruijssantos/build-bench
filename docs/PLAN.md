@@ -1928,6 +1928,26 @@ ordered. Distance ranks them. Promoting a worse colour match because it happens 
 rack would be telling the owner what they want to hear, which is the same failure as a
 confidently wrong equivalence wearing a different hat.
 
+**And the bucket got a way out.** Extraction reads small print off scanned diagrams; sometimes a
+callout is a misread table cell, or something that isn't a paint at all, and without a way to
+silence it the only escape is to stop reading the panel — which costs the Unresolved count the
+meaning it exists to carry. So each row carries a **Dismiss** link, and the count follows it, on
+the card as well as the detail page (two different queries, one number, so both learned the
+`dismissed_at is null` filter).
+
+The reset comes free rather than being built. `dismissed_at` is a column on
+`kit_paint_requirement`, and re-running extraction *replaces* that manual's rows
+(`replaceManualPaintRequirements`) — so a re-run cannot inherit a dismissal and nothing has to
+remember to clear one. It is the same button the owner would already reach for on suspecting the
+extraction had gone wrong, which is exactly when they'd want their dismissals back.
+
+Two details caught by measuring rather than looking. Only genuinely unresolved rows can be
+dismissed — the `paint_code is null` guard is in the UPDATE, not just the UI, so a stray call
+can't hide a paint that resolved. And the link's tap target came out at 43 x 13px, the *same*
+too-small target the research source links had; the same `padding: 12px 6px` / negative-margin
+fix takes it to 55 x 37 without moving the row. A lesson recorded once in this file was not
+enough to stop it recurring the moment a new control appeared.
+
 Worth recording what remains true after both fixes: ΔE still puts Pure Red above Italian Red,
 and by its own measure it is right — TS-86 really is closer to how the chart depicts H86. The
 community's answer encodes something else entirely, that the car is a Ferrari and Ferraris are
@@ -2116,6 +2136,7 @@ journal is merged by hand, check the ordering.
 | `0005_paints_drop_open_state` | moves every `inventory_item.state = 'open'` row to unset | Paints "Open" state removal |
 | `0006_kit_research_tips` | `kit_research.tips`, plus a `kit_id` index on `kit_research` and `research_job` | Phase 7 |
 | `0007_drop_dead_columns` | drops `paint_brand`, `paint_equivalent` and ten unread columns; adds `kit_manual.paint_chart_found` | Phase 7 cleanup |
+| `0008_dismiss_paint_requirement` | `kit_paint_requirement.dismissed_at` | Dismissing an unresolved callout |
 
 **Phase 5 added no migration** — `paint_brand` and `paint_equivalent` have existed since
 `0000_init` and were simply empty. What it needs instead is exactly step 5.5 above: a re-seed,

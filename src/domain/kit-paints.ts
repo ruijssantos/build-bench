@@ -47,6 +47,12 @@ export interface PaintBuckets {
 interface RequirementLike {
   rawLabel: string | null;
   paintCode: string | null;
+  /** Set once the owner has dismissed this callout — see
+   * `dismissPaintRequirement`. Dismissed rows leave the bucket entirely
+   * rather than rendering greyed out: the point of dismissing is to stop
+   * being told, and a struck-through row still takes up the space and the
+   * attention that the count was measuring. */
+  dismissedAt?: Date | null;
 }
 
 /** A code with no catalogue hit (discontinued, or a build spec ahead of the
@@ -79,7 +85,7 @@ export function bucketPaintRequirements(
         hex: catalogue?.hex ?? FALLBACK_HEX,
       };
       (ownedCodes.has(req.paintCode) ? owned : missing).set(req.paintCode, display);
-    } else if (req.rawLabel && !unresolvedSeen.has(req.rawLabel)) {
+    } else if (req.rawLabel && !req.dismissedAt && !unresolvedSeen.has(req.rawLabel)) {
       unresolvedSeen.add(req.rawLabel);
       const foreignCode = foreignCodeInLabel(req.rawLabel);
       const hex = foreignCode ? gunzeColour(foreignCode) : null;
