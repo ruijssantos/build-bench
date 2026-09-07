@@ -85,16 +85,35 @@ export function tipCategoryLabel(value: string): string {
   return isTipCategory(value) ? TIP_CATEGORY_LABEL[value] : "General";
 }
 
+export interface DifficultyConsensus {
+  /** "Beginner" — rendered as a chip, matching the kit's own scale and
+   * category tags. */
+  label: string;
+  /** "consensus from 4 sources" — §5.4's rule, and the reason the label is
+   * never rendered without it. A chip on its own would read as a verdict this
+   * app is in no position to deliver. */
+  note: string;
+}
+
 /**
- * §5.4's rule in one string: difficulty never appears as a bare rating.
+ * §5.4's rule, in two parts because they are styled differently: difficulty
+ * never appears as a bare rating.
  *
  * `null` when there is nothing honest to say — no difficulty, or a difficulty
- * with no sources behind it, in which case the caller renders neither.
+ * with no sources behind it, in which case the caller renders neither. The
+ * two fields are returned together, and not as separate helpers, so that
+ * staying inside the rule is the easy thing to do at the call site.
  */
-export function consensusLine(difficulty: string | null, sourceCount: number): string | null {
+export function difficultyConsensus(
+  difficulty: string | null,
+  sourceCount: number,
+): DifficultyConsensus | null {
   const label = difficultyLabel(difficulty);
   if (!label || sourceCount < 1) return null;
-  return `${label} · consensus from ${sourceCount} source${sourceCount === 1 ? "" : "s"}`;
+  return {
+    label,
+    note: `consensus from ${sourceCount} source${sourceCount === 1 ? "" : "s"}`,
+  };
 }
 
 // ---------------------------------------------------------------------------

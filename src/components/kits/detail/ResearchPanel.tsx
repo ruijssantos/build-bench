@@ -4,7 +4,12 @@ import styles from "@/components/wishlist/Wishlist.module.css";
 import { getKitResearch } from "@/db/repositories/kit-research";
 import type { KitRow } from "@/db/repositories/kits";
 import { formatTimestampDate } from "@/domain/dates";
-import { consensusLine, severityLabel, sourceHost, tipCategoryLabel } from "@/domain/kit-research";
+import {
+  difficultyConsensus,
+  severityLabel,
+  sourceHost,
+  tipCategoryLabel,
+} from "@/domain/kit-research";
 
 import { ResearchRunner } from "./ResearchRunner";
 
@@ -45,7 +50,7 @@ export async function ResearchPanel({ kit }: { kit: KitRow }) {
 
   const issues = research.fitIssues ?? [];
   const tips = research.tips ?? [];
-  const consensus = consensusLine(research.difficulty, research.sources?.length ?? 0);
+  const consensus = difficultyConsensus(research.difficulty, research.sources?.length ?? 0);
 
   return (
     <div className={styles.card}>
@@ -55,7 +60,12 @@ export async function ResearchPanel({ kit }: { kit: KitRow }) {
           {/* Never a bare rating — §5.4. If there is no difficulty, or nothing
               was cited, this renders nothing at all rather than a word with
               no backing. */}
-          {consensus ? <span className={styles.moduleMeta}>{consensus}</span> : null}
+          {consensus ? (
+            <span className={styles.consensus}>
+              <span className={styles.chip}>{consensus.label}</span>
+              <span className={styles.moduleMeta}>{consensus.note}</span>
+            </span>
+          ) : null}
         </div>
 
         {/* The standing caveat, not a one-off notice: everything below is a

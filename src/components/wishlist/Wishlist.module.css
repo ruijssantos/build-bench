@@ -1332,6 +1332,24 @@ a.iconButton:hover {
   margin: -12px -6px;
 }
 
+/* Sets the action apart from the suggestions it sits under — they are things
+   to read, this is a thing to do. The gap has to clear `.dismissAction`'s own
+   -12px, so the number here is larger than the space it buys. */
+.dismissRow {
+  margin-top: 16px;
+}
+
+/* Difficulty and its backing, side by side in the panel's header: the rating
+   wears the same `.chip` as the kit's scale and category, and the source
+   count stays plain text next to it. Two treatments on purpose — the chip is
+   an attribute of the kit, the note is the evidence for it, and §5.4 is that
+   the first never appears without the second. */
+.consensus {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
 /* ----------------------------------------------------------------- research */
 
 /* The standing caveat above the claims — docs/PLAN.md §5.4. Deliberately not

@@ -38,7 +38,7 @@ export function DismissUnresolved({ kitId, rawLabel }: { kitId: number; rawLabel
           })
         }
       >
-        {pending ? "Dismissing…" : "Dismiss"}
+        {pending ? "Dismissing…" : "Dismiss paint"}
       </button>
       {error ? <span className={styles.unresolvedTag}>{error}</span> : null}
     </>

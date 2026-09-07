@@ -117,12 +117,12 @@ export async function PaintsPanel({ kitId }: { kitId: number }) {
                     />
                     <span>
                       {match.code} {match.name}
-                      {match.owned ? " · on the shelf" : ""}
+                      {match.owned ? " · OWNED" : ""}
                     </span>
                     <span className={styles.closestDelta}>ΔE {match.deltaE.toFixed(1)}</span>
                   </div>
                 ))}
-                <div className={styles.closestRow}>
+                <div className={`${styles.closestRow} ${styles.dismissRow}`}>
                   <DismissUnresolved kitId={kitId} rawLabel={u.rawLabel} />
                 </div>
               </div>
