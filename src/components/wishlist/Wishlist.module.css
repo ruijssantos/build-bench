@@ -1260,6 +1260,12 @@ a.iconButton:hover {
 .ownedChip {
   background: var(--ok-tint);
   color: var(--ok);
+  cursor: pointer;
+}
+
+.ownedChip:hover {
+  background: var(--ok);
+  color: var(--bg);
 }
 
 .missingChip {

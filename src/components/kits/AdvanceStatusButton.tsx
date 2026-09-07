@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 
-import { advanceKitStatus } from "@/app/(bench)/kits/actions";
+import { advanceKitStatus, regressKitStatus } from "@/app/(bench)/kits/actions";
 import { CheckIcon } from "@/components/icons";
 import { nextStashStatus, type StashStatus } from "@/domain/kit";
 import styles from "@/components/wishlist/Wishlist.module.css";
@@ -14,12 +14,42 @@ import styles from "@/components/wishlist/Wishlist.module.css";
  * label ("Stash"); this one walks the Stash's own three-step ladder and has
  * to compute which label that is on every render.
  *
- * Renders nothing once a kit is `built` — there's nowhere further forward to
- * tap to, and the detail page's status stepper is where "move back" lives.
+ * Once a kit is `built` there's nowhere further forward to tap to, so this
+ * renders the done state instead — a `boughtButtonDone` lookalike, labelled
+ * "Built", that taps back to `building`. Same one-tap shape as the forward
+ * steps rather than sending that correction to the detail page's stepper.
  */
 export function AdvanceStatusButton({ id, status }: { id: number; status: StashStatus }) {
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+
+  if (status === "built") {
+    return (
+      <>
+        <button
+          type="button"
+          className={`${styles.boughtButton} ${styles.boughtButtonDone}`}
+          disabled={pending}
+          onClick={() =>
+            startTransition(async () => {
+              setError(null);
+              try {
+                const result = await regressKitStatus(id, status);
+                if (!result.ok) setError(result.error);
+              } catch {
+                setError("Couldn't update that — try again.");
+              }
+            })
+          }
+        >
+          <CheckIcon size={13} />
+          <span>{pending ? "Updating…" : "Built"}</span>
+        </button>
+        {error ? <span className={styles.cardError}>{error}</span> : null}
+      </>
+    );
+  }
+
   const next = nextStashStatus(status);
   if (!next) return null;
 

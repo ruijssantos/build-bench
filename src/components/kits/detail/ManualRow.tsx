@@ -7,7 +7,6 @@ import { deleteManual } from "@/app/(bench)/kits/actions";
 import { CheckIcon, ExternalLinkIcon, FileIcon, TrashIcon } from "@/components/icons";
 import styles from "@/components/wishlist/Wishlist.module.css";
 import type { KitManualRow } from "@/db/repositories/kit-manuals";
-import { formatTimestampDate } from "@/domain/dates";
 import { DEFAULT_EXTRACT_PAGES, manualLabel } from "@/domain/kit-manual";
 
 function formatBytes(bytes: number | null): string {
@@ -83,9 +82,7 @@ export function ManualRow({ manual, kitId }: { manual: KitManualRow; kitId: numb
           <div className={styles.manualName}>{manual.filename ?? "manual.pdf"}</div>
           <div className={styles.manualMeta}>
             {formatBytes(manual.sizeBytes)}
-            {manual.pageCount ? ` · ${manual.pageCount} page${manual.pageCount === 1 ? "" : "s"}` : ""} · uploaded{" "}
-            {formatTimestampDate(manual.uploadedAt)}
-            {manual.paintsExtractedAt ? ` · paints extracted ${formatTimestampDate(manual.paintsExtractedAt)}` : ""}
+            {manual.pageCount ? ` · ${manual.pageCount} page${manual.pageCount === 1 ? "" : "s"}` : ""}
           </div>
         </div>
         <button

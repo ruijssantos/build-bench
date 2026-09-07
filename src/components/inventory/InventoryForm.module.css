@@ -45,12 +45,14 @@
    dimming of an unfilled month/day/year segment — those go a lighter grey
    on their own, the separators between them just inherit `.input`'s regular
    ink colour, so an empty field reads as light digits around noticeably
-   darker slashes. Recolouring just the separator to the same muted tone
-   fixes that without touching the segments themselves (which would mean
-   fighting the browser's own fill-state logic to avoid a value that's
-   actually been entered rendering grey). */
+   darker slashes. `GrayText` is the system colour the browser itself already
+   paints those unfilled segments with, so matching the separator to it (not
+   to `--muted`, a different, warmer grey) is what actually makes the two
+   read as one colour, and it does so without touching the segments
+   themselves (which would mean fighting the browser's own fill-state logic
+   to avoid a value that's actually been entered rendering grey). */
 .input::-webkit-datetime-edit-text {
-  color: var(--muted);
+  color: GrayText;
 }
 
 .segmented {
