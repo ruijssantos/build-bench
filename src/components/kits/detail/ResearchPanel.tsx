@@ -4,7 +4,7 @@ import styles from "@/components/wishlist/Wishlist.module.css";
 import { getKitResearch } from "@/db/repositories/kit-research";
 import type { KitRow } from "@/db/repositories/kits";
 import { formatTimestampDate } from "@/domain/dates";
-import { consensusLine, severityLabel, sourceHost, tipCategoryLabel } from "@/domain/kit-research";
+import { difficultyLabel, severityLabel, sourceHost, tipCategoryLabel } from "@/domain/kit-research";
 
 import { ResearchRunner } from "./ResearchRunner";
 
@@ -15,9 +15,8 @@ import { ResearchRunner } from "./ResearchRunner";
  * Every rule this panel follows comes from §5.4, and they are all the same
  * rule: **this is synthesised from forum posts, and it must never read like
  * reference data.** So a claim always renders its source as a clickable host
- * beside it; difficulty appears only as "Intermediate · consensus from 4
- * sources", never as a bare word; and a Verify tick — the one thing here the
- * owner asserts rather than a model — visibly outranks the rest.
+ * beside it; and a Verify tick — the one thing here the owner asserts rather
+ * than a model — visibly outranks the rest.
  *
  * A Server Component. The only client JavaScript on this panel is the run
  * button, which has to be (it drives a two-stage pipeline that takes minutes);
@@ -45,17 +44,14 @@ export async function ResearchPanel({ kit }: { kit: KitRow }) {
 
   const issues = research.fitIssues ?? [];
   const tips = research.tips ?? [];
-  const consensus = consensusLine(research.difficulty, research.sources?.length ?? 0);
+  const difficulty = difficultyLabel(research.difficulty);
 
   return (
     <div className={styles.card}>
       <div className={styles.cardBody}>
         <div className={styles.subHead}>
           <span className={styles.moduleTitle}>Research</span>
-          {/* Never a bare rating — §5.4. If there is no difficulty, or nothing
-              was cited, this renders nothing at all rather than a word with
-              no backing. */}
-          {consensus ? <span className={styles.moduleMeta}>{consensus}</span> : null}
+          {difficulty ? <span className={styles.moduleMeta}>{difficulty}</span> : null}
         </div>
 
         {/* The standing caveat, not a one-off notice: everything below is a
