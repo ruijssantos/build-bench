@@ -130,6 +130,13 @@ itself carries that this list hadn't anticipated; added to `paint_brand` rather 
   A pair both charts list is written `match_quality: "confirmed"`, which is what
   `resolveForeignCode` ranks on before anything else — see §7 for why a second opinion must
   earn an override rather than simply arrive.
+- **Where no chart has a row at all, fall back to colour distance.** mech9's two *colour chart*
+  pages give an sRGB hex per Gunze code (`seed/gunze-colours.json`, 416 of them, ingested by
+  `scripts/parse-mech9-swatches.mts`); `src/catalogue/colour-match.ts` puts that in CIELAB and
+  ranks the catalogue by CIEDE2000. It renders in the Unresolved bucket as a suggestion with its
+  ΔE and the candidate's finish, and **never** counts towards Owned or Missing — a chart row is
+  a published equivalence, this is the distance between two screen swatches, and §5.4's rule is
+  that the two must not look alike.
 - Where the chart has no row, fall back to a Claude lookup, written with
   `source = 'claude-research'` and a lower `match_quality` so it stays visibly distinct from
   chart-sourced data. **Not built in Phase 5** — every code the chart doesn't carry still lands
@@ -1872,6 +1879,37 @@ callout this catalogue lacks; answering it with Xtracolour's unrelated `X099` wo
 match). `verify-catalogue` now runs real labels through `normalizeExtractedPaints` with
 `codeGuess` omitted — checks 1-4 test the data, this one tests the path that reads it, which is
 the gap that let a data-perfect chart return nothing.
+
+**Colour distance closes the last gap, and is deliberately a weaker kind of answer.** mech9's
+colour-chart pages turned out to hold the swatches as *vector fills* rather than images —
+`pdfimages` finds 32 images on a page of ~200 swatches and every one is page furniture — so the
+colour can be read straight from the content stream instead of rendering and sampling a pixel.
+That is the number the page was authored with, not an approximation of it, and it lands 183/183
+and 233/233 with nothing missed, because the swatch *is* the table cell's background and the
+code is drawn on top of it: a label belongs to the fill containing it, with no nearest-neighbour
+guessing anywhere.
+
+With 416 hexes in hand, `H86` finally has an answer — `TS-86` Pure Red at **ΔE 1.9**, which for
+a Ferrari body colour is worth walking into a shop with. Two details make it trustworthy rather
+than merely impressive:
+
+- **The formula is checked, not assumed.** CIEDE2000 has several places where a wrong
+  implementation still returns plausible numbers — the hue average wrapping past 360°, the
+  arctangent quadrant, the near-neutral cases where chroma collapses. `verify-catalogue` pins it
+  against ten of Sharma, Wu & Dalal's published pairs to 1e-4. "The output looked reasonable" is
+  precisely the evidence this file keeps recording as insufficient.
+- **It corroborates the charts where both have an opinion.** `H38` → `X-10` Gun Metal, `H1` →
+  `X-2` White, `H4` → `X-8` Lemon Yellow: colour distance independently reaches the answers the
+  published tables already gave. That agreement is the reason to believe it on `H86`, where they
+  are silent.
+
+What it is *not* is a chart row. A published equivalence means somebody compared two paints and
+called them a match; this is the distance between two depictions of them on a screen, and it
+knows nothing about finish, flake or transparency — a clear orange and an opaque one can sit two
+ΔE apart and behave nothing alike. So suggestions stay inside the Unresolved bucket, are styled
+so they cannot be mistaken for an Owned or Missing chip, carry their ΔE and the candidate's
+finish, and stop at ΔE 12, past which the nearest paint is merely the least distant one and
+saying nothing is better.
 
 ---
 

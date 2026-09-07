@@ -59,6 +59,11 @@ const PAINTS: readonly CataloguePaint[] = (catalogueSeed as SeedPaint[]).map((ro
 
 const BY_CODE = new Map(PAINTS.map((row) => [row.code, row]));
 
+/** The whole catalogue, for the callers that have to *scan* it rather than
+ * look one code up. `./colour-match.ts` is the only one so far: finding the
+ * nearest paint to a colour means comparing against every hex there is. */
+export const CATALOGUE: readonly CataloguePaint[] = PAINTS;
+
 /** Accepts anything the user might type — "xf64", "XF 64" — not just "XF-64". */
 export function getCataloguePaint(code: string): CataloguePaint | undefined {
   return BY_CODE.get(normalizePaintCode(code));

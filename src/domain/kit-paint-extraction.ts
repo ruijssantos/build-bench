@@ -74,7 +74,7 @@ const TAMIYA_LINES = new Set(["X", "XF", "LP", "TS", "AS", "PS"]);
  */
 const FOREIGN_CODE_AT_START = /^([A-Za-z]{1,3})-?(\d{1,3})\b/;
 
-function foreignCodeInLabel(rawLabel: string): string | null {
+export function foreignCodeInLabel(rawLabel: string): string | null {
   const match = FOREIGN_CODE_AT_START.exec(rawLabel.trim());
   if (!match) return null;
   const line = match[1]!.toUpperCase();

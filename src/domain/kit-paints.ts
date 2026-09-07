@@ -1,4 +1,6 @@
+import { gunzeColour, nearestTamiyaPaints, type ColourMatch } from "@/catalogue/colour-match";
 import { getCataloguePaint } from "@/catalogue/paints";
+import { foreignCodeInLabel } from "@/domain/kit-paint-extraction";
 import { comparePaintCodes } from "@/domain/paint-code";
 
 /**
@@ -21,6 +23,19 @@ export interface MissingPaintDisplay {
 
 export interface UnresolvedPaintDisplay {
   rawLabel: string;
+  /**
+   * Nearest Tamiya paints by colour distance, when the callout names a Gunze
+   * code whose swatch we hold — empty otherwise, and empty when nothing is
+   * close enough to be worth offering.
+   *
+   * A suggestion, and deliberately nothing more. These rows stay in
+   * Unresolved and never count towards Owned or Missing: a published chart
+   * row means somebody compared two paints and called them equivalent, while
+   * this is the distance between two screen swatches. Promoting the second
+   * into the first would be exactly the confident-wrong-answer failure the
+   * rest of this area keeps producing (docs/PLAN.md §5.4, §7).
+   */
+  closest: ColourMatch[];
 }
 
 export interface PaintBuckets {
@@ -66,7 +81,12 @@ export function bucketPaintRequirements(
       (ownedCodes.has(req.paintCode) ? owned : missing).set(req.paintCode, display);
     } else if (req.rawLabel && !unresolvedSeen.has(req.rawLabel)) {
       unresolvedSeen.add(req.rawLabel);
-      unresolved.push({ rawLabel: req.rawLabel });
+      const foreignCode = foreignCodeInLabel(req.rawLabel);
+      const hex = foreignCode ? gunzeColour(foreignCode) : null;
+      unresolved.push({
+        rawLabel: req.rawLabel,
+        closest: hex ? nearestTamiyaPaints(hex) : [],
+      });
     }
   }
 
