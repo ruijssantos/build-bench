@@ -4,12 +4,7 @@ import styles from "@/components/wishlist/Wishlist.module.css";
 import { getKitResearch } from "@/db/repositories/kit-research";
 import type { KitRow } from "@/db/repositories/kits";
 import { formatTimestampDate } from "@/domain/dates";
-import {
-  difficultyConsensus,
-  severityLabel,
-  sourceHost,
-  tipCategoryLabel,
-} from "@/domain/kit-research";
+import { difficultyRating, severityLabel, sourceHost, tipCategoryLabel } from "@/domain/kit-research";
 
 import { ResearchRunner } from "./ResearchRunner";
 
@@ -50,22 +45,18 @@ export async function ResearchPanel({ kit }: { kit: KitRow }) {
 
   const issues = research.fitIssues ?? [];
   const tips = research.tips ?? [];
-  const consensus = difficultyConsensus(research.difficulty, research.sources?.length ?? 0);
+  const difficulty = difficultyRating(research.difficulty, research.sources?.length ?? 0);
 
   return (
     <div className={styles.card}>
       <div className={styles.cardBody}>
         <div className={styles.subHead}>
           <span className={styles.moduleTitle}>Research</span>
-          {/* Never a bare rating — §5.4. If there is no difficulty, or nothing
-              was cited, this renders nothing at all rather than a word with
-              no backing. */}
-          {consensus ? (
-            <span className={styles.consensus}>
-              <span className={styles.chip}>{consensus.label}</span>
-              <span className={styles.moduleMeta}>{consensus.note}</span>
-            </span>
-          ) : null}
+          {/* A chip, in the same language as the kit's own scale and category
+              — it is an attribute of the kit. Absent entirely when there is no
+              difficulty or nothing was cited, rather than shown with no
+              backing (§5.4, as amended in §7). */}
+          {difficulty ? <span className={styles.chip}>{difficulty}</span> : null}
         </div>
 
         {/* The standing caveat, not a one-off notice: everything below is a

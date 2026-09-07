@@ -14,7 +14,7 @@ import { z } from "zod";
  *     any claim whose source URL doesn't survive parsing — an unsourced tip is
  *     not a weaker tip, it is one this app declines to show;
  *   - difficulty is only ever rendered alongside how many sources agreed
- *     (`consensusLine`), never as a bare rating.
+ *     (`difficultyRating`), and not at all when nothing was cited.
  *
  * §5.4 also asked for a Verify mark; it was built and removed (§7) — one
  * research row per kit left it nothing to outrank.
@@ -85,35 +85,20 @@ export function tipCategoryLabel(value: string): string {
   return isTipCategory(value) ? TIP_CATEGORY_LABEL[value] : "General";
 }
 
-export interface DifficultyConsensus {
-  /** "Beginner" — rendered as a chip, matching the kit's own scale and
-   * category tags. */
-  label: string;
-  /** "consensus from 4 sources" — §5.4's rule, and the reason the label is
-   * never rendered without it. A chip on its own would read as a verdict this
-   * app is in no position to deliver. */
-  note: string;
-}
-
 /**
- * §5.4's rule, in two parts because they are styled differently: difficulty
- * never appears as a bare rating.
+ * The difficulty rating, or `null` when showing one would be unfounded — no
+ * difficulty, or a difficulty with no sources behind it.
  *
- * `null` when there is nothing honest to say — no difficulty, or a difficulty
- * with no sources behind it, in which case the caller renders neither. The
- * two fields are returned together, and not as separate helpers, so that
- * staying inside the rule is the easy thing to do at the call site.
+ * §5.4 originally paired the rating with "consensus from N sources" and
+ * forbade it appearing alone. The owner dropped the second half: on a
+ * single-user app they already know every claim here came from a model
+ * reading forum posts, the panel says so at the top, and every issue and tip
+ * below carries its own source link. What survives is the part that still
+ * does work — a rating nothing backed is not shown at all.
  */
-export function difficultyConsensus(
-  difficulty: string | null,
-  sourceCount: number,
-): DifficultyConsensus | null {
-  const label = difficultyLabel(difficulty);
-  if (!label || sourceCount < 1) return null;
-  return {
-    label,
-    note: `consensus from ${sourceCount} source${sourceCount === 1 ? "" : "s"}`,
-  };
+export function difficultyRating(difficulty: string | null, sourceCount: number): string | null {
+  if (sourceCount < 1) return null;
+  return difficultyLabel(difficulty);
 }
 
 // ---------------------------------------------------------------------------

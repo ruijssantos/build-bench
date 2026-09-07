@@ -746,7 +746,14 @@ Research output is synthesised from forum posts by a language model:
 
 - Every fit issue stores `source_url` and `confidence`; the UI renders the source as a link
   next to the claim. No unsourced assertion appears as fact.
-- Difficulty shows as "consensus from N sources," never a bare rating.
+- ~~Difficulty shows as "consensus from N sources," never a bare rating.~~ **Half kept.** The
+  rating is now a plain chip, in the same visual language as the kit's scale and category,
+  because that is what it is — an attribute of the kit. The owner dropped the "consensus from N
+  sources" half as noise: on a single-user app they already know every claim in this panel came
+  from a model reading forum posts, the caveat at the top of it says exactly that, and every
+  issue and tip below carries its own source link. The half that survives is the half still
+  doing work — `difficultyRating` returns `null` when nothing was cited, so a rating with no
+  backing is not shown at all rather than shown quietly.
 - ~~A **Verify** action sets `verified_by_me`; verified rows visually outrank unverified.~~
   **Not built, and struck rather than deleted so the reasoning survives.** Phase 7 shipped it
   and it came straight back out (§7): the panel holds exactly one research row per kit, so
