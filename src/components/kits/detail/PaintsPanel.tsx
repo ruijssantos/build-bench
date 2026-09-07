@@ -100,7 +100,15 @@ export async function PaintsPanel({ kitId }: { kitId: number }) {
                   {u.closest.length > 0 ? "Closest by colour — not a chart match" : "Needs cross-brand lookup"}
                 </span>
                 {u.closest.map((match) => (
-                  <div key={match.code} className={styles.closestRow}>
+                  <div
+                    key={match.code}
+                    className={styles.closestRow}
+                    title={
+                      match.alsoAs.length > 0
+                        ? `Same colour as ${match.alsoAs.join(", ")}`
+                        : undefined
+                    }
+                  >
                     <span
                       className={styles.paintDot}
                       style={{ background: match.hex }}
@@ -109,6 +117,7 @@ export async function PaintsPanel({ kitId }: { kitId: number }) {
                     <span>
                       {match.code} {match.name}
                       {match.finish ? ` · ${match.finish}` : ""}
+                      {match.owned ? " · on the shelf" : ""}
                     </span>
                     <span className={styles.closestDelta}>ΔE {match.deltaE.toFixed(1)}</span>
                   </div>

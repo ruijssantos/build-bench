@@ -85,7 +85,7 @@ export function bucketPaintRequirements(
       const hex = foreignCode ? gunzeColour(foreignCode) : null;
       unresolved.push({
         rawLabel: req.rawLabel,
-        closest: hex ? nearestTamiyaPaints(hex) : [],
+        closest: hex ? nearestTamiyaPaints(hex, ownedCodes) : [],
       });
     }
   }

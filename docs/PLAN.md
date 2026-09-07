@@ -1911,6 +1911,29 @@ so they cannot be mistaken for an Owned or Missing chip, carry their ΔE and the
 finish, and stop at ΔE 12, past which the nearest paint is merely the least distant one and
 saying nothing is better.
 
+**A top-three list was the wrong shape, and the owner's own question found it.** Asked whether
+the app would have suggested TS-8 Italian Red — the spray a modeller would actually reach for on
+a Ferrari, and one already on this shelf — the honest answer was: it ranked it, at ΔE 4.5, in
+eighth place, three rows below the cut. Ranks 2-4 were a single Bright Red repeated in LP, TS
+and PS form, and 5-6 a single Pure Red in two. Half the list was one colour said three ways.
+
+Two fixes, both using what was already to hand. Candidates are **grouped by swatch**, so one
+shade occupies one row and names its other lines in a tooltip. And the group is led by a paint
+**you own**, when it holds one, flagged in the row — `bucketPaintRequirements` is handed the
+shelf already, so this cost nothing but noticing. Italian Red now lands fourth of four and says
+"on the shelf".
+
+Ownership deliberately decides only *which member of a group is named*, never how the groups are
+ordered. Distance ranks them. Promoting a worse colour match because it happens to be in the
+rack would be telling the owner what they want to hear, which is the same failure as a
+confidently wrong equivalence wearing a different hat.
+
+Worth recording what remains true after both fixes: ΔE still puts Pure Red above Italian Red,
+and by its own measure it is right — TS-86 really is closer to how the chart depicts H86. The
+community's answer encodes something else entirely, that the car is a Ferrari and Ferraris are
+painted Italian Red. Colour distance cannot know that, and no amount of tuning will teach it.
+It narrows a dead end to four candidates; it does not pick.
+
 ---
 
 ## 8. Non-goals
