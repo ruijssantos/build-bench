@@ -121,6 +121,15 @@ itself carries that this list hadn't anticipated; added to `paint_brand` rather 
   build time too (blocked from both the planning sandbox and the one that built this phase),
   so the import ran against a PDF export of the page instead of live HTML — see §7 for exactly
   how, and for what that source does and doesn't cover.
+- **A second source, added later: [mech9](https://www.mech9.com/)'s Aqueous Hobby Color and
+  Mr. Color conversion tables**, ingested by `scripts/parse-mech9-tables.mts` into
+  `scripts/data/mech9-gunze-tamiya.json`. It exists because Cybermodeler is indexed by *Tamiya*
+  shade and built for aircraft and armour — 129 rows, mostly greys and greens, carrying 77 of
+  Gunze's ~420 H codes. mech9's tables are indexed by the *Gunze* code, so they cover that
+  range as a range. Same delivery constraint, same workaround: PDF exports of the pages.
+  A pair both charts list is written `match_quality: "confirmed"`, which is what
+  `resolveForeignCode` ranks on before anything else — see §7 for why a second opinion must
+  earn an override rather than simply arrive.
 - Where the chart has no row, fall back to a Claude lookup, written with
   `source = 'claude-research'` and a lower `match_quality` so it stays visibly distinct from
   chart-sourced data. **Not built in Phase 5** — every code the chart doesn't carry still lands
@@ -1334,9 +1343,10 @@ that foreign code. Fixing that properly means `ExtractedPaintRequirement.paintCo
 list checked against the shelf as a set, which is a real change to the bucketing shape, not a
 seed-data tweak — left as a known limitation rather than a shallow patch.
 
-*What's still open:* the second source the user offered
-(`mech9.com`'s Tamiya spray-paint conversion chart, also unreachable from here) isn't
-incorporated — Phase 5 ships on the Cybermodeler data alone. §2.2's own documented fallback
+*What's still open:* ~~the second source the user offered (`mech9.com`'s conversion chart, also
+unreachable from here) isn't incorporated — Phase 5 ships on the Cybermodeler data alone.~~
+**Since incorporated**, by the same PDF-export route (§2.2, and the account later in this
+section). §2.2's own documented fallback
 (`source = 'claude-research'` for a code the chart has no row for) isn't built either — a code
 this chart doesn't cover, like the user's own H23/C79 and C328 rows, still lands in Unresolved,
 same as before this phase; there's a real, scoped fast-follow here (a Claude web-search call, on
@@ -1812,6 +1822,32 @@ no row for either, in any range, and the manual prints no Mr. Color number besid
 instead. That is the honest gap the Unresolved bucket exists for, and the right outcome — as is
 dropping the table's eleventh row, `H A = H8 + H9 (1:1)`, which is a mixing instruction rather
 than a paint to own.
+
+**Then the chart got a second source, and the interesting part was not the coverage.** mech9's
+Gunze-indexed tables (§2.2) took the chart from 713 lookup keys to 802 and Gunze's H range from
+77 codes to 132, which is the boring half. `H38` now resolves to `X-10` Gun Metal — right, once
+you know 赤鉄色 is a dark *metallic* rather than a red. `H86` Monza Red still resolves to
+nothing, and now for a much better reason: mech9 has a row for it listing Vallejo, Humbrol and
+AK equivalents and no Tamiya at all. "No Tamiya paint matches this" is a finding; "our chart is
+thin" was an absence.
+
+Two things had to be got right to avoid making the data worse:
+
+- **A Tamiya-shaped code is not necessarily Tamiya.** Xtracolour numbers its paints
+  X001..X354 — the same shape as Tamiya's X-1..X-35. The parser only accepts a code when the
+  word "Tamiya" sits where that cell's brand line belongs.
+- **A second opinion must earn an override.** Merged naively, mech9 changed 15 existing answers
+  for no reason at all: same product tier, same single-source confidence, tie broken by
+  `seed/equivalents.json` being sorted by Tamiya code, so `X-15` beat `XF-4` *alphabetically*.
+  Two fixes. `X` and `XF` now share a preference tier, because they are one product in two
+  finishes and ranking them silently answers a question about finish; and ties fall to the
+  incumbent source. A new chart now wins only by corroboration or by offering a better tier.
+  After that the sweep across all 713 previously-resolvable codes reads: 691 unchanged, 22
+  changed, and every one of the 22 a spray can replaced by a bottle.
+
+The general lesson is the same one the migration bug taught, in a different costume: the danger
+is never the missing answer, it is the plausible one. Both faults here would have produced a
+screen that looked entirely fine.
 
 ---
 

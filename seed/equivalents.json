@@ -713,659 +713,83 @@
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "C001",
+    "foreign_code": "C1",
     "foreign_name": "White",
     "tamiya_code": "LP-2",
-    "match_quality": "close",
-    "source": "cybermodeler"
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "C001",
+    "foreign_code": "C1",
+    "foreign_name": "White",
+    "tamiya_code": "TS-26",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C1",
     "foreign_name": "White",
     "tamiya_code": "X-2",
-    "match_quality": "close",
-    "source": "cybermodeler"
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "C002",
-    "foreign_name": "Black",
-    "tamiya_code": "LP-1",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C002",
-    "foreign_name": "Black",
-    "tamiya_code": "X-1",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C003",
-    "foreign_name": "Red",
-    "tamiya_code": "LP-7",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C003",
-    "foreign_name": "Red",
-    "tamiya_code": "X-7",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C004",
-    "foreign_name": "Yellow",
-    "tamiya_code": "LP-8",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C004",
-    "foreign_name": "Yellow",
-    "tamiya_code": "X-8",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C005",
-    "foreign_name": "Blue",
-    "tamiya_code": "LP-6",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C005",
-    "foreign_name": "Blue",
-    "tamiya_code": "X-3",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C006",
-    "foreign_name": "Green",
-    "tamiya_code": "AS-13",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C006",
-    "foreign_name": "Green",
-    "tamiya_code": "X-5",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C007",
-    "foreign_name": "Red Brown",
-    "tamiya_code": "X-9",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C008",
-    "foreign_name": "Silver",
-    "tamiya_code": "AS-12",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C008",
-    "foreign_name": "Silver",
-    "tamiya_code": "LP-11",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C008",
-    "foreign_name": "Silver",
-    "tamiya_code": "X-11",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C009",
-    "foreign_name": "Gold",
-    "tamiya_code": "LP-62",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C009",
-    "foreign_name": "Gold",
-    "tamiya_code": "X-12",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C010",
+    "foreign_code": "C10",
     "foreign_name": "Copper",
     "tamiya_code": "XF-6",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C013",
-    "foreign_name": "Gray",
-    "tamiya_code": "AS-7",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C013",
-    "foreign_name": "Gray",
-    "tamiya_code": "XF-53",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C014",
-    "foreign_name": "Navy Blue",
-    "tamiya_code": "AS-8",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C015",
-    "foreign_name": "IJN Dark Green",
-    "tamiya_code": "AS-1",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C015",
-    "foreign_name": "IJN Dark Green",
-    "tamiya_code": "XF-11",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C016",
-    "foreign_name": "IJA Green",
-    "tamiya_code": "AS-17",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C016",
-    "foreign_name": "IJA Green",
-    "tamiya_code": "XF-13",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C018",
-    "foreign_name": "Black Green",
-    "tamiya_code": "XF-27",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C022",
-    "foreign_name": "Dark Earth",
-    "tamiya_code": "AS-22",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C022",
-    "foreign_name": "Dark Earth",
-    "tamiya_code": "XF-52",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C026",
-    "foreign_name": "Duck Egg Green",
-    "tamiya_code": "XF-21",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C028",
-    "foreign_name": "Steel",
-    "tamiya_code": "LP-40",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C028",
-    "foreign_name": "Steel",
-    "tamiya_code": "X-10",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C029",
-    "foreign_name": "Cocoa Brown Hull Red",
-    "tamiya_code": "TS-33",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C029",
-    "foreign_name": "Cocoa Brown Hull Red",
-    "tamiya_code": "XF-9",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C030",
-    "foreign_name": "Flat Base",
-    "tamiya_code": "LP-22",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C030",
-    "foreign_name": "Flat Base",
-    "tamiya_code": "X-21",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C033",
-    "foreign_name": "Flat Black",
-    "tamiya_code": "LP-3",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C033",
-    "foreign_name": "Flat Black",
-    "tamiya_code": "XF-1",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C034",
-    "foreign_name": "Sky Blue",
-    "tamiya_code": "X-14",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C035",
-    "foreign_name": "IJN Gray",
-    "tamiya_code": "AS-2",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C035",
-    "foreign_name": "IJN Gray",
-    "tamiya_code": "XF-12",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C036",
-    "foreign_name": "Dark Gray",
-    "tamiya_code": "AS-3",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C037",
-    "foreign_name": "Gray Violet",
-    "tamiya_code": "AS-4",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C041",
-    "foreign_name": "Red Brown",
-    "tamiya_code": "XF-64",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C045",
-    "foreign_name": "Deck Tan",
-    "tamiya_code": "XF-55",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C046",
-    "foreign_name": "Gloss Clear",
-    "tamiya_code": "LP-9",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C046",
-    "foreign_name": "Gloss Clear",
-    "tamiya_code": "X-22",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C047",
-    "foreign_name": "Clear Red",
-    "tamiya_code": "LP-72",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C047",
-    "foreign_name": "Clear Red",
-    "tamiya_code": "X-27",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C048",
-    "foreign_name": "Clear Yellow",
-    "tamiya_code": "LP-69",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C048",
-    "foreign_name": "Clear Yellow",
-    "tamiya_code": "X-24",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C049",
-    "foreign_name": "Clear Orange",
-    "tamiya_code": "LP-53",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C049",
-    "foreign_name": "Clear Orange",
-    "tamiya_code": "X-26",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C050",
-    "foreign_name": "Clear Blue",
-    "tamiya_code": "LP-68",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C050",
-    "foreign_name": "Clear Blue",
-    "tamiya_code": "X-23",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C051",
-    "foreign_name": "Flesh",
-    "tamiya_code": "LP-30",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C051",
-    "foreign_name": "Flesh",
-    "tamiya_code": "XF-15",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C054",
-    "foreign_name": "Olive Green",
-    "tamiya_code": "LP-58",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C054",
-    "foreign_name": "Olive Green",
-    "tamiya_code": "XF-67",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C056",
-    "foreign_name": "IJA Gray",
-    "tamiya_code": "AS-29",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C056",
-    "foreign_name": "IJA Gray",
-    "tamiya_code": "XF-76",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C057",
-    "foreign_name": "Metallic Blue Aotake",
-    "tamiya_code": "TS-19",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C057",
-    "foreign_name": "Metallic Blue Aotake",
-    "tamiya_code": "X-13",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C059",
-    "foreign_name": "Orange",
-    "tamiya_code": "TS-12",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C059",
-    "foreign_name": "Orange",
-    "tamiya_code": "X-6",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C060",
-    "foreign_name": "RLM Gray",
-    "tamiya_code": "XF-22",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C061",
-    "foreign_name": "Burnt Iron",
-    "tamiya_code": "LP-54",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C061",
-    "foreign_name": "Burnt Iron",
-    "tamiya_code": "XF-84",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C062",
-    "foreign_name": "Flat White",
-    "tamiya_code": "LP-4",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C062",
-    "foreign_name": "Flat White",
-    "tamiya_code": "XF-2",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C063",
-    "foreign_name": "Pink",
-    "tamiya_code": "TS-25",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C063",
-    "foreign_name": "Pink",
-    "tamiya_code": "X-17",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C064",
-    "foreign_name": "Yellow Green",
-    "tamiya_code": "XF-4",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C066",
-    "foreign_name": "Bright Green Dilectric Green",
-    "tamiya_code": "TS-35",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C066",
-    "foreign_name": "Bright Green Dilectric Green",
-    "tamiya_code": "X-28",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C067",
-    "foreign_name": "Purple",
-    "tamiya_code": "TS-24",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C067",
-    "foreign_name": "Purple",
-    "tamiya_code": "X-16",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C071",
-    "foreign_name": "Sea Blue",
-    "tamiya_code": "XF-17",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C072",
-    "foreign_name": "Intermediate Blue",
-    "tamiya_code": "AS-19",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "C072",
-    "foreign_name": "Intermediate Blue",
-    "tamiya_code": "XF-18",
-    "match_quality": "close",
-    "source": "cybermodeler"
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
   },
   {
     "brand": "gunze_mr_hobby",
     "foreign_code": "C101",
     "foreign_name": "Smoke Gray",
     "tamiya_code": "LP-67",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C101",
+    "foreign_name": "Smoke Gray",
+    "tamiya_code": "TS-71",
     "match_quality": "close",
-    "source": "cybermodeler"
+    "source": "mech9"
   },
   {
     "brand": "gunze_mr_hobby",
     "foreign_code": "C101",
     "foreign_name": "Smoke Gray",
     "tamiya_code": "X-19",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C113",
+    "foreign_name": "RLM04 Yellow",
+    "tamiya_code": "LP-8",
     "match_quality": "close",
-    "source": "cybermodeler"
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C113",
+    "foreign_name": "RLM04 Yellow",
+    "tamiya_code": "TS-16",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C113",
+    "foreign_name": "RLM04 Yellow",
+    "tamiya_code": "X-8",
+    "match_quality": "close",
+    "source": "mech9"
   },
   {
     "brand": "gunze_mr_hobby",
@@ -1374,6 +798,86 @@
     "tamiya_code": "XF-3",
     "match_quality": "close",
     "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C115",
+    "foreign_name": "RLM65 Light Blue",
+    "tamiya_code": "AS-5",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C115",
+    "foreign_name": "RLM65 Light Blue",
+    "tamiya_code": "LP-32",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C115",
+    "foreign_name": "RLM65 Light Blue",
+    "tamiya_code": "XF-12",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C115",
+    "foreign_name": "RLM65 Light Blue",
+    "tamiya_code": "XF-23",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C115",
+    "foreign_name": "RLM65 Light Blue",
+    "tamiya_code": "XF-25",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C115",
+    "foreign_name": "RLM65 Light Blue",
+    "tamiya_code": "XF-80",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C116",
+    "foreign_name": "RLM66 Black Gray",
+    "tamiya_code": "LP-27",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C116",
+    "foreign_name": "RLM66 Black Gray",
+    "tamiya_code": "TS-4",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C116",
+    "foreign_name": "RLM66 Black Gray",
+    "tamiya_code": "XF-24",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C116",
+    "foreign_name": "RLM66 Black Gray",
+    "tamiya_code": "XF-63",
+    "match_quality": "close",
+    "source": "mech9"
   },
   {
     "brand": "gunze_mr_hobby",
@@ -1388,8 +892,64 @@
     "foreign_code": "C117",
     "foreign_name": "Light Blue",
     "tamiya_code": "XF-23",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C118",
+    "foreign_name": "RLM78 Light Blue",
+    "tamiya_code": "XF-12",
     "match_quality": "close",
-    "source": "cybermodeler"
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C118",
+    "foreign_name": "RLM78 Light Blue",
+    "tamiya_code": "XF-23",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C119",
+    "foreign_name": "RLM79 Sand Yellow",
+    "tamiya_code": "XF-52",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C119",
+    "foreign_name": "RLM79 Sand Yellow",
+    "tamiya_code": "XF-59",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C12",
+    "foreign_name": "Olive Drab (1)",
+    "tamiya_code": "XF-81",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C120",
+    "foreign_name": "RLM80 Olive Green",
+    "tamiya_code": "XF-62",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C121",
+    "foreign_name": "RLM81 Brown Violet",
+    "tamiya_code": "XF-51",
+    "match_quality": "close",
+    "source": "mech9"
   },
   {
     "brand": "gunze_mr_hobby",
@@ -1418,10 +978,34 @@
   {
     "brand": "gunze_mr_hobby",
     "foreign_code": "C123",
+    "foreign_name": "RLM83 Dark Green",
+    "tamiya_code": "LP-64",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C123",
+    "foreign_name": "RLM83 Dark Green",
+    "tamiya_code": "TS-70",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C123",
     "foreign_name": "Dark Green",
     "tamiya_code": "XF-51",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C123",
+    "foreign_name": "RLM83 Dark Green",
+    "tamiya_code": "XF-74",
     "match_quality": "close",
-    "source": "cybermodeler"
+    "source": "mech9"
   },
   {
     "brand": "gunze_mr_hobby",
@@ -1473,43 +1057,243 @@
   },
   {
     "brand": "gunze_mr_hobby",
+    "foreign_code": "C13",
+    "foreign_name": "Gray",
+    "tamiya_code": "AS-7",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C13",
+    "foreign_name": "Gray",
+    "tamiya_code": "XF-53",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C13",
+    "foreign_name": "Neutral Gray",
+    "tamiya_code": "XF-54",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C13",
+    "foreign_name": "Neutral Gray",
+    "tamiya_code": "XF-55",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C137",
+    "foreign_name": "Tire Black",
+    "tamiya_code": "LP-3",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
     "foreign_code": "C137",
     "foreign_name": "Tire Black",
     "tamiya_code": "LP-65",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C137",
+    "foreign_name": "Tire Black",
+    "tamiya_code": "TS-6",
     "match_quality": "close",
-    "source": "cybermodeler"
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C137",
+    "foreign_name": "Tire Black",
+    "tamiya_code": "TS-82",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C137",
+    "foreign_name": "Tire Black",
+    "tamiya_code": "XF-1",
+    "match_quality": "close",
+    "source": "mech9"
   },
   {
     "brand": "gunze_mr_hobby",
     "foreign_code": "C137",
     "foreign_name": "Tire Black",
     "tamiya_code": "XF-85",
-    "match_quality": "close",
-    "source": "cybermodeler"
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
   },
   {
     "brand": "gunze_mr_hobby",
     "foreign_code": "C138",
     "foreign_name": "Clear Green",
     "tamiya_code": "X-25",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C14",
+    "foreign_name": "Navy Blue",
+    "tamiya_code": "AS-8",
     "match_quality": "close",
     "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C14",
+    "foreign_name": "Navy Blue",
+    "tamiya_code": "XF-17",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C14",
+    "foreign_name": "Navy Blue",
+    "tamiya_code": "XF-50",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C15",
+    "foreign_name": "IJN Dark Green",
+    "tamiya_code": "AS-1",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C15",
+    "foreign_name": "IJN Dark Green",
+    "tamiya_code": "XF-11",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C16",
+    "foreign_name": "IJA Green",
+    "tamiya_code": "AS-17",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C16",
+    "foreign_name": "IJA Green",
+    "tamiya_code": "XF-13",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C17",
+    "foreign_name": "RLM71 Dark Green",
+    "tamiya_code": "XF-13",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C17",
+    "foreign_name": "RLM71 Dark Green",
+    "tamiya_code": "XF-51",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C17",
+    "foreign_name": "RLM71 Dark Green",
+    "tamiya_code": "XF-65",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C18",
+    "foreign_name": "Black Green",
+    "tamiya_code": "XF-27",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C182",
+    "foreign_name": "Flat Clear/Supe r Clear Flat",
+    "tamiya_code": "LP-22",
+    "match_quality": "close",
+    "source": "mech9"
   },
   {
     "brand": "gunze_mr_hobby",
     "foreign_code": "C182",
     "foreign_name": "Flat Clear",
     "tamiya_code": "LP-23",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C182",
+    "foreign_name": "Flat Clear/Supe r Clear Flat",
+    "tamiya_code": "TS-80",
     "match_quality": "close",
-    "source": "cybermodeler"
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C182",
+    "foreign_name": "Flat Clear/Supe r Clear Flat",
+    "tamiya_code": "X-21",
+    "match_quality": "close",
+    "source": "mech9"
   },
   {
     "brand": "gunze_mr_hobby",
     "foreign_code": "C182",
     "foreign_name": "Flat Clear",
     "tamiya_code": "XF-86",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C2",
+    "foreign_name": "Black",
+    "tamiya_code": "LP-1",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C2",
+    "foreign_name": "Black",
+    "tamiya_code": "TS-14",
     "match_quality": "close",
-    "source": "cybermodeler"
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C2",
+    "foreign_name": "Black",
+    "tamiya_code": "X-1",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
   },
   {
     "brand": "gunze_mr_hobby",
@@ -1529,19 +1313,203 @@
   },
   {
     "brand": "gunze_mr_hobby",
+    "foreign_code": "C22",
+    "foreign_name": "Dark Earth",
+    "tamiya_code": "AS-22",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C22",
+    "foreign_name": "Dark Earth",
+    "tamiya_code": "XF-49",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C22",
+    "foreign_name": "Dark Earth",
+    "tamiya_code": "XF-52",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C23",
+    "foreign_name": "Dark Green(2)",
+    "tamiya_code": "TS-2",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C23",
+    "foreign_name": "Dark Green(2)",
+    "tamiya_code": "XF-27",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C23",
+    "foreign_name": "Dark Green(2)",
+    "tamiya_code": "XF-61",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C23",
+    "foreign_name": "Dark Green(2)",
+    "tamiya_code": "XF-65",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C25",
+    "foreign_name": "Dark Seagray",
+    "tamiya_code": "XF-54",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C26",
+    "foreign_name": "Duck Egg Green",
+    "tamiya_code": "XF-21",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C27",
+    "foreign_name": "Interior Green",
+    "tamiya_code": "XF-4",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C28",
+    "foreign_name": "Steel",
+    "tamiya_code": "LP-40",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C28",
+    "foreign_name": "Steel",
+    "tamiya_code": "LP-61",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C28",
+    "foreign_name": "Steel",
+    "tamiya_code": "X-10",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C28",
+    "foreign_name": "Steel",
+    "tamiya_code": "X-11",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C28",
+    "foreign_name": "Steel",
+    "tamiya_code": "XF-56",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C29",
+    "foreign_name": "Cocoa Brown Hull Red",
+    "tamiya_code": "TS-33",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C29",
+    "foreign_name": "Hull Red",
+    "tamiya_code": "TS-62",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C29",
+    "foreign_name": "Hull Red",
+    "tamiya_code": "XF-68",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C29",
+    "foreign_name": "Cocoa Brown Hull Red",
+    "tamiya_code": "XF-9",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C3",
+    "foreign_name": "Red",
+    "tamiya_code": "LP-7",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C3",
+    "foreign_name": "Red",
+    "tamiya_code": "X-7",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C30",
+    "foreign_name": "Flat Base",
+    "tamiya_code": "LP-22",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C30",
+    "foreign_name": "Flat Base",
+    "tamiya_code": "X-21",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
     "foreign_code": "C301",
     "foreign_name": "Deep Gray",
     "tamiya_code": "XF-24",
-    "match_quality": "close",
-    "source": "cybermodeler"
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
   },
   {
     "brand": "gunze_mr_hobby",
     "foreign_code": "C302",
     "foreign_name": "Deep Green",
     "tamiya_code": "XF-26",
-    "match_quality": "close",
-    "source": "cybermodeler"
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
   },
   {
     "brand": "gunze_mr_hobby",
@@ -1553,6 +1521,62 @@
   },
   {
     "brand": "gunze_mr_hobby",
+    "foreign_code": "C303",
+    "foreign_name": "Green FS34102",
+    "tamiya_code": "LP-29",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C303",
+    "foreign_name": "Green FS34102",
+    "tamiya_code": "TS-28",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C303",
+    "foreign_name": "Green FS34102",
+    "tamiya_code": "XF-58",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C304",
+    "foreign_name": "Olive Drab FS34087",
+    "tamiya_code": "LP-26",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C304",
+    "foreign_name": "Olive Drab FS34087",
+    "tamiya_code": "TS-91",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C304",
+    "foreign_name": "Olive Drab FS34087",
+    "tamiya_code": "XF-5",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C304",
+    "foreign_name": "Olive Drab FS34087",
+    "tamiya_code": "XF-73",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
     "foreign_code": "C305",
     "foreign_name": "Gunship Gray",
     "tamiya_code": "AS-27",
@@ -1561,11 +1585,67 @@
   },
   {
     "brand": "gunze_mr_hobby",
+    "foreign_code": "C305",
+    "foreign_name": "Gray FS36118",
+    "tamiya_code": "LP-13",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C305",
+    "foreign_name": "Gray FS36118",
+    "tamiya_code": "TS-67",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C305",
+    "foreign_name": "Gray FS36118",
+    "tamiya_code": "XF-24",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C305",
+    "foreign_name": "Gray FS36118",
+    "tamiya_code": "XF-50",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C305",
+    "foreign_name": "Gray FS36118",
+    "tamiya_code": "XF-54",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C305",
+    "foreign_name": "Gray FS36118",
+    "tamiya_code": "XF-77",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
     "foreign_code": "C306",
     "foreign_name": "Gray",
     "tamiya_code": "AS-28",
     "match_quality": "close",
     "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C306",
+    "foreign_name": "Gray FS36270",
+    "tamiya_code": "XF-20",
+    "match_quality": "close",
+    "source": "mech9"
   },
   {
     "brand": "gunze_mr_hobby",
@@ -1601,11 +1681,35 @@
   },
   {
     "brand": "gunze_mr_hobby",
+    "foreign_code": "C31",
+    "foreign_name": "Dark Gray(1)",
+    "tamiya_code": "AS-11",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C31",
+    "foreign_name": "Dark Gray(1)",
+    "tamiya_code": "XF-53",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
     "foreign_code": "C310",
     "foreign_name": "Sierra Tan",
     "tamiya_code": "AS-15",
     "match_quality": "close",
     "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C310",
+    "foreign_name": "Brown FS30219",
+    "tamiya_code": "XF-59",
+    "match_quality": "close",
+    "source": "mech9"
   },
   {
     "brand": "gunze_mr_hobby",
@@ -1617,11 +1721,35 @@
   },
   {
     "brand": "gunze_mr_hobby",
+    "foreign_code": "C311",
+    "foreign_name": "Gray FS36622",
+    "tamiya_code": "XF-14",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C312",
+    "foreign_name": "Green FS34227",
+    "tamiya_code": "XF-71",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
     "foreign_code": "C313",
     "foreign_name": "Tan",
     "tamiya_code": "XF-59",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C315",
+    "foreign_name": "Gray FS16440",
+    "tamiya_code": "XF-20",
     "match_quality": "close",
-    "source": "cybermodeler"
+    "source": "mech9"
   },
   {
     "brand": "gunze_mr_hobby",
@@ -1633,19 +1761,227 @@
   },
   {
     "brand": "gunze_mr_hobby",
+    "foreign_code": "C316",
+    "foreign_name": "White FS17875",
+    "tamiya_code": "LP-2",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C316",
+    "foreign_name": "White FS17875",
+    "tamiya_code": "TS-26",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C316",
+    "foreign_name": "White FS17875",
+    "tamiya_code": "X-2",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C317",
+    "foreign_name": "Gray FS36231",
+    "tamiya_code": "XF-54",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C32",
+    "foreign_name": "Dark Gray(2)",
+    "tamiya_code": "LP-12",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C32",
+    "foreign_name": "Dark Gray(2)",
+    "tamiya_code": "TS-66",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C32",
+    "foreign_name": "Dark Gray(2)",
+    "tamiya_code": "XF-75",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C32",
+    "foreign_name": "Dark Gray(2)",
+    "tamiya_code": "XF-77",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C321",
+    "foreign_name": "Light Brown",
+    "tamiya_code": "XF-55",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
     "foreign_code": "C325",
     "foreign_name": "Gray",
     "tamiya_code": "XF-20",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C327",
+    "foreign_name": "Red FS11136",
+    "tamiya_code": "XF-7",
     "match_quality": "close",
-    "source": "cybermodeler"
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C329",
+    "foreign_name": "Yellow FS13538",
+    "tamiya_code": "LP-8",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C329",
+    "foreign_name": "Yellow FS13538",
+    "tamiya_code": "TS-16",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C329",
+    "foreign_name": "Yellow FS13538",
+    "tamiya_code": "X-8",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C33",
+    "foreign_name": "Flat Black",
+    "tamiya_code": "LP-3",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C33",
+    "foreign_name": "Flat Black",
+    "tamiya_code": "TS-6",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C33",
+    "foreign_name": "Flat Black",
+    "tamiya_code": "XF-1",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C330",
+    "foreign_name": "Dark Green BS381C/64 1",
+    "tamiya_code": "LP-64",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C330",
+    "foreign_name": "Dark Green BS381C/64 1",
+    "tamiya_code": "TS-70",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C330",
+    "foreign_name": "Dark Green BS381C/64 1",
+    "tamiya_code": "XF-74",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C330",
+    "foreign_name": "Dark Green BS381C/64 1",
+    "tamiya_code": "XF-81",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C331",
+    "foreign_name": "Gray BS381C/63 8",
+    "tamiya_code": "LP-13",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C331",
+    "foreign_name": "Gray BS381C/63 8",
+    "tamiya_code": "TS-67",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C331",
+    "foreign_name": "Gray BS381C/63 8",
+    "tamiya_code": "XF-54",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C331",
+    "foreign_name": "Gray BS381C/63 8",
+    "tamiya_code": "XF-77",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C333",
+    "foreign_name": "Seagray BS381C/64 0",
+    "tamiya_code": "XF-54",
+    "match_quality": "close",
+    "source": "mech9"
   },
   {
     "brand": "gunze_mr_hobby",
     "foreign_code": "C334",
     "foreign_name": "Barley Gray",
     "tamiya_code": "XF-19",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C334",
+    "foreign_name": "Seagray BS4800/18 B21",
+    "tamiya_code": "XF-80",
     "match_quality": "close",
-    "source": "cybermodeler"
+    "source": "mech9"
   },
   {
     "brand": "gunze_mr_hobby",
@@ -1658,18 +1994,122 @@
   {
     "brand": "gunze_mr_hobby",
     "foreign_code": "C335",
+    "foreign_name": "Sea Gray BS381C/63 7",
+    "tamiya_code": "LP-32",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C335",
+    "foreign_name": "Sea Gray BS381C/63 7",
+    "tamiya_code": "XF-12",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C335",
     "foreign_name": "Medium Sea Gray",
     "tamiya_code": "XF-83",
-    "match_quality": "close",
-    "source": "cybermodeler"
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
   },
   {
     "brand": "gunze_mr_hobby",
     "foreign_code": "C336",
     "foreign_name": "Hemp",
     "tamiya_code": "XF-57",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C338",
+    "foreign_name": "Light Gray FS36495",
+    "tamiya_code": "XF-19",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C34",
+    "foreign_name": "Sky Blue",
+    "tamiya_code": "X-14",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C35",
+    "foreign_name": "IJN Gray",
+    "tamiya_code": "AS-2",
     "match_quality": "close",
     "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C35",
+    "foreign_name": "IJN Gray(Mitsu bishi)",
+    "tamiya_code": "LP-32",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C35",
+    "foreign_name": "IJN Gray",
+    "tamiya_code": "XF-12",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C36",
+    "foreign_name": "Dark Gray",
+    "tamiya_code": "AS-3",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C36",
+    "foreign_name": "RLM74 Gray Green",
+    "tamiya_code": "LP-27",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C36",
+    "foreign_name": "RLM74 Gray Green",
+    "tamiya_code": "TS-4",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C36",
+    "foreign_name": "RLM74 Gray Green",
+    "tamiya_code": "XF-63",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C36",
+    "foreign_name": "RLM74 Gray Green",
+    "tamiya_code": "XF-66",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C36",
+    "foreign_name": "RLM74 Gray Green",
+    "tamiya_code": "XF-75",
+    "match_quality": "close",
+    "source": "mech9"
   },
   {
     "brand": "gunze_mr_hobby",
@@ -1708,8 +2148,16 @@
     "foreign_code": "C362",
     "foreign_name": "Ocean Gray",
     "tamiya_code": "XF-82",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C364",
+    "foreign_name": "Aircraft Gray Green BS283",
+    "tamiya_code": "XF-71",
     "match_quality": "close",
-    "source": "cybermodeler"
+    "source": "mech9"
   },
   {
     "brand": "gunze_mr_hobby",
@@ -1726,6 +2174,662 @@
     "tamiya_code": "XF-18",
     "match_quality": "close",
     "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C369",
+    "foreign_name": "Dark Earth BS381C/45 0",
+    "tamiya_code": "XF-52",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C37",
+    "foreign_name": "Gray Violet",
+    "tamiya_code": "AS-4",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C37",
+    "foreign_name": "RLM75 Gray Violet",
+    "tamiya_code": "XF-24",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C38",
+    "foreign_name": "Olive Drab (2)",
+    "tamiya_code": "AS-6",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C38",
+    "foreign_name": "Olive Drab (2)",
+    "tamiya_code": "LP-28",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C38",
+    "foreign_name": "Olive Drab (2)",
+    "tamiya_code": "TS-5",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C38",
+    "foreign_name": "Olive Drab (2)",
+    "tamiya_code": "XF-62",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C39",
+    "foreign_name": "Yellow (Sandy Yellow)",
+    "tamiya_code": "LP-16",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C39",
+    "foreign_name": "Yellow (Sandy Yellow)",
+    "tamiya_code": "TS-68",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C39",
+    "foreign_name": "Yellow (Sandy Yellow)",
+    "tamiya_code": "XF-59",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C39",
+    "foreign_name": "Yellow (Sandy Yellow)",
+    "tamiya_code": "XF-78",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C4",
+    "foreign_name": "Yellow",
+    "tamiya_code": "LP-8",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C4",
+    "foreign_name": "Yellow",
+    "tamiya_code": "TS-16",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C4",
+    "foreign_name": "Yellow",
+    "tamiya_code": "X-8",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C4",
+    "foreign_name": "Yellow",
+    "tamiya_code": "XF-3",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C40",
+    "foreign_name": "German Gray/Field Gray (1)",
+    "tamiya_code": "LP-27",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C40",
+    "foreign_name": "German Gray/Field Gray (1)",
+    "tamiya_code": "TS-4",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C40",
+    "foreign_name": "German Gray/Field Gray (1)",
+    "tamiya_code": "XF-63",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C41",
+    "foreign_name": "Red Brown",
+    "tamiya_code": "TS-1",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C41",
+    "foreign_name": "Red Brown",
+    "tamiya_code": "XF-64",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C41",
+    "foreign_name": "Red Brown",
+    "tamiya_code": "XF-9",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C42",
+    "foreign_name": "Mahogany",
+    "tamiya_code": "XF-9",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C43",
+    "foreign_name": "Wood Brown",
+    "tamiya_code": "TS-1",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C43",
+    "foreign_name": "Wood Brown",
+    "tamiya_code": "XF-64",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C44",
+    "foreign_name": "Tan",
+    "tamiya_code": "XF-57",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C45",
+    "foreign_name": "Deck Tan",
+    "tamiya_code": "XF-55",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C46",
+    "foreign_name": "Gloss Clear",
+    "tamiya_code": "LP-9",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C46",
+    "foreign_name": "Clear",
+    "tamiya_code": "TS-13",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C46",
+    "foreign_name": "Gloss Clear",
+    "tamiya_code": "X-22",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C47",
+    "foreign_name": "Clear Red",
+    "tamiya_code": "LP-52",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C47",
+    "foreign_name": "Clear Red",
+    "tamiya_code": "LP-72",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C47",
+    "foreign_name": "Clear Red",
+    "tamiya_code": "TS-74",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C47",
+    "foreign_name": "Clear Red",
+    "tamiya_code": "X-27",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C48",
+    "foreign_name": "Clear Yellow",
+    "tamiya_code": "LP-69",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C48",
+    "foreign_name": "Clear Yellow",
+    "tamiya_code": "X-24",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C49",
+    "foreign_name": "Clear Orange",
+    "tamiya_code": "LP-53",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C49",
+    "foreign_name": "Clear Orange",
+    "tamiya_code": "TS-73",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C49",
+    "foreign_name": "Clear Orange",
+    "tamiya_code": "X-26",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C5",
+    "foreign_name": "Blue",
+    "tamiya_code": "LP-6",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C5",
+    "foreign_name": "Blue",
+    "tamiya_code": "X-3",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C5",
+    "foreign_name": "Blue",
+    "tamiya_code": "X-4",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C50",
+    "foreign_name": "Clear Blue",
+    "tamiya_code": "LP-68",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C50",
+    "foreign_name": "Clear Blue",
+    "tamiya_code": "TS-72",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C50",
+    "foreign_name": "Clear Blue",
+    "tamiya_code": "X-23",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C51",
+    "foreign_name": "Flesh",
+    "tamiya_code": "LP-30",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C51",
+    "foreign_name": "Flesh",
+    "tamiya_code": "LP-66",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C51",
+    "foreign_name": "Flesh",
+    "tamiya_code": "TS-77",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C51",
+    "foreign_name": "Flesh",
+    "tamiya_code": "XF-15",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C519",
+    "foreign_name": "Bronzegru n RAL6031",
+    "tamiya_code": "LP-58",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C519",
+    "foreign_name": "Bronzegru n RAL6031",
+    "tamiya_code": "TS-61",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C519",
+    "foreign_name": "Bronzegru n RAL6031",
+    "tamiya_code": "XF-67",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C52",
+    "foreign_name": "Field Gray (2)",
+    "tamiya_code": "LP-33",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C52",
+    "foreign_name": "Field Gray (2)",
+    "tamiya_code": "XF-65",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C52",
+    "foreign_name": "Field Gray (2)",
+    "tamiya_code": "XF-76",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C520",
+    "foreign_name": "Lederbraun RAL8027",
+    "tamiya_code": "LP-59",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C520",
+    "foreign_name": "Lederbraun RAL8027",
+    "tamiya_code": "TS-62",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C520",
+    "foreign_name": "Lederbraun RAL8027",
+    "tamiya_code": "XF-68",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C521",
+    "foreign_name": "TEERSCW ARZ RAL9021",
+    "tamiya_code": "LP-60",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C521",
+    "foreign_name": "TEERSCW ARZ RAL9021",
+    "tamiya_code": "TS-63",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C521",
+    "foreign_name": "TEERSCW ARZ RAL9021",
+    "tamiya_code": "XF-69",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C54",
+    "foreign_name": "Olive Green",
+    "tamiya_code": "LP-58",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C54",
+    "foreign_name": "Khaki Green",
+    "tamiya_code": "TS-61",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C54",
+    "foreign_name": "Olive Green",
+    "tamiya_code": "XF-67",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C55",
+    "foreign_name": "Khaki",
+    "tamiya_code": "XF-49",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C55",
+    "foreign_name": "Khaki",
+    "tamiya_code": "XF-72",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C56",
+    "foreign_name": "IJA Gray",
+    "tamiya_code": "AS-29",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C56",
+    "foreign_name": "IJN Gray Green (Nakajima)",
+    "tamiya_code": "LP-32",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C56",
+    "foreign_name": "IJN Gray Green (Nakajima)",
+    "tamiya_code": "XF-12",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C56",
+    "foreign_name": "IJN Gray Green (Nakajima)",
+    "tamiya_code": "XF-14",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C56",
+    "foreign_name": "IJN Gray Green (Nakajima)",
+    "tamiya_code": "XF-25",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C56",
+    "foreign_name": "IJA Gray",
+    "tamiya_code": "XF-76",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C57",
+    "foreign_name": "Metallic Blue Aotake",
+    "tamiya_code": "TS-19",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C57",
+    "foreign_name": "Metallic Blue Aotake",
+    "tamiya_code": "X-13",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C59",
+    "foreign_name": "Orange",
+    "tamiya_code": "TS-12",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C59",
+    "foreign_name": "Orange",
+    "tamiya_code": "X-6",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C6",
+    "foreign_name": "Green",
+    "tamiya_code": "AS-13",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C6",
+    "foreign_name": "Green",
+    "tamiya_code": "X-5",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C6",
+    "foreign_name": "Green",
+    "tamiya_code": "XF-26",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C60",
+    "foreign_name": "RLM02 Gray",
+    "tamiya_code": "XF-20",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C60",
+    "foreign_name": "RLM Gray",
+    "tamiya_code": "XF-22",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C60",
+    "foreign_name": "RLM02 Gray",
+    "tamiya_code": "XF-49",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C60",
+    "foreign_name": "RLM02 Gray",
+    "tamiya_code": "XF-73",
+    "match_quality": "close",
+    "source": "mech9"
   },
   {
     "brand": "gunze_mr_hobby",
@@ -1793,255 +2897,71 @@
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "H001",
-    "foreign_name": "White",
-    "tamiya_code": "LP-2",
+    "foreign_code": "C61",
+    "foreign_name": "Burnt Iron",
+    "tamiya_code": "LP-19",
     "match_quality": "close",
-    "source": "cybermodeler"
+    "source": "mech9"
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "H001",
-    "foreign_name": "White",
-    "tamiya_code": "X-2",
-    "match_quality": "close",
-    "source": "cybermodeler"
+    "foreign_code": "C61",
+    "foreign_name": "Burnt Iron",
+    "tamiya_code": "LP-54",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "H002",
-    "foreign_name": "Black",
-    "tamiya_code": "LP-1",
+    "foreign_code": "C61",
+    "foreign_name": "Burnt Iron",
+    "tamiya_code": "TS-38",
     "match_quality": "close",
-    "source": "cybermodeler"
+    "source": "mech9"
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "H002",
-    "foreign_name": "Black",
-    "tamiya_code": "X-1",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H003",
-    "foreign_name": "Red",
-    "tamiya_code": "LP-7",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H003",
-    "foreign_name": "Red",
-    "tamiya_code": "X-7",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H004",
-    "foreign_name": "Yellow",
-    "tamiya_code": "LP-8",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H004",
-    "foreign_name": "Yellow",
-    "tamiya_code": "X-8",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H005",
-    "foreign_name": "Blue",
-    "tamiya_code": "LP-6",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H005",
-    "foreign_name": "Blue",
-    "tamiya_code": "X-3",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H006",
-    "foreign_name": "Green",
-    "tamiya_code": "AS-13",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H006",
-    "foreign_name": "Green",
-    "tamiya_code": "X-5",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H007",
-    "foreign_name": "Red Brown",
-    "tamiya_code": "X-9",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H008",
-    "foreign_name": "Silver",
-    "tamiya_code": "AS-12",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H008",
-    "foreign_name": "Silver",
-    "tamiya_code": "LP-11",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H008",
-    "foreign_name": "Silver",
-    "tamiya_code": "X-11",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H009",
-    "foreign_name": "Gold",
-    "tamiya_code": "LP-62",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H009",
-    "foreign_name": "Gold",
-    "tamiya_code": "X-12",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H010",
-    "foreign_name": "Copper",
-    "tamiya_code": "XF-6",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H011",
-    "foreign_name": "Flat White",
-    "tamiya_code": "LP-4",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H011",
-    "foreign_name": "Flat White",
-    "tamiya_code": "XF-2",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H012",
-    "foreign_name": "Flat Black",
-    "tamiya_code": "LP-3",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H012",
-    "foreign_name": "Flat Black",
-    "tamiya_code": "XF-1",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H013",
-    "foreign_name": "Flat Red",
-    "tamiya_code": "XF-7",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H014",
-    "foreign_name": "Orange",
-    "tamiya_code": "TS-12",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H014",
-    "foreign_name": "Orange",
-    "tamiya_code": "X-6",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H016",
-    "foreign_name": "Yellow Green",
-    "tamiya_code": "XF-4",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H017",
-    "foreign_name": "Cocoa Brown Hull Red",
-    "tamiya_code": "TS-33",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H017",
-    "foreign_name": "Cocoa Brown Hull Red",
-    "tamiya_code": "XF-9",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H018",
-    "foreign_name": "Steel",
-    "tamiya_code": "LP-40",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H018",
-    "foreign_name": "Steel",
+    "foreign_code": "C61",
+    "foreign_name": "Burnt Iron",
     "tamiya_code": "X-10",
     "match_quality": "close",
-    "source": "cybermodeler"
+    "source": "mech9"
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "H019",
+    "foreign_code": "C61",
+    "foreign_name": "Burnt Iron",
+    "tamiya_code": "XF-84",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C62",
+    "foreign_name": "Flat White",
+    "tamiya_code": "LP-4",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C62",
+    "foreign_name": "Flat White",
+    "tamiya_code": "TS-27",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C62",
+    "foreign_name": "Flat White",
+    "tamiya_code": "XF-2",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C63",
     "foreign_name": "Pink",
     "tamiya_code": "TS-25",
     "match_quality": "close",
@@ -2049,55 +2969,47 @@
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "H019",
+    "foreign_code": "C63",
     "foreign_name": "Pink",
     "tamiya_code": "X-17",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C64",
+    "foreign_name": "Green/Le Mans Green",
+    "tamiya_code": "X-15",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C64",
+    "foreign_name": "Yellow Green",
+    "tamiya_code": "XF-4",
     "match_quality": "close",
     "source": "cybermodeler"
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "H020",
-    "foreign_name": "Flat Clear",
-    "tamiya_code": "LP-23",
+    "foreign_code": "C65",
+    "foreign_name": "Bright Blue/Indy Blue",
+    "tamiya_code": "X-4",
     "match_quality": "close",
-    "source": "cybermodeler"
+    "source": "mech9"
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "H020",
-    "foreign_name": "Flat Clear",
-    "tamiya_code": "XF-86",
+    "foreign_code": "C65",
+    "foreign_name": "Bright Blue/Indy Blue",
+    "tamiya_code": "XF-8",
     "match_quality": "close",
-    "source": "cybermodeler"
+    "source": "mech9"
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "H022",
-    "foreign_name": "Gray",
-    "tamiya_code": "AS-7",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H022",
-    "foreign_name": "Gray",
-    "tamiya_code": "XF-53",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H025",
-    "foreign_name": "Sky Blue",
-    "tamiya_code": "X-14",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H026",
+    "foreign_code": "C66",
     "foreign_name": "Bright Green Dilectric Green",
     "tamiya_code": "TS-35",
     "match_quality": "close",
@@ -2105,7 +3017,7 @@
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "H026",
+    "foreign_code": "C66",
     "foreign_name": "Bright Green Dilectric Green",
     "tamiya_code": "X-28",
     "match_quality": "close",
@@ -2113,39 +3025,15 @@
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "H030",
-    "foreign_name": "Gloss Clear",
-    "tamiya_code": "LP-9",
+    "foreign_code": "C66",
+    "foreign_name": "Bright Green/Dayt ona Green",
+    "tamiya_code": "X-5",
     "match_quality": "close",
-    "source": "cybermodeler"
+    "source": "mech9"
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "H030",
-    "foreign_name": "Gloss Clear",
-    "tamiya_code": "X-22",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H036",
-    "foreign_name": "Dark Green",
-    "tamiya_code": "AS-21",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H036",
-    "foreign_name": "Dark Green",
-    "tamiya_code": "LP-31",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H039",
+    "foreign_code": "C67",
     "foreign_name": "Purple",
     "tamiya_code": "TS-24",
     "match_quality": "close",
@@ -2153,71 +3041,71 @@
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "H039",
+    "foreign_code": "C67",
     "foreign_name": "Purple",
     "tamiya_code": "X-16",
-    "match_quality": "close",
-    "source": "cybermodeler"
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "H040",
-    "foreign_name": "Flat Base",
-    "tamiya_code": "LP-22",
+    "foreign_code": "C7",
+    "foreign_name": "Brown",
+    "tamiya_code": "LP-17",
     "match_quality": "close",
-    "source": "cybermodeler"
+    "source": "mech9"
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "H040",
-    "foreign_name": "Flat Base",
-    "tamiya_code": "X-21",
+    "foreign_code": "C7",
+    "foreign_name": "Brown",
+    "tamiya_code": "TS-69",
     "match_quality": "close",
-    "source": "cybermodeler"
+    "source": "mech9"
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "H044",
-    "foreign_name": "Flesh",
-    "tamiya_code": "LP-30",
+    "foreign_code": "C7",
+    "foreign_name": "Brown",
+    "tamiya_code": "X-34",
     "match_quality": "close",
-    "source": "cybermodeler"
+    "source": "mech9"
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "H044",
-    "foreign_name": "Flesh",
-    "tamiya_code": "XF-15",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H047",
+    "foreign_code": "C7",
     "foreign_name": "Red Brown",
-    "tamiya_code": "XF-64",
-    "match_quality": "close",
-    "source": "cybermodeler"
+    "tamiya_code": "X-9",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "H054",
-    "foreign_name": "Navy Blue",
-    "tamiya_code": "AS-8",
+    "foreign_code": "C7",
+    "foreign_name": "Brown",
+    "tamiya_code": "XF-79",
     "match_quality": "close",
-    "source": "cybermodeler"
+    "source": "mech9"
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "H055",
+    "foreign_code": "C71",
+    "foreign_name": "Midnight Blue",
+    "tamiya_code": "X-3",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C71",
     "foreign_name": "Sea Blue",
     "tamiya_code": "XF-17",
-    "match_quality": "close",
-    "source": "cybermodeler"
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "H056",
+    "foreign_code": "C72",
     "foreign_name": "Intermediate Blue",
     "tamiya_code": "AS-19",
     "match_quality": "close",
@@ -2225,323 +3113,659 @@
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "H056",
+    "foreign_code": "C72",
     "foreign_name": "Intermediate Blue",
     "tamiya_code": "XF-18",
-    "match_quality": "close",
-    "source": "cybermodeler"
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "H059",
-    "foreign_name": "IJN Dark Green",
-    "tamiya_code": "AS-1",
+    "foreign_code": "C72",
+    "foreign_name": "e Blue/Mediu m Blue",
+    "tamiya_code": "XF-66",
     "match_quality": "close",
-    "source": "cybermodeler"
+    "source": "mech9"
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "H059",
-    "foreign_name": "IJN Dark Green",
-    "tamiya_code": "XF-11",
+    "foreign_code": "C73",
+    "foreign_name": "Aircraft Gray",
+    "tamiya_code": "XF-14",
     "match_quality": "close",
-    "source": "cybermodeler"
+    "source": "mech9"
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "H060",
-    "foreign_name": "IJA Green",
-    "tamiya_code": "AS-17",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H060",
-    "foreign_name": "IJA Green",
-    "tamiya_code": "XF-13",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H061",
-    "foreign_name": "IJN Gray",
-    "tamiya_code": "AS-2",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H061",
-    "foreign_name": "IJN Gray",
-    "tamiya_code": "XF-12",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H062",
-    "foreign_name": "IJA Gray",
-    "tamiya_code": "AS-29",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H062",
-    "foreign_name": "IJA Gray",
-    "tamiya_code": "XF-76",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H063",
-    "foreign_name": "Metallic Blue Aotake",
-    "tamiya_code": "TS-19",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H063",
-    "foreign_name": "Metallic Blue Aotake",
+    "foreign_code": "C76",
+    "foreign_name": "Metallic Blue",
     "tamiya_code": "X-13",
     "match_quality": "close",
-    "source": "cybermodeler"
+    "source": "mech9"
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "H065",
-    "foreign_name": "Black Green",
-    "tamiya_code": "XF-27",
+    "foreign_code": "C78",
+    "foreign_name": "Metal Black",
+    "tamiya_code": "LP-19",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C78",
+    "foreign_name": "Metal Black",
+    "tamiya_code": "TS-38",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C78",
+    "foreign_name": "Metal Black",
+    "tamiya_code": "X-10",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C79",
+    "foreign_name": "Shine Red",
+    "tamiya_code": "X-7",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C79",
+    "foreign_name": "Shine Red",
+    "tamiya_code": "XF-7",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C8",
+    "foreign_name": "Silver",
+    "tamiya_code": "AS-12",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C8",
+    "foreign_name": "Silver",
+    "tamiya_code": "LP-11",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C8",
+    "foreign_name": "Silver",
+    "tamiya_code": "LP-38",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C8",
+    "foreign_name": "Silver",
+    "tamiya_code": "LP-61",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C8",
+    "foreign_name": "Silver",
+    "tamiya_code": "TS-30",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C8",
+    "foreign_name": "Silver",
+    "tamiya_code": "X-11",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C8",
+    "foreign_name": "Silver",
+    "tamiya_code": "XF-16",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C8",
+    "foreign_name": "Silver",
+    "tamiya_code": "XF-56",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C9",
+    "foreign_name": "Gold",
+    "tamiya_code": "LP-62",
     "match_quality": "close",
     "source": "cybermodeler"
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "H068",
-    "foreign_name": "Dark Gray",
-    "tamiya_code": "AS-3",
+    "foreign_code": "C9",
+    "foreign_name": "Gold",
+    "tamiya_code": "X-12",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C90",
+    "foreign_name": "Shine Silver",
+    "tamiya_code": "LP-38",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C90",
+    "foreign_name": "Shine Silver",
+    "tamiya_code": "XF-16",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C92",
+    "foreign_name": "Semi Gloss Black",
+    "tamiya_code": "LP-5",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C92",
+    "foreign_name": "Semi Gloss Black",
+    "tamiya_code": "TS-29",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "C92",
+    "foreign_name": "Semi Gloss Black",
+    "tamiya_code": "X-18",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H1",
+    "foreign_name": "White",
+    "tamiya_code": "LP-2",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H1",
+    "foreign_name": "White",
+    "tamiya_code": "TS-26",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H1",
+    "foreign_name": "White",
+    "tamiya_code": "X-2",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H10",
+    "foreign_name": "Copper",
+    "tamiya_code": "XF-6",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H11",
+    "foreign_name": "Flat White",
+    "tamiya_code": "LP-4",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H11",
+    "foreign_name": "Flat White",
+    "tamiya_code": "TS-27",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H11",
+    "foreign_name": "Flat White",
+    "tamiya_code": "XF-2",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H12",
+    "foreign_name": "Flat Black",
+    "tamiya_code": "LP-3",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H12",
+    "foreign_name": "Flat Black",
+    "tamiya_code": "TS-6",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H12",
+    "foreign_name": "Flat Black",
+    "tamiya_code": "XF-1",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H13",
+    "foreign_name": "Flat Red",
+    "tamiya_code": "XF-7",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H14",
+    "foreign_name": "Orange",
+    "tamiya_code": "TS-12",
     "match_quality": "close",
     "source": "cybermodeler"
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "H069",
-    "foreign_name": "Gray Violet",
-    "tamiya_code": "AS-4",
+    "foreign_code": "H14",
+    "foreign_name": "Orange",
+    "tamiya_code": "X-6",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H15",
+    "foreign_name": "Bright Blue/Indy Blue",
+    "tamiya_code": "X-4",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H15",
+    "foreign_name": "Bright Blue/Indy Blue",
+    "tamiya_code": "XF-8",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H16",
+    "foreign_name": "Green/Le Mans Green",
+    "tamiya_code": "X-15",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H16",
+    "foreign_name": "Yellow Green",
+    "tamiya_code": "XF-4",
     "match_quality": "close",
     "source": "cybermodeler"
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "H070",
-    "foreign_name": "RLM Gray",
+    "foreign_code": "H17",
+    "foreign_name": "Cocoa Brown Hull Red",
+    "tamiya_code": "TS-33",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H17",
+    "foreign_name": "Cocoa Brown",
+    "tamiya_code": "TS-62",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H17",
+    "foreign_name": "Cocoa Brown",
+    "tamiya_code": "XF-68",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H17",
+    "foreign_name": "Cocoa Brown Hull Red",
+    "tamiya_code": "XF-9",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H18",
+    "foreign_name": "Steel",
+    "tamiya_code": "LP-40",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H18",
+    "foreign_name": "Steel",
+    "tamiya_code": "LP-61",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H18",
+    "foreign_name": "Steel",
+    "tamiya_code": "X-10",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H18",
+    "foreign_name": "Steel",
+    "tamiya_code": "X-11",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H18",
+    "foreign_name": "Steel",
+    "tamiya_code": "XF-56",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H19",
+    "foreign_name": "Pink",
+    "tamiya_code": "TS-25",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H19",
+    "foreign_name": "Pink",
+    "tamiya_code": "X-17",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H2",
+    "foreign_name": "Black",
+    "tamiya_code": "LP-1",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H2",
+    "foreign_name": "Black",
+    "tamiya_code": "LP-5",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H2",
+    "foreign_name": "Black",
+    "tamiya_code": "TS-14",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H2",
+    "foreign_name": "Black",
+    "tamiya_code": "TS-29",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H2",
+    "foreign_name": "Black",
+    "tamiya_code": "X-1",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H2",
+    "foreign_name": "Black",
+    "tamiya_code": "X-18",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H20",
+    "foreign_name": "Flat Clear",
+    "tamiya_code": "LP-22",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H20",
+    "foreign_name": "Flat Clear",
+    "tamiya_code": "LP-23",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H20",
+    "foreign_name": "Flat Clear",
+    "tamiya_code": "TS-80",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H20",
+    "foreign_name": "Flat Clear",
+    "tamiya_code": "X-21",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H20",
+    "foreign_name": "Flat Clear",
+    "tamiya_code": "XF-86",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H22",
+    "foreign_name": "Gray",
+    "tamiya_code": "AS-7",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H22",
+    "foreign_name": "Gray/Nezu mi",
     "tamiya_code": "XF-22",
     "match_quality": "close",
-    "source": "cybermodeler"
+    "source": "mech9"
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "H072",
-    "foreign_name": "Dark Earth",
-    "tamiya_code": "AS-22",
+    "foreign_code": "H22",
+    "foreign_name": "Gray",
+    "tamiya_code": "XF-53",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H23",
+    "foreign_name": "Shine Red",
+    "tamiya_code": "X-7",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H23",
+    "foreign_name": "Shine Red",
+    "tamiya_code": "XF-7",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H25",
+    "foreign_name": "Sky Blue",
+    "tamiya_code": "X-14",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H26",
+    "foreign_name": "Bright Green Dilectric Green",
+    "tamiya_code": "TS-35",
     "match_quality": "close",
     "source": "cybermodeler"
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "H072",
-    "foreign_name": "Dark Earth",
-    "tamiya_code": "XF-52",
+    "foreign_code": "H26",
+    "foreign_name": "Bright Green Dilectric Green",
+    "tamiya_code": "X-28",
     "match_quality": "close",
     "source": "cybermodeler"
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "H073",
-    "foreign_name": "Dark Green",
-    "tamiya_code": "AS-9",
+    "foreign_code": "H27",
+    "foreign_name": "Light Brown/Tan",
+    "tamiya_code": "XF-57",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H28",
+    "foreign_name": "Metal Black",
+    "tamiya_code": "LP-19",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H28",
+    "foreign_name": "Metal Black",
+    "tamiya_code": "TS-38",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H28",
+    "foreign_name": "Metal Black",
+    "tamiya_code": "X-10",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H3",
+    "foreign_name": "Red",
+    "tamiya_code": "LP-7",
     "match_quality": "close",
     "source": "cybermodeler"
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "H073",
-    "foreign_name": "Dark Green",
-    "tamiya_code": "XF-81",
-    "match_quality": "close",
-    "source": "cybermodeler"
+    "foreign_code": "H3",
+    "foreign_name": "Red",
+    "tamiya_code": "X-7",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "H074",
-    "foreign_name": "Duck Egg Green",
-    "tamiya_code": "XF-21",
-    "match_quality": "close",
-    "source": "cybermodeler"
+    "foreign_code": "H30",
+    "foreign_name": "Gloss Clear",
+    "tamiya_code": "LP-9",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "H076",
-    "foreign_name": "Burnt Iron",
-    "tamiya_code": "LP-54",
+    "foreign_code": "H30",
+    "foreign_name": "Clear",
+    "tamiya_code": "TS-13",
     "match_quality": "close",
-    "source": "cybermodeler"
+    "source": "mech9"
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "H076",
-    "foreign_name": "Burnt Iron",
-    "tamiya_code": "XF-84",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H077",
-    "foreign_name": "Tire Black",
-    "tamiya_code": "LP-65",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H077",
-    "foreign_name": "Tire Black",
-    "tamiya_code": "XF-85",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H080",
-    "foreign_name": "Olive Green",
-    "tamiya_code": "LP-58",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H080",
-    "foreign_name": "Olive Green",
-    "tamiya_code": "XF-67",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H085",
-    "foreign_name": "Deck Tan",
-    "tamiya_code": "XF-55",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H090",
-    "foreign_name": "Clear Red",
-    "tamiya_code": "LP-72",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H090",
-    "foreign_name": "Clear Red",
-    "tamiya_code": "X-27",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H091",
-    "foreign_name": "Clear Yellow",
-    "tamiya_code": "LP-69",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H091",
-    "foreign_name": "Clear Yellow",
-    "tamiya_code": "X-24",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H092",
-    "foreign_name": "Clear Orange",
-    "tamiya_code": "LP-53",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H092",
-    "foreign_name": "Clear Orange",
-    "tamiya_code": "X-26",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H093",
-    "foreign_name": "Clear Blue",
-    "tamiya_code": "LP-68",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H093",
-    "foreign_name": "Clear Blue",
-    "tamiya_code": "X-23",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H094",
-    "foreign_name": "Clear Green",
-    "tamiya_code": "X-25",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H095",
-    "foreign_name": "Smoke Gray",
-    "tamiya_code": "LP-67",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "H095",
-    "foreign_name": "Smoke Gray",
-    "tamiya_code": "X-19",
-    "match_quality": "close",
-    "source": "cybermodeler"
+    "foreign_code": "H30",
+    "foreign_name": "Gloss Clear",
+    "tamiya_code": "X-22",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
   },
   {
     "brand": "gunze_mr_hobby",
     "foreign_code": "H301",
     "foreign_name": "Deep Gray",
     "tamiya_code": "XF-24",
-    "match_quality": "close",
-    "source": "cybermodeler"
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
   },
   {
     "brand": "gunze_mr_hobby",
     "foreign_code": "H302",
     "foreign_name": "Deep Green",
     "tamiya_code": "XF-26",
-    "match_quality": "close",
-    "source": "cybermodeler"
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
   },
   {
     "brand": "gunze_mr_hobby",
@@ -2553,6 +3777,54 @@
   },
   {
     "brand": "gunze_mr_hobby",
+    "foreign_code": "H303",
+    "foreign_name": "Green FS34102",
+    "tamiya_code": "LP-29",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H303",
+    "foreign_name": "Green FS34102",
+    "tamiya_code": "TS-28",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H303",
+    "foreign_name": "Green FS34102",
+    "tamiya_code": "XF-58",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H304",
+    "foreign_name": "Olive Drab FS34087",
+    "tamiya_code": "LP-26",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H304",
+    "foreign_name": "Olive Drab FS34087",
+    "tamiya_code": "TS-91",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H304",
+    "foreign_name": "Olive Drab FS34087",
+    "tamiya_code": "XF-73",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
     "foreign_code": "H305",
     "foreign_name": "Gunship Gray",
     "tamiya_code": "AS-27",
@@ -2561,11 +3833,67 @@
   },
   {
     "brand": "gunze_mr_hobby",
+    "foreign_code": "H305",
+    "foreign_name": "Gray FS36118",
+    "tamiya_code": "LP-13",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H305",
+    "foreign_name": "Gray FS36118",
+    "tamiya_code": "TS-67",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H305",
+    "foreign_name": "Gray FS36118",
+    "tamiya_code": "XF-24",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H305",
+    "foreign_name": "Gray FS36118",
+    "tamiya_code": "XF-50",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H305",
+    "foreign_name": "Gray FS36118",
+    "tamiya_code": "XF-54",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H305",
+    "foreign_name": "Gray FS36118",
+    "tamiya_code": "XF-77",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
     "foreign_code": "H306",
     "foreign_name": "Gray",
     "tamiya_code": "AS-28",
     "match_quality": "close",
     "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H306",
+    "foreign_name": "Gray FS36270",
+    "tamiya_code": "XF-20",
+    "match_quality": "close",
+    "source": "mech9"
   },
   {
     "brand": "gunze_mr_hobby",
@@ -2596,8 +3924,16 @@
     "foreign_code": "H309",
     "foreign_name": "Green",
     "tamiya_code": "XF-65",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H31",
+    "foreign_name": "White Green",
+    "tamiya_code": "XF-21",
     "match_quality": "close",
-    "source": "cybermodeler"
+    "source": "mech9"
   },
   {
     "brand": "gunze_mr_hobby",
@@ -2609,6 +3945,14 @@
   },
   {
     "brand": "gunze_mr_hobby",
+    "foreign_code": "H310",
+    "foreign_name": "Brown FS30219",
+    "tamiya_code": "XF-59",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
     "foreign_code": "H311",
     "foreign_name": "Gray",
     "tamiya_code": "AS-16",
@@ -2617,11 +3961,35 @@
   },
   {
     "brand": "gunze_mr_hobby",
+    "foreign_code": "H311",
+    "foreign_name": "Gray FS36622",
+    "tamiya_code": "XF-14",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H312",
+    "foreign_name": "Green FS34227",
+    "tamiya_code": "XF-71",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
     "foreign_code": "H313",
     "foreign_name": "Tan",
     "tamiya_code": "XF-59",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H315",
+    "foreign_name": "Gray FS16440",
+    "tamiya_code": "XF-20",
     "match_quality": "close",
-    "source": "cybermodeler"
+    "source": "mech9"
   },
   {
     "brand": "gunze_mr_hobby",
@@ -2633,19 +4001,227 @@
   },
   {
     "brand": "gunze_mr_hobby",
+    "foreign_code": "H316",
+    "foreign_name": "White FS17875",
+    "tamiya_code": "LP-2",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H316",
+    "foreign_name": "White FS17875",
+    "tamiya_code": "TS-26",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H316",
+    "foreign_name": "White FS17875",
+    "tamiya_code": "X-2",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H317",
+    "foreign_name": "Gray FS36231",
+    "tamiya_code": "XF-54",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H32",
+    "foreign_name": "Field Gray (1)/Dark Gray",
+    "tamiya_code": "LP-27",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H32",
+    "foreign_name": "Field Gray (1)/Dark Gray",
+    "tamiya_code": "TS-4",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H32",
+    "foreign_name": "Field Gray (1)/Dark Gray",
+    "tamiya_code": "XF-63",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H320",
+    "foreign_name": "Dark Green",
+    "tamiya_code": "TS-2",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H320",
+    "foreign_name": "Dark Green",
+    "tamiya_code": "XF-58",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H320",
+    "foreign_name": "Dark Green",
+    "tamiya_code": "XF-61",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H321",
+    "foreign_name": "Light Brown",
+    "tamiya_code": "XF-55",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
     "foreign_code": "H325",
     "foreign_name": "Gray",
     "tamiya_code": "XF-20",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H327",
+    "foreign_name": "Red FS11136",
+    "tamiya_code": "XF-7",
     "match_quality": "close",
-    "source": "cybermodeler"
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H328",
+    "foreign_name": "Blue FS15050",
+    "tamiya_code": "X-3",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H329",
+    "foreign_name": "Yellow FS13538",
+    "tamiya_code": "LP-8",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H329",
+    "foreign_name": "Yellow FS13538",
+    "tamiya_code": "TS-16",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H329",
+    "foreign_name": "Yellow FS13538",
+    "tamiya_code": "X-8",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H330",
+    "foreign_name": "Dark Green BS381C/64 1",
+    "tamiya_code": "LP-64",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H330",
+    "foreign_name": "Dark Green BS381C/64 1",
+    "tamiya_code": "TS-70",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H330",
+    "foreign_name": "Dark Green BS381C/64 1",
+    "tamiya_code": "XF-74",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H330",
+    "foreign_name": "Dark Green BS381C/64 1",
+    "tamiya_code": "XF-81",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H331",
+    "foreign_name": "SeaGray BS381C/63 8",
+    "tamiya_code": "LP-13",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H331",
+    "foreign_name": "SeaGray BS381C/63 8",
+    "tamiya_code": "TS-67",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H331",
+    "foreign_name": "SeaGray BS381C/63 8",
+    "tamiya_code": "XF-54",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H331",
+    "foreign_name": "SeaGray BS381C/63 8",
+    "tamiya_code": "XF-77",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H333",
+    "foreign_name": "Seagray BS381C/64 0",
+    "tamiya_code": "XF-54",
+    "match_quality": "close",
+    "source": "mech9"
   },
   {
     "brand": "gunze_mr_hobby",
     "foreign_code": "H334",
     "foreign_name": "Barley Gray",
     "tamiya_code": "XF-19",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H334",
+    "foreign_name": "Seagray BS4800/18 B21",
+    "tamiya_code": "XF-80",
     "match_quality": "close",
-    "source": "cybermodeler"
+    "source": "mech9"
   },
   {
     "brand": "gunze_mr_hobby",
@@ -2660,56 +4236,256 @@
     "foreign_code": "H335",
     "foreign_name": "Medium Sea Gray",
     "tamiya_code": "XF-83",
-    "match_quality": "close",
-    "source": "cybermodeler"
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
   },
   {
     "brand": "gunze_mr_hobby",
     "foreign_code": "H336",
     "foreign_name": "Hemp",
     "tamiya_code": "XF-57",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H341",
+    "foreign_name": "Flat Mud",
+    "tamiya_code": "XF-52",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H36",
+    "foreign_name": "Dark Green",
+    "tamiya_code": "AS-21",
     "match_quality": "close",
     "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H36",
+    "foreign_name": "Dark Green",
+    "tamiya_code": "LP-31",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H36",
+    "foreign_name": "Dark Green",
+    "tamiya_code": "XF-11",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H37",
+    "foreign_name": "Wood Brown",
+    "tamiya_code": "TS-1",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H37",
+    "foreign_name": "Wood Brown",
+    "tamiya_code": "XF-64",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H38",
+    "foreign_name": "Steel Red",
+    "tamiya_code": "LP-19",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H38",
+    "foreign_name": "Steel Red",
+    "tamiya_code": "TS-38",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H38",
+    "foreign_name": "Steel Red",
+    "tamiya_code": "X-10",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H39",
+    "foreign_name": "Purple",
+    "tamiya_code": "TS-24",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H39",
+    "foreign_name": "Purple",
+    "tamiya_code": "X-16",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H4",
+    "foreign_name": "Yellow",
+    "tamiya_code": "LP-8",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H4",
+    "foreign_name": "Yellow",
+    "tamiya_code": "TS-16",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H4",
+    "foreign_name": "Yellow",
+    "tamiya_code": "X-8",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H4",
+    "foreign_name": "Yellow",
+    "tamiya_code": "XF-3",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H40",
+    "foreign_name": "Flat Base",
+    "tamiya_code": "LP-22",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H40",
+    "foreign_name": "Flat Base",
+    "tamiya_code": "X-21",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
   },
   {
     "brand": "gunze_mr_hobby",
     "foreign_code": "H401",
     "foreign_name": "Panzer Gray",
     "tamiya_code": "LP-27",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H401",
+    "foreign_name": "Dark Gray",
+    "tamiya_code": "TS-4",
     "match_quality": "close",
-    "source": "cybermodeler"
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H401",
+    "foreign_name": "Dark Gray",
+    "tamiya_code": "TS-63",
+    "match_quality": "close",
+    "source": "mech9"
   },
   {
     "brand": "gunze_mr_hobby",
     "foreign_code": "H401",
     "foreign_name": "Panzer Gray",
     "tamiya_code": "XF-63",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H401",
+    "foreign_name": "Dark Gray",
+    "tamiya_code": "XF-69",
     "match_quality": "close",
-    "source": "cybermodeler"
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H402",
+    "foreign_name": "Green Brown",
+    "tamiya_code": "XF-59",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H402",
+    "foreign_name": "Green Brown",
+    "tamiya_code": "XF-88",
+    "match_quality": "close",
+    "source": "mech9"
   },
   {
     "brand": "gunze_mr_hobby",
     "foreign_code": "H403",
     "foreign_name": "Dark Yellow",
     "tamiya_code": "TS-3",
-    "match_quality": "close",
-    "source": "cybermodeler"
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
   },
   {
     "brand": "gunze_mr_hobby",
     "foreign_code": "H403",
     "foreign_name": "Dark Yellow",
     "tamiya_code": "XF-60",
-    "match_quality": "close",
-    "source": "cybermodeler"
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
   },
   {
     "brand": "gunze_mr_hobby",
     "foreign_code": "H404",
     "foreign_name": "Signalbraun",
     "tamiya_code": "XF-49",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H405",
+    "foreign_name": "Olive Green",
+    "tamiya_code": "LP-26",
     "match_quality": "close",
-    "source": "cybermodeler"
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H405",
+    "foreign_name": "Olive Green",
+    "tamiya_code": "TS-91",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H405",
+    "foreign_name": "Olive Green",
+    "tamiya_code": "XF-73",
+    "match_quality": "close",
+    "source": "mech9"
   },
   {
     "brand": "gunze_mr_hobby",
@@ -2721,11 +4497,83 @@
   },
   {
     "brand": "gunze_mr_hobby",
+    "foreign_code": "H406",
+    "foreign_name": "Chocolate Brown",
+    "tamiya_code": "XF-9",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H413",
+    "foreign_name": "RLM04 Yellow",
+    "tamiya_code": "LP-8",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H413",
+    "foreign_name": "RLM04 Yellow",
+    "tamiya_code": "TS-16",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H413",
+    "foreign_name": "RLM04 Yellow",
+    "tamiya_code": "X-8",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
     "foreign_code": "H413",
     "foreign_name": "Yellow",
     "tamiya_code": "XF-3",
     "match_quality": "close",
     "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H414",
+    "foreign_name": "RLM23 Red",
+    "tamiya_code": "X-7",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H416",
+    "foreign_name": "RLM66 Black Gray",
+    "tamiya_code": "LP-27",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H416",
+    "foreign_name": "RLM66 Black Gray",
+    "tamiya_code": "TS-4",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H416",
+    "foreign_name": "RLM66 Black Gray",
+    "tamiya_code": "XF-24",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H416",
+    "foreign_name": "RLM66 Black Gray",
+    "tamiya_code": "XF-63",
+    "match_quality": "close",
+    "source": "mech9"
   },
   {
     "brand": "gunze_mr_hobby",
@@ -2740,8 +4588,56 @@
     "foreign_code": "H417",
     "foreign_name": "Light Blue",
     "tamiya_code": "XF-23",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H418",
+    "foreign_name": "RLM78 Light Blue",
+    "tamiya_code": "XF-12",
     "match_quality": "close",
-    "source": "cybermodeler"
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H418",
+    "foreign_name": "RLM78 Light Blue",
+    "tamiya_code": "XF-23",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H42",
+    "foreign_name": "Blue Gray",
+    "tamiya_code": "XF-18",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H420",
+    "foreign_name": "RLM80 Olive Green",
+    "tamiya_code": "TS-5",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H420",
+    "foreign_name": "RLM80 Olive Green",
+    "tamiya_code": "XF-62",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H421",
+    "foreign_name": "RLM80 Brown Violet",
+    "tamiya_code": "XF-51",
+    "match_quality": "close",
+    "source": "mech9"
   },
   {
     "brand": "gunze_mr_hobby",
@@ -2770,382 +4666,38 @@
   {
     "brand": "gunze_mr_hobby",
     "foreign_code": "H423",
+    "foreign_name": "RLM83 Dark Green",
+    "tamiya_code": "LP-64",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H423",
+    "foreign_name": "RLM83 Dark Green",
+    "tamiya_code": "TS-70",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H423",
     "foreign_name": "Dark Green",
     "tamiya_code": "XF-51",
-    "match_quality": "close",
-    "source": "cybermodeler"
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "N001",
-    "foreign_name": "White",
-    "tamiya_code": "LP-2",
+    "foreign_code": "H423",
+    "foreign_name": "RLM83 Dark Green",
+    "tamiya_code": "XF-74",
     "match_quality": "close",
-    "source": "cybermodeler"
+    "source": "mech9"
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "N001",
-    "foreign_name": "White",
-    "tamiya_code": "X-2",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "N002",
-    "foreign_name": "Black",
-    "tamiya_code": "LP-1",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "N002",
-    "foreign_name": "Black",
-    "tamiya_code": "X-1",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "N003",
-    "foreign_name": "Red",
-    "tamiya_code": "LP-7",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "N003",
-    "foreign_name": "Red",
-    "tamiya_code": "X-7",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "N004",
-    "foreign_name": "Yellow",
-    "tamiya_code": "LP-8",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "N004",
-    "foreign_name": "Yellow",
-    "tamiya_code": "X-8",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "N005",
-    "foreign_name": "Blue",
-    "tamiya_code": "LP-6",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "N005",
-    "foreign_name": "Blue",
-    "tamiya_code": "X-3",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "N006",
-    "foreign_name": "Green",
-    "tamiya_code": "AS-13",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "N006",
-    "foreign_name": "Green",
-    "tamiya_code": "X-5",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "N007",
-    "foreign_name": "Red Brown",
-    "tamiya_code": "X-9",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "N008",
-    "foreign_name": "Silver",
-    "tamiya_code": "AS-12",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "N008",
-    "foreign_name": "Silver",
-    "tamiya_code": "LP-11",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "N008",
-    "foreign_name": "Silver",
-    "tamiya_code": "X-11",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "N009",
-    "foreign_name": "Gold",
-    "tamiya_code": "LP-62",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "N009",
-    "foreign_name": "Gold",
-    "tamiya_code": "X-12",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "N010",
-    "foreign_name": "Copper",
-    "tamiya_code": "XF-6",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "N011",
-    "foreign_name": "Flat White",
-    "tamiya_code": "LP-4",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "N011",
-    "foreign_name": "Flat White",
-    "tamiya_code": "XF-2",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "N012",
-    "foreign_name": "Flat Black",
-    "tamiya_code": "LP-3",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "N012",
-    "foreign_name": "Flat Black",
-    "tamiya_code": "XF-1",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "N013",
-    "foreign_name": "Flat Red",
-    "tamiya_code": "XF-7",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "N014",
-    "foreign_name": "Orange",
-    "tamiya_code": "TS-12",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "N014",
-    "foreign_name": "Orange",
-    "tamiya_code": "X-6",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "N016",
-    "foreign_name": "Yellow Green",
-    "tamiya_code": "XF-4",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "N018",
-    "foreign_name": "Steel",
-    "tamiya_code": "LP-40",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "N018",
-    "foreign_name": "Steel",
-    "tamiya_code": "X-10",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "N019",
-    "foreign_name": "Pink",
-    "tamiya_code": "TS-25",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "N019",
-    "foreign_name": "Pink",
-    "tamiya_code": "X-17",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "N020",
-    "foreign_name": "Flat Clear",
-    "tamiya_code": "LP-23",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "N020",
-    "foreign_name": "Flat Clear",
-    "tamiya_code": "XF-86",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "N022",
-    "foreign_name": "Gray",
-    "tamiya_code": "AS-7",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "N022",
-    "foreign_name": "Gray",
-    "tamiya_code": "XF-53",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "N025",
-    "foreign_name": "Sky Blue",
-    "tamiya_code": "X-14",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "N026",
-    "foreign_name": "Bright Green Dilectric Green",
-    "tamiya_code": "TS-35",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "N026",
-    "foreign_name": "Bright Green Dilectric Green",
-    "tamiya_code": "X-28",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "N030",
-    "foreign_name": "Gloss Clear",
-    "tamiya_code": "LP-9",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "N030",
-    "foreign_name": "Gloss Clear",
-    "tamiya_code": "X-22",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "N036",
-    "foreign_name": "Dark Green",
-    "tamiya_code": "AS-21",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "N036",
-    "foreign_name": "Dark Green",
-    "tamiya_code": "LP-31",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "N039",
-    "foreign_name": "Purple",
-    "tamiya_code": "TS-24",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "N039",
-    "foreign_name": "Purple",
-    "tamiya_code": "X-16",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "N040",
-    "foreign_name": "Flat Base",
-    "tamiya_code": "LP-22",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "N040",
-    "foreign_name": "Flat Base",
-    "tamiya_code": "X-21",
-    "match_quality": "close",
-    "source": "cybermodeler"
-  },
-  {
-    "brand": "gunze_mr_hobby",
-    "foreign_code": "N044",
+    "foreign_code": "H44",
     "foreign_name": "Flesh",
     "tamiya_code": "LP-30",
     "match_quality": "close",
@@ -3153,23 +4705,239 @@
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "N044",
+    "foreign_code": "H44",
+    "foreign_name": "Flesh/Pale Brown",
+    "tamiya_code": "LP-66",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H44",
+    "foreign_name": "Flesh/Pale Brown",
+    "tamiya_code": "TS-77",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H44",
     "foreign_name": "Flesh",
     "tamiya_code": "XF-15",
-    "match_quality": "close",
-    "source": "cybermodeler"
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "N047",
-    "foreign_name": "Red Brown",
+    "foreign_code": "H45",
+    "foreign_name": "Light Blue/mizu",
+    "tamiya_code": "XF-8",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H451",
+    "foreign_name": "Chalky White",
+    "tamiya_code": "LP-4",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H451",
+    "foreign_name": "Chalky White",
+    "tamiya_code": "TS-27",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H451",
+    "foreign_name": "Chalky White",
+    "tamiya_code": "XF-2",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H456",
+    "foreign_name": "Dust Brown",
+    "tamiya_code": "XF-10",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H458",
+    "foreign_name": "Machine Gray",
+    "tamiya_code": "XF-24",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H46",
+    "foreign_name": "Emerald Green",
+    "tamiya_code": "X-5",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H460",
+    "foreign_name": "Red Brown 1",
+    "tamiya_code": "TS-1",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H460",
+    "foreign_name": "Red Brown 1",
     "tamiya_code": "XF-64",
     "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H465",
+    "foreign_name": "Cobalt Blue (Flat)",
+    "tamiya_code": "X-3",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H466",
+    "foreign_name": "Purple Red",
+    "tamiya_code": "XF-90",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H47",
+    "foreign_name": "Red Brown",
+    "tamiya_code": "TS-1",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H47",
+    "foreign_name": "Red Brown",
+    "tamiya_code": "XF-64",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H47",
+    "foreign_name": "Red Brown",
+    "tamiya_code": "XF-9",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H48",
+    "foreign_name": "Field Gray (2)/Olive Gray",
+    "tamiya_code": "LP-33",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H48",
+    "foreign_name": "Field Gray (2)/Olive Gray",
+    "tamiya_code": "XF-65",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H48",
+    "foreign_name": "Field Gray (2)/Olive Gray",
+    "tamiya_code": "XF-76",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H49",
+    "foreign_name": "Violet",
+    "tamiya_code": "X-16",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H5",
+    "foreign_name": "Blue",
+    "tamiya_code": "LP-6",
+    "match_quality": "close",
     "source": "cybermodeler"
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "N054",
+    "foreign_code": "H5",
+    "foreign_name": "Blue",
+    "tamiya_code": "X-3",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H5",
+    "foreign_name": "Blue",
+    "tamiya_code": "X-4",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H50",
+    "foreign_name": "Lime Green/yom ogi",
+    "tamiya_code": "X-15",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H52",
+    "foreign_name": "Olive Drab (1)",
+    "tamiya_code": "XF-81",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H53",
+    "foreign_name": "Neutral Gray",
+    "tamiya_code": "XF-53",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H53",
+    "foreign_name": "Neutral Gray",
+    "tamiya_code": "XF-54",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H53",
+    "foreign_name": "Neutral Gray",
+    "tamiya_code": "XF-55",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H54",
     "foreign_name": "Navy Blue",
     "tamiya_code": "AS-8",
     "match_quality": "close",
@@ -3177,15 +4945,39 @@
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "N055",
-    "foreign_name": "Sea Blue",
+    "foreign_code": "H54",
+    "foreign_name": "Navy Blue",
     "tamiya_code": "XF-17",
     "match_quality": "close",
-    "source": "cybermodeler"
+    "source": "mech9"
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "N056",
+    "foreign_code": "H54",
+    "foreign_name": "Navy Blue",
+    "tamiya_code": "XF-50",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H55",
+    "foreign_name": "Midnight Blue",
+    "tamiya_code": "X-3",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H55",
+    "foreign_name": "Sea Blue",
+    "tamiya_code": "XF-17",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H56",
     "foreign_name": "Intermediate Blue",
     "tamiya_code": "AS-19",
     "match_quality": "close",
@@ -3193,15 +4985,87 @@
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "N056",
+    "foreign_code": "H56",
     "foreign_name": "Intermediate Blue",
     "tamiya_code": "XF-18",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H56",
+    "foreign_name": "Medium Blue/Interm ediate Blue",
+    "tamiya_code": "XF-66",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H56",
+    "foreign_name": "Medium Blue/Interm ediate Blue",
+    "tamiya_code": "XF-8",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H57",
+    "foreign_name": "Aircraft Gray",
+    "tamiya_code": "XF-14",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H58",
+    "foreign_name": "Interior Green",
+    "tamiya_code": "XF-4",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H59",
+    "foreign_name": "IJN Dark Green",
+    "tamiya_code": "AS-1",
     "match_quality": "close",
     "source": "cybermodeler"
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "N060",
+    "foreign_code": "H59",
+    "foreign_name": "IJN Dark Green",
+    "tamiya_code": "XF-11",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H6",
+    "foreign_name": "Green",
+    "tamiya_code": "AS-13",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H6",
+    "foreign_name": "Green",
+    "tamiya_code": "X-5",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H6",
+    "foreign_name": "Green",
+    "tamiya_code": "XF-26",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H60",
     "foreign_name": "IJA Green",
     "tamiya_code": "AS-17",
     "match_quality": "close",
@@ -3209,15 +5073,15 @@
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "N060",
+    "foreign_code": "H60",
     "foreign_name": "IJA Green",
     "tamiya_code": "XF-13",
-    "match_quality": "close",
-    "source": "cybermodeler"
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "N061",
+    "foreign_code": "H61",
     "foreign_name": "IJN Gray",
     "tamiya_code": "AS-2",
     "match_quality": "close",
@@ -3225,15 +5089,23 @@
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "N061",
+    "foreign_code": "H61",
     "foreign_name": "IJN Gray",
-    "tamiya_code": "XF-12",
+    "tamiya_code": "LP-32",
     "match_quality": "close",
-    "source": "cybermodeler"
+    "source": "mech9"
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "N062",
+    "foreign_code": "H61",
+    "foreign_name": "IJN Gray",
+    "tamiya_code": "XF-12",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H62",
     "foreign_name": "IJA Gray",
     "tamiya_code": "AS-29",
     "match_quality": "close",
@@ -3241,7 +5113,39 @@
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "N062",
+    "foreign_code": "H62",
+    "foreign_name": "IJA Gray",
+    "tamiya_code": "LP-32",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H62",
+    "foreign_name": "IJA Gray",
+    "tamiya_code": "XF-12",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H62",
+    "foreign_name": "IJA Gray",
+    "tamiya_code": "XF-14",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H62",
+    "foreign_name": "IJA Gray",
+    "tamiya_code": "XF-25",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H62",
     "foreign_name": "IJA Gray",
     "tamiya_code": "XF-76",
     "match_quality": "close",
@@ -3249,7 +5153,7 @@
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "N063",
+    "foreign_code": "H63",
     "foreign_name": "Metallic Blue Aotake",
     "tamiya_code": "TS-19",
     "match_quality": "close",
@@ -3257,15 +5161,111 @@
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "N063",
+    "foreign_code": "H63",
     "foreign_name": "Metallic Blue Aotake",
     "tamiya_code": "X-13",
-    "match_quality": "close",
-    "source": "cybermodeler"
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "N068",
+    "foreign_code": "H64",
+    "foreign_name": "RLM71 Dark Green",
+    "tamiya_code": "XF-13",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H64",
+    "foreign_name": "RLM71 Dark Green",
+    "tamiya_code": "XF-51",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H64",
+    "foreign_name": "RLM71 Dark Green",
+    "tamiya_code": "XF-65",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H65",
+    "foreign_name": "Black Green",
+    "tamiya_code": "XF-27",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H66",
+    "foreign_name": "RLM79 Sandy Brown",
+    "tamiya_code": "XF-52",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H66",
+    "foreign_name": "RLM79 Sandy Brown",
+    "tamiya_code": "XF-59",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H67",
+    "foreign_name": "RLM65 Light Blue",
+    "tamiya_code": "AS-5",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H67",
+    "foreign_name": "RLM65 Light Blue",
+    "tamiya_code": "LP-32",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H67",
+    "foreign_name": "RLM65 Light Blue",
+    "tamiya_code": "XF-12",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H67",
+    "foreign_name": "RLM65 Light Blue",
+    "tamiya_code": "XF-23",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H67",
+    "foreign_name": "RLM65 Light Blue",
+    "tamiya_code": "XF-25",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H67",
+    "foreign_name": "RLM65 Light Blue",
+    "tamiya_code": "XF-80",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H68",
     "foreign_name": "Dark Gray",
     "tamiya_code": "AS-3",
     "match_quality": "close",
@@ -3273,7 +5273,47 @@
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "N069",
+    "foreign_code": "H68",
+    "foreign_name": "RLM74 Dark Gray",
+    "tamiya_code": "LP-27",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H68",
+    "foreign_name": "RLM74 Dark Gray",
+    "tamiya_code": "TS-4",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H68",
+    "foreign_name": "RLM74 Dark Gray",
+    "tamiya_code": "XF-63",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H68",
+    "foreign_name": "RLM74 Dark Gray",
+    "tamiya_code": "XF-66",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H68",
+    "foreign_name": "RLM74 Dark Gray",
+    "tamiya_code": "XF-75",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H69",
     "foreign_name": "Gray Violet",
     "tamiya_code": "AS-4",
     "match_quality": "close",
@@ -3281,15 +5321,87 @@
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "N070",
-    "foreign_name": "RLM Gray",
-    "tamiya_code": "XF-22",
+    "foreign_code": "H69",
+    "foreign_name": "Gray Violet/RLM 75 Gray",
+    "tamiya_code": "XF-24",
     "match_quality": "close",
-    "source": "cybermodeler"
+    "source": "mech9"
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "N072",
+    "foreign_code": "H7",
+    "foreign_name": "Brown",
+    "tamiya_code": "LP-17",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H7",
+    "foreign_name": "Brown",
+    "tamiya_code": "TS-69",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H7",
+    "foreign_name": "Brown",
+    "tamiya_code": "X-34",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H7",
+    "foreign_name": "Red Brown",
+    "tamiya_code": "X-9",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H7",
+    "foreign_name": "Brown",
+    "tamiya_code": "XF-79",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H70",
+    "foreign_name": "RLM02 Gray",
+    "tamiya_code": "XF-20",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H70",
+    "foreign_name": "RLM Gray",
+    "tamiya_code": "XF-22",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H70",
+    "foreign_name": "RLM02 Gray",
+    "tamiya_code": "XF-49",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H70",
+    "foreign_name": "RLM02 Gray",
+    "tamiya_code": "XF-73",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H72",
     "foreign_name": "Dark Earth",
     "tamiya_code": "AS-22",
     "match_quality": "close",
@@ -3297,15 +5409,23 @@
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "N072",
+    "foreign_code": "H72",
     "foreign_name": "Dark Earth",
-    "tamiya_code": "XF-52",
+    "tamiya_code": "XF-49",
     "match_quality": "close",
-    "source": "cybermodeler"
+    "source": "mech9"
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "N073",
+    "foreign_code": "H72",
+    "foreign_name": "Dark Earth",
+    "tamiya_code": "XF-52",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H73",
     "foreign_name": "Dark Green",
     "tamiya_code": "AS-9",
     "match_quality": "close",
@@ -3313,7 +5433,39 @@
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "N073",
+    "foreign_code": "H73",
+    "foreign_name": "Dark Green",
+    "tamiya_code": "TS-2",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H73",
+    "foreign_name": "Dark Green",
+    "tamiya_code": "XF-27",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H73",
+    "foreign_name": "Dark Green",
+    "tamiya_code": "XF-61",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H73",
+    "foreign_name": "Dark Green",
+    "tamiya_code": "XF-65",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H73",
     "foreign_name": "Dark Green",
     "tamiya_code": "XF-81",
     "match_quality": "close",
@@ -3321,55 +5473,351 @@
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "N076",
+    "foreign_code": "H74",
+    "foreign_name": "Duck Egg Green",
+    "tamiya_code": "XF-21",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H75",
+    "foreign_name": "Dark Seagray",
+    "tamiya_code": "XF-54",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H76",
+    "foreign_name": "Burnt Iron",
+    "tamiya_code": "LP-19",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H76",
     "foreign_name": "Burnt Iron",
     "tamiya_code": "LP-54",
-    "match_quality": "close",
-    "source": "cybermodeler"
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "N076",
+    "foreign_code": "H76",
+    "foreign_name": "Burnt Iron",
+    "tamiya_code": "TS-38",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H76",
+    "foreign_name": "Burnt Iron",
+    "tamiya_code": "X-10",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H76",
     "foreign_name": "Burnt Iron",
     "tamiya_code": "XF-84",
-    "match_quality": "close",
-    "source": "cybermodeler"
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "N077",
+    "foreign_code": "H77",
+    "foreign_name": "Tire Black",
+    "tamiya_code": "LP-3",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H77",
     "foreign_name": "Tire Black",
     "tamiya_code": "LP-65",
-    "match_quality": "close",
-    "source": "cybermodeler"
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "N077",
+    "foreign_code": "H77",
+    "foreign_name": "Tire Black",
+    "tamiya_code": "TS-6",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H77",
+    "foreign_name": "Tire Black",
+    "tamiya_code": "TS-82",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H77",
+    "foreign_name": "Tire Black",
+    "tamiya_code": "XF-1",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H77",
     "foreign_name": "Tire Black",
     "tamiya_code": "XF-85",
-    "match_quality": "close",
-    "source": "cybermodeler"
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "N080",
+    "foreign_code": "H78",
+    "foreign_name": "Olive Drab (2)",
+    "tamiya_code": "AS-6",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H78",
+    "foreign_name": "Olive Drab (2)",
+    "tamiya_code": "LP-28",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H78",
+    "foreign_name": "Olive Drab (2)",
+    "tamiya_code": "TS-5",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H78",
+    "foreign_name": "Olive Drab (2)",
+    "tamiya_code": "XF-62",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H79",
+    "foreign_name": "Yellow (Dark Yellow)",
+    "tamiya_code": "LP-16",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H79",
+    "foreign_name": "Yellow (Dark Yellow)",
+    "tamiya_code": "TS-68",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H79",
+    "foreign_name": "Yellow (Dark Yellow)",
+    "tamiya_code": "XF-59",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H79",
+    "foreign_name": "Yellow (Dark Yellow)",
+    "tamiya_code": "XF-78",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H8",
+    "foreign_name": "Silver",
+    "tamiya_code": "AS-12",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H8",
+    "foreign_name": "Silver",
+    "tamiya_code": "LP-11",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H8",
+    "foreign_name": "Silver",
+    "tamiya_code": "LP-38",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H8",
+    "foreign_name": "Silver",
+    "tamiya_code": "LP-61",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H8",
+    "foreign_name": "Silver",
+    "tamiya_code": "TS-30",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H8",
+    "foreign_name": "Silver",
+    "tamiya_code": "X-11",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H8",
+    "foreign_name": "Silver",
+    "tamiya_code": "XF-16",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H8",
+    "foreign_name": "Silver",
+    "tamiya_code": "XF-56",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H80",
     "foreign_name": "Olive Green",
     "tamiya_code": "LP-58",
-    "match_quality": "close",
-    "source": "cybermodeler"
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "N080",
+    "foreign_code": "H80",
+    "foreign_name": "Khaki Green",
+    "tamiya_code": "TS-61",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H80",
     "foreign_name": "Olive Green",
     "tamiya_code": "XF-67",
-    "match_quality": "close",
-    "source": "cybermodeler"
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "N085",
+    "foreign_code": "H81",
+    "foreign_name": "Khaki",
+    "tamiya_code": "XF-49",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H81",
+    "foreign_name": "Khaki",
+    "tamiya_code": "XF-72",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H82",
+    "foreign_name": "Dark Gray (1)",
+    "tamiya_code": "AS-11",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H82",
+    "foreign_name": "Dark Gray (1)",
+    "tamiya_code": "XF-53",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H83",
+    "foreign_name": "Dark Gray (2)",
+    "tamiya_code": "LP-12",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H83",
+    "foreign_name": "Dark Gray (2)",
+    "tamiya_code": "TS-66",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H83",
+    "foreign_name": "Dark Gray (2)",
+    "tamiya_code": "XF-75",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H83",
+    "foreign_name": "Dark Gray (2)",
+    "tamiya_code": "XF-77",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H84",
+    "foreign_name": "Mahogany",
+    "tamiya_code": "XF-9",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H85",
+    "foreign_name": "Sail Color",
+    "tamiya_code": "LP-16",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H85",
+    "foreign_name": "Sail Color",
+    "tamiya_code": "TS-68",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H85",
     "foreign_name": "Deck Tan",
     "tamiya_code": "XF-55",
     "match_quality": "close",
@@ -3377,7 +5825,47 @@
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "N090",
+    "foreign_code": "H85",
+    "foreign_name": "Sail Color",
+    "tamiya_code": "XF-78",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H88",
+    "foreign_name": "Metallic Blue",
+    "tamiya_code": "X-13",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H9",
+    "foreign_name": "Gold",
+    "tamiya_code": "LP-62",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H9",
+    "foreign_name": "Gold",
+    "tamiya_code": "X-12",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H90",
+    "foreign_name": "Clear Red",
+    "tamiya_code": "LP-52",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H90",
     "foreign_name": "Clear Red",
     "tamiya_code": "LP-72",
     "match_quality": "close",
@@ -3385,7 +5873,727 @@
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "N090",
+    "foreign_code": "H90",
+    "foreign_name": "Clear Red",
+    "tamiya_code": "TS-74",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H90",
+    "foreign_name": "Clear Red",
+    "tamiya_code": "X-27",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H91",
+    "foreign_name": "Clear Yellow",
+    "tamiya_code": "LP-69",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H91",
+    "foreign_name": "Clear Yellow",
+    "tamiya_code": "X-24",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H92",
+    "foreign_name": "Clear Orange",
+    "tamiya_code": "LP-53",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H92",
+    "foreign_name": "Clear Orange",
+    "tamiya_code": "TS-73",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H92",
+    "foreign_name": "Clear Orange",
+    "tamiya_code": "X-26",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H93",
+    "foreign_name": "Clear Blue",
+    "tamiya_code": "LP-68",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H93",
+    "foreign_name": "Clear Blue",
+    "tamiya_code": "TS-72",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H93",
+    "foreign_name": "Clear Blue",
+    "tamiya_code": "X-23",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H94",
+    "foreign_name": "Clear Green",
+    "tamiya_code": "X-25",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H95",
+    "foreign_name": "Smoke Gray",
+    "tamiya_code": "LP-67",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H95",
+    "foreign_name": "Smoke Gray",
+    "tamiya_code": "TS-71",
+    "match_quality": "close",
+    "source": "mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "H95",
+    "foreign_name": "Smoke Gray",
+    "tamiya_code": "X-19",
+    "match_quality": "confirmed",
+    "source": "cybermodeler+mech9"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N1",
+    "foreign_name": "White",
+    "tamiya_code": "LP-2",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N1",
+    "foreign_name": "White",
+    "tamiya_code": "X-2",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N10",
+    "foreign_name": "Copper",
+    "tamiya_code": "XF-6",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N11",
+    "foreign_name": "Flat White",
+    "tamiya_code": "LP-4",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N11",
+    "foreign_name": "Flat White",
+    "tamiya_code": "XF-2",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N12",
+    "foreign_name": "Flat Black",
+    "tamiya_code": "LP-3",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N12",
+    "foreign_name": "Flat Black",
+    "tamiya_code": "XF-1",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N13",
+    "foreign_name": "Flat Red",
+    "tamiya_code": "XF-7",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N14",
+    "foreign_name": "Orange",
+    "tamiya_code": "TS-12",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N14",
+    "foreign_name": "Orange",
+    "tamiya_code": "X-6",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N16",
+    "foreign_name": "Yellow Green",
+    "tamiya_code": "XF-4",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N18",
+    "foreign_name": "Steel",
+    "tamiya_code": "LP-40",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N18",
+    "foreign_name": "Steel",
+    "tamiya_code": "X-10",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N19",
+    "foreign_name": "Pink",
+    "tamiya_code": "TS-25",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N19",
+    "foreign_name": "Pink",
+    "tamiya_code": "X-17",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N2",
+    "foreign_name": "Black",
+    "tamiya_code": "LP-1",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N2",
+    "foreign_name": "Black",
+    "tamiya_code": "X-1",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N20",
+    "foreign_name": "Flat Clear",
+    "tamiya_code": "LP-23",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N20",
+    "foreign_name": "Flat Clear",
+    "tamiya_code": "XF-86",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N22",
+    "foreign_name": "Gray",
+    "tamiya_code": "AS-7",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N22",
+    "foreign_name": "Gray",
+    "tamiya_code": "XF-53",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N25",
+    "foreign_name": "Sky Blue",
+    "tamiya_code": "X-14",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N26",
+    "foreign_name": "Bright Green Dilectric Green",
+    "tamiya_code": "TS-35",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N26",
+    "foreign_name": "Bright Green Dilectric Green",
+    "tamiya_code": "X-28",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N3",
+    "foreign_name": "Red",
+    "tamiya_code": "LP-7",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N3",
+    "foreign_name": "Red",
+    "tamiya_code": "X-7",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N30",
+    "foreign_name": "Gloss Clear",
+    "tamiya_code": "LP-9",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N30",
+    "foreign_name": "Gloss Clear",
+    "tamiya_code": "X-22",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N36",
+    "foreign_name": "Dark Green",
+    "tamiya_code": "AS-21",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N36",
+    "foreign_name": "Dark Green",
+    "tamiya_code": "LP-31",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N39",
+    "foreign_name": "Purple",
+    "tamiya_code": "TS-24",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N39",
+    "foreign_name": "Purple",
+    "tamiya_code": "X-16",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N4",
+    "foreign_name": "Yellow",
+    "tamiya_code": "LP-8",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N4",
+    "foreign_name": "Yellow",
+    "tamiya_code": "X-8",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N40",
+    "foreign_name": "Flat Base",
+    "tamiya_code": "LP-22",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N40",
+    "foreign_name": "Flat Base",
+    "tamiya_code": "X-21",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N44",
+    "foreign_name": "Flesh",
+    "tamiya_code": "LP-30",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N44",
+    "foreign_name": "Flesh",
+    "tamiya_code": "XF-15",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N47",
+    "foreign_name": "Red Brown",
+    "tamiya_code": "XF-64",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N5",
+    "foreign_name": "Blue",
+    "tamiya_code": "LP-6",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N5",
+    "foreign_name": "Blue",
+    "tamiya_code": "X-3",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N54",
+    "foreign_name": "Navy Blue",
+    "tamiya_code": "AS-8",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N55",
+    "foreign_name": "Sea Blue",
+    "tamiya_code": "XF-17",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N56",
+    "foreign_name": "Intermediate Blue",
+    "tamiya_code": "AS-19",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N56",
+    "foreign_name": "Intermediate Blue",
+    "tamiya_code": "XF-18",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N6",
+    "foreign_name": "Green",
+    "tamiya_code": "AS-13",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N6",
+    "foreign_name": "Green",
+    "tamiya_code": "X-5",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N60",
+    "foreign_name": "IJA Green",
+    "tamiya_code": "AS-17",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N60",
+    "foreign_name": "IJA Green",
+    "tamiya_code": "XF-13",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N61",
+    "foreign_name": "IJN Gray",
+    "tamiya_code": "AS-2",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N61",
+    "foreign_name": "IJN Gray",
+    "tamiya_code": "XF-12",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N62",
+    "foreign_name": "IJA Gray",
+    "tamiya_code": "AS-29",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N62",
+    "foreign_name": "IJA Gray",
+    "tamiya_code": "XF-76",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N63",
+    "foreign_name": "Metallic Blue Aotake",
+    "tamiya_code": "TS-19",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N63",
+    "foreign_name": "Metallic Blue Aotake",
+    "tamiya_code": "X-13",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N68",
+    "foreign_name": "Dark Gray",
+    "tamiya_code": "AS-3",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N69",
+    "foreign_name": "Gray Violet",
+    "tamiya_code": "AS-4",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N7",
+    "foreign_name": "Red Brown",
+    "tamiya_code": "X-9",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N70",
+    "foreign_name": "RLM Gray",
+    "tamiya_code": "XF-22",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N72",
+    "foreign_name": "Dark Earth",
+    "tamiya_code": "AS-22",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N72",
+    "foreign_name": "Dark Earth",
+    "tamiya_code": "XF-52",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N73",
+    "foreign_name": "Dark Green",
+    "tamiya_code": "AS-9",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N73",
+    "foreign_name": "Dark Green",
+    "tamiya_code": "XF-81",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N76",
+    "foreign_name": "Burnt Iron",
+    "tamiya_code": "LP-54",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N76",
+    "foreign_name": "Burnt Iron",
+    "tamiya_code": "XF-84",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N77",
+    "foreign_name": "Tire Black",
+    "tamiya_code": "LP-65",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N77",
+    "foreign_name": "Tire Black",
+    "tamiya_code": "XF-85",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N8",
+    "foreign_name": "Silver",
+    "tamiya_code": "AS-12",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N8",
+    "foreign_name": "Silver",
+    "tamiya_code": "LP-11",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N8",
+    "foreign_name": "Silver",
+    "tamiya_code": "X-11",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N80",
+    "foreign_name": "Olive Green",
+    "tamiya_code": "LP-58",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N80",
+    "foreign_name": "Olive Green",
+    "tamiya_code": "XF-67",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N85",
+    "foreign_name": "Deck Tan",
+    "tamiya_code": "XF-55",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N9",
+    "foreign_name": "Gold",
+    "tamiya_code": "LP-62",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N9",
+    "foreign_name": "Gold",
+    "tamiya_code": "X-12",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N90",
+    "foreign_name": "Clear Red",
+    "tamiya_code": "LP-72",
+    "match_quality": "close",
+    "source": "cybermodeler"
+  },
+  {
+    "brand": "gunze_mr_hobby",
+    "foreign_code": "N90",
     "foreign_name": "Clear Red",
     "tamiya_code": "X-27",
     "match_quality": "close",
@@ -3393,7 +6601,7 @@
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "N091",
+    "foreign_code": "N91",
     "foreign_name": "Clear Yellow",
     "tamiya_code": "LP-69",
     "match_quality": "close",
@@ -3401,7 +6609,7 @@
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "N091",
+    "foreign_code": "N91",
     "foreign_name": "Clear Yellow",
     "tamiya_code": "X-24",
     "match_quality": "close",
@@ -3409,7 +6617,7 @@
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "N092",
+    "foreign_code": "N92",
     "foreign_name": "Clear Orange",
     "tamiya_code": "LP-53",
     "match_quality": "close",
@@ -3417,7 +6625,7 @@
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "N092",
+    "foreign_code": "N92",
     "foreign_name": "Clear Orange",
     "tamiya_code": "X-26",
     "match_quality": "close",
@@ -3425,7 +6633,7 @@
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "N093",
+    "foreign_code": "N93",
     "foreign_name": "Clear Blue",
     "tamiya_code": "LP-68",
     "match_quality": "close",
@@ -3433,7 +6641,7 @@
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "N093",
+    "foreign_code": "N93",
     "foreign_name": "Clear Blue",
     "tamiya_code": "X-23",
     "match_quality": "close",
@@ -3441,7 +6649,7 @@
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "N094",
+    "foreign_code": "N94",
     "foreign_name": "Clear Green",
     "tamiya_code": "X-25",
     "match_quality": "close",
@@ -3449,7 +6657,7 @@
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "N095",
+    "foreign_code": "N95",
     "foreign_name": "Smoke Gray",
     "tamiya_code": "LP-67",
     "match_quality": "close",
@@ -3457,7 +6665,7 @@
   },
   {
     "brand": "gunze_mr_hobby",
-    "foreign_code": "N095",
+    "foreign_code": "N95",
     "foreign_name": "Smoke Gray",
     "tamiya_code": "X-19",
     "match_quality": "close",
