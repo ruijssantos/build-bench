@@ -1,6 +1,8 @@
 import { readFileSync } from "node:fs";
 
+import { deltaE2000, type Lab } from "../src/catalogue/colour-match";
 import { resolveForeignCode } from "../src/catalogue/equivalents";
+import { normalizeExtractedPaints } from "../src/domain/kit-paint-extraction";
 
 /**
  * CI gate — docs/PLAN.md §2.2. Fails the build if any paint code the app
@@ -140,11 +142,87 @@ if (unresolvable.length > 0) {
   }
 }
 
+// 5. Resolution must survive extraction returning no `codeGuess`.
+//
+// Checks 1-4 all test the *data*. This one tests the path that reads it, and
+// it exists because that path had a single point of failure the data checks
+// could never see: `resolveCode` only ever asked the chart about the model's
+// separate `codeGuess` field. One extraction returned clean labels and no
+// `codeGuess`, and every callout on a Japanese kit came back unresolved with
+// the chart sitting right there holding the answers.
+//
+// So the labels below are run through the real `normalizeExtractedPaints`
+// with `codeGuess` omitted entirely — the exact shape of that run.
+const NO_GUESS_CASES: Array<[rawLabel: string, expected: string | null]> = [
+  ["H4 イエロー YELLOW", "X-8"],
+  ["H8 シルバー SILVER", "X-11"],
+  ["H12 つや消し黒 FLAT BLACK", "XF-1"],
+  ["H38 赤鉄色 STEEL RED", "X-10"],
+  ["H86 モンザレッド RED MADDER", null], // no Tamiya equivalent in either chart
+  ["X-11 CHROME SILVER", "X-11"], // a Tamiya callout still resolves as itself
+  ["13. Chrome Silver (X-11)", "X-11"], // ...including mid-label
+  ["H A = H8 + H9 (1:1)", null], // a mixing instruction is not a paint
+];
+
+const resolvedWithoutGuess = normalizeExtractedPaints({
+  requirements: NO_GUESS_CASES.map(([rawLabel]) => ({ rawLabel })),
+  foundPaintChart: true,
+});
+const guessFailures = NO_GUESS_CASES.filter(
+  ([, expected], i) => (resolvedWithoutGuess[i]?.paintCode ?? null) !== expected,
+);
+if (guessFailures.length > 0) {
+  failed = true;
+  console.error(
+    `\n✗ ${guessFailures.length} label(s) resolve wrongly when extraction returns no codeGuess:`,
+  );
+  for (const [rawLabel, expected] of guessFailures) {
+    const i = NO_GUESS_CASES.findIndex(([l]) => l === rawLabel);
+    console.error(
+      `  - "${rawLabel}" → ${resolvedWithoutGuess[i]?.paintCode ?? "null"}, expected ${expected ?? "null"}`,
+    );
+  }
+}
+
+// 6. CIEDE2000 must match the published reference values.
+//
+// The colour-distance fallback (`src/catalogue/colour-match.ts`) is only worth
+// having if the distance is right, and this formula has several places where a
+// wrong answer still looks plausible — the hue average wrapping past 360°, and
+// the arctangent's quadrant. Reasonable-looking output is not evidence.
+//
+// These are Sharma, Wu & Dalal's own test pairs, chosen to cover exactly those
+// traps: the near-neutral cases where chroma collapses, and the pairs that
+// straddle the hue wrap.
+const CIEDE2000_CASES: Array<[Lab, Lab, number]> = [
+  [[50, 2.6772, -79.7751], [50, 0, -82.7485], 2.0425],
+  [[50, 3.1571, -77.2803], [50, 0, -82.7485], 2.8615],
+  [[50, -1.3802, -84.2814], [50, 0, -82.7485], 1.0],
+  [[50, 0, 0], [50, -1, 2], 2.3669],
+  [[50, 2.49, -0.001], [50, -2.49, 0.0009], 7.1792],
+  [[50, 2.5, 0], [50, 0, -2.5], 4.3065],
+  [[60.2574, -34.0099, 36.2677], [60.4626, -34.1751, 39.4387], 1.2644],
+  [[63.0109, -31.0961, -5.8663], [62.8187, -29.7946, -4.0864], 1.263],
+  [[22.7233, 20.0904, -46.694], [23.0331, 14.973, -42.5619], 2.0373],
+  [[2.0776, 0.0795, -1.135], [0.9033, -0.0636, -0.5514], 0.9082],
+];
+const deltaEFailures = CIEDE2000_CASES.filter(
+  ([a, b, expected]) => Math.abs(deltaE2000(a, b) - expected) > 0.0001,
+);
+if (deltaEFailures.length > 0) {
+  failed = true;
+  console.error(`\n✗ ${deltaEFailures.length} CIEDE2000 reference pair(s) disagree:`);
+  for (const [a, b, expected] of deltaEFailures) {
+    console.error(`  - ${deltaE2000(a, b).toFixed(4)}, expected ${expected}`);
+  }
+}
+
 if (!failed) {
   console.log(
     "✓ Every known-inventory code is present, every paint's family resolves to a ratio rule, every " +
-      `equivalent (${equivalents.length}) resolves to a real catalogue code and brand, and foreign ` +
-      "codes resolve as printed.",
+      `equivalent (${equivalents.length}) resolves to a real catalogue code and brand, foreign ` +
+      "codes resolve as printed, labels resolve without a codeGuess, and CIEDE2000 matches its " +
+      `${CIEDE2000_CASES.length} reference pairs.`,
   );
 }
 

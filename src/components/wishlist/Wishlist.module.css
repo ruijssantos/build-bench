@@ -1306,6 +1306,25 @@ a.iconButton:hover {
   margin-top: 2px;
 }
 
+/* Colour-distance suggestions under an unresolved callout. Deliberately
+   quieter than an Owned/Missing chip and never a link: this is "the nearest
+   thing Tamiya makes", not "the paint this kit needs", and the two must not
+   look alike (src/catalogue/colour-match.ts, docs/PLAN.md §5.4). */
+.closestRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  font-size: 11px;
+  color: var(--ink-soft);
+}
+
+.closestDelta {
+  margin-left: auto;
+  font-size: 10px;
+  color: var(--muted-2);
+}
+
 /* ----------------------------------------------------------------- research */
 
 /* The standing caveat above the claims — docs/PLAN.md §5.4. Deliberately not

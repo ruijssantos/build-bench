@@ -101,7 +101,23 @@ export async function PaintsPanel({ kitId }: { kitId: number }) {
             {buckets.unresolved.map((u) => (
               <div key={u.rawLabel} className={styles.unresolvedRow}>
                 <span className={styles.unresolvedLabel}>{u.rawLabel}</span>
-                <span className={styles.unresolvedTag}>Needs cross-brand lookup</span>
+                <span className={styles.unresolvedTag}>
+                  {u.closest.length > 0 ? "Closest by colour — not a chart match" : "Needs cross-brand lookup"}
+                </span>
+                {u.closest.map((match) => (
+                  <div key={match.code} className={styles.closestRow}>
+                    <span
+                      className={styles.paintDot}
+                      style={{ background: match.hex }}
+                      aria-hidden="true"
+                    />
+                    <span>
+                      {match.code} {match.name}
+                      {match.finish ? ` · ${match.finish}` : ""}
+                    </span>
+                    <span className={styles.closestDelta}>ΔE {match.deltaE.toFixed(1)}</span>
+                  </div>
+                ))}
               </div>
             ))}
           </div>
