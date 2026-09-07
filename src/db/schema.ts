@@ -218,6 +218,18 @@ export const kitPaintRequirement = pgTable("kit_paint_requirement", {
   rawLabel: text("raw_label"), // exactly as printed: "X-11 CHROME SILVER"
   paintCode: text("paint_code").references(() => paint.code), // resolved; null if unresolvable
   source: text("source"), // manual_pdf | research | manual_entry
+  /**
+   * Set when the owner dismisses an unresolved callout — extraction misreads
+   * a table cell, or names something that isn't a paint, and there is no
+   * point being told about it forever.
+   *
+   * Deliberately a column on this table rather than a list somewhere else,
+   * because that is what makes "re-extracting resets it" true for free:
+   * `replaceManualPaintRequirements` writes fresh rows and drops the old
+   * ones, so a re-run cannot inherit a dismissal. Nothing has to remember to
+   * clear anything.
+   */
+  dismissedAt: timestamp("dismissed_at", { withTimezone: true }),
 });
 
 export const buildLogEntry = pgTable("build_log_entry", {

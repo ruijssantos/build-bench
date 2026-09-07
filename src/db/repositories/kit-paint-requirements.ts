@@ -1,4 +1,4 @@
-import { and, eq, inArray, sql } from "drizzle-orm";
+import { and, eq, inArray, isNull, sql } from "drizzle-orm";
 import { cacheLife, cacheTag } from "next/cache";
 import { connection } from "next/server";
 
@@ -26,6 +26,7 @@ export interface PaintRequirementRow {
   rawLabel: string | null;
   paintCode: string | null;
   source: string | null;
+  dismissedAt: Date | null;
 }
 
 export async function listKitPaintRequirements(kitId: number): Promise<PaintRequirementRow[]> {
@@ -39,6 +40,34 @@ async function queryKitPaintRequirements(kitId: number): Promise<PaintRequiremen
   cacheTag(kitTag(kitId));
 
   return db.select().from(kitPaintRequirement).where(eq(kitPaintRequirement.kitId, kitId));
+}
+
+/**
+ * Hides an unresolved callout the owner doesn't want to see again —
+ * extraction misread a table cell, or named something that isn't a paint.
+ *
+ * Keyed by `rawLabel`, not by row id, because the Unresolved bucket already
+ * de-duplicates by label: a manual naming the same paint on three parts is
+ * one row on screen, and dismissing it has to silence all three or it comes
+ * straight back.
+ *
+ * Only rows that are actually unresolved can be dismissed. A callout that
+ * resolves to a real paint belongs in Owned or Missing, where this control
+ * isn't offered, and a stray call shouldn't be able to hide one.
+ */
+export async function dismissPaintRequirement(kitId: number, rawLabel: string): Promise<boolean> {
+  const rows = await db
+    .update(kitPaintRequirement)
+    .set({ dismissedAt: new Date() })
+    .where(
+      and(
+        eq(kitPaintRequirement.kitId, kitId),
+        eq(kitPaintRequirement.rawLabel, rawLabel),
+        isNull(kitPaintRequirement.paintCode),
+      ),
+    )
+    .returning({ id: kitPaintRequirement.id });
+  return rows.length > 0;
 }
 
 export interface NewPaintRequirement {
@@ -130,7 +159,10 @@ async function queryStashReadiness(): Promise<KitReadiness[]> {
       kitId: kitPaintRequirement.kitId,
       ownedCount: sql<number>`count(distinct ${kitPaintRequirement.paintCode}) filter (where ${kitPaintRequirement.paintCode} is not null and ${inventoryItem.paintCode} is not null)`,
       missingCount: sql<number>`count(distinct ${kitPaintRequirement.paintCode}) filter (where ${kitPaintRequirement.paintCode} is not null and ${inventoryItem.paintCode} is null)`,
-      unresolvedCount: sql<number>`count(distinct ${kitPaintRequirement.rawLabel}) filter (where ${kitPaintRequirement.paintCode} is null)`,
+      // `dismissed_at is null` here as well as in `bucketPaintRequirements`:
+      // the card's count and the detail page's have to be the same number, and
+      // they are computed by different code in different places.
+      unresolvedCount: sql<number>`count(distinct ${kitPaintRequirement.rawLabel}) filter (where ${kitPaintRequirement.paintCode} is null and ${kitPaintRequirement.dismissedAt} is null)`,
     })
     .from(kitPaintRequirement)
     .innerJoin(kit, eq(kit.id, kitPaintRequirement.kitId))

@@ -4,7 +4,7 @@ import styles from "@/components/wishlist/Wishlist.module.css";
 import { getKitResearch } from "@/db/repositories/kit-research";
 import type { KitRow } from "@/db/repositories/kits";
 import { formatTimestampDate } from "@/domain/dates";
-import { difficultyLabel, severityLabel, sourceHost, tipCategoryLabel } from "@/domain/kit-research";
+import { difficultyRating, severityLabel, sourceHost, tipCategoryLabel } from "@/domain/kit-research";
 
 import { ResearchRunner } from "./ResearchRunner";
 
@@ -44,14 +44,18 @@ export async function ResearchPanel({ kit }: { kit: KitRow }) {
 
   const issues = research.fitIssues ?? [];
   const tips = research.tips ?? [];
-  const difficulty = difficultyLabel(research.difficulty);
+  const difficulty = difficultyRating(research.difficulty, research.sources?.length ?? 0);
 
   return (
     <div className={styles.card}>
       <div className={styles.cardBody}>
         <div className={styles.subHead}>
           <span className={styles.moduleTitle}>Research</span>
-          {difficulty ? <span className={styles.moduleMeta}>{difficulty}</span> : null}
+          {/* A chip, in the same language as the kit's own scale and category
+              — it is an attribute of the kit. Absent entirely when there is no
+              difficulty or nothing was cited, rather than shown with no
+              backing (§5.4, as amended in §7). */}
+          {difficulty ? <span className={styles.chip}>{difficulty}</span> : null}
         </div>
 
         {/* The standing caveat, not a one-off notice: everything below is a

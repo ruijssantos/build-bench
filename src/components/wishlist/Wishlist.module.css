@@ -1319,10 +1319,30 @@ a.iconButton:hover {
   color: var(--ink-soft);
 }
 
+/* Sits immediately after the paint name rather than pushed to the row's far
+   edge. The distance only means anything read against the paint it belongs
+   to, and on a wide screen `margin-left: auto` put half a panel between
+   them. */
 .closestDelta {
-  margin-left: auto;
   font-size: 10px;
   color: var(--muted-2);
+}
+
+/* Same fix, same reason as `.claimSource` above: `.linkButton` alone renders
+   a 43 x 13px target, which is a miss waiting to happen on a phone. Padding
+   takes it to ~37px and the matching negative margin hands the space back, so
+   the row spacing is unchanged. Overlapping the suggestion above it is
+   harmless — that text isn't interactive. */
+.dismissAction {
+  padding: 12px 6px;
+  margin: -12px -6px;
+}
+
+/* Sets the action apart from the suggestions it sits under — they are things
+   to read, this is a thing to do. The gap has to clear `.dismissAction`'s own
+   -12px, so the number here is larger than the space it buys. */
+.dismissRow {
+  margin-top: 16px;
 }
 
 /* ----------------------------------------------------------------- research */

@@ -746,7 +746,14 @@ Research output is synthesised from forum posts by a language model:
 
 - Every fit issue stores `source_url` and `confidence`; the UI renders the source as a link
   next to the claim. No unsourced assertion appears as fact.
-- Difficulty shows as "consensus from N sources," never a bare rating.
+- ~~Difficulty shows as "consensus from N sources," never a bare rating.~~ **Half kept.** The
+  rating is now a plain chip, in the same visual language as the kit's scale and category,
+  because that is what it is — an attribute of the kit. The owner dropped the "consensus from N
+  sources" half as noise: on a single-user app they already know every claim in this panel came
+  from a model reading forum posts, the caveat at the top of it says exactly that, and every
+  issue and tip below carries its own source link. The half that survives is the half still
+  doing work — `difficultyRating` returns `null` when nothing was cited, so a rating with no
+  backing is not shown at all rather than shown quietly.
 - ~~A **Verify** action sets `verified_by_me`; verified rows visually outrank unverified.~~
   **Not built, and struck rather than deleted so the reasoning survives.** Phase 7 shipped it
   and it came straight back out (§7): the panel holds exactly one research row per kit, so
@@ -1582,9 +1589,9 @@ so one component and one CSS rule render both.
 **§5.4 is enforced in `normalizeResearch`, not in the components.** A claim whose `sourceUrl`
 doesn't parse as an http(s) URL is *dropped* — not shown unsourced, not shown with a
 placeholder. Putting that in the domain layer rather than in the panel means the next screen
-to render these rows inherits the rule instead of having to remember it. `consensusLine`
+to render these rows inherits the rule instead of having to remember it. `difficultyRating`
 works the same way: it returns `null` when there is no difficulty or nothing was cited, so
-the "Intermediate · consensus from 4 sources" line is structurally incapable of degrading
+a rating with nothing behind it is structurally incapable of degrading
 into a bare "Intermediate". Sources are counted by **distinct host** — three threads on one
 forum is one source agreeing with itself, and counting it as three is the exact false
 confidence §5.4 exists to prevent.
@@ -1911,6 +1918,49 @@ so they cannot be mistaken for an Owned or Missing chip, carry their ΔE and the
 finish, and stop at ΔE 12, past which the nearest paint is merely the least distant one and
 saying nothing is better.
 
+**A top-three list was the wrong shape, and the owner's own question found it.** Asked whether
+the app would have suggested TS-8 Italian Red — the spray a modeller would actually reach for on
+a Ferrari, and one already on this shelf — the honest answer was: it ranked it, at ΔE 4.5, in
+eighth place, three rows below the cut. Ranks 2-4 were a single Bright Red repeated in LP, TS
+and PS form, and 5-6 a single Pure Red in two. Half the list was one colour said three ways.
+
+Two fixes, both using what was already to hand. Candidates are **grouped by swatch**, so one
+shade occupies one row and names its other lines in a tooltip. And the group is led by a paint
+**you own**, when it holds one, flagged in the row — `bucketPaintRequirements` is handed the
+shelf already, so this cost nothing but noticing. Italian Red now lands fourth of four and says
+"on the shelf".
+
+Ownership deliberately decides only *which member of a group is named*, never how the groups are
+ordered. Distance ranks them. Promoting a worse colour match because it happens to be in the
+rack would be telling the owner what they want to hear, which is the same failure as a
+confidently wrong equivalence wearing a different hat.
+
+**And the bucket got a way out.** Extraction reads small print off scanned diagrams; sometimes a
+callout is a misread table cell, or something that isn't a paint at all, and without a way to
+silence it the only escape is to stop reading the panel — which costs the Unresolved count the
+meaning it exists to carry. So each row carries a **Dismiss** link, and the count follows it, on
+the card as well as the detail page (two different queries, one number, so both learned the
+`dismissed_at is null` filter).
+
+The reset comes free rather than being built. `dismissed_at` is a column on
+`kit_paint_requirement`, and re-running extraction *replaces* that manual's rows
+(`replaceManualPaintRequirements`) — so a re-run cannot inherit a dismissal and nothing has to
+remember to clear one. It is the same button the owner would already reach for on suspecting the
+extraction had gone wrong, which is exactly when they'd want their dismissals back.
+
+Two details caught by measuring rather than looking. Only genuinely unresolved rows can be
+dismissed — the `paint_code is null` guard is in the UPDATE, not just the UI, so a stray call
+can't hide a paint that resolved. And the link's tap target came out at 43 x 13px, the *same*
+too-small target the research source links had; the same `padding: 12px 6px` / negative-margin
+fix takes it to 55 x 37 without moving the row. A lesson recorded once in this file was not
+enough to stop it recurring the moment a new control appeared.
+
+Worth recording what remains true after both fixes: ΔE still puts Pure Red above Italian Red,
+and by its own measure it is right — TS-86 really is closer to how the chart depicts H86. The
+community's answer encodes something else entirely, that the car is a Ferrari and Ferraris are
+painted Italian Red. Colour distance cannot know that, and no amount of tuning will teach it.
+It narrows a dead end to four candidates; it does not pick.
+
 ---
 
 ## 8. Non-goals
@@ -2093,6 +2143,7 @@ journal is merged by hand, check the ordering.
 | `0005_paints_drop_open_state` | moves every `inventory_item.state = 'open'` row to unset | Paints "Open" state removal |
 | `0006_kit_research_tips` | `kit_research.tips`, plus a `kit_id` index on `kit_research` and `research_job` | Phase 7 |
 | `0007_drop_dead_columns` | drops `paint_brand`, `paint_equivalent` and ten unread columns; adds `kit_manual.paint_chart_found` | Phase 7 cleanup |
+| `0008_dismiss_paint_requirement` | `kit_paint_requirement.dismissed_at` | Dismissing an unresolved callout |
 
 **Phase 5 added no migration** — `paint_brand` and `paint_equivalent` have existed since
 `0000_init` and were simply empty. What it needs instead is exactly step 5.5 above: a re-seed,

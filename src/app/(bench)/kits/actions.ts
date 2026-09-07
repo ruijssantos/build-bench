@@ -6,6 +6,10 @@ import { after } from "next/server";
 
 import { createKitManual, deleteKitManual } from "@/db/repositories/kit-manuals";
 import {
+  dismissPaintRequirement,
+  KIT_REQUIREMENTS_TAG,
+} from "@/db/repositories/kit-paint-requirements";
+import {
   createKit,
   deleteKit,
   findKitByBrandNumber,
@@ -511,5 +515,30 @@ export async function deleteManual(manualId: number, kitId: number): Promise<Kit
 
   updateTag(kitTag(kitId));
   after(() => deleteBoxArt(removed.blobUrl));
+  return { ok: true };
+}
+
+/**
+ * Hides one unresolved paint callout on this kit. Extraction reads small
+ * print off scanned diagrams and sometimes returns a table cell that isn't a
+ * paint at all; without this the only way to stop being told is to stop
+ * looking at the panel.
+ *
+ * There is no undo, and it doesn't need one: re-running extraction rewrites
+ * this manual's rows from scratch (`replaceManualPaintRequirements`), which
+ * brings every dismissed callout back. That is the reset, and it is the same
+ * button the owner would already reach for if they thought the extraction
+ * had got something wrong.
+ */
+export async function dismissUnresolvedPaint(kitId: number, rawLabel: string): Promise<KitResult> {
+  if (!Number.isInteger(kitId)) return { ok: false, error: "Unknown kit." };
+  const label = readText(rawLabel, 200);
+  if (!label) return { ok: false, error: "Nothing to dismiss." };
+
+  const dismissed = await dismissPaintRequirement(kitId, label);
+  if (!dismissed) return { ok: false, error: "That callout is already gone." };
+
+  updateTag(kitTag(kitId));
+  updateTag(KIT_REQUIREMENTS_TAG);
   return { ok: true };
 }

@@ -21,8 +21,9 @@ import gunzeSeed from "../../seed/gunze-colours.json";
  *    that.
  *  - Distance knows nothing about finish, metallic flake, or transparency.
  *    A clear orange and an opaque orange can sit a couple of ΔE apart and
- *    behave nothing alike on the model. The finish is rendered alongside every
- *    suggestion so the reader can apply the judgement the number can't.
+ *    behave nothing alike on the model. Nothing here can close that gap; the
+ *    caption says these are colour matches and not chart matches precisely so
+ *    the reader still applies the judgement the number can't.
  *
  * CIEDE2000 rather than plain Euclidean RGB distance because RGB distance is
  * badly non-uniform — it rates two dark colours as far apart as two mid greens
@@ -36,12 +37,18 @@ interface SeedColour {
 }
 
 export interface ColourMatch {
+  /** The code to lead with: one you own if the group contains one, else the
+   * most useful format (bottle before lacquer before spray). */
   code: string;
   name: string;
   hex: string;
-  /** Tamiya's own `finish` — gloss | flat | semi | metallic | clear. Null
-   * for the handful of catalogue rows that don't carry one. */
-  finish: string | null;
+  /** True when `code` is on the shelf. The single most useful thing a
+   * suggestion can say, and it costs nothing — the caller already knows. */
+  owned: boolean;
+  /** The other codes sharing this exact swatch, for the tooltip. Tamiya sells
+   * one shade across several lines, so without grouping a top-3 list spends
+   * two of its slots repeating a colour. */
+  alsoAs: string[];
   /** CIEDE2000. Under ~2 is a close match, ~5 is recognisably the same
    * colour, past ~10 it is a different colour that happens to be nearest. */
   deltaE: number;
@@ -170,23 +177,11 @@ export function gunzeColour(rawCode: string): string | null {
   return GUNZE_HEX.get(prefixed ? `${prefixed[1]}${prefixed[2]}` : key) ?? null;
 }
 
-const TAMIYA_LAB: Array<{
-  code: string;
-  name: string;
-  hex: string;
-  finish: string | null;
-  lab: Lab;
-}> = [];
+const TAMIYA_LAB: Array<{ code: string; name: string; hex: string; lab: Lab }> = [];
 for (const paint of CATALOGUE) {
   const lab = hexToLab(paint.hex);
   if (lab) {
-    TAMIYA_LAB.push({
-      code: paint.code,
-      name: paint.name,
-      hex: paint.hex,
-      finish: paint.finish,
-      lab,
-    });
+    TAMIYA_LAB.push({ code: paint.code, name: paint.name, hex: paint.hex, lab });
   }
 }
 
@@ -197,20 +192,66 @@ for (const paint of CATALOGUE) {
  */
 const MAX_DELTA_E = 12;
 
-/** The closest Tamiya paints to a colour, nearest first, or empty when
- * nothing is close enough to be worth showing. */
-export function nearestTamiyaPaints(hex: string, limit = 3): ColourMatch[] {
+/**
+ * Which format to lead a group with when nothing in it is owned: the same
+ * bottle-before-lacquer-before-spray order `./equivalents.ts` uses.
+ */
+const LINE_RANK = new Map(
+  [["X", 0], ["XF", 0], ["LP", 1], ["PS", 2], ["TS", 2], ["AS", 2]] as const,
+);
+
+/**
+ * The closest Tamiya paints to a colour, nearest first, or empty when nothing
+ * is close enough to be worth showing.
+ *
+ * Grouped by swatch, because Tamiya sells one shade across as many as four
+ * lines and an ungrouped list wastes its slots restating a colour: for Monza
+ * Red, ranks 2-4 were a single Bright Red in LP, TS and PS form, which pushed
+ * Italian Red — the shade a modeller would actually reach for, and one the
+ * owner had on the shelf — down to eighth and out of sight.
+ *
+ * `ownedCodes` only decides which member of a group is named; it never
+ * reorders the groups. Distance is what ranks them, and quietly promoting a
+ * worse colour match because it happens to be in the rack would be telling
+ * someone what they want to hear.
+ */
+export function nearestTamiyaPaints(
+  hex: string,
+  ownedCodes: ReadonlySet<string> = new Set(),
+  limit = 4,
+): ColourMatch[] {
   const target = hexToLab(hex);
   if (!target) return [];
 
-  return TAMIYA_LAB.map((paint) => ({
-    code: paint.code,
-    name: paint.name,
-    hex: paint.hex,
-    finish: paint.finish,
-    deltaE: deltaE2000(target, paint.lab),
-  }))
-    .filter((m) => m.deltaE <= MAX_DELTA_E)
+  const groups = new Map<string, { deltaE: number; paints: typeof TAMIYA_LAB }>();
+  for (const paint of TAMIYA_LAB) {
+    const deltaE = deltaE2000(target, paint.lab);
+    if (deltaE > MAX_DELTA_E) continue;
+    const group = groups.get(paint.hex);
+    if (group) group.paints.push(paint);
+    else groups.set(paint.hex, { deltaE, paints: [paint] });
+  }
+
+  return [...groups.values()]
     .sort((a, b) => a.deltaE - b.deltaE)
-    .slice(0, limit);
+    .slice(0, limit)
+    .map(({ deltaE, paints }) => {
+      const ranked = [...paints].sort((a, b) => {
+        const owned = Number(ownedCodes.has(b.code)) - Number(ownedCodes.has(a.code));
+        if (owned !== 0) return owned;
+        return (
+          (LINE_RANK.get(a.code.split("-")[0] as never) ?? 3) -
+          (LINE_RANK.get(b.code.split("-")[0] as never) ?? 3)
+        );
+      });
+      const lead = ranked[0]!;
+      return {
+        code: lead.code,
+        name: lead.name,
+        hex: lead.hex,
+        owned: ownedCodes.has(lead.code),
+        alsoAs: ranked.slice(1).map((p) => p.code),
+        deltaE,
+      };
+    });
 }
