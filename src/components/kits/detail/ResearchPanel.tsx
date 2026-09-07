@@ -15,9 +15,8 @@ import { ResearchRunner } from "./ResearchRunner";
  * Every rule this panel follows comes from §5.4, and they are all the same
  * rule: **this is synthesised from forum posts, and it must never read like
  * reference data.** So a claim always renders its source as a clickable host
- * beside it; difficulty appears only as "Intermediate · consensus from 4
- * sources", never as a bare word; and a Verify tick — the one thing here the
- * owner asserts rather than a model — visibly outranks the rest.
+ * beside it; and a Verify tick — the one thing here the owner asserts rather
+ * than a model — visibly outranks the rest.
  *
  * A Server Component. The only client JavaScript on this panel is the run
  * button, which has to be (it drives a two-stage pipeline that takes minutes);

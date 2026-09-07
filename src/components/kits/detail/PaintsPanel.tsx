@@ -1,11 +1,12 @@
+import Link from "next/link";
+
 import inventoryStyles from "@/components/inventory/Inventory.module.css";
 import styles from "@/components/wishlist/Wishlist.module.css";
 import { listOwnedPaintCodes } from "@/db/repositories/inventory";
 import { listKitPaintRequirements } from "@/db/repositories/kit-paint-requirements";
 import { paintSearchUrl } from "@/domain/inventory";
-import { bucketPaintRequirements, readinessCounts } from "@/domain/kit-paints";
+import { bucketPaintRequirements } from "@/domain/kit-paints";
 
-import { ReadyLine } from "../ReadyLine";
 import { DismissUnresolved } from "./DismissUnresolved";
 
 /**
@@ -39,7 +40,6 @@ export async function PaintsPanel({ kitId }: { kitId: number }) {
       <div className={styles.cardBody}>
         <div className={styles.subHead}>
           <span className={styles.moduleTitle}>Paints</span>
-          <ReadyLine readiness={readinessCounts(buckets)} />
         </div>
 
         <div className={styles.paintBucket}>
@@ -50,10 +50,16 @@ export async function PaintsPanel({ kitId }: { kitId: number }) {
           {buckets.owned.length > 0 ? (
             <div className={styles.cardChips}>
               {buckets.owned.map((p) => (
-                <span key={p.code} className={styles.ownedChip} title={p.name}>
+                <Link
+                  key={p.code}
+                  className={styles.ownedChip}
+                  href={`/thinner?code=${encodeURIComponent(p.code)}`}
+                  title={p.name ?? undefined}
+                  aria-label={`${p.code}${p.name ? `, ${p.name}` : ""} — open on the Thinner bench`}
+                >
                   <span className={styles.paintDot} style={{ background: p.hex }} />
                   {p.code}
-                </span>
+                </Link>
               ))}
             </div>
           ) : (

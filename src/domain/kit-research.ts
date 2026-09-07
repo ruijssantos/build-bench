@@ -288,8 +288,8 @@ export function normalizeResearch(raw: RawKitResearch): NormalizedResearch {
   };
 }
 
-/** Every distinct host the claims and links point at — what `consensusLine`
- * counts. Hosts rather than URLs: three threads on the same forum are one
+/** Every distinct host the claims and links point at, and the count
+ * `difficultyRating` gates on. Hosts rather than URLs: three threads on the same forum are one
  * source agreeing with itself, and counting them as three is exactly the
  * false confidence §5.4 is about. */
 export function countSources(research: NormalizedResearch): number {

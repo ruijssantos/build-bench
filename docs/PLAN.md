@@ -1589,9 +1589,9 @@ so one component and one CSS rule render both.
 **§5.4 is enforced in `normalizeResearch`, not in the components.** A claim whose `sourceUrl`
 doesn't parse as an http(s) URL is *dropped* — not shown unsourced, not shown with a
 placeholder. Putting that in the domain layer rather than in the panel means the next screen
-to render these rows inherits the rule instead of having to remember it. `consensusLine`
+to render these rows inherits the rule instead of having to remember it. `difficultyRating`
 works the same way: it returns `null` when there is no difficulty or nothing was cited, so
-the "Intermediate · consensus from 4 sources" line is structurally incapable of degrading
+a rating with nothing behind it is structurally incapable of degrading
 into a bare "Intermediate". Sources are counted by **distinct host** — three threads on one
 forum is one source agreeing with itself, and counting it as three is the exact false
 confidence §5.4 exists to prevent.

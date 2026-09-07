@@ -303,7 +303,7 @@ export async function POST(request: NextRequest) {
  * The citations are collected here rather than left for stage C to re-derive
  * from the prose, because they are *structured* at this point — the API
  * attaches them to the text blocks that used them — and become plain text the
- * moment the prose is handed on. `sources` is what `consensusLine` counts and
+ * moment the prose is handed on. `sources` is what `countSources` counts and
  * what stage C is told to draw its `sourceUrl` values from.
  */
 function collectProseAndSources(response: Anthropic.Message): { prose: string; sources: string[] } {
