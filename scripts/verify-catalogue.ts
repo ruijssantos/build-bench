@@ -112,11 +112,22 @@ if (badEquivalentBrands.length > 0) {
 // the same extraction returned LP codes for a shelf stocked entirely in
 // X/XF, which is a wrong answer rather than a missing one, and the sort of
 // thing a bare truthiness check waves through.
+// The eight resolvable callouts from the Fujimi Ferrari 330 P4 (§7) — the
+// first manual this app ever extracted, and the one that exposed both faults.
+// Every expected code here is a paint on the real shelf (§2.1), so a data
+// change that quietly re-points one of them turns "you own this" into "go and
+// buy this", which is the failure mode worth a permanent guard.
 const PRINTED_CODE_CASES: Array<[foreign: string, tamiya: string]> = [
   ["H4", "X-8"], // Gunze Aqueous, as a Fujimi table prints it
+  ["H8", "X-11"],
+  ["H9", "X-12"],
+  ["H11", "XF-2"],
   ["H12", "XF-1"],
+  ["H40", "X-21"],
+  ["H90", "X-27"],
   ["H92", "X-26"],
-  ["C001", "X-2"], // and as the chart itself stores it — both must work
+  ["C1", "X-2"], // and via the Mr. Color number printed beside it
+  ["C004", "X-8"], // a padded code still has to resolve — both forms work
 ];
 const unresolvable = PRINTED_CODE_CASES.filter(
   ([foreign, tamiya]) => resolveForeignCode(foreign) !== tamiya,

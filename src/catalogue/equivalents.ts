@@ -53,13 +53,30 @@ interface SeedEquivalent {
  * TS/AS can is a real way to get a colour, but it is the awkward one, and
  * "buy this" should name a bottle whenever a bottle exists.
  */
-const LINE_PREFERENCE = ["X", "XF", "LP", "PS", "TS", "AS"];
+const LINE_TIERS = [
+  ["X", "XF"], // acrylic bottles — the shelf's own format
+  ["LP"], // lacquer bottles: a bottle, but a different product and thinner
+  ["PS", "TS", "AS"], // spray cans, decanted at best
+];
 
-const LINE_RANK = new Map(LINE_PREFERENCE.map((line, index) => [line, index]));
+const LINE_RANK = new Map(
+  LINE_TIERS.flatMap((lines, tier) => lines.map((line) => [line, tier] as const)),
+);
 
-/** Lower is better; an unknown line sorts last rather than throwing. */
+/**
+ * Lower is better; an unknown line sorts last rather than throwing.
+ *
+ * `X` and `XF` deliberately share a tier. They are the same product in
+ * different finishes — gloss and flat — not a better and a worse option, and
+ * ranking one above the other silently answers a question about finish with a
+ * preference about nothing. It really did: with X above XF, adding a second
+ * source flipped C64 from XF-4 (flat) to X-15 (gloss) purely on that ordering.
+ * Tied here, the choice falls to corroboration and then to chart order, so a
+ * new source has to be *agreed with* to override an existing answer rather
+ * than merely arriving.
+ */
 function lineRank(code: string): number {
-  return LINE_RANK.get(code.split("-")[0]) ?? LINE_PREFERENCE.length;
+  return LINE_RANK.get(code.split("-")[0]) ?? LINE_TIERS.length;
 }
 
 /** Normalizes a foreign code for lookup — not `normalizePaintCode` (that
@@ -87,14 +104,33 @@ function foreignKey(raw: string): string {
   return prefixed ? `${prefixed[1]}${prefixed[2]}` : key;
 }
 
-const BY_FOREIGN_CODE = new Map<string, string[]>();
+interface Candidate {
+  code: string;
+  /** Listed by both source charts (`match_quality: "confirmed"`, set in
+   * scripts/build-equivalents.ts). Two independent references agreeing beats
+   * either one alone, so these win before the line preference is consulted. */
+  confirmed: boolean;
+  /** 0 if Cybermodeler carries this pair, 1 if only mech9 does — the final
+   * tiebreak, see `isBetter`. */
+  sourceRank: number;
+}
+
+const BY_FOREIGN_CODE = new Map<string, Candidate[]>();
 for (const e of equivalentsSeed as SeedEquivalent[]) {
   const key = foreignKey(e.foreign_code);
+  const confirmed = e.match_quality === "confirmed";
+  const sourceRank = e.source.includes("cybermodeler") ? 0 : 1;
   const candidates = BY_FOREIGN_CODE.get(key);
-  if (candidates) {
-    if (!candidates.includes(e.tamiya_code)) candidates.push(e.tamiya_code);
+  if (!candidates) {
+    BY_FOREIGN_CODE.set(key, [{ code: e.tamiya_code, confirmed, sourceRank }]);
+    continue;
+  }
+  const existing = candidates.find((c) => c.code === e.tamiya_code);
+  if (existing) {
+    existing.confirmed ||= confirmed;
+    existing.sourceRank = Math.min(existing.sourceRank, sourceRank);
   } else {
-    BY_FOREIGN_CODE.set(key, [e.tamiya_code]);
+    candidates.push({ code: e.tamiya_code, confirmed, sourceRank });
   }
 }
 
@@ -105,8 +141,28 @@ for (const e of equivalentsSeed as SeedEquivalent[]) {
 export function resolveForeignCode(raw: string): string | null {
   const candidates = BY_FOREIGN_CODE.get(foreignKey(raw));
   if (!candidates) return null;
-  // Strictly-less keeps the chart's own order as the tiebreak within a line.
-  return candidates.reduce((best, code) => (lineRank(code) < lineRank(best) ? code : best));
+  // Corroboration first, line preference second; strictly-better keeps the
+  // chart's own order as the final tiebreak.
+  return candidates.reduce((best, c) => (isBetter(c, best) ? c : best)).code;
+}
+
+/**
+ * Corroboration, then product tier, then the incumbent source.
+ *
+ * That last step is a change-control rule, and it needs stating because the
+ * alternative is silent. `seed/equivalents.json` is sorted by Tamiya code, so
+ * without an explicit tiebreak a tie is settled *alphabetically* — which is
+ * how adding mech9 first flipped fifteen existing answers, none of them for
+ * any better reason than `X-15` sorting before `XF-4`.
+ *
+ * So a second source has to earn an override: either both charts agree, or it
+ * offers a better product tier (a bottle where the incumbent had a spray can).
+ * Absent either, the answer that was already being used stands.
+ */
+function isBetter(a: Candidate, b: Candidate): boolean {
+  if (a.confirmed !== b.confirmed) return a.confirmed;
+  if (lineRank(a.code) !== lineRank(b.code)) return lineRank(a.code) < lineRank(b.code);
+  return a.sourceRank < b.sourceRank;
 }
 
 // ---------------------------------------------------------------------------

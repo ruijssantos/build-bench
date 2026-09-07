@@ -1,0 +1,1975 @@
+[
+  {
+    "code": "C1",
+    "name": "White",
+    "tamiya": [
+      "LP-2",
+      "TS-26",
+      "X-2"
+    ]
+  },
+  {
+    "code": "C2",
+    "name": "Black",
+    "tamiya": [
+      "LP-1",
+      "TS-14",
+      "X-1"
+    ]
+  },
+  {
+    "code": "C3",
+    "name": "Red",
+    "tamiya": [
+      "X-7"
+    ]
+  },
+  {
+    "code": "C4",
+    "name": "Yellow",
+    "tamiya": [
+      "LP-8",
+      "TS-16",
+      "X-8",
+      "XF-3"
+    ]
+  },
+  {
+    "code": "C5",
+    "name": "Blue",
+    "tamiya": [
+      "X-3",
+      "X-4"
+    ]
+  },
+  {
+    "code": "C6",
+    "name": "Green",
+    "tamiya": [
+      "X-5",
+      "XF-26"
+    ]
+  },
+  {
+    "code": "C7",
+    "name": "Brown",
+    "tamiya": [
+      "LP-17",
+      "TS-69",
+      "X-34",
+      "X-9",
+      "XF-79"
+    ]
+  },
+  {
+    "code": "C8",
+    "name": "Silver",
+    "tamiya": [
+      "AS-12",
+      "LP-11",
+      "LP-38",
+      "LP-61",
+      "TS-30",
+      "X-11",
+      "XF-16",
+      "XF-56"
+    ]
+  },
+  {
+    "code": "C9",
+    "name": "Gold",
+    "tamiya": [
+      "X-12"
+    ]
+  },
+  {
+    "code": "C10",
+    "name": "Copper",
+    "tamiya": [
+      "XF-6"
+    ]
+  },
+  {
+    "code": "C12",
+    "name": "Olive Drab (1)",
+    "tamiya": [
+      "XF-81"
+    ]
+  },
+  {
+    "code": "C13",
+    "name": "Neutral Gray",
+    "tamiya": [
+      "XF-53",
+      "XF-54",
+      "XF-55"
+    ]
+  },
+  {
+    "code": "C14",
+    "name": "Navy Blue",
+    "tamiya": [
+      "XF-17",
+      "XF-50"
+    ]
+  },
+  {
+    "code": "C15",
+    "name": "IJN Green (Nakajima)",
+    "tamiya": [
+      "XF-11"
+    ]
+  },
+  {
+    "code": "C16",
+    "name": "IJA Green",
+    "tamiya": [
+      "XF-13"
+    ]
+  },
+  {
+    "code": "C17",
+    "name": "RLM71 Dark Green",
+    "tamiya": [
+      "XF-13",
+      "XF-51",
+      "XF-65"
+    ]
+  },
+  {
+    "code": "C18",
+    "name": "RLM70 Black Green",
+    "tamiya": [
+      "XF-27"
+    ]
+  },
+  {
+    "code": "C22",
+    "name": "Dark Earth",
+    "tamiya": [
+      "XF-49",
+      "XF-52"
+    ]
+  },
+  {
+    "code": "C23",
+    "name": "Dark Green(2)",
+    "tamiya": [
+      "TS-2",
+      "XF-27",
+      "XF-61",
+      "XF-65"
+    ]
+  },
+  {
+    "code": "C25",
+    "name": "Dark Seagray",
+    "tamiya": [
+      "XF-54"
+    ]
+  },
+  {
+    "code": "C26",
+    "name": "Duck Egg Green",
+    "tamiya": [
+      "XF-21"
+    ]
+  },
+  {
+    "code": "C27",
+    "name": "Interior Green",
+    "tamiya": [
+      "XF-4"
+    ]
+  },
+  {
+    "code": "C28",
+    "name": "Steel",
+    "tamiya": [
+      "LP-61",
+      "X-11",
+      "XF-56"
+    ]
+  },
+  {
+    "code": "C29",
+    "name": "Hull Red",
+    "tamiya": [
+      "TS-62",
+      "XF-68",
+      "XF-9"
+    ]
+  },
+  {
+    "code": "C30",
+    "name": "Flat Base",
+    "tamiya": [
+      "LP-22",
+      "X-21"
+    ]
+  },
+  {
+    "code": "C31",
+    "name": "Dark Gray(1)",
+    "tamiya": [
+      "AS-11",
+      "XF-53"
+    ]
+  },
+  {
+    "code": "C32",
+    "name": "Dark Gray(2)",
+    "tamiya": [
+      "LP-12",
+      "TS-66",
+      "XF-75",
+      "XF-77"
+    ]
+  },
+  {
+    "code": "C33",
+    "name": "Flat Black",
+    "tamiya": [
+      "LP-3",
+      "TS-6",
+      "XF-1"
+    ]
+  },
+  {
+    "code": "C34",
+    "name": "Sky Blue",
+    "tamiya": [
+      "X-14"
+    ]
+  },
+  {
+    "code": "C35",
+    "name": "IJN Gray(Mitsu bishi)",
+    "tamiya": [
+      "LP-32",
+      "XF-12"
+    ]
+  },
+  {
+    "code": "C36",
+    "name": "RLM74 Gray Green",
+    "tamiya": [
+      "LP-27",
+      "TS-4",
+      "XF-63",
+      "XF-66",
+      "XF-75"
+    ]
+  },
+  {
+    "code": "C37",
+    "name": "RLM75 Gray Violet",
+    "tamiya": [
+      "XF-24"
+    ]
+  },
+  {
+    "code": "C38",
+    "name": "Olive Drab (2)",
+    "tamiya": [
+      "AS-6",
+      "LP-28",
+      "TS-5",
+      "XF-62"
+    ]
+  },
+  {
+    "code": "C39",
+    "name": "Yellow (Sandy Yellow)",
+    "tamiya": [
+      "LP-16",
+      "TS-68",
+      "XF-59",
+      "XF-78"
+    ]
+  },
+  {
+    "code": "C40",
+    "name": "German Gray/Field Gray (1)",
+    "tamiya": [
+      "LP-27",
+      "TS-4",
+      "XF-63"
+    ]
+  },
+  {
+    "code": "C41",
+    "name": "Red Brown",
+    "tamiya": [
+      "TS-1",
+      "XF-64",
+      "XF-9"
+    ]
+  },
+  {
+    "code": "C42",
+    "name": "Mahogany",
+    "tamiya": [
+      "XF-9"
+    ]
+  },
+  {
+    "code": "C43",
+    "name": "Wood Brown",
+    "tamiya": [
+      "TS-1",
+      "XF-64"
+    ]
+  },
+  {
+    "code": "C44",
+    "name": "Tan",
+    "tamiya": [
+      "XF-57"
+    ]
+  },
+  {
+    "code": "C46",
+    "name": "Clear",
+    "tamiya": [
+      "LP-9",
+      "TS-13",
+      "X-22"
+    ]
+  },
+  {
+    "code": "C47",
+    "name": "Clear Red",
+    "tamiya": [
+      "LP-52",
+      "TS-74",
+      "X-27"
+    ]
+  },
+  {
+    "code": "C48",
+    "name": "Clear Yellow",
+    "tamiya": [
+      "LP-69",
+      "X-24"
+    ]
+  },
+  {
+    "code": "C49",
+    "name": "Clear Orange",
+    "tamiya": [
+      "LP-53",
+      "TS-73",
+      "X-26"
+    ]
+  },
+  {
+    "code": "C50",
+    "name": "Clear Blue",
+    "tamiya": [
+      "LP-68",
+      "TS-72",
+      "X-23"
+    ]
+  },
+  {
+    "code": "C51",
+    "name": "Flesh",
+    "tamiya": [
+      "LP-66",
+      "TS-77",
+      "XF-15"
+    ]
+  },
+  {
+    "code": "C52",
+    "name": "Field Gray (2)",
+    "tamiya": [
+      "LP-33",
+      "XF-65",
+      "XF-76"
+    ]
+  },
+  {
+    "code": "C54",
+    "name": "Khaki Green",
+    "tamiya": [
+      "LP-58",
+      "TS-61",
+      "XF-67"
+    ]
+  },
+  {
+    "code": "C55",
+    "name": "Khaki",
+    "tamiya": [
+      "XF-49",
+      "XF-72"
+    ]
+  },
+  {
+    "code": "C56",
+    "name": "IJN Gray Green (Nakajima)",
+    "tamiya": [
+      "LP-32",
+      "XF-12",
+      "XF-14",
+      "XF-25"
+    ]
+  },
+  {
+    "code": "C57",
+    "name": "Metallic Blue Green",
+    "tamiya": [
+      "X-13"
+    ]
+  },
+  {
+    "code": "C59",
+    "name": "Orange",
+    "tamiya": [
+      "X-6"
+    ]
+  },
+  {
+    "code": "C60",
+    "name": "RLM02 Gray",
+    "tamiya": [
+      "XF-20",
+      "XF-22",
+      "XF-49",
+      "XF-73"
+    ]
+  },
+  {
+    "code": "C61",
+    "name": "Burnt Iron",
+    "tamiya": [
+      "LP-19",
+      "LP-54",
+      "TS-38",
+      "X-10",
+      "XF-84"
+    ]
+  },
+  {
+    "code": "C62",
+    "name": "Flat White",
+    "tamiya": [
+      "LP-4",
+      "TS-27",
+      "XF-2"
+    ]
+  },
+  {
+    "code": "C63",
+    "name": "Pink",
+    "tamiya": [
+      "X-17"
+    ]
+  },
+  {
+    "code": "C64",
+    "name": "Green/Le Mans Green",
+    "tamiya": [
+      "X-15"
+    ]
+  },
+  {
+    "code": "C65",
+    "name": "Bright Blue/Indy Blue",
+    "tamiya": [
+      "X-4",
+      "XF-8"
+    ]
+  },
+  {
+    "code": "C66",
+    "name": "Bright Green/Dayt ona Green",
+    "tamiya": [
+      "X-5"
+    ]
+  },
+  {
+    "code": "C67",
+    "name": "Purple",
+    "tamiya": [
+      "X-16"
+    ]
+  },
+  {
+    "code": "C71",
+    "name": "Midnight Blue",
+    "tamiya": [
+      "X-3",
+      "XF-17"
+    ]
+  },
+  {
+    "code": "C72",
+    "name": "e Blue/Mediu m Blue",
+    "tamiya": [
+      "XF-18",
+      "XF-66"
+    ]
+  },
+  {
+    "code": "C73",
+    "name": "Aircraft Gray",
+    "tamiya": [
+      "XF-14"
+    ]
+  },
+  {
+    "code": "C76",
+    "name": "Metallic Blue",
+    "tamiya": [
+      "X-13"
+    ]
+  },
+  {
+    "code": "C78",
+    "name": "Metal Black",
+    "tamiya": [
+      "LP-19",
+      "TS-38",
+      "X-10"
+    ]
+  },
+  {
+    "code": "C79",
+    "name": "Shine Red",
+    "tamiya": [
+      "X-7",
+      "XF-7"
+    ]
+  },
+  {
+    "code": "C90",
+    "name": "Shine Silver",
+    "tamiya": [
+      "LP-38",
+      "XF-16"
+    ]
+  },
+  {
+    "code": "C92",
+    "name": "Semi Gloss Black",
+    "tamiya": [
+      "LP-5",
+      "TS-29",
+      "X-18"
+    ]
+  },
+  {
+    "code": "C101",
+    "name": "Smoke Gray",
+    "tamiya": [
+      "LP-67",
+      "TS-71",
+      "X-19"
+    ]
+  },
+  {
+    "code": "C113",
+    "name": "RLM04 Yellow",
+    "tamiya": [
+      "LP-8",
+      "TS-16",
+      "X-8"
+    ]
+  },
+  {
+    "code": "C115",
+    "name": "RLM65 Light Blue",
+    "tamiya": [
+      "AS-5",
+      "LP-32",
+      "XF-12",
+      "XF-23",
+      "XF-25",
+      "XF-80"
+    ]
+  },
+  {
+    "code": "C116",
+    "name": "RLM66 Black Gray",
+    "tamiya": [
+      "LP-27",
+      "TS-4",
+      "XF-24",
+      "XF-63"
+    ]
+  },
+  {
+    "code": "C117",
+    "name": "RLM76 Light Blue",
+    "tamiya": [
+      "XF-23"
+    ]
+  },
+  {
+    "code": "C118",
+    "name": "RLM78 Light Blue",
+    "tamiya": [
+      "XF-12",
+      "XF-23"
+    ]
+  },
+  {
+    "code": "C119",
+    "name": "RLM79 Sand Yellow",
+    "tamiya": [
+      "XF-52",
+      "XF-59"
+    ]
+  },
+  {
+    "code": "C120",
+    "name": "RLM80 Olive Green",
+    "tamiya": [
+      "XF-62"
+    ]
+  },
+  {
+    "code": "C121",
+    "name": "RLM81 Brown Violet",
+    "tamiya": [
+      "XF-51"
+    ]
+  },
+  {
+    "code": "C123",
+    "name": "RLM83 Dark Green",
+    "tamiya": [
+      "LP-64",
+      "TS-70",
+      "XF-51",
+      "XF-74"
+    ]
+  },
+  {
+    "code": "C137",
+    "name": "Tire Black",
+    "tamiya": [
+      "LP-3",
+      "LP-65",
+      "TS-6",
+      "TS-82",
+      "XF-1",
+      "XF-85"
+    ]
+  },
+  {
+    "code": "C138",
+    "name": "Clear Green",
+    "tamiya": [
+      "X-25"
+    ]
+  },
+  {
+    "code": "C182",
+    "name": "Flat Clear/Supe r Clear Flat",
+    "tamiya": [
+      "LP-22",
+      "LP-23",
+      "TS-80",
+      "X-21",
+      "XF-86"
+    ]
+  },
+  {
+    "code": "C301",
+    "name": "Gray FS36081",
+    "tamiya": [
+      "XF-24"
+    ]
+  },
+  {
+    "code": "C302",
+    "name": "Green FS34092",
+    "tamiya": [
+      "XF-26"
+    ]
+  },
+  {
+    "code": "C303",
+    "name": "Green FS34102",
+    "tamiya": [
+      "LP-29",
+      "TS-28",
+      "XF-58"
+    ]
+  },
+  {
+    "code": "C304",
+    "name": "Olive Drab FS34087",
+    "tamiya": [
+      "LP-26",
+      "TS-91",
+      "XF-5",
+      "XF-73"
+    ]
+  },
+  {
+    "code": "C305",
+    "name": "Gray FS36118",
+    "tamiya": [
+      "LP-13",
+      "TS-67",
+      "XF-24",
+      "XF-50",
+      "XF-54",
+      "XF-77"
+    ]
+  },
+  {
+    "code": "C306",
+    "name": "Gray FS36270",
+    "tamiya": [
+      "XF-20"
+    ]
+  },
+  {
+    "code": "C310",
+    "name": "Brown FS30219",
+    "tamiya": [
+      "XF-59"
+    ]
+  },
+  {
+    "code": "C311",
+    "name": "Gray FS36622",
+    "tamiya": [
+      "XF-14"
+    ]
+  },
+  {
+    "code": "C312",
+    "name": "Green FS34227",
+    "tamiya": [
+      "XF-71"
+    ]
+  },
+  {
+    "code": "C313",
+    "name": "Yellow FS33531",
+    "tamiya": [
+      "XF-59"
+    ]
+  },
+  {
+    "code": "C315",
+    "name": "Gray FS16440",
+    "tamiya": [
+      "XF-20"
+    ]
+  },
+  {
+    "code": "C316",
+    "name": "White FS17875",
+    "tamiya": [
+      "LP-2",
+      "TS-26",
+      "X-2"
+    ]
+  },
+  {
+    "code": "C317",
+    "name": "Gray FS36231",
+    "tamiya": [
+      "XF-54"
+    ]
+  },
+  {
+    "code": "C321",
+    "name": "Light Brown",
+    "tamiya": [
+      "XF-55"
+    ]
+  },
+  {
+    "code": "C325",
+    "name": "Gray FS26440",
+    "tamiya": [
+      "XF-20"
+    ]
+  },
+  {
+    "code": "C327",
+    "name": "Red FS11136",
+    "tamiya": [
+      "XF-7"
+    ]
+  },
+  {
+    "code": "C329",
+    "name": "Yellow FS13538",
+    "tamiya": [
+      "LP-8",
+      "TS-16",
+      "X-8"
+    ]
+  },
+  {
+    "code": "C330",
+    "name": "Dark Green BS381C/64 1",
+    "tamiya": [
+      "LP-64",
+      "TS-70",
+      "XF-74",
+      "XF-81"
+    ]
+  },
+  {
+    "code": "C331",
+    "name": "Gray BS381C/63 8",
+    "tamiya": [
+      "LP-13",
+      "TS-67",
+      "XF-54",
+      "XF-77"
+    ]
+  },
+  {
+    "code": "C333",
+    "name": "Seagray BS381C/64 0",
+    "tamiya": [
+      "XF-54"
+    ]
+  },
+  {
+    "code": "C334",
+    "name": "Seagray BS4800/18 B21",
+    "tamiya": [
+      "XF-19",
+      "XF-80"
+    ]
+  },
+  {
+    "code": "C335",
+    "name": "Sea Gray BS381C/63 7",
+    "tamiya": [
+      "LP-32",
+      "XF-12",
+      "XF-83"
+    ]
+  },
+  {
+    "code": "C336",
+    "name": "Hemp BS4800/108 21",
+    "tamiya": [
+      "XF-57"
+    ]
+  },
+  {
+    "code": "C338",
+    "name": "Light Gray FS36495",
+    "tamiya": [
+      "XF-19"
+    ]
+  },
+  {
+    "code": "C362",
+    "name": "Ocean Gray",
+    "tamiya": [
+      "XF-82"
+    ]
+  },
+  {
+    "code": "C364",
+    "name": "Aircraft Gray Green BS283",
+    "tamiya": [
+      "XF-71"
+    ]
+  },
+  {
+    "code": "C369",
+    "name": "Dark Earth BS381C/45 0",
+    "tamiya": [
+      "XF-52"
+    ]
+  },
+  {
+    "code": "C519",
+    "name": "Bronzegru n RAL6031",
+    "tamiya": [
+      "LP-58",
+      "TS-61",
+      "XF-67"
+    ]
+  },
+  {
+    "code": "C520",
+    "name": "Lederbraun RAL8027",
+    "tamiya": [
+      "LP-59",
+      "TS-62",
+      "XF-68"
+    ]
+  },
+  {
+    "code": "C521",
+    "name": "TEERSCW ARZ RAL9021",
+    "tamiya": [
+      "LP-60",
+      "TS-63",
+      "XF-69"
+    ]
+  },
+  {
+    "code": "H1",
+    "name": "White",
+    "tamiya": [
+      "LP-2",
+      "TS-26",
+      "X-2"
+    ]
+  },
+  {
+    "code": "H2",
+    "name": "Black",
+    "tamiya": [
+      "LP-1",
+      "LP-5",
+      "TS-14",
+      "TS-29",
+      "X-1",
+      "X-18"
+    ]
+  },
+  {
+    "code": "H3",
+    "name": "Red",
+    "tamiya": [
+      "X-7"
+    ]
+  },
+  {
+    "code": "H4",
+    "name": "Yellow",
+    "tamiya": [
+      "LP-8",
+      "TS-16",
+      "X-8",
+      "XF-3"
+    ]
+  },
+  {
+    "code": "H5",
+    "name": "Blue",
+    "tamiya": [
+      "X-3",
+      "X-4"
+    ]
+  },
+  {
+    "code": "H6",
+    "name": "Green",
+    "tamiya": [
+      "X-5",
+      "XF-26"
+    ]
+  },
+  {
+    "code": "H7",
+    "name": "Brown",
+    "tamiya": [
+      "LP-17",
+      "TS-69",
+      "X-34",
+      "X-9",
+      "XF-79"
+    ]
+  },
+  {
+    "code": "H8",
+    "name": "Silver",
+    "tamiya": [
+      "AS-12",
+      "LP-11",
+      "LP-38",
+      "LP-61",
+      "TS-30",
+      "X-11",
+      "XF-16",
+      "XF-56"
+    ]
+  },
+  {
+    "code": "H9",
+    "name": "Gold",
+    "tamiya": [
+      "X-12"
+    ]
+  },
+  {
+    "code": "H10",
+    "name": "Copper",
+    "tamiya": [
+      "XF-6"
+    ]
+  },
+  {
+    "code": "H11",
+    "name": "Flat White",
+    "tamiya": [
+      "LP-4",
+      "TS-27",
+      "XF-2"
+    ]
+  },
+  {
+    "code": "H12",
+    "name": "Flat Black",
+    "tamiya": [
+      "LP-3",
+      "TS-6",
+      "XF-1"
+    ]
+  },
+  {
+    "code": "H13",
+    "name": "Flat Red",
+    "tamiya": [
+      "XF-7"
+    ]
+  },
+  {
+    "code": "H14",
+    "name": "Orange",
+    "tamiya": [
+      "X-6"
+    ]
+  },
+  {
+    "code": "H15",
+    "name": "Bright Blue/Indy Blue",
+    "tamiya": [
+      "X-4",
+      "XF-8"
+    ]
+  },
+  {
+    "code": "H16",
+    "name": "Green/Le Mans Green",
+    "tamiya": [
+      "X-15"
+    ]
+  },
+  {
+    "code": "H17",
+    "name": "Cocoa Brown",
+    "tamiya": [
+      "TS-62",
+      "XF-68",
+      "XF-9"
+    ]
+  },
+  {
+    "code": "H18",
+    "name": "Steel",
+    "tamiya": [
+      "LP-61",
+      "X-11",
+      "XF-56"
+    ]
+  },
+  {
+    "code": "H19",
+    "name": "Pink",
+    "tamiya": [
+      "X-17"
+    ]
+  },
+  {
+    "code": "H20",
+    "name": "Flat Clear",
+    "tamiya": [
+      "LP-22",
+      "LP-23",
+      "TS-80",
+      "X-21",
+      "XF-86"
+    ]
+  },
+  {
+    "code": "H22",
+    "name": "Gray/Nezu mi",
+    "tamiya": [
+      "XF-22",
+      "XF-53"
+    ]
+  },
+  {
+    "code": "H23",
+    "name": "Shine Red",
+    "tamiya": [
+      "X-7",
+      "XF-7"
+    ]
+  },
+  {
+    "code": "H25",
+    "name": "Sky Blue",
+    "tamiya": [
+      "X-14"
+    ]
+  },
+  {
+    "code": "H27",
+    "name": "Light Brown/Tan",
+    "tamiya": [
+      "XF-57"
+    ]
+  },
+  {
+    "code": "H28",
+    "name": "Metal Black",
+    "tamiya": [
+      "LP-19",
+      "TS-38",
+      "X-10"
+    ]
+  },
+  {
+    "code": "H30",
+    "name": "Clear",
+    "tamiya": [
+      "LP-9",
+      "TS-13",
+      "X-22"
+    ]
+  },
+  {
+    "code": "H31",
+    "name": "White Green",
+    "tamiya": [
+      "XF-21"
+    ]
+  },
+  {
+    "code": "H32",
+    "name": "Field Gray (1)/Dark Gray",
+    "tamiya": [
+      "LP-27",
+      "TS-4",
+      "XF-63"
+    ]
+  },
+  {
+    "code": "H36",
+    "name": "Dark Green",
+    "tamiya": [
+      "XF-11"
+    ]
+  },
+  {
+    "code": "H37",
+    "name": "Wood Brown",
+    "tamiya": [
+      "TS-1",
+      "XF-64"
+    ]
+  },
+  {
+    "code": "H38",
+    "name": "Steel Red",
+    "tamiya": [
+      "LP-19",
+      "TS-38",
+      "X-10"
+    ]
+  },
+  {
+    "code": "H39",
+    "name": "Purple",
+    "tamiya": [
+      "X-16"
+    ]
+  },
+  {
+    "code": "H40",
+    "name": "Flat Base",
+    "tamiya": [
+      "LP-22",
+      "X-21"
+    ]
+  },
+  {
+    "code": "H42",
+    "name": "Blue Gray",
+    "tamiya": [
+      "XF-18"
+    ]
+  },
+  {
+    "code": "H44",
+    "name": "Flesh/Pale Brown",
+    "tamiya": [
+      "LP-66",
+      "TS-77",
+      "XF-15"
+    ]
+  },
+  {
+    "code": "H45",
+    "name": "Light Blue/mizu",
+    "tamiya": [
+      "XF-8"
+    ]
+  },
+  {
+    "code": "H46",
+    "name": "Emerald Green",
+    "tamiya": [
+      "X-5"
+    ]
+  },
+  {
+    "code": "H47",
+    "name": "Red Brown",
+    "tamiya": [
+      "TS-1",
+      "XF-64",
+      "XF-9"
+    ]
+  },
+  {
+    "code": "H48",
+    "name": "Field Gray (2)/Olive Gray",
+    "tamiya": [
+      "LP-33",
+      "XF-65",
+      "XF-76"
+    ]
+  },
+  {
+    "code": "H49",
+    "name": "Violet",
+    "tamiya": [
+      "X-16"
+    ]
+  },
+  {
+    "code": "H50",
+    "name": "Lime Green/yom ogi",
+    "tamiya": [
+      "X-15"
+    ]
+  },
+  {
+    "code": "H52",
+    "name": "Olive Drab (1)",
+    "tamiya": [
+      "XF-81"
+    ]
+  },
+  {
+    "code": "H53",
+    "name": "Neutral Gray",
+    "tamiya": [
+      "XF-53",
+      "XF-54",
+      "XF-55"
+    ]
+  },
+  {
+    "code": "H54",
+    "name": "Navy Blue",
+    "tamiya": [
+      "XF-17",
+      "XF-50"
+    ]
+  },
+  {
+    "code": "H55",
+    "name": "Midnight Blue",
+    "tamiya": [
+      "X-3",
+      "XF-17"
+    ]
+  },
+  {
+    "code": "H56",
+    "name": "Medium Blue/Interm ediate Blue",
+    "tamiya": [
+      "XF-18",
+      "XF-66",
+      "XF-8"
+    ]
+  },
+  {
+    "code": "H57",
+    "name": "Aircraft Gray",
+    "tamiya": [
+      "XF-14"
+    ]
+  },
+  {
+    "code": "H58",
+    "name": "Interior Green",
+    "tamiya": [
+      "XF-4"
+    ]
+  },
+  {
+    "code": "H59",
+    "name": "IJN Green",
+    "tamiya": [
+      "XF-11"
+    ]
+  },
+  {
+    "code": "H60",
+    "name": "IJA Green",
+    "tamiya": [
+      "XF-13"
+    ]
+  },
+  {
+    "code": "H61",
+    "name": "IJN Gray",
+    "tamiya": [
+      "LP-32",
+      "XF-12"
+    ]
+  },
+  {
+    "code": "H62",
+    "name": "IJA Gray",
+    "tamiya": [
+      "LP-32",
+      "XF-12",
+      "XF-14",
+      "XF-25"
+    ]
+  },
+  {
+    "code": "H63",
+    "name": "Metallic Blue Green",
+    "tamiya": [
+      "X-13"
+    ]
+  },
+  {
+    "code": "H64",
+    "name": "RLM71 Dark Green",
+    "tamiya": [
+      "XF-13",
+      "XF-51",
+      "XF-65"
+    ]
+  },
+  {
+    "code": "H65",
+    "name": "RLM70 Black Green",
+    "tamiya": [
+      "XF-27"
+    ]
+  },
+  {
+    "code": "H66",
+    "name": "RLM79 Sandy Brown",
+    "tamiya": [
+      "XF-52",
+      "XF-59"
+    ]
+  },
+  {
+    "code": "H67",
+    "name": "RLM65 Light Blue",
+    "tamiya": [
+      "AS-5",
+      "LP-32",
+      "XF-12",
+      "XF-23",
+      "XF-25",
+      "XF-80"
+    ]
+  },
+  {
+    "code": "H68",
+    "name": "RLM74 Dark Gray",
+    "tamiya": [
+      "LP-27",
+      "TS-4",
+      "XF-63",
+      "XF-66",
+      "XF-75"
+    ]
+  },
+  {
+    "code": "H69",
+    "name": "Gray Violet/RLM 75 Gray",
+    "tamiya": [
+      "XF-24"
+    ]
+  },
+  {
+    "code": "H70",
+    "name": "RLM02 Gray",
+    "tamiya": [
+      "XF-20",
+      "XF-22",
+      "XF-49",
+      "XF-73"
+    ]
+  },
+  {
+    "code": "H72",
+    "name": "Dark Earth",
+    "tamiya": [
+      "XF-49",
+      "XF-52"
+    ]
+  },
+  {
+    "code": "H73",
+    "name": "Dark Green",
+    "tamiya": [
+      "TS-2",
+      "XF-27",
+      "XF-61",
+      "XF-65"
+    ]
+  },
+  {
+    "code": "H74",
+    "name": "Sky (Duck Egg Green)",
+    "tamiya": [
+      "XF-21"
+    ]
+  },
+  {
+    "code": "H75",
+    "name": "Dark Seagray",
+    "tamiya": [
+      "XF-54"
+    ]
+  },
+  {
+    "code": "H76",
+    "name": "Burnt Iron",
+    "tamiya": [
+      "LP-19",
+      "LP-54",
+      "TS-38",
+      "X-10",
+      "XF-84"
+    ]
+  },
+  {
+    "code": "H77",
+    "name": "Tire Black",
+    "tamiya": [
+      "LP-3",
+      "LP-65",
+      "TS-6",
+      "TS-82",
+      "XF-1",
+      "XF-85"
+    ]
+  },
+  {
+    "code": "H78",
+    "name": "Olive Drab (2)",
+    "tamiya": [
+      "AS-6",
+      "LP-28",
+      "TS-5",
+      "XF-62"
+    ]
+  },
+  {
+    "code": "H79",
+    "name": "Yellow (Dark Yellow)",
+    "tamiya": [
+      "LP-16",
+      "TS-68",
+      "XF-59",
+      "XF-78"
+    ]
+  },
+  {
+    "code": "H80",
+    "name": "Khaki Green",
+    "tamiya": [
+      "LP-58",
+      "TS-61",
+      "XF-67"
+    ]
+  },
+  {
+    "code": "H81",
+    "name": "Khaki",
+    "tamiya": [
+      "XF-49",
+      "XF-72"
+    ]
+  },
+  {
+    "code": "H82",
+    "name": "Dark Gray (1)",
+    "tamiya": [
+      "AS-11",
+      "XF-53"
+    ]
+  },
+  {
+    "code": "H83",
+    "name": "Dark Gray (2)",
+    "tamiya": [
+      "LP-12",
+      "TS-66",
+      "XF-75",
+      "XF-77"
+    ]
+  },
+  {
+    "code": "H84",
+    "name": "Mahogany",
+    "tamiya": [
+      "XF-9"
+    ]
+  },
+  {
+    "code": "H85",
+    "name": "Sail Color",
+    "tamiya": [
+      "LP-16",
+      "TS-68",
+      "XF-78"
+    ]
+  },
+  {
+    "code": "H88",
+    "name": "Metallic Blue",
+    "tamiya": [
+      "X-13"
+    ]
+  },
+  {
+    "code": "H90",
+    "name": "Clear Red",
+    "tamiya": [
+      "LP-52",
+      "TS-74",
+      "X-27"
+    ]
+  },
+  {
+    "code": "H91",
+    "name": "Clear Yellow",
+    "tamiya": [
+      "LP-69",
+      "X-24"
+    ]
+  },
+  {
+    "code": "H92",
+    "name": "Clear Orange",
+    "tamiya": [
+      "LP-53",
+      "TS-73",
+      "X-26"
+    ]
+  },
+  {
+    "code": "H93",
+    "name": "Clear Blue",
+    "tamiya": [
+      "LP-68",
+      "TS-72",
+      "X-23"
+    ]
+  },
+  {
+    "code": "H94",
+    "name": "Clear Green",
+    "tamiya": [
+      "X-25"
+    ]
+  },
+  {
+    "code": "H95",
+    "name": "Smoke Gray",
+    "tamiya": [
+      "LP-67",
+      "TS-71",
+      "X-19"
+    ]
+  },
+  {
+    "code": "H301",
+    "name": "Gray FS36081",
+    "tamiya": [
+      "XF-24"
+    ]
+  },
+  {
+    "code": "H302",
+    "name": "Green FS34092",
+    "tamiya": [
+      "XF-26"
+    ]
+  },
+  {
+    "code": "H303",
+    "name": "Green FS34102",
+    "tamiya": [
+      "LP-29",
+      "TS-28",
+      "XF-58"
+    ]
+  },
+  {
+    "code": "H304",
+    "name": "Olive Drab FS34087",
+    "tamiya": [
+      "LP-26",
+      "TS-91",
+      "XF-73"
+    ]
+  },
+  {
+    "code": "H305",
+    "name": "Gray FS36118",
+    "tamiya": [
+      "LP-13",
+      "TS-67",
+      "XF-24",
+      "XF-50",
+      "XF-54",
+      "XF-77"
+    ]
+  },
+  {
+    "code": "H306",
+    "name": "Gray FS36270",
+    "tamiya": [
+      "XF-20"
+    ]
+  },
+  {
+    "code": "H309",
+    "name": "Green FS34079",
+    "tamiya": [
+      "XF-65"
+    ]
+  },
+  {
+    "code": "H310",
+    "name": "Brown FS30219",
+    "tamiya": [
+      "XF-59"
+    ]
+  },
+  {
+    "code": "H311",
+    "name": "Gray FS36622",
+    "tamiya": [
+      "XF-14"
+    ]
+  },
+  {
+    "code": "H312",
+    "name": "Green FS34227",
+    "tamiya": [
+      "XF-71"
+    ]
+  },
+  {
+    "code": "H313",
+    "name": "Yellow FS33531",
+    "tamiya": [
+      "XF-59"
+    ]
+  },
+  {
+    "code": "H315",
+    "name": "Gray FS16440",
+    "tamiya": [
+      "XF-20"
+    ]
+  },
+  {
+    "code": "H316",
+    "name": "White FS17875",
+    "tamiya": [
+      "LP-2",
+      "TS-26",
+      "X-2"
+    ]
+  },
+  {
+    "code": "H317",
+    "name": "Gray FS36231",
+    "tamiya": [
+      "XF-54"
+    ]
+  },
+  {
+    "code": "H320",
+    "name": "Dark Green",
+    "tamiya": [
+      "TS-2",
+      "XF-58",
+      "XF-61"
+    ]
+  },
+  {
+    "code": "H321",
+    "name": "Light Brown",
+    "tamiya": [
+      "XF-55"
+    ]
+  },
+  {
+    "code": "H325",
+    "name": "Gray FS26440",
+    "tamiya": [
+      "XF-20"
+    ]
+  },
+  {
+    "code": "H327",
+    "name": "Red FS11136",
+    "tamiya": [
+      "XF-7"
+    ]
+  },
+  {
+    "code": "H328",
+    "name": "Blue FS15050",
+    "tamiya": [
+      "X-3"
+    ]
+  },
+  {
+    "code": "H329",
+    "name": "Yellow FS13538",
+    "tamiya": [
+      "LP-8",
+      "TS-16",
+      "X-8"
+    ]
+  },
+  {
+    "code": "H330",
+    "name": "Dark Green BS381C/64 1",
+    "tamiya": [
+      "LP-64",
+      "TS-70",
+      "XF-74",
+      "XF-81"
+    ]
+  },
+  {
+    "code": "H331",
+    "name": "SeaGray BS381C/63 8",
+    "tamiya": [
+      "LP-13",
+      "TS-67",
+      "XF-54",
+      "XF-77"
+    ]
+  },
+  {
+    "code": "H333",
+    "name": "Seagray BS381C/64 0",
+    "tamiya": [
+      "XF-54"
+    ]
+  },
+  {
+    "code": "H334",
+    "name": "Seagray BS4800/18 B21",
+    "tamiya": [
+      "XF-19",
+      "XF-80"
+    ]
+  },
+  {
+    "code": "H335",
+    "name": "Sea Gray BS381C/63 7",
+    "tamiya": [
+      "XF-83"
+    ]
+  },
+  {
+    "code": "H336",
+    "name": "Hemp BS4800/10 B21",
+    "tamiya": [
+      "XF-57"
+    ]
+  },
+  {
+    "code": "H341",
+    "name": "Flat Mud",
+    "tamiya": [
+      "XF-52"
+    ]
+  },
+  {
+    "code": "H401",
+    "name": "Dark Gray",
+    "tamiya": [
+      "LP-27",
+      "TS-4",
+      "TS-63",
+      "XF-63",
+      "XF-69"
+    ]
+  },
+  {
+    "code": "H402",
+    "name": "Green Brown",
+    "tamiya": [
+      "XF-59",
+      "XF-88"
+    ]
+  },
+  {
+    "code": "H403",
+    "name": "Dark Yellow",
+    "tamiya": [
+      "TS-3",
+      "XF-60"
+    ]
+  },
+  {
+    "code": "H404",
+    "name": "Khaki Brown",
+    "tamiya": [
+      "XF-49"
+    ]
+  },
+  {
+    "code": "H405",
+    "name": "Olive Green",
+    "tamiya": [
+      "LP-26",
+      "TS-91",
+      "XF-73"
+    ]
+  },
+  {
+    "code": "H406",
+    "name": "Chocolate Brown",
+    "tamiya": [
+      "XF-9"
+    ]
+  },
+  {
+    "code": "H413",
+    "name": "RLM04 Yellow",
+    "tamiya": [
+      "LP-8",
+      "TS-16",
+      "X-8"
+    ]
+  },
+  {
+    "code": "H414",
+    "name": "RLM23 Red",
+    "tamiya": [
+      "X-7"
+    ]
+  },
+  {
+    "code": "H416",
+    "name": "RLM66 Black Gray",
+    "tamiya": [
+      "LP-27",
+      "TS-4",
+      "XF-24",
+      "XF-63"
+    ]
+  },
+  {
+    "code": "H417",
+    "name": "RLM76 Light Blue",
+    "tamiya": [
+      "XF-23"
+    ]
+  },
+  {
+    "code": "H418",
+    "name": "RLM78 Light Blue",
+    "tamiya": [
+      "XF-12",
+      "XF-23"
+    ]
+  },
+  {
+    "code": "H420",
+    "name": "RLM80 Olive Green",
+    "tamiya": [
+      "TS-5",
+      "XF-62"
+    ]
+  },
+  {
+    "code": "H421",
+    "name": "RLM80 Brown Violet",
+    "tamiya": [
+      "XF-51"
+    ]
+  },
+  {
+    "code": "H423",
+    "name": "RLM83 Dark Green",
+    "tamiya": [
+      "LP-64",
+      "TS-70",
+      "XF-51",
+      "XF-74"
+    ]
+  },
+  {
+    "code": "H451",
+    "name": "Chalky White",
+    "tamiya": [
+      "LP-4",
+      "TS-27",
+      "XF-2"
+    ]
+  },
+  {
+    "code": "H456",
+    "name": "Dust Brown",
+    "tamiya": [
+      "XF-10"
+    ]
+  },
+  {
+    "code": "H458",
+    "name": "Machine Gray",
+    "tamiya": [
+      "XF-24"
+    ]
+  },
+  {
+    "code": "H460",
+    "name": "Red Brown 1",
+    "tamiya": [
+      "TS-1",
+      "XF-64"
+    ]
+  },
+  {
+    "code": "H465",
+    "name": "Cobalt Blue (Flat)",
+    "tamiya": [
+      "X-3"
+    ]
+  },
+  {
+    "code": "H466",
+    "name": "Purple Red",
+    "tamiya": [
+      "XF-90"
+    ]
+  }
+]
