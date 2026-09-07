@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 
 import { resolveForeignCode } from "../src/catalogue/equivalents";
+import { normalizeExtractedPaints } from "../src/domain/kit-paint-extraction";
 
 /**
  * CI gate — docs/PLAN.md §2.2. Fails the build if any paint code the app
@@ -140,11 +141,53 @@ if (unresolvable.length > 0) {
   }
 }
 
+// 5. Resolution must survive extraction returning no `codeGuess`.
+//
+// Checks 1-4 all test the *data*. This one tests the path that reads it, and
+// it exists because that path had a single point of failure the data checks
+// could never see: `resolveCode` only ever asked the chart about the model's
+// separate `codeGuess` field. One extraction returned clean labels and no
+// `codeGuess`, and every callout on a Japanese kit came back unresolved with
+// the chart sitting right there holding the answers.
+//
+// So the labels below are run through the real `normalizeExtractedPaints`
+// with `codeGuess` omitted entirely — the exact shape of that run.
+const NO_GUESS_CASES: Array<[rawLabel: string, expected: string | null]> = [
+  ["H4 イエロー YELLOW", "X-8"],
+  ["H8 シルバー SILVER", "X-11"],
+  ["H12 つや消し黒 FLAT BLACK", "XF-1"],
+  ["H38 赤鉄色 STEEL RED", "X-10"],
+  ["H86 モンザレッド RED MADDER", null], // no Tamiya equivalent in either chart
+  ["X-11 CHROME SILVER", "X-11"], // a Tamiya callout still resolves as itself
+  ["13. Chrome Silver (X-11)", "X-11"], // ...including mid-label
+  ["H A = H8 + H9 (1:1)", null], // a mixing instruction is not a paint
+];
+
+const resolvedWithoutGuess = normalizeExtractedPaints({
+  requirements: NO_GUESS_CASES.map(([rawLabel]) => ({ rawLabel })),
+  foundPaintChart: true,
+});
+const guessFailures = NO_GUESS_CASES.filter(
+  ([, expected], i) => (resolvedWithoutGuess[i]?.paintCode ?? null) !== expected,
+);
+if (guessFailures.length > 0) {
+  failed = true;
+  console.error(
+    `\n✗ ${guessFailures.length} label(s) resolve wrongly when extraction returns no codeGuess:`,
+  );
+  for (const [rawLabel, expected] of guessFailures) {
+    const i = NO_GUESS_CASES.findIndex(([l]) => l === rawLabel);
+    console.error(
+      `  - "${rawLabel}" → ${resolvedWithoutGuess[i]?.paintCode ?? "null"}, expected ${expected ?? "null"}`,
+    );
+  }
+}
+
 if (!failed) {
   console.log(
     "✓ Every known-inventory code is present, every paint's family resolves to a ratio rule, every " +
-      `equivalent (${equivalents.length}) resolves to a real catalogue code and brand, and foreign ` +
-      "codes resolve as printed.",
+      `equivalent (${equivalents.length}) resolves to a real catalogue code and brand, foreign ` +
+      "codes resolve as printed, and labels resolve without a codeGuess.",
   );
 }
 

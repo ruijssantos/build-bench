@@ -54,20 +54,53 @@ export interface ExtractedPaintRequirement {
  * even when the model's separate guess at it wasn't clean. */
 const CODE_IN_TEXT = /\b(X|XF|LP|TS|AS|PS)-?\d+[A-Z]?\b/i;
 
+/** Tamiya's own line prefixes, for the guard in `foreignCodeInLabel`. */
+const TAMIYA_LINES = new Set(["X", "XF", "LP", "TS", "AS", "PS"]);
+
+/**
+ * A foreign-brand code at the *head* of the label — "H4 イエロー YELLOW",
+ * "C68 モンザレッド RED MADDER".
+ *
+ * Anchored at the start deliberately. That is where every manual prints the
+ * code, and anchoring is what makes this safe to try at all: scanning the
+ * whole line would read the "1:1" of a mixing ratio, or a part number, as a
+ * paint.
+ *
+ * A Tamiya-shaped prefix is rejected rather than looked up. If the label
+ * leads with "X-99" then it is a Tamiya callout this app's catalogue happens
+ * not to carry, and answering it with Xtracolour's unrelated X099 would be a
+ * fabricated match — exactly the failure the cross-brand chart's own parser
+ * guards against.
+ */
+const FOREIGN_CODE_AT_START = /^([A-Za-z]{1,3})-?(\d{1,3})\b/;
+
+function foreignCodeInLabel(rawLabel: string): string | null {
+  const match = FOREIGN_CODE_AT_START.exec(rawLabel.trim());
+  if (!match) return null;
+  const line = match[1]!.toUpperCase();
+  if (TAMIYA_LINES.has(line)) return null;
+  return `${line}${match[2]}`;
+}
+
+/**
+ * The label is the reliable half of what extraction returns; `codeGuess` is
+ * the model's separate opinion about which token in it is the code, and it is
+ * not always there. A run that returned clean labels and no `codeGuess` at
+ * all left every callout on a Japanese kit unresolved — the chart had the
+ * answers, nothing asked it the question. So the code is recovered from the
+ * label too, and the two are tried in order.
+ */
 function resolveCode(rawLabel: string, codeGuess: string | null | undefined): string | null {
   for (const candidate of [codeGuess, CODE_IN_TEXT.exec(rawLabel)?.[0]]) {
     if (!candidate) continue;
     const paint = getCataloguePaint(candidate);
     if (paint) return paint.code;
   }
-  // Neither candidate is a Tamiya code the catalogue knows directly — the
-  // common case for a Japanese kit, whose manual calls out Mr. Color/Mr.
-  // Hobby throughout. Only `codeGuess` is tried here, not `CODE_IN_TEXT`:
-  // that regex is shaped for Tamiya's own "LETTERS-NUMBER" codes, and a
-  // foreign code ("UA507", "MMP049") doesn't share that shape closely
-  // enough to extract reliably without risking a false match.
-  if (codeGuess) {
-    const equivalent = resolveForeignCode(codeGuess);
+  // Not a Tamiya code the catalogue knows directly — the common case for a
+  // Japanese kit, whose manual calls out Mr. Color/Mr. Hobby throughout.
+  for (const candidate of [codeGuess, foreignCodeInLabel(rawLabel)]) {
+    if (!candidate) continue;
+    const equivalent = resolveForeignCode(candidate);
     if (equivalent) return equivalent;
   }
   return null;

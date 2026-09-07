@@ -1849,6 +1849,30 @@ The general lesson is the same one the migration bug taught, in a different cost
 is never the missing answer, it is the plausible one. Both faults here would have produced a
 screen that looked entirely fine.
 
+**And then the re-run that was supposed to show all this off resolved nothing at all.** Not the
+chart — the chart was right, and given the H code it still answered nine of the ten. The single
+point of failure was upstream of it: `resolveCode` only ever asked the chart about `codeGuess`,
+the model's separate opinion about which token in the label is the code. That run returned clean
+labels and no `codeGuess` at all (the Mr. Color numbers vanished from the labels too, so its
+whole output shape had shifted), and ten callouts came back unresolved with the answers sitting
+right there.
+
+Two things are worth keeping from it. The first is that **this was a known risk, written off**:
+it was spotted while building the padding fix, judged speculative, and left — the same "kept
+because a future phase might want it" reflex as the dead schema, pointed the other way. A single
+field that the whole feature depends on and that an LLM may or may not populate is not a
+speculative risk; it is the load-bearing one.
+
+The second is where the fix goes. Not into the wire schema — making `codeGuess` required would
+throw away a whole paid call over a missing field, which is exactly what §7 already learned not
+to do. The label is the reliable half of what extraction returns, so the code is now recovered
+from it as well, anchored at the head of the string where every manual prints it, and with
+Tamiya-shaped prefixes rejected rather than looked up (a label leading `X-99` is a Tamiya
+callout this catalogue lacks; answering it with Xtracolour's unrelated `X099` would fabricate a
+match). `verify-catalogue` now runs real labels through `normalizeExtractedPaints` with
+`codeGuess` omitted — checks 1-4 test the data, this one tests the path that reads it, which is
+the gap that let a data-perfect chart return nothing.
+
 ---
 
 ## 8. Non-goals
