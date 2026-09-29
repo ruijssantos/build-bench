@@ -4,7 +4,6 @@ import { connection } from "next/server";
 
 import { db } from "@/db/client";
 import { inventoryItem, kit, kitPaintRequirement } from "@/db/schema";
-import { STASH_STATUSES } from "@/domain/kit";
 
 import { INVENTORY_TAG } from "./inventory";
 import { kitTag, KIT_TAG } from "./kits";
@@ -134,20 +133,25 @@ export interface KitReadiness {
 }
 
 /**
- * The Stash grid's "14 of 17 · 3 to buy" line, for every stashed kit at
- * once — one aggregate query, not N+1 per card (docs/PLAN.md §6 Phase 4a).
+ * The kit cards' "14 of 17 · 3 to buy" line, for every kit at once — one
+ * aggregate query, not N+1 per card (docs/PLAN.md §6 Phase 4a). Every status,
+ * wishlist included: checking what a kit needs against the shelf is as useful
+ * before buying it as after (the Wishlist card reads it as "3 you'd need").
+ * Callers look rows up by kit id, so a row for a status they don't list is
+ * simply never read. The shop run (`shop-run.ts`) is what stays scoped to
+ * kits you own.
  *
  * Counts *distinct* paint codes: one code can have several shelf rows (a
  * spray can and the jar decanted from it), and the left join fans out to one
  * row per matching shelf entry, which `count(distinct …)` collapses back
  * down rather than over-counting.
  */
-export async function getStashReadiness(): Promise<KitReadiness[]> {
+export async function getKitReadiness(): Promise<KitReadiness[]> {
   await connection();
-  return queryStashReadiness();
+  return queryKitReadiness();
 }
 
-async function queryStashReadiness(): Promise<KitReadiness[]> {
+async function queryKitReadiness(): Promise<KitReadiness[]> {
   "use cache";
   cacheLife("wishlist");
   cacheTag(KIT_TAG);
@@ -167,7 +171,6 @@ async function queryStashReadiness(): Promise<KitReadiness[]> {
     .from(kitPaintRequirement)
     .innerJoin(kit, eq(kit.id, kitPaintRequirement.kitId))
     .leftJoin(inventoryItem, eq(inventoryItem.paintCode, kitPaintRequirement.paintCode))
-    .where(inArray(kit.status, [...STASH_STATUSES]))
     .groupBy(kitPaintRequirement.kitId);
 
   return rows.map((row) => ({

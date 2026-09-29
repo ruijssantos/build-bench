@@ -9,7 +9,6 @@ import {
   replaceKitResearch,
 } from "@/db/repositories/kit-research";
 import { getKitById, kitTag } from "@/db/repositories/kits";
-import { isStashStatus } from "@/domain/kit";
 import { KitResearchSchema, normalizeResearch } from "@/domain/kit-research";
 import { describeAnthropicError, logAnthropicError } from "@/lib/anthropic-errors";
 
@@ -66,8 +65,8 @@ export async function POST(request: NextRequest) {
   }
 
   const kit = await getKitById(kitId as number);
-  if (!kit || !isStashStatus(kit.status)) {
-    return jsonError("That kit is no longer in the stash.");
+  if (!kit) {
+    return jsonError("That kit is no longer here.");
   }
 
   // Scoped to the kit, so one kit's job id can't write another kit's research.

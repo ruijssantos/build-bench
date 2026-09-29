@@ -53,8 +53,9 @@ export function isKitStatus(value: unknown): value is KitStatus {
 
 /** The Stash screen's three statuses, in *progression* order — this is the
  * order the detail page's stepper walks, and the order `nextStashStatus` /
- * `previousStashStatus` step through. `wishlist` never reaches this screen
- * (§3.3: buying is one-directional, Phase 3's job, not this one's). */
+ * `previousStashStatus` step through. The detail page shows wishlist kits
+ * too, with `wishlist` as a fourth step in front of these, but only while the
+ * kit is still on it (§3.3: buying is one-directional). */
 export const STASH_STATUSES = ["stash", "building", "built"] as const;
 export type StashStatus = (typeof STASH_STATUSES)[number];
 

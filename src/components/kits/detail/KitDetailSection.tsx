@@ -1,13 +1,15 @@
+import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
 import { BenchError } from "@/components/bench/BenchError";
 import { DesktopHeader } from "@/components/bench/DesktopHeader";
 import { PhoneHeader } from "@/components/bench/PhoneHeader";
+import { ChevronLeftIcon } from "@/components/icons";
 import { EditKitTrigger } from "@/components/wishlist/EditKitTrigger";
 import styles from "@/components/wishlist/Wishlist.module.css";
 import { getKitById } from "@/db/repositories/kits";
-import { isStashStatus } from "@/domain/kit";
+import { isKitStatus } from "@/domain/kit";
 
 import { DeleteKitButton } from "./DeleteKitButton";
 import { DetailsPanel } from "./DetailsPanel";
@@ -33,9 +35,12 @@ import { StatusPanel } from "./StatusPanel";
  * (§5.4), and it reads better as the thing you scroll down to than as
  * something competing with the paint list for the top of the column.
  *
- * A wishlist-status kit reads back fine from `getKitById` (it's the same
- * table) but isn't shown here — the Wishlist screen, not this one, owns
- * that status, so it 404s the same as a missing id.
+ * Every status renders here, wishlist included — a kit is the same object
+ * before and after you buy it (§3.3), and a manual, a paint check against the
+ * shelf and research are all worth having before buying. What differs is
+ * status-shaped: the breadcrumb leads back to the list the kit is on, the
+ * stepper grows a Wishlist step while the kit is still on it, and
+ * "Purchase & dates" stays hidden until it's bought.
  */
 export async function KitDetailSection({ params }: { params: Promise<{ id: string }> }) {
   const { id: rawId } = await params;
@@ -43,8 +48,9 @@ export async function KitDetailSection({ params }: { params: Promise<{ id: strin
   if (!Number.isInteger(id)) notFound();
 
   const kit = await getKitById(id);
-  if (!kit || !isStashStatus(kit.status)) notFound();
+  if (!kit || !isKitStatus(kit.status)) notFound();
 
+  const wanted = kit.status === "wishlist";
   const title = kit.name ?? "Kit";
   const headerActions = (
     <div className={styles.headerActions}>
@@ -55,6 +61,9 @@ export async function KitDetailSection({ params }: { params: Promise<{ id: strin
 
   return (
     <>
+      <Link href={wanted ? "/wishlist" : "/kits"} className={styles.crumb}>
+        <ChevronLeftIcon size={18} /> {wanted ? "Wishlist" : "Stash"}
+      </Link>
       <PhoneHeader title={title} trailing={headerActions} stackTrailing />
       <DesktopHeader title={title} trailing={headerActions} />
 
@@ -63,7 +72,7 @@ export async function KitDetailSection({ params }: { params: Promise<{ id: strin
           <div className={styles.railCol}>
             <IdentityPanel kit={kit} />
             <StatusPanel id={kit.id} status={kit.status} />
-            <DetailsPanel kit={kit} />
+            {wanted ? null : <DetailsPanel kit={kit} />}
           </div>
           <div className={styles.mainCol}>
             <BenchError label="Manuals">

@@ -53,8 +53,11 @@ export default function WishlistPage() {
                 <SavedKitsGrid
                   statuses={["wishlist"]}
                   moduleLabel="Saved kits"
+                  withReadiness
                   emptyState={<EmptyKits />}
-                  renderCard={(kit, priority) => <SavedKitCard key={kit.id} kit={kit} priority={priority} />}
+                  renderCard={(kit, priority, readiness) => (
+                    <SavedKitCard key={kit.id} kit={kit} priority={priority} readiness={readiness} />
+                  )}
                 />
               </Suspense>
             </BenchError>

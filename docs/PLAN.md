@@ -355,6 +355,15 @@ The **product** separation the user sees is real and stays: two nav entries, two
 built in two phases (§6). It just doesn't need two tables to hold it up — it needs an index
 on `status`, which is one line.
 
+The same reasoning reaches the detail page. `/kits/[id]` shows a kit in **any** status,
+wishlist included: uploading the manual, checking its paints against the shelf, running
+research and finding build videos are all as useful for deciding whether to buy a kit as for
+building it, and they stay attached when it's bought. What stays status-shaped is only what's
+genuinely about ownership — the "Purchase & dates" panel appears once it's bought, the status
+ladder shows a Wishlist step only while the kit is still on it, and the shop run (§6 Phase 6)
+counts only kits you own. A wishlist card reads the shared readiness line as "3 you'd need"
+rather than "3 to buy".
+
 `wishlist_item` is genuinely separate, and that's the test working rather than failing: a
 tool or a bottle of glue has no brand, no scale, no kit number and no reference page, and it
 never graduates into a stash. Nothing about it is a `kit` with empty columns.
@@ -809,7 +818,8 @@ on the way in, editable after), purchase details, manual PDF upload with an **Ex
 list** action per manual (Claude Opus 5, streaming, effort high), and the resulting
 `kit_paint_requirement` rows shown as three buckets — Owned, Missing, Unresolved — against the
 shelf. The per-kit bucket view is one targeted query; the Stash grid's "14 of 17 · 3 to buy"
-line on every card comes from one aggregate query across every stashed kit, not N+1.
+line on every card comes from one aggregate query across every kit, not N+1. Wishlist kits
+later got the same detail page (§3.3, and §7 "A kit is a kit").
 
 Manual upload does what §4.3 originally hoped for and Phase 3's photo upload couldn't:
 client-direct upload via `@vercel/blob/client`'s `upload()` against a token route
@@ -1960,6 +1970,36 @@ and by its own measure it is right — TS-86 really is closer to how the chart d
 community's answer encodes something else entirely, that the car is a Ferrari and Ferraris are
 painted Italian Red. Colour distance cannot know that, and no amount of tuning will teach it.
 It narrows a dead end to four candidates; it does not pick.
+
+### A kit is a kit — the detail page opens for wishlist kits
+
+`/kits/[id]` used to 404 on a wishlist kit, and the research routes refused one ("you research
+a kit to build it, not to want it"). That was backwards for how the app is used: the manual,
+the paint check and the research are what you'd want *before* spending money on a kit. The
+data never needed changing — one `kit` table, §3.3 — so this was entirely UI gates. No
+migration.
+
+- The detail page renders every status. The breadcrumb follows the status (Wishlist or
+  Stash), so it moved inside the Suspense boundary; `KitDetailSkeleton` renders a placeholder
+  `.crumb` of the same shape so nothing shifts when the kit resolves.
+- The status ladder is four steps (Wishlist → Stash → Building → Built) only while the kit is
+  on the wishlist, with **Move to stash** as its one action — the Wishlist card's own
+  `markKitBought`. Once bought it's the old three steps; buying is still one-directional.
+- "Purchase & dates" is hidden on a wishlist kit. Remove redirects to the list the kit was on.
+- `getStashReadiness` became `getKitReadiness` and covers every status. The Wishlist grid now
+  asks for it, and its cards link to the detail page and show "Own 3 of 5 · 2 you'd need" /
+  "You have them all". The shop run stays scoped to `stash`/`building` — a kit you haven't
+  bought doesn't put paint on the run.
+- Research is still only ever started by its button. It's the paid path (§5.3), and wishlists
+  hold more speculative kits than stashes do.
+
+One measured cost worth recording: the first version called `promoteKitToStash` from the
+detail page's new button, which reshuffled Turbopack's shared chunks and put `/wishlist`'s
+initial JS **3 bytes** under its 150.0 kB budget (+117 B gzip over `main`), even though no
+wishlist-page code had grown. Calling `markKitBought` instead — the same write, already in
+that bundle — brought it to 149.5 kB, below where it started. `markKitBought` also now
+invalidates `kitTag(id)`, which it never needed before because no page showed a single
+wishlist kit.
 
 ---
 

@@ -2,7 +2,7 @@
 
 import { updateTag } from "next/cache";
 
-import { KIT_TAG, updateKitStatus } from "@/db/repositories/kits";
+import { KIT_TAG, kitTag, updateKitStatus } from "@/db/repositories/kits";
 import {
   createWishlistItem,
   deleteWishlistItem,
@@ -43,6 +43,7 @@ export async function markKitBought(id: number): Promise<WishlistResult> {
   if (!updated) return { ok: false, error: "That kit is no longer on the wishlist." };
 
   updateTag(KIT_TAG);
+  updateTag(kitTag(id));
   return { ok: true };
 }
 

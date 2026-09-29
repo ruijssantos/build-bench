@@ -3,7 +3,6 @@ import { NextResponse, type NextRequest } from "next/server";
 
 import { createResearchJob, recordStage } from "@/db/repositories/kit-research";
 import { getKitById } from "@/db/repositories/kits";
-import { isStashStatus } from "@/domain/kit";
 import { describeAnthropicError, logAnthropicError, webToolErrored } from "@/lib/anthropic-errors";
 
 /**
@@ -105,11 +104,11 @@ export async function POST(request: NextRequest) {
   }
 
   const kit = await getKitById(kitId as number);
-  // Same gate as the detail page itself: research belongs to a kit you own.
-  // A wishlist row reads back fine from this table (§3.3) and is deliberately
-  // not researchable — you research a kit to build it, not to want it.
-  if (!kit || !isStashStatus(kit.status)) {
-    return jsonError("That kit is no longer in the stash.");
+  // Any status: research is as useful for deciding whether to buy a kit as
+  // for building one (§3.3). It's still only ever started from the detail
+  // page's own button, never automatically — this is the paid path.
+  if (!kit) {
+    return jsonError("That kit is no longer here.");
   }
   if (!kit.name) {
     return jsonError("Give this kit a name first — there's nothing to search for otherwise.");

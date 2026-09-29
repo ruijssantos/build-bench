@@ -3,9 +3,10 @@
 import { useState, useTransition } from "react";
 
 import { advanceKitStatus, regressKitStatus } from "@/app/(bench)/kits/actions";
+import { markKitBought } from "@/app/(bench)/wishlist/actions";
 import formStyles from "@/components/inventory/InventoryForm.module.css";
 import styles from "@/components/wishlist/Wishlist.module.css";
-import { nextStashStatus, previousStashStatus, statusLabel, type StashStatus } from "@/domain/kit";
+import { nextStashStatus, previousStashStatus, statusLabel, type KitStatus } from "@/domain/kit";
 
 /**
  * The stepper's primary action ("Start building" / "Mark built") and its
@@ -13,12 +14,14 @@ import { nextStashStatus, previousStashStatus, statusLabel, type StashStatus } f
  * `updateKitStatus(id, from, to)`'s own shape. Never reaches `wishlist`:
  * that direction is Phase 3's one-directional "mark bought", not undone
  * here (`previousStashStatus` stops at `stash`).
+ *
+ * A wishlist kit gets the one forward step it has, "Move to stash" — the
+ * Wishlist card's own Stash tick (`markKitBought`), same action and labelled
+ * for where the kit is going for the same reason that button is.
  */
-export function StatusActions({ id, status }: { id: number; status: StashStatus }) {
+export function StatusActions({ id, status }: { id: number; status: KitStatus }) {
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
-  const next = nextStashStatus(status);
-  const prev = previousStashStatus(status);
 
   /** Both actions return a reason when their `and(id, status)` predicate
    * misses — a stale tab acting on a kit that has since moved. Surfaced
@@ -34,6 +37,27 @@ export function StatusActions({ id, status }: { id: number; status: StashStatus 
       }
     });
   }
+
+  if (status === "wishlist") {
+    return (
+      <>
+        <div className={styles.statusActions}>
+          <button
+            type="button"
+            className={formStyles.primaryButton}
+            disabled={pending}
+            onClick={() => run(() => markKitBought(id))}
+          >
+            {pending ? "Stashing…" : "Move to stash"}
+          </button>
+        </div>
+        {error ? <div className={styles.cardError}>{error}</div> : null}
+      </>
+    );
+  }
+
+  const next = nextStashStatus(status);
+  const prev = previousStashStatus(status);
 
   return (
     <>

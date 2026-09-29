@@ -16,8 +16,9 @@ import formStyles from "@/components/inventory/InventoryForm.module.css";
  * "Remove", so walking away from a half-confirmed delete doesn't leave a
  * live "one more click deletes this" trap for whatever gets clicked next.
  *
- * The action redirects to `/kits` on success, so there is no success state to
- * render here — only a failure one, for a kit already gone from another tab.
+ * The action redirects back to `/kits` (or `/wishlist`) on success, so there
+ * is no success state to render here — only a failure one, for a kit already
+ * gone from another tab.
  */
 export function DeleteKitButton({ id, name }: { id: number; name: string }) {
   const [armed, setArmed] = useState(false);
