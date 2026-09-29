@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import cardStyles from "@/components/wishlist/Wishlist.module.css";
-import { getStashReadiness } from "@/db/repositories/kit-paint-requirements";
+import { getKitReadiness } from "@/db/repositories/kit-paint-requirements";
 import { listKitsByStatuses } from "@/db/repositories/kits";
 import { isReadyToBuild } from "@/domain/dashboard";
 
@@ -23,7 +23,7 @@ const MAX_ROWS = 4;
  * one claim this module exists to make untrue.
  */
 export async function ReadyToBuild() {
-  const [kits, readiness] = await Promise.all([listKitsByStatuses(["stash"]), getStashReadiness()]);
+  const [kits, readiness] = await Promise.all([listKitsByStatuses(["stash"]), getKitReadiness()]);
 
   const byKit = new Map(readiness.map((row) => [row.kitId, row]));
   const ready = kits.filter((kit) => isReadyToBuild(byKit.get(kit.id)));

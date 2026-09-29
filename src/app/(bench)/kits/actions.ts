@@ -345,7 +345,8 @@ export async function removeKit(formData: FormData): Promise<void> {
  * The detail page's Remove — the same deletion as `removeKit`, but it has to
  * leave: the page it was pressed on is that kit's own route, which 404s the
  * moment the row is gone. `redirect` throws by design, so it goes last, after
- * every write and the blob cleanup are queued.
+ * every write and the blob cleanup are queued. It goes back to the list the
+ * kit was on — that page shows wishlist kits too.
  */
 export async function removeKitAndReturn(id: number): Promise<KitResult> {
   if (!Number.isInteger(id)) return { ok: false, error: "Unknown kit." };
@@ -363,7 +364,7 @@ export async function removeKitAndReturn(id: number): Promise<KitResult> {
     for (const url of removed.manualUrls) await deleteBoxArt(url);
   });
 
-  redirect("/kits");
+  redirect(existing.status === "wishlist" ? "/wishlist" : "/kits");
 }
 
 // ---------------------------------------------------------------------------

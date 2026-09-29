@@ -19,10 +19,11 @@ import { KIT_TAG } from "./kits";
  * already maintain, so there is nothing to keep in sync and nothing to tick
  * stale.
  *
- * `built` is deliberately excluded from the statuses below, unlike
- * `getStashReadiness`'s all-of-STASH_STATUSES: a finished kit's missing
- * paints are a historical fact, not a shopping list. Only `stash` and
- * `building` describe paint you still need to buy.
+ * Scoped to the statuses below, unlike `getKitReadiness`, which covers every
+ * kit. `built` is excluded because a finished kit's missing paints are a
+ * historical fact, not a shopping list; `wishlist` because a kit you haven't
+ * bought yet shouldn't put paint on the run — its card says "3 you'd need"
+ * instead. Only `stash` and `building` describe paint you still need to buy.
  */
 
 const NEEDED_STATUSES = ["stash", "building"] as const;
@@ -47,7 +48,7 @@ async function queryShopRunPaints(): Promise<ShopRunPaint[]> {
 
   // The left join + `is null` is an anti-join: keep requirement rows that
   // found no matching shelf row. Counting *distinct* kit ids matters for the
-  // same reason `getStashReadiness` counts distinct codes — one code can be
+  // same reason `getKitReadiness` counts distinct codes — one code can be
   // called out on several parts of the same manual, and that is one kit, not
   // three.
   const rows = await db

@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ReadyLine } from "@/components/kits/ReadyLine";
 import { KitCardBody } from "@/components/wishlist/KitCardBody";
 import cardStyles from "@/components/wishlist/Wishlist.module.css";
-import { getStashReadiness } from "@/db/repositories/kit-paint-requirements";
+import { getKitReadiness } from "@/db/repositories/kit-paint-requirements";
 import { listKitsByStatuses } from "@/db/repositories/kits";
 import { formatIsoDate } from "@/domain/dates";
 
@@ -25,7 +25,7 @@ import styles from "./Dashboard.module.css";
  * for and a grid would strand exactly the width this module should be using.
  */
 export async function OnTheBench() {
-  const [kits, readiness] = await Promise.all([listKitsByStatuses(["building"]), getStashReadiness()]);
+  const [kits, readiness] = await Promise.all([listKitsByStatuses(["building"]), getKitReadiness()]);
 
   if (kits.length === 0) {
     return (

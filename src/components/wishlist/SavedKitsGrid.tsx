@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-import { getStashReadiness, type KitReadiness } from "@/db/repositories/kit-paint-requirements";
+import { getKitReadiness, type KitReadiness } from "@/db/repositories/kit-paint-requirements";
 import { listKitsByStatuses, type KitRow } from "@/db/repositories/kits";
 import type { KitStatus } from "@/domain/kit";
 
@@ -12,10 +12,11 @@ import styles from "./Wishlist.module.css";
  * the Stash: `statuses` picks which rows, `renderCard` picks how each one
  * renders (`SavedKitCard` for the wishlist, `StashKitCard` for the stash),
  * and `emptyState` is shown in place of the grid when there's nothing to
- * list. `withReadiness` additionally fetches the Stash's "N of M · K to buy"
- * aggregate (`getStashReadiness` — one query across every kit, not N+1) and
- * hands each card its own row from it; the Wishlist has no paint list to be
- * ready against, so it never asks for this.
+ * list. `withReadiness` additionally fetches the "N of M · K to buy"
+ * aggregate (`getKitReadiness` — one query across every kit, not N+1) and
+ * hands each card its own row from it. Both screens ask for it: a wishlist
+ * kit with an extracted manual can be checked against the shelf before
+ * buying.
  *
  * `listKitsByStatuses` is request-time then cached, so a second visit costs
  * nothing.
@@ -35,7 +36,7 @@ export async function SavedKitsGrid({
 }) {
   const [kits, readinessRows] = await Promise.all([
     listKitsByStatuses(statuses),
-    withReadiness ? getStashReadiness() : Promise.resolve([]),
+    withReadiness ? getKitReadiness() : Promise.resolve([]),
   ]);
 
   if (kits.length === 0) {

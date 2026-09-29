@@ -1,5 +1,6 @@
 import { DesktopHeader } from "@/components/bench/DesktopHeader";
 import { PhoneHeader } from "@/components/bench/PhoneHeader";
+import { ChevronLeftIcon } from "@/components/icons";
 import styles from "@/components/wishlist/Wishlist.module.css";
 
 /**
@@ -15,11 +16,16 @@ import styles from "@/components/wishlist/Wishlist.module.css";
  * title) drop in above already-painted cards when the query resolved — a CLS
  * hit on the one route this phase added, against §11's own rule. Using the
  * same components with a placeholder title reserves exactly the right height
- * by construction, rather than a guess at it.
+ * by construction, rather than a guess at it. The breadcrumb is inside the
+ * boundary for the same reason (its target depends on the kit's status), so
+ * it gets the same treatment: the real `.crumb` shape, not a link.
  */
 export function KitDetailSkeleton() {
   return (
     <div aria-hidden="true">
+      <span className={styles.crumb}>
+        <ChevronLeftIcon size={18} /> Kits
+      </span>
       <PhoneHeader title="Kit" />
       <DesktopHeader title="Kit" />
       <div className={styles.scrollArea}>

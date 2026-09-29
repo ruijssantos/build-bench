@@ -1,12 +1,9 @@
-import Link from "next/link";
 import { Suspense } from "react";
 import { preconnect } from "react-dom";
 
 import { BenchError } from "@/components/bench/BenchError";
-import { ChevronLeftIcon } from "@/components/icons";
 import { KitDetailSection } from "@/components/kits/detail/KitDetailSection";
 import { KitDetailSkeleton } from "@/components/kits/detail/KitDetailSkeleton";
-import styles from "@/components/wishlist/Wishlist.module.css";
 import { blobStoreOrigin } from "@/lib/box-art";
 
 /**
@@ -18,25 +15,20 @@ import { blobStoreOrigin } from "@/lib/box-art";
  * `ROUTES_THAT_MUST_PRERENDER` in `scripts/check-perf-budget.ts` — a
  * dynamic segment emits no matching `.html` for that check to find.
  *
- * The breadcrumb needs no kit data, so it stays outside the Suspense
- * boundary — the one piece of this screen genuinely free to render before
- * the id resolves.
+ * The breadcrumb lives inside the boundary, in `KitDetailSection`: this page
+ * shows wishlist kits as well as stashed ones, and which list it leads back
+ * to depends on the kit's status. The skeleton renders a placeholder crumb of
+ * the same shape so nothing shifts when the kit resolves.
  */
 export default function KitDetailPage(props: PageProps<"/kits/[id]">) {
   const blobOrigin = blobStoreOrigin();
   if (blobOrigin) preconnect(blobOrigin);
 
   return (
-    <>
-      <Link href="/kits" className={styles.crumb}>
-        <ChevronLeftIcon size={18} /> Stash
-      </Link>
-
-      <BenchError label="Kit">
-        <Suspense fallback={<KitDetailSkeleton />}>
-          <KitDetailSection params={props.params} />
-        </Suspense>
-      </BenchError>
-    </>
+    <BenchError label="Kit">
+      <Suspense fallback={<KitDetailSkeleton />}>
+        <KitDetailSection params={props.params} />
+      </Suspense>
+    </BenchError>
   );
 }

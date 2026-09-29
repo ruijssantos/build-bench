@@ -1,5 +1,9 @@
+import Link from "next/link";
+
 import { removeKit } from "@/app/(bench)/kits/actions";
 import { ExternalLinkIcon, TrashIcon } from "@/components/icons";
+import { ReadyLine } from "@/components/kits/ReadyLine";
+import type { KitReadiness } from "@/db/repositories/kit-paint-requirements";
 import type { KitRow } from "@/db/repositories/kits";
 
 import { EditKitTrigger } from "./EditKitTrigger";
@@ -10,12 +14,26 @@ import styles from "./Wishlist.module.css";
 /** One saved kit — box art, identity, and the things you do with it: mark it
  * bought, edit its properties, open its link, or remove it. A Server
  * Component; the only client code in it is the bought tick's pending state
- * and the Edit dialog, each its own small island. */
-export function SavedKitCard({ kit, priority }: { kit: KitRow; priority?: boolean }) {
+ * and the Edit dialog, each its own small island.
+ *
+ * Like `StashKitCard`, the whole card links to `/kits/[id]` — a kit is the
+ * same object on either screen, and manuals, paints and research are as
+ * useful before buying it as after. Same stretched-overlay link, for the same
+ * reason (no controls nested inside an `<a>`). */
+export function SavedKitCard({
+  kit,
+  priority,
+  readiness,
+}: {
+  kit: KitRow;
+  priority?: boolean;
+  readiness: KitReadiness | undefined;
+}) {
   const title = kit.name ?? "kit";
 
   return (
     <div className={styles.card}>
+      <Link href={`/kits/${kit.id}`} className={styles.cardStretchLink} aria-label={`Open ${title}`} />
       <KitCardBody
         imageUrl={kit.imageUrl}
         brand={kit.brand}
@@ -26,6 +44,7 @@ export function SavedKitCard({ kit, priority }: { kit: KitRow; priority?: boolea
         notes={kit.notes}
         priority={priority}
         kit={kit}
+        extra={<ReadyLine readiness={readiness} wanted />}
       />
       <div className={styles.savedCardActions}>
         <MarkBoughtButton id={kit.id} />
