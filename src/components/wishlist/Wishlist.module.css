@@ -318,6 +318,35 @@
    buttons/links/forms — invalid HTML, and a real hydration risk. Absolutely
    covers `.card` at z-index 1; every actual control raises itself to 2 (see
    `.savedCardActions`, `.artEditButton`) so it stays clickable on top. */
+/* A Stash card in a state that needs telling apart at a glance (see
+   `StashKitCard`): the status chip's own tint as the card, an outline in the
+   status colour, the status chip filled solid so it stays readable on the
+   tint, and the neutral chips lifted to cream so they stay neutral. */
+.cardBuilding {
+  background: var(--accent-tint);
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--card));
+}
+
+.cardBuilt {
+  background: var(--ok-tint);
+  border-color: color-mix(in srgb, var(--ok) 45%, var(--card));
+}
+
+.cardBuilding .chip,
+.cardBuilt .chip {
+  background: var(--card);
+}
+
+.cardBuilding .chipStatusBuilding {
+  background: var(--accent);
+  color: var(--card);
+}
+
+.cardBuilt .chipStatusBuilt {
+  background: var(--ok);
+  color: var(--card);
+}
+
 .cardStretchLink {
   position: absolute;
   inset: 0;
