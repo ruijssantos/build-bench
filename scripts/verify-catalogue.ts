@@ -2,7 +2,9 @@ import { readFileSync } from "node:fs";
 
 import { deltaE2000, type Lab } from "../src/catalogue/colour-match";
 import { resolveForeignCode } from "../src/catalogue/equivalents";
+import { LP_ACRYLIC_PAIRS } from "../src/catalogue/lp-equivalents";
 import { normalizeExtractedPaints } from "../src/domain/kit-paint-extraction";
+import { bucketPaintRequirements, codesToCheckOnShelf } from "../src/domain/kit-paints";
 
 /**
  * CI gate — docs/PLAN.md §2.2. Fails the build if any paint code the app
@@ -217,12 +219,54 @@ if (deltaEFailures.length > 0) {
   }
 }
 
+// 7. The LP → X/XF chart (seed/lp-acrylic-equivalents.json, transcribed by
+// hand from Tamiya's PDF). Every pair must be a real LP and a real X/XF
+// bottle, once each; a typo here would send an LP to Equivalents on the
+// strength of a paint that doesn't exist, or silently leave it in Missing.
+const lpSeen = new Set<string>();
+const badLpPairs = LP_ACRYLIC_PAIRS.filter(([lp, acrylic]) => {
+  const bad =
+    !catalogueCodes.has(lp) ||
+    !catalogueCodes.has(acrylic) ||
+    !/^LP-\d+$/.test(lp) ||
+    !/^XF?-\d+$/.test(acrylic) ||
+    lpSeen.has(lp);
+  lpSeen.add(lp);
+  return bad;
+});
+if (badLpPairs.length > 0) {
+  failed = true;
+  console.error(`\n✗ ${badLpPairs.length} LP → X/XF pair(s) are malformed, duplicated or not in the catalogue:`);
+  for (const [lp, acrylic] of badLpPairs) console.error(`  - ${lp} → ${acrylic}`);
+}
+
+// And the bucketing rule itself, end to end: an owned LP is Owned, an LP
+// whose twin is owned is an Equivalent (and not Missing), an LP with neither
+// is Missing, and the shelf lookup asks about the twin at all.
+{
+  const reqs = ["LP-1", "LP-11", "LP-3", "LP-6"].map((paintCode) => ({ rawLabel: paintCode, paintCode }));
+  const lookedUp = new Set(codesToCheckOnShelf(reqs.map((r) => r.paintCode)));
+  const buckets = bucketPaintRequirements(reqs, new Set(["LP-1", "X-11"]));
+  const got = {
+    owned: buckets.owned.map((p) => p.code).join(),
+    equivalents: buckets.equivalents.map((p) => `${p.code}>${p.substitute.code}`).join(),
+    missing: buckets.missing.map((p) => p.code).join(),
+    lookedUp: ["X-1", "X-11", "XF-1"].every((c) => lookedUp.has(c)),
+  };
+  const want = { owned: "LP-1", equivalents: "LP-11>X-11", missing: "LP-3,LP-6", lookedUp: true };
+  if (JSON.stringify(got) !== JSON.stringify(want)) {
+    failed = true;
+    console.error(`\n✗ LP equivalents bucketed wrongly: got ${JSON.stringify(got)}, want ${JSON.stringify(want)}`);
+  }
+}
+
 if (!failed) {
   console.log(
     "✓ Every known-inventory code is present, every paint's family resolves to a ratio rule, every " +
       `equivalent (${equivalents.length}) resolves to a real catalogue code and brand, foreign ` +
-      "codes resolve as printed, labels resolve without a codeGuess, and CIEDE2000 matches its " +
-      `${CIEDE2000_CASES.length} reference pairs.`,
+      "codes resolve as printed, labels resolve without a codeGuess, CIEDE2000 matches its " +
+      `${CIEDE2000_CASES.length} reference pairs, and the ${LP_ACRYLIC_PAIRS.length} LP → X/XF pairs ` +
+      "are real codes that bucket as Equivalents.",
   );
 }
 

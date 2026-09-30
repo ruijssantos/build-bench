@@ -43,7 +43,7 @@ export async function ReadyToBuild() {
     <div className={cardStyles.itemList}>
       {ready.slice(0, MAX_ROWS).map((kit) => {
         const counts = byKit.get(kit.id);
-        const total = counts ? counts.ownedCount + counts.missingCount : 0;
+        const total = counts ? counts.ownedCount + counts.equivalentCount + counts.missingCount : 0;
         return (
           <Link href={`/kits/${kit.id}`} className={`${cardStyles.itemRow} ${styles.rowLink}`} key={kit.id}>
             <KitThumb src={kit.imageUrl} alt="" />

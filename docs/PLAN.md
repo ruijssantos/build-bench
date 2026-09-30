@@ -2001,6 +2001,26 @@ that bundle — brought it to 149.5 kB, below where it started. `markKitBought` 
 invalidates `kitTag(id)`, which it never needed before because no page showed a single
 wishlist kit.
 
+### Equivalents — an LP you don't own, covered by the X/XF you do
+
+Some kits call out Tamiya's LP lacquers. Tamiya's own LP Color Compatibility Chart (2024.4)
+names an X/XF acrylic for 51 of LP-1…LP-85; transcribed by hand into
+`seed/lp-acrylic-equivalents.json`, only that Acrylic column (TS/AS sprays are left out —
+the owner's rule is "I have it in X or XF"). No migration.
+
+- The paint list still stores the LP the manual printed. Whether it's covered is decided on
+  read against the shelf, so buying or using up the X/XF bottle moves it between **Missing**
+  and a new **Equivalents** bucket by itself. An LP you own outright stays in Owned.
+- Equivalents are not missing: they're off the "to buy" count and the shop run, and a kit
+  whose only gaps are equivalents is Ready to build. They count as owned in "Own 14 of 17",
+  which says "(2 via X/XF)" so the stand-ins stay visible.
+- The chip reads `LP-11 → X-11` and opens the acrylic on the Thinner bench — that's the bottle
+  being thinned, and LP needs a different thinner anyway.
+- Card counts and the detail page are computed in different places (SQL aggregate vs.
+  `bucketPaintRequirements`), so both read the same pairs: SQL through a `case` join in
+  `db/repositories/lp-substitute.ts`. `catalogue:verify` checks every pair is a real LP and a
+  real X/XF, and that the bucketing puts each case where it belongs.
+
 ---
 
 ## 8. Non-goals
