@@ -13,6 +13,7 @@ import {
 } from "@/db/repositories/inventory";
 import { normalizePaintCode } from "@/domain/paint-code";
 import {
+  defaultFormFor,
   isInventoryForm,
   isInventoryState,
   toggledLowState,
@@ -93,6 +94,33 @@ export async function addInventoryItem(input: AddInventoryItemInput): Promise<In
     quantity,
     notes: readText(input.notes),
   });
+
+  invalidate(code);
+  return { ok: true };
+}
+
+/**
+ * One click from a Missing chip (kit Paints panel) or the Dashboard's shop
+ * run: "I bought this" — one of it, in the form the code implies
+ * (`defaultFormFor`: a bottle, or a spray can for TS/AS/PS), no dialog.
+ * Anything more particular (a decanted jar, a quantity, notes) is still the
+ * Paints screen's Add or Edit.
+ *
+ * Idempotent on purpose. A paint shows as Missing precisely because it has no
+ * shelf row, so a row already being there means a double click, or a second
+ * tab that got there first — either way the shelf already says what the
+ * click meant, and adding a second bottle would say something it didn't.
+ */
+export async function markPaintBought(rawCode: string): Promise<InventoryResult> {
+  const code = normalizePaintCode(rawCode);
+  if (!getCataloguePaint(code)) {
+    return { ok: false, error: "That isn't a Tamiya code the catalogue knows." };
+  }
+
+  const form = defaultFormFor(code);
+  if (!(await findInventoryItem(code, form))) {
+    await createInventoryItem({ paintCode: code, form, state: null, quantity: 1, notes: null });
+  }
 
   invalidate(code);
   return { ok: true };

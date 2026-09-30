@@ -1,5 +1,5 @@
 import { gunzeColour, nearestTamiyaPaints, type ColourMatch } from "@/catalogue/colour-match";
-import { acrylicForLp } from "@/catalogue/lp-equivalents";
+import { acrylicTwin } from "@/catalogue/acrylic-twins";
 import { getCataloguePaint } from "@/catalogue/paints";
 import { foreignCodeInLabel } from "@/domain/kit-paint-extraction";
 import { comparePaintCodes } from "@/domain/paint-code";
@@ -23,8 +23,9 @@ export interface MissingPaintDisplay {
 }
 
 /**
- * An LP (lacquer) callout you don't own, whose X/XF twin — per Tamiya's own
- * LP compatibility chart (`catalogue/lp-equivalents.ts`) — is on the shelf.
+ * An LP (lacquer) or TS (spray) callout you don't own, whose X/XF twin — per
+ * Tamiya's own LP compatibility chart (`catalogue/acrylic-twins.ts`) — is on
+ * the shelf.
  *
  * Not Missing: there is nothing to buy. Not Owned either, because it isn't
  * the paint the manual printed, and the difference is worth seeing — it
@@ -85,12 +86,12 @@ function describe(code: string): { code: string; name: string; hex: string } {
 }
 
 /** Every code whose ownership `bucketPaintRequirements` needs to know: the
- * called-for codes, plus the acrylic twin of each LP among them. A caller
- * that only checks the first set gets every LP back as Missing. */
+ * called-for codes, plus the acrylic twin of each LP/TS among them. A
+ * caller that only checks the first set gets every one back as Missing. */
 export function codesToCheckOnShelf(paintCodes: string[]): string[] {
   const codes = new Set(paintCodes);
   for (const code of paintCodes) {
-    const acrylic = acrylicForLp(code);
+    const acrylic = acrylicTwin(code);
     if (acrylic) codes.add(acrylic);
   }
   return [...codes];
@@ -116,7 +117,7 @@ export function bucketPaintRequirements(
   for (const req of requirements) {
     if (req.paintCode) {
       const display = describe(req.paintCode);
-      const acrylic = acrylicForLp(req.paintCode);
+      const acrylic = acrylicTwin(req.paintCode);
       if (ownedCodes.has(req.paintCode)) {
         owned.set(req.paintCode, display);
       } else if (acrylic && ownedCodes.has(acrylic)) {

@@ -13,7 +13,7 @@ import type { ReadinessCounts } from "@/domain/kit-paints";
  * shelf means you already have every paint rather than that it's ready to
  * build.
  *
- * An LP covered by an owned X/XF twin counts as owned here (it's nothing to
+ * An LP or TS covered by an owned X/XF twin counts as owned here (it's nothing to
  * buy, and nothing stopping the build), with the count of them shown so
  * "Own 17 of 17" never hides that three of those are stand-ins.
  */

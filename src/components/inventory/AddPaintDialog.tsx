@@ -5,6 +5,7 @@ import { useState } from "react";
 import { addInventoryItem } from "@/app/(bench)/inventory/actions";
 import { Modal } from "@/components/bench/Modal";
 import type { PaintHit } from "@/components/thinner/paint-search-index";
+import { defaultFormFor } from "@/domain/inventory";
 
 import { ItemFields, type ItemFieldsValue } from "./ItemFields";
 import { PaintPicker } from "./PaintPicker";
@@ -34,7 +35,7 @@ export function AddPaintDialog({ onClose }: { onClose: () => void }) {
   function pick(hit: PaintHit | null) {
     setPaint(hit);
     setError(null);
-    if (hit && (hit.code.startsWith("TS-") || hit.code.startsWith("AS-") || hit.code.startsWith("PS-"))) {
+    if (hit && defaultFormFor(hit.code) === "spray_can") {
       setFields((current) => ({ ...current, form: "spray_can" }));
     }
   }

@@ -8,7 +8,7 @@ import { inventoryItem, kit, kitPaintRequirement } from "@/db/schema";
 import { INVENTORY_TAG } from "./inventory";
 import { KIT_REQUIREMENTS_TAG } from "./kit-paint-requirements";
 import { KIT_TAG } from "./kits";
-import { lpAcrylicCode, substituteShelf } from "./lp-substitute";
+import { acrylicTwinCode, substituteShelf } from "./acrylic-twin-shelf";
 
 /**
  * "Next shop run" — the Dashboard's one genuinely new query (docs/PLAN.md
@@ -53,7 +53,7 @@ async function queryShopRunPaints(): Promise<ShopRunPaint[]> {
   // called out on several parts of the same manual, and that is one kit, not
   // three.
   //
-  // The second anti-join drops an LP whose X/XF twin is on the shelf — the
+  // The second anti-join drops an LP or TS whose X/XF twin is on the shelf — the
   // Equivalents bucket: nothing to buy (see `substituteShelf`).
   const rows = await db
     .select({
@@ -63,7 +63,7 @@ async function queryShopRunPaints(): Promise<ShopRunPaint[]> {
     .from(kitPaintRequirement)
     .innerJoin(kit, eq(kit.id, kitPaintRequirement.kitId))
     .leftJoin(inventoryItem, eq(inventoryItem.paintCode, kitPaintRequirement.paintCode))
-    .leftJoin(substituteShelf, eq(substituteShelf.paintCode, lpAcrylicCode(kitPaintRequirement.paintCode)))
+    .leftJoin(substituteShelf, eq(substituteShelf.paintCode, acrylicTwinCode(kitPaintRequirement.paintCode)))
     .where(
       and(
         inArray(kit.status, [...NEEDED_STATUSES]),

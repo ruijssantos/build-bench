@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 
 import { deltaE2000, type Lab } from "../src/catalogue/colour-match";
 import { resolveForeignCode } from "../src/catalogue/equivalents";
-import { LP_ACRYLIC_PAIRS } from "../src/catalogue/lp-equivalents";
+import { ACRYLIC_TWIN_PAIRS } from "../src/catalogue/acrylic-twins";
 import { normalizeExtractedPaints } from "../src/domain/kit-paint-extraction";
 import { bucketPaintRequirements, codesToCheckOnShelf } from "../src/domain/kit-paints";
 
@@ -219,44 +219,52 @@ if (deltaEFailures.length > 0) {
   }
 }
 
-// 7. The LP → X/XF chart (seed/lp-acrylic-equivalents.json, transcribed by
-// hand from Tamiya's PDF). Every pair must be a real LP and a real X/XF
-// bottle, once each; a typo here would send an LP to Equivalents on the
+// 7. The LP/TS → X/XF chart (seed/tamiya-lp-chart.json, transcribed by hand
+// from Tamiya's PDF). Every pair must be a real LP or TS and a real X/XF
+// bottle, once each; a typo here would send a callout to Equivalents on the
 // strength of a paint that doesn't exist, or silently leave it in Missing.
-const lpSeen = new Set<string>();
-const badLpPairs = LP_ACRYLIC_PAIRS.filter(([lp, acrylic]) => {
+const twinSeen = new Set<string>();
+const badTwinPairs = ACRYLIC_TWIN_PAIRS.filter(([code, acrylic]) => {
   const bad =
-    !catalogueCodes.has(lp) ||
+    !catalogueCodes.has(code) ||
     !catalogueCodes.has(acrylic) ||
-    !/^LP-\d+$/.test(lp) ||
+    !/^(LP|TS)-\d+$/.test(code) ||
     !/^XF?-\d+$/.test(acrylic) ||
-    lpSeen.has(lp);
-  lpSeen.add(lp);
+    twinSeen.has(code);
+  twinSeen.add(code);
   return bad;
 });
-if (badLpPairs.length > 0) {
+if (badTwinPairs.length > 0) {
   failed = true;
-  console.error(`\n✗ ${badLpPairs.length} LP → X/XF pair(s) are malformed, duplicated or not in the catalogue:`);
-  for (const [lp, acrylic] of badLpPairs) console.error(`  - ${lp} → ${acrylic}`);
+  console.error(`\n✗ ${badTwinPairs.length} LP/TS → X/XF pair(s) are malformed, duplicated or not in the catalogue:`);
+  for (const [code, acrylic] of badTwinPairs) console.error(`  - ${code} → ${acrylic}`);
 }
 
-// And the bucketing rule itself, end to end: an owned LP is Owned, an LP
-// whose twin is owned is an Equivalent (and not Missing), an LP with neither
-// is Missing, and the shelf lookup asks about the twin at all.
+// And the bucketing rule itself, end to end: an owned LP is Owned, an LP or
+// TS whose twin is owned is an Equivalent (and not Missing), one with neither
+// is Missing, and the shelf lookup asks about the twins at all.
 {
-  const reqs = ["LP-1", "LP-11", "LP-3", "LP-6"].map((paintCode) => ({ rawLabel: paintCode, paintCode }));
+  const reqs = ["LP-1", "LP-11", "LP-3", "LP-6", "TS-29", "TS-36"].map((paintCode) => ({
+    rawLabel: paintCode,
+    paintCode,
+  }));
   const lookedUp = new Set(codesToCheckOnShelf(reqs.map((r) => r.paintCode)));
-  const buckets = bucketPaintRequirements(reqs, new Set(["LP-1", "X-11"]));
+  const buckets = bucketPaintRequirements(reqs, new Set(["LP-1", "X-11", "X-18"]));
   const got = {
     owned: buckets.owned.map((p) => p.code).join(),
     equivalents: buckets.equivalents.map((p) => `${p.code}>${p.substitute.code}`).join(),
     missing: buckets.missing.map((p) => p.code).join(),
-    lookedUp: ["X-1", "X-11", "XF-1"].every((c) => lookedUp.has(c)),
+    lookedUp: ["X-1", "X-11", "XF-1", "X-18"].every((c) => lookedUp.has(c)),
   };
-  const want = { owned: "LP-1", equivalents: "LP-11>X-11", missing: "LP-3,LP-6", lookedUp: true };
+  const want = {
+    owned: "LP-1",
+    equivalents: "LP-11>X-11,TS-29>X-18",
+    missing: "LP-3,LP-6,TS-36",
+    lookedUp: true,
+  };
   if (JSON.stringify(got) !== JSON.stringify(want)) {
     failed = true;
-    console.error(`\n✗ LP equivalents bucketed wrongly: got ${JSON.stringify(got)}, want ${JSON.stringify(want)}`);
+    console.error(`\n✗ Acrylic equivalents bucketed wrongly: got ${JSON.stringify(got)}, want ${JSON.stringify(want)}`);
   }
 }
 
@@ -265,7 +273,7 @@ if (!failed) {
     "✓ Every known-inventory code is present, every paint's family resolves to a ratio rule, every " +
       `equivalent (${equivalents.length}) resolves to a real catalogue code and brand, foreign ` +
       "codes resolve as printed, labels resolve without a codeGuess, CIEDE2000 matches its " +
-      `${CIEDE2000_CASES.length} reference pairs, and the ${LP_ACRYLIC_PAIRS.length} LP → X/XF pairs ` +
+      `${CIEDE2000_CASES.length} reference pairs, and the ${ACRYLIC_TWIN_PAIRS.length} LP/TS → X/XF pairs ` +
       "are real codes that bucket as Equivalents.",
   );
 }

@@ -77,7 +77,7 @@ function byCode(a: { code: string }, b: { code: string }): number {
  * A kit with no extracted paint list at all is NOT ready — it is unknown,
  * which is a different thing and must not be presented as a green light. So
  * this needs both "nothing missing" and "something was actually checked".
- * An LP covered by an owned X/XF twin counts as checked and present.
+ * An LP or TS covered by an owned X/XF twin counts as checked and present.
  */
 export function isReadyToBuild(readiness: ReadinessCounts | undefined): boolean {
   if (!readiness) return false;

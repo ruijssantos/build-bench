@@ -1248,8 +1248,8 @@ a.iconButton:hover {
    as a `title` tooltip, nothing else — so scanning either list is the same
    motion. Only the colour differs, carrying the same meaning its bucket's
    dot already does (`--ok` / `--alert`, §4.1's "colour carries meaning"
-   rule); Missing is also a link (there's somewhere to go buy it), Owned
-   isn't (nothing to click once you own it). */
+   rule). Owned links to the Thinner bench; Missing is a one-click "Bought"
+   (`.markBought` below). */
 .ownedChip,
 .missingChip {
   display: inline-flex;
@@ -1286,9 +1286,64 @@ a.iconButton:hover {
   color: var(--bg);
 }
 
+/* A Missing paint as a button (`MarkBought`): the kit Paints panel's chip
+   and the Dashboard shop run's tag. At rest it looks exactly like the chip or
+   tag it replaces; hover or focus turns it Owned-green and reads "Bought",
+   because that is where a click sends it. The two labels are stacked in one
+   grid cell so the swap keeps the width, and the row of chips doesn't
+   reflow under the pointer. `:not(:disabled)` lifts specificity over
+   `.missingChip:hover`, which would otherwise paint it red. */
+.markBought {
+  border: 0;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.markBoughtStack {
+  display: inline-grid;
+}
+
+.markBoughtIdle,
+.markBoughtAction {
+  grid-area: 1 / 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.markBoughtAction {
+  visibility: hidden;
+}
+
+.markBought:not(:disabled):hover,
+.markBought:not(:disabled):focus-visible,
+.markBought[data-pending] {
+  background: var(--ok);
+  color: var(--bg);
+}
+
+.markBought:not(:disabled):hover .markBoughtIdle,
+.markBought:not(:disabled):focus-visible .markBoughtIdle,
+.markBought[data-pending] .markBoughtIdle {
+  visibility: hidden;
+}
+
+.markBought:not(:disabled):hover .markBoughtAction,
+.markBought:not(:disabled):focus-visible .markBoughtAction,
+.markBought[data-pending] .markBoughtAction {
+  visibility: visible;
+}
+
+.markBought[data-pending] {
+  cursor: progress;
+  opacity: 0.8;
+}
+
 /* Same chip geometry as Owned/Missing, in Owned's colour — there is nothing
-   to buy — but outlined and dashed rather than filled, because the paint on
-   the shelf isn't the one the manual printed. Links to the acrylic on the
+   to buy — but outlined rather than filled, because the paint on the shelf
+   isn't the one the manual printed. Both swatches show: the colour called
+   for, then the one you'll actually use. Links to the acrylic on the
    Thinner bench: that is the bottle you'll actually thin. */
 .equivalentChip {
   display: inline-flex;
@@ -1296,7 +1351,7 @@ a.iconButton:hover {
   gap: 6px;
   height: 26px;
   padding: 0 10px 0 6px;
-  border: 1px dashed var(--ok);
+  border: 1px solid var(--ok);
   border-radius: var(--radius-pill);
   font-family: var(--font-mono);
   font-size: 11px;

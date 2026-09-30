@@ -1,10 +1,10 @@
 import Link from "next/link";
 
 import inventoryStyles from "@/components/inventory/Inventory.module.css";
+import { MarkBought } from "@/components/kits/MarkBought";
 import styles from "@/components/wishlist/Wishlist.module.css";
 import { listOwnedPaintCodes } from "@/db/repositories/inventory";
 import { listKitPaintRequirements } from "@/db/repositories/kit-paint-requirements";
-import { paintSearchUrl } from "@/domain/inventory";
 import { bucketPaintRequirements, codesToCheckOnShelf } from "@/domain/kit-paints";
 
 import { DismissUnresolved } from "./DismissUnresolved";
@@ -75,18 +75,10 @@ export async function PaintsPanel({ kitId }: { kitId: number }) {
           {buckets.missing.length > 0 ? (
             <div className={styles.cardChips}>
               {buckets.missing.map((p) => (
-                <a
-                  key={p.code}
-                  className={styles.missingChip}
-                  href={paintSearchUrl(p.code, p.name)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  title={p.name}
-                  aria-label={`${p.code}, ${p.name} — find somewhere selling it`}
-                >
+                <MarkBought key={p.code} code={p.code} name={p.name} className={styles.missingChip}>
                   <span className={styles.paintDot} style={{ background: p.hex }} />
                   {p.code}
-                </a>
+                </MarkBought>
               ))}
             </div>
           ) : (
@@ -109,9 +101,10 @@ export async function PaintsPanel({ kitId }: { kitId: number }) {
                   title={`${p.code} ${p.name} — you own ${p.substitute.code} ${p.substitute.name}, Tamiya's acrylic match. Colours may vary slightly.`}
                   aria-label={`${p.code}, ${p.name} — covered by ${p.substitute.code}, ${p.substitute.name}, which you own. Open ${p.substitute.code} on the Thinner bench`}
                 >
-                  <span className={styles.paintDot} style={{ background: p.substitute.hex }} />
+                  <span className={styles.paintDot} style={{ background: p.hex }} />
                   {p.code}
                   <span className={styles.equivalentArrow} aria-hidden="true">→</span>
+                  <span className={styles.paintDot} style={{ background: p.substitute.hex }} />
                   {p.substitute.code}
                 </Link>
               ))}

@@ -1,4 +1,5 @@
 import { LowBottleIcon } from "@/components/icons";
+import { MarkBought } from "@/components/kits/MarkBought";
 import cardStyles from "@/components/wishlist/Wishlist.module.css";
 import { listInventory } from "@/db/repositories/inventory";
 import { listShopRunPaints } from "@/db/repositories/shop-run";
@@ -18,6 +19,9 @@ import styles from "./Dashboard.module.css";
  * This is the persisted `shopping_list_item` table's replacement (§7, §8):
  * derived on read, so there is no list to tick stale and nothing to keep in
  * sync with the shelf.
+ *
+ * A Missing row's tag is a one-click "Bought" (`MarkBought`): the row drops
+ * off the run on the re-render, and every kit waiting on it moves along.
  */
 export async function ShopRun() {
   const [missing, shelf] = await Promise.all([listShopRunPaints(), listInventory()]);
@@ -53,7 +57,9 @@ export async function ShopRun() {
               </span>
             </span>
             {entry.reason === "missing" ? (
-              <span className={styles.tag}>Missing</span>
+              <MarkBought code={entry.code} name={entry.name} className={styles.tag}>
+                Missing
+              </MarkBought>
             ) : (
               <span className={styles.tag}>
                 <LowBottleIcon size={12} />

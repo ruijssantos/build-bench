@@ -6,7 +6,7 @@ import { db } from "@/db/client";
 import { inventoryItem, kit, kitPaintRequirement } from "@/db/schema";
 
 import { INVENTORY_TAG } from "./inventory";
-import { lpAcrylicCode, substituteShelf } from "./lp-substitute";
+import { acrylicTwinCode, substituteShelf } from "./acrylic-twin-shelf";
 import { kitTag, KIT_TAG } from "./kits";
 
 /**
@@ -175,7 +175,7 @@ async function queryKitReadiness(): Promise<KitReadiness[]> {
     .from(kitPaintRequirement)
     .innerJoin(kit, eq(kit.id, kitPaintRequirement.kitId))
     .leftJoin(inventoryItem, eq(inventoryItem.paintCode, kitPaintRequirement.paintCode))
-    .leftJoin(substituteShelf, eq(substituteShelf.paintCode, lpAcrylicCode(kitPaintRequirement.paintCode)))
+    .leftJoin(substituteShelf, eq(substituteShelf.paintCode, acrylicTwinCode(kitPaintRequirement.paintCode)))
     .groupBy(kitPaintRequirement.kitId);
 
   return rows.map((row) => ({
