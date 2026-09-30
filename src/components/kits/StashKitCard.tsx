@@ -24,7 +24,18 @@ import { ReadyLine } from "./ReadyLine";
  * would nest the art-edit button (and the actions row's own buttons, links
  * and form) inside it: invalid HTML, and a real hydration risk. Every actual
  * control raises its own `z-index` above the overlay instead.
+ *
+ * The card itself carries the kit's status, not just its chip: Building
+ * wears the accent's tint and outline, Built the ok colour's, and the status
+ * chip fills solid so it doesn't sink into that tint. Stash stays the plain
+ * card — it's most of the grid, and the resting state. Same two semantic
+ * colours the chips already used, so no new chrome colour (§4.1).
  */
+const CARD_STATUS_CLASS: Record<string, string | undefined> = {
+  building: styles.cardBuilding,
+  built: styles.cardBuilt,
+};
+
 export function StashKitCard({
   kit,
   priority,
@@ -38,7 +49,7 @@ export function StashKitCard({
   const title = kit.name ?? "kit";
 
   return (
-    <div className={styles.card}>
+    <div className={`${styles.card} ${CARD_STATUS_CLASS[status] ?? ""}`}>
       <Link href={`/kits/${kit.id}`} className={styles.cardStretchLink} aria-label={`Open ${title}`} />
       <KitCardBody
         imageUrl={kit.imageUrl}

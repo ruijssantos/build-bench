@@ -2001,6 +2001,52 @@ that bundle — brought it to 149.5 kB, below where it started. `markKitBought` 
 invalidates `kitTag(id)`, which it never needed before because no page showed a single
 wishlist kit.
 
+### Equivalents — an LP or TS you don't own, covered by the X/XF you do
+
+Some kits call out Tamiya's LP lacquers or TS sprays. Tamiya's own LP Color Compatibility Chart
+(2024.4) lists, per LP colour, its Acrylic, Enamel, TS and AS matches. Transcribed by hand into
+`seed/tamiya-lp-chart.json`: the 51 rows with an X/XF entry, plus that row's TS where it has
+one (31 do). That gives LP → X/XF directly, and TS → X/XF by reading across a row — X-18 and
+TS-29 on LP-5's row are the same colour. A TS the chart doesn't list (TS-36, fluorescent red,
+has no LP) gets no match; that's a gap in the source, not a claim. AS and enamel are left out —
+the owner's rule is "I have it in X or XF". No migration.
+
+- The paint list still stores the code the manual printed. Whether it's covered is decided on
+  read against the shelf, so buying or using up the X/XF bottle moves it between **Missing**
+  and a new **Equivalents** bucket by itself. An LP/TS you own outright stays in Owned.
+- Equivalents are not missing: they're off the "to buy" count and the shop run, and a kit
+  whose only gaps are equivalents is Ready to build. On the kit cards they simply count as
+  owned ("Own 14 of 17") — the detail page's Equivalents section is where they're itemised.
+  (A first cut added "(2 via X/XF)" to the card line; the owner found it noise.) A card with
+  nothing missing reads just "Ready to build" / "You have them all", without the count.
+- The chip reads `● LP-8 → ● X-8` — both swatches, solid outline in Owned's green — and opens
+  the acrylic on the Thinner bench: that's the bottle being thinned.
+- Card counts and the detail page are computed in different places (SQL aggregate vs.
+  `bucketPaintRequirements`), so both read the same pairs: SQL through a `case` join in
+  `db/repositories/acrylic-twin-shelf.ts`. `catalogue:verify` checks every pair is a real
+  LP/TS and a real X/XF, and that the bucketing puts each case where it belongs.
+
+### Missing is one click from Owned
+
+A Missing chip used to link to a web search for the paint. What the owner actually needed
+was the step after the shop: getting the paint onto the shelf without re-typing it in the
+Paints screen one code at a time. So the Missing chip on the kit Paints panel, and the Missing
+tag on the Dashboard's shop run, are now a **Bought** button (`MarkBought` →
+`markPaintBought`). At rest they look as before; hover or focus turns them green and reads
+"Bought". The two labels share one grid cell, so the chip keeps its width and the row doesn't
+reflow under the pointer.
+
+- One shelf row, quantity 1, in the form the code implies (`defaultFormFor`: spray can for
+  TS/AS/PS, bottle otherwise — the Add dialog's pre-selection now uses the same function).
+  Anything more particular is still Add/Edit on the Paints screen.
+- Idempotent: a second click (or a second tab) finds the row already there and adds nothing.
+- The shop run's **Low** tag gets the same treatment (`MarkBought restock` →
+  `markLowRestocked`): the paint is already on the shelf, so "Bought" clears the running-low
+  mark on every row for that code — the run lists low paints distinct by code — and leaves
+  quantity alone.
+- The re-render does the rest — Owned, the shop run, the Stash counts and the Paints screen
+  all read the shelf, so nothing else needs telling.
+
 ---
 
 ## 8. Non-goals

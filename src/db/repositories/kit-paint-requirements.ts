@@ -6,6 +6,7 @@ import { db } from "@/db/client";
 import { inventoryItem, kit, kitPaintRequirement } from "@/db/schema";
 
 import { INVENTORY_TAG } from "./inventory";
+import { acrylicTwinCode, substituteShelf } from "./acrylic-twin-shelf";
 import { kitTag, KIT_TAG } from "./kits";
 
 /**
@@ -128,6 +129,8 @@ export async function replaceManualPaintRequirements(
 export interface KitReadiness {
   kitId: number;
   ownedCount: number;
+  /** See `ReadinessCounts.equivalentCount`. */
+  equivalentCount: number;
   missingCount: number;
   unresolvedCount: number;
 }
@@ -144,7 +147,7 @@ export interface KitReadiness {
  * Counts *distinct* paint codes: one code can have several shelf rows (a
  * spray can and the jar decanted from it), and the left join fans out to one
  * row per matching shelf entry, which `count(distinct …)` collapses back
- * down rather than over-counting.
+ * down rather than over-counting. The same goes for the substitute join.
  */
 export async function getKitReadiness(): Promise<KitReadiness[]> {
   await connection();
@@ -162,7 +165,8 @@ async function queryKitReadiness(): Promise<KitReadiness[]> {
     .select({
       kitId: kitPaintRequirement.kitId,
       ownedCount: sql<number>`count(distinct ${kitPaintRequirement.paintCode}) filter (where ${kitPaintRequirement.paintCode} is not null and ${inventoryItem.paintCode} is not null)`,
-      missingCount: sql<number>`count(distinct ${kitPaintRequirement.paintCode}) filter (where ${kitPaintRequirement.paintCode} is not null and ${inventoryItem.paintCode} is null)`,
+      equivalentCount: sql<number>`count(distinct ${kitPaintRequirement.paintCode}) filter (where ${kitPaintRequirement.paintCode} is not null and ${inventoryItem.paintCode} is null and ${substituteShelf.paintCode} is not null)`,
+      missingCount: sql<number>`count(distinct ${kitPaintRequirement.paintCode}) filter (where ${kitPaintRequirement.paintCode} is not null and ${inventoryItem.paintCode} is null and ${substituteShelf.paintCode} is null)`,
       // `dismissed_at is null` here as well as in `bucketPaintRequirements`:
       // the card's count and the detail page's have to be the same number, and
       // they are computed by different code in different places.
@@ -171,11 +175,13 @@ async function queryKitReadiness(): Promise<KitReadiness[]> {
     .from(kitPaintRequirement)
     .innerJoin(kit, eq(kit.id, kitPaintRequirement.kitId))
     .leftJoin(inventoryItem, eq(inventoryItem.paintCode, kitPaintRequirement.paintCode))
+    .leftJoin(substituteShelf, eq(substituteShelf.paintCode, acrylicTwinCode(kitPaintRequirement.paintCode)))
     .groupBy(kitPaintRequirement.kitId);
 
   return rows.map((row) => ({
     kitId: row.kitId,
     ownedCount: Number(row.ownedCount),
+    equivalentCount: Number(row.equivalentCount),
     missingCount: Number(row.missingCount),
     unresolvedCount: Number(row.unresolvedCount),
   }));

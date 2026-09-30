@@ -7,9 +7,7 @@ import {
   formLabel,
   isInventoryForm,
   isInventoryState,
-  isRunningLow,
   paintSearchUrl,
-  stateLabel,
 } from "@/domain/inventory";
 
 import { EditItemTrigger } from "./EditItemTrigger";
@@ -24,8 +22,16 @@ import styles from "./Inventory.module.css";
  * A real `<table>` rather than a stack of divs: it is a table, it is read by
  * scanning down one column, and the header row is what makes the scan work.
  * Family — the one column that only earns its place on a desk (§4.2) — drops
- * out below 900px; what stays is the paint, its state, and the four things
- * you tap.
+ * out below 900px; what stays is the paint and the four things you tap.
+ *
+ * State *is* the Low toggle. A paint on this screen is on the shelf by
+ * definition, so a read-only "In Stock" chip told you nothing the row's
+ * existence didn't; the only state that varies is running low, and the
+ * control that sets it shows it just as well. On a desk it sits in the
+ * State column (still sortable, so the low ones gather); on a phone that
+ * column drops out with Family and the toggle leads the actions instead —
+ * one of the two copies is always `display: none`, so it's never in the
+ * page twice for a screen reader.
  *
  * A Server Component. The only client code in a row is the pencil, which owns
  * an open/closed boolean; the sort headers are links, the running-low and
@@ -52,8 +58,8 @@ export function InventoryTable({
             <th className={`${styles.colState} ${styles.deskColumn}`} scope="col">
               <SortableHeader label="State" column="state" params={params} />
             </th>
-            <th className={styles.colActions} scope="col">
-              <span className={styles.srOnly}>Actions</span>
+            <th className={`${styles.colActions} ${styles.actionsHeader}`} scope="col">
+              Actions
             </th>
           </tr>
         </thead>
@@ -94,18 +100,14 @@ export function InventoryTable({
                 </td>
 
                 <td className={`${styles.colState} ${styles.deskColumn}`}>
-                  <span
-                    className={`${styles.stateChip} ${
-                      isRunningLow(item.state) ? styles.stateChipLow : ""
-                    }`}
-                  >
-                    {stateLabel(item.state)}
-                  </span>
+                  <LowToggle id={item.id} state={item.state} paintCode={item.paintCode} />
                 </td>
 
                 <td className={styles.colActions}>
                   <div className={styles.actions}>
-                    <LowToggle id={item.id} state={item.state} paintCode={item.paintCode} />
+                    <span className={styles.phoneOnly}>
+                      <LowToggle id={item.id} state={item.state} paintCode={item.paintCode} />
+                    </span>
 
                     <EditItemTrigger
                       item={{

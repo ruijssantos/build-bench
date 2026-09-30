@@ -1,10 +1,11 @@
 import { gunzeColour, nearestTamiyaPaints, type ColourMatch } from "@/catalogue/colour-match";
+import { acrylicTwin } from "@/catalogue/acrylic-twins";
 import { getCataloguePaint } from "@/catalogue/paints";
 import { foreignCodeInLabel } from "@/domain/kit-paint-extraction";
 import { comparePaintCodes } from "@/domain/paint-code";
 
 /**
- * Paints vs. the shelf — docs/PLAN.md §6 Phase 4a: three buckets, derived,
+ * Paints vs. the shelf — docs/PLAN.md §6 Phase 4a: four buckets, derived,
  * no new table. Pure — no I/O — so the detail page's Paints panel and any
  * future screen that wants the same view can share it.
  */
@@ -19,6 +20,24 @@ export interface MissingPaintDisplay {
   code: string;
   name: string;
   hex: string;
+}
+
+/**
+ * An LP (lacquer) or TS (spray) callout you don't own, whose X/XF twin — per
+ * Tamiya's own LP compatibility chart (`catalogue/acrylic-twins.ts`) — is on
+ * the shelf.
+ *
+ * Not Missing: there is nothing to buy. Not Owned either, because it isn't
+ * the paint the manual printed, and the difference is worth seeing — it
+ * thins differently, and Tamiya notes the colours "may vary slightly". It
+ * does count towards being able to build the kit (`ReadinessCounts`).
+ */
+export interface EquivalentPaintDisplay {
+  code: string;
+  name: string;
+  hex: string;
+  /** The owned acrylic that stands in for it. */
+  substitute: { code: string; name: string; hex: string };
 }
 
 export interface UnresolvedPaintDisplay {
@@ -41,6 +60,7 @@ export interface UnresolvedPaintDisplay {
 export interface PaintBuckets {
   owned: OwnedPaintDisplay[];
   missing: MissingPaintDisplay[];
+  equivalents: EquivalentPaintDisplay[];
   unresolved: UnresolvedPaintDisplay[];
 }
 
@@ -60,6 +80,23 @@ interface RequirementLike {
  * grey, not dropped. */
 const FALLBACK_HEX = "#c7c9d1";
 
+function describe(code: string): { code: string; name: string; hex: string } {
+  const catalogue = getCataloguePaint(code);
+  return { code, name: catalogue?.name ?? code, hex: catalogue?.hex ?? FALLBACK_HEX };
+}
+
+/** Every code whose ownership `bucketPaintRequirements` needs to know: the
+ * called-for codes, plus the acrylic twin of each LP/TS among them. A
+ * caller that only checks the first set gets every one back as Missing. */
+export function codesToCheckOnShelf(paintCodes: string[]): string[] {
+  const codes = new Set(paintCodes);
+  for (const code of paintCodes) {
+    const acrylic = acrylicTwin(code);
+    if (acrylic) codes.add(acrylic);
+  }
+  return [...codes];
+}
+
 /**
  * Buckets a kit's paint callouts against what's on the shelf. Distinct by
  * `paintCode` within owned/missing (one code, several shelf rows — a spray
@@ -73,18 +110,21 @@ export function bucketPaintRequirements(
 ): PaintBuckets {
   const owned = new Map<string, OwnedPaintDisplay>();
   const missing = new Map<string, MissingPaintDisplay>();
+  const equivalents = new Map<string, EquivalentPaintDisplay>();
   const unresolvedSeen = new Set<string>();
   const unresolved: UnresolvedPaintDisplay[] = [];
 
   for (const req of requirements) {
     if (req.paintCode) {
-      const catalogue = getCataloguePaint(req.paintCode);
-      const display = {
-        code: req.paintCode,
-        name: catalogue?.name ?? req.paintCode,
-        hex: catalogue?.hex ?? FALLBACK_HEX,
-      };
-      (ownedCodes.has(req.paintCode) ? owned : missing).set(req.paintCode, display);
+      const display = describe(req.paintCode);
+      const acrylic = acrylicTwin(req.paintCode);
+      if (ownedCodes.has(req.paintCode)) {
+        owned.set(req.paintCode, display);
+      } else if (acrylic && ownedCodes.has(acrylic)) {
+        equivalents.set(req.paintCode, { ...display, substitute: describe(acrylic) });
+      } else {
+        missing.set(req.paintCode, display);
+      }
     } else if (req.rawLabel && !req.dismissedAt && !unresolvedSeen.has(req.rawLabel)) {
       unresolvedSeen.add(req.rawLabel);
       const foreignCode = foreignCodeInLabel(req.rawLabel);
@@ -100,6 +140,7 @@ export function bucketPaintRequirements(
   return {
     owned: [...owned.values()].sort(byCode),
     missing: [...missing.values()].sort(byCode),
+    equivalents: [...equivalents.values()].sort(byCode),
     unresolved,
   };
 }
@@ -110,6 +151,10 @@ export function bucketPaintRequirements(
  * 3 to buy" from either. */
 export interface ReadinessCounts {
   ownedCount: number;
+  /** Covered by an owned acrylic twin — see `EquivalentPaintDisplay`. On the
+   * "have it" side of every total: a kit whose only gaps are these is ready
+   * to build, and none of them is anything to buy. */
+  equivalentCount: number;
   missingCount: number;
   unresolvedCount: number;
 }
@@ -117,6 +162,7 @@ export interface ReadinessCounts {
 export function readinessCounts(buckets: PaintBuckets): ReadinessCounts {
   return {
     ownedCount: buckets.owned.length,
+    equivalentCount: buckets.equivalents.length,
     missingCount: buckets.missing.length,
     unresolvedCount: buckets.unresolved.length,
   };

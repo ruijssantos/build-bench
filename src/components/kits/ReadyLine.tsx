@@ -12,6 +12,12 @@ import type { ReadinessCounts } from "@/domain/kit-paints";
  * yet, so the gap is paint you'd need rather than paint to buy, and a full
  * shelf means you already have every paint rather than that it's ready to
  * build.
+ *
+ * A complete shelf reads just "Ready to build" (or "You have them all") —
+ * the count adds nothing once nothing is missing. An LP or TS covered by an
+ * owned X/XF twin counts as owned (nothing to buy, nothing stopping the
+ * build) and isn't called out here; the detail page's Equivalents section is
+ * where the stand-ins are shown.
  */
 export function ReadyLine({ readiness, wanted = false }: { readiness: ReadinessCounts | undefined; wanted?: boolean }) {
   if (!readiness) {
@@ -23,7 +29,7 @@ export function ReadyLine({ readiness, wanted = false }: { readiness: ReadinessC
     );
   }
 
-  const resolved = readiness.ownedCount + readiness.missingCount;
+  const have = readiness.ownedCount + readiness.equivalentCount;
 
   return (
     <div className={styles.readyLine}>
@@ -31,16 +37,14 @@ export function ReadyLine({ readiness, wanted = false }: { readiness: ReadinessC
       {readiness.missingCount > 0 ? (
         <>
           <span className={styles.readyCount}>
-            Own {readiness.ownedCount} of {resolved}
+            Own {have} of {have + readiness.missingCount}
           </span>
           <span className={styles.readyBuy}>
             · {readiness.missingCount} {wanted ? "you'd need" : "to buy"}
           </span>
         </>
       ) : (
-        <span className={styles.readyReady}>
-          Own {resolved} of {resolved} · {wanted ? "You have them all" : "Ready to build"}
-        </span>
+        <span className={styles.readyReady}>{wanted ? "You have them all" : "Ready to build"}</span>
       )}
       {readiness.unresolvedCount > 0 ? (
         <span className={styles.readyUnresolved}>+{readiness.unresolvedCount} unresolved</span>

@@ -30,6 +30,13 @@ export function isInventoryState(value: unknown): value is InventoryState {
   return typeof value === "string" && (INVENTORY_STATES as readonly string[]).includes(value);
 }
 
+/** A TS-/AS-/PS- code is a rattle can, not a bottle — the form a new shelf
+ * row should start as when nobody has said otherwise (the Add dialog's
+ * pre-selection, the one-click "Bought"). */
+export function defaultFormFor(code: string): InventoryForm {
+  return /^(TS|AS|PS)-/.test(code) ? "spray_can" : "bottle";
+}
+
 const FORM_LABEL: Record<InventoryForm, string> = {
   bottle: "bottle",
   spray_can: "spray can",
