@@ -173,6 +173,22 @@ export async function updateInventoryItem(id: number, patch: UpdateInventoryItem
 }
 
 /**
+ * Clears "running low" on every shelf row for this code — the shop run's
+ * "Bought" on a Low entry. By code, not by row id, because the shop run lists
+ * low paints distinct by code (a spray can and the jar decanted from it are
+ * one thing to buy), so the one click has to answer for all of them or the
+ * entry comes straight back. Returns how many rows it changed.
+ */
+export async function clearLowState(paintCode: string): Promise<number> {
+  const rows = await db
+    .update(inventoryItem)
+    .set({ state: null, updatedAt: new Date() })
+    .where(and(eq(inventoryItem.paintCode, paintCode), eq(inventoryItem.state, "low")))
+    .returning({ id: inventoryItem.id });
+  return rows.length;
+}
+
+/**
  * A DELETE with `returning()`, still one round trip — this is the one
  * mutation that has a real reason to ask the database something (did a row
  * actually exist to delete?), and Postgres's own RETURNING clause answers

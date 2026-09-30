@@ -4,6 +4,7 @@ import { updateTag } from "next/cache";
 
 import { getCataloguePaint } from "@/catalogue/paints";
 import {
+  clearLowState,
   createInventoryItem,
   deleteInventoryItem,
   findInventoryItem,
@@ -122,6 +123,26 @@ export async function markPaintBought(rawCode: string): Promise<InventoryResult>
     await createInventoryItem({ paintCode: code, form, state: null, quantity: 1, notes: null });
   }
 
+  invalidate(code);
+  return { ok: true };
+}
+
+/**
+ * "Bought" on the shop run's Low entry: the bottle's been restocked, so it is
+ * no longer running low. Clears the mark on every row for the code (see
+ * `clearLowState`). Quantity is left alone — the Low entry never said how
+ * many, so a one-click action shouldn't guess.
+ *
+ * Nothing to clear (a double click, another tab) is not an error: the shelf
+ * already says what the click meant.
+ */
+export async function markLowRestocked(rawCode: string): Promise<InventoryResult> {
+  const code = normalizePaintCode(rawCode);
+  if (!getCataloguePaint(code)) {
+    return { ok: false, error: "That isn't a Tamiya code the catalogue knows." };
+  }
+
+  await clearLowState(code);
   invalidate(code);
   return { ok: true };
 }

@@ -20,8 +20,9 @@ import styles from "./Dashboard.module.css";
  * derived on read, so there is no list to tick stale and nothing to keep in
  * sync with the shelf.
  *
- * A Missing row's tag is a one-click "Bought" (`MarkBought`): the row drops
- * off the run on the re-render, and every kit waiting on it moves along.
+ * Both tags are a one-click "Bought" (`MarkBought`): a Missing paint goes
+ * onto the shelf, a Low one has its running-low mark cleared. Either way the
+ * row drops off the run on the re-render.
  */
 export async function ShopRun() {
   const [missing, shelf] = await Promise.all([listShopRunPaints(), listInventory()]);
@@ -61,10 +62,10 @@ export async function ShopRun() {
                 Missing
               </MarkBought>
             ) : (
-              <span className={styles.tag}>
+              <MarkBought code={entry.code} name={entry.name} className={styles.tag} restock>
                 <LowBottleIcon size={12} />
                 Low
-              </span>
+              </MarkBought>
             )}
           </div>
         </div>

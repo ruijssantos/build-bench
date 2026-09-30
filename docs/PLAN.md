@@ -2015,8 +2015,10 @@ the owner's rule is "I have it in X or XF". No migration.
   read against the shelf, so buying or using up the X/XF bottle moves it between **Missing**
   and a new **Equivalents** bucket by itself. An LP/TS you own outright stays in Owned.
 - Equivalents are not missing: they're off the "to buy" count and the shop run, and a kit
-  whose only gaps are equivalents is Ready to build. They count as owned in "Own 14 of 17",
-  which says "(2 via X/XF)" so the stand-ins stay visible.
+  whose only gaps are equivalents is Ready to build. On the kit cards they simply count as
+  owned ("Own 14 of 17") — the detail page's Equivalents section is where they're itemised.
+  (A first cut added "(2 via X/XF)" to the card line; the owner found it noise.) A card with
+  nothing missing reads just "Ready to build" / "You have them all", without the count.
 - The chip reads `● LP-8 → ● X-8` — both swatches, solid outline in Owned's green — and opens
   the acrylic on the Thinner bench: that's the bottle being thinned.
 - Card counts and the detail page are computed in different places (SQL aggregate vs.
@@ -2038,6 +2040,10 @@ reflow under the pointer.
   TS/AS/PS, bottle otherwise — the Add dialog's pre-selection now uses the same function).
   Anything more particular is still Add/Edit on the Paints screen.
 - Idempotent: a second click (or a second tab) finds the row already there and adds nothing.
+- The shop run's **Low** tag gets the same treatment (`MarkBought restock` →
+  `markLowRestocked`): the paint is already on the shelf, so "Bought" clears the running-low
+  mark on every row for that code — the run lists low paints distinct by code — and leaves
+  quantity alone.
 - The re-render does the rest — Owned, the shop run, the Stash counts and the Paints screen
   all read the shelf, so nothing else needs telling.
 

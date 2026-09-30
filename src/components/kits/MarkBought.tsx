@@ -2,7 +2,7 @@
 
 import { useState, useTransition, type ReactNode } from "react";
 
-import { markPaintBought } from "@/app/(bench)/inventory/actions";
+import { markLowRestocked, markPaintBought } from "@/app/(bench)/inventory/actions";
 import styles from "@/components/wishlist/Wishlist.module.css";
 
 /**
@@ -17,6 +17,10 @@ import styles from "@/components/wishlist/Wishlist.module.css";
  * two labels share one grid cell, so the swap never changes the control's
  * width and never reflows the row of chips around it.
  *
+ * `restock` is the shop run's Low entry: the paint is already on the shelf,
+ * so "Bought" there clears its running-low mark (`markLowRestocked`) rather
+ * than adding a row, and the entry leaves the run.
+ *
  * No confirmation and no undo toast, same reasoning as `DismissUnresolved`:
  * a mistaken click is one row to remove on the Paints screen. A failure keeps
  * the paint where it is with the reason as the tooltip, rather than
@@ -26,11 +30,13 @@ export function MarkBought({
   code,
   name,
   className,
+  restock = false,
   children,
 }: {
   code: string;
   name: string;
   className: string;
+  restock?: boolean;
   children: ReactNode;
 }) {
   const [pending, start] = useTransition();
@@ -42,12 +48,17 @@ export function MarkBought({
       className={`${className} ${styles.markBought}`}
       data-pending={pending || undefined}
       disabled={pending}
-      title={error ?? `Mark ${code} ${name} as bought — adds it to your paints`}
+      title={
+        error ??
+        (restock
+          ? `Mark ${code} ${name} as bought — clears running low`
+          : `Mark ${code} ${name} as bought — adds it to your paints`)
+      }
       aria-label={`${code}, ${name} — mark as bought`}
       onClick={() =>
         start(async () => {
           setError(null);
-          const result = await markPaintBought(code);
+          const result = await (restock ? markLowRestocked(code) : markPaintBought(code));
           if (!result.ok) setError(result.error);
         })
       }
@@ -55,7 +66,7 @@ export function MarkBought({
       <span className={styles.markBoughtStack}>
         <span className={styles.markBoughtIdle}>{children}</span>
         <span className={styles.markBoughtAction} aria-hidden="true">
-          {pending ? "Adding…" : "Bought"}
+          {pending ? "Saving…" : "Bought"}
         </span>
       </span>
     </button>
