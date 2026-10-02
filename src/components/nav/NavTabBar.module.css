@@ -30,10 +30,6 @@
   }
 }
 
-/* Shared by the five <Link> tabs and the sign-out <button> — border/
-   background/padding/font/cursor are no-ops on an <a> (it has none of
-   these by default) but are what keep the button from showing native
-   button chrome instead of looking like its five siblings. */
 .item {
   flex: 1;
   display: flex;
@@ -42,22 +38,8 @@
   justify-content: center;
   gap: 5px;
   height: 44px;
-  border: none;
-  background: none;
-  padding: 0;
-  margin: 0;
-  font: inherit;
-  cursor: pointer;
   text-decoration: none;
   color: var(--icon-idle);
-}
-
-/* Sign out's <form> sits where the other five items' <Link> does — this is
-   what actually claims its share of the row, since `.item` on the <button>
-   a level below only sizes within the form, not against its siblings. */
-.signOutItem {
-  flex: 1;
-  display: flex;
 }
 
 .itemLabel {

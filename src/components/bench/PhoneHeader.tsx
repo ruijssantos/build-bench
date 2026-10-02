@@ -1,19 +1,15 @@
 import type { ReactNode } from "react";
 
-import { RIG } from "@/catalogue/rig";
-
-import { DryTipContent } from "./DryTipContent";
-import { DryTipTrigger } from "./DryTipTrigger";
 import styles from "./PhoneHeader.module.css";
-import { shortRigLabel } from "./rig-label";
+import { SignOutButton } from "./SignOutButton";
 
 /**
  * The phone header. A Server Component: the title is usually this screen's LCP
  * element, so nothing about it should wait on a query or on hydration.
  *
  * `trailing` is a slot rather than a prop, so whatever sits opposite the title
- * can resolve on its own terms: the Thinner Bench puts the rig pill there,
- * Paints puts its Add button there. Either is shorter than the title block
+ * can resolve on its own terms: Paints puts its Add button there, the kit
+ * page its Edit/Remove pair. Either is shorter than the title block
  * beside it and the row is `align-items: flex-end`.
  *
  * `stackTrailing` swaps that side-by-side row for `trailing` on its own line
@@ -25,9 +21,9 @@ import { shortRigLabel } from "./rig-label";
  * with the buttons stranded halfway down them. Defaults to the side-by-side
  * layout so every other screen is unaffected.
  *
- * Sign out lives in `NavTabBar` as its sixth tab, not up here — one control,
- * reachable at a thumb's swipe on every screen, rather than a corner icon
- * duplicated per header.
+ * Sign out is a bare icon in the top-right corner, in the status-bar band
+ * above the title row — clear of `trailing`, which sits at the row's bottom
+ * edge, so it never collides with an Add button or Edit/Remove.
  */
 export function PhoneHeader({
   title,
@@ -49,6 +45,8 @@ export function PhoneHeader({
 
       <div className={styles.statusBarSpace} />
 
+      <SignOutButton formClassName={styles.signOutForm} className={styles.signOut} iconOnly iconSize={18} />
+
       <div className={`${styles.row} ${stackTrailing ? styles.rowStacked : ""}`}>
         <div>
           <div className={styles.eyebrow}>The Build Bench</div>
@@ -57,24 +55,5 @@ export function PhoneHeader({
         {trailing}
       </div>
     </div>
-  );
-}
-
-/** The rig pill on its own — synchronous, since the rig is compiled in. */
-export function PhoneHeaderRigPill() {
-  return (
-    <DryTipTrigger
-      title={`${RIG.model} · Tips & Guide`}
-      className={styles.rigPill}
-      ariaLabel="Tips & guide for the current rig"
-      trigger={
-        <>
-          <span className={styles.rigDot} />
-          <span className={styles.rigLabel}>{shortRigLabel(RIG.model)}</span>
-        </>
-      }
-    >
-      <DryTipContent />
-    </DryTipTrigger>
   );
 }
