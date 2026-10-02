@@ -55,8 +55,6 @@ export function NavRail() {
         </Suspense>
       </div>
 
-      <div className={styles.spacer} />
-
       <div className={styles.signOut}>
         <SignOutButton />
       </div>

@@ -93,10 +93,9 @@
   font-weight: 700;
 }
 
-.spacer {
-  flex: 1;
-}
-
+/* Directly under the last nav item, not pinned to the rail's foot — the
+   rail is as tall as the page, so on a long screen the bottom is far
+   below the fold. */
 .signOut {
   margin: 10px 12px 0;
   padding-top: 10px;
