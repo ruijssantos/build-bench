@@ -6,7 +6,6 @@
    treatment the old dry-tip modal used for its phase titles. */
 .eyebrow,
 .sidebarLabel,
-.setupLabel,
 .table thead th {
   font-family: var(--font-display);
   font-size: 11.5px;
@@ -455,20 +454,6 @@
   width: 6px;
   height: 1px;
   background: var(--muted-2);
-}
-
-/* setup line */
-
-.setup {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.setupText {
-  font-size: 14px;
-  line-height: 1.5;
-  color: var(--ink);
 }
 
 /* note (why / when to skip) */

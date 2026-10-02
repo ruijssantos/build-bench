@@ -73,10 +73,6 @@ export const BODY_PAINTING_GUIDE: Guide = {
       goal: "Goal: even satin, not gloss.",
       blocks: [
         {
-          kind: "setup",
-          text: "LP colour thinned with Lacquer Thinner, starting around 1 part paint to 1–1.5 parts thinner (milk consistency). 15–20 PSI at 10–15 cm.",
-        },
-        {
           kind: "steps",
           items: [
             { lead: "Tack coat:", text: "one light, dry-ish pass over the whole body. Let it flash for 10 minutes." },
@@ -110,10 +106,6 @@ export const BODY_PAINTING_GUIDE: Guide = {
       title: "Gloss clear #1",
       goal: "The decal base.",
       blocks: [
-        {
-          kind: "setup",
-          text: "LP-9 Clear or decanted TS-13, thinned to about 1:1.5–1:2 (thinner than the colour).",
-        },
         {
           kind: "steps",
           items: [

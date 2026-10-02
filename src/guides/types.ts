@@ -19,8 +19,6 @@ export type GuideBlock =
   | { kind: "steps"; items: GuideItem[] }
   /** Unordered — a set of things to keep in mind, any order. */
   | { kind: "bullets"; items: GuideItem[] }
-  /** The mix/pressure/distance a stage is sprayed at, set apart above its steps. */
-  | { kind: "setup"; text: string }
   /** A "why" or "when to skip" aside — reasoning, not instruction. */
   | { kind: "note"; title: string; text?: string; items?: GuideItem[] }
   | { kind: "table"; columns: string[]; rows: string[][] };

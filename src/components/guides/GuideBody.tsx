@@ -77,14 +77,6 @@ function Block({ block }: { block: GuideBlock }) {
         </ul>
       );
 
-    case "setup":
-      return (
-        <div className={styles.setup}>
-          <span className={styles.setupLabel}>Setup</span>
-          <span className={styles.setupText}>{block.text}</span>
-        </div>
-      );
-
     case "note":
       return (
         <aside className={styles.note}>
