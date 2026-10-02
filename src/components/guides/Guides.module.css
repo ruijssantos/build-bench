@@ -414,7 +414,6 @@
   background: var(--faint);
 }
 
-/* `flex: 1` so a step's sub-point box spans the column, not just its text. */
 .itemBody {
   flex: 1;
   display: flex;
@@ -438,9 +437,6 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-  padding: 10px 14px;
-  background: var(--card-sunken);
-  border-radius: 12px;
 }
 
 .subItem {
@@ -467,10 +463,6 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
-  padding: 12px 16px;
-  background: var(--accent-tint);
-  border-left: 3px solid var(--accent);
-  border-radius: 4px 12px 12px 4px;
 }
 
 .setupText {
@@ -485,9 +477,6 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding: 14px 16px;
-  background: var(--card-sunken);
-  border-radius: var(--radius-tile);
 }
 
 .noteTitle {
