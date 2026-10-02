@@ -151,8 +151,7 @@
 @media (min-width: 900px) {
   .layout {
     display: grid;
-    grid-template-columns: 280px minmax(0, 820px);
-    justify-content: center;
+    grid-template-columns: 280px minmax(0, 960px);
     align-items: start;
     gap: 36px;
     padding: 0 0 40px;
@@ -298,8 +297,8 @@
 
 .heroSummary {
   margin: 0;
-  max-width: 62ch;
-  font-size: 15px;
+  max-width: 66ch;
+  font-size: 17px;
   line-height: 1.55;
   color: var(--ink-soft);
 }
@@ -335,7 +334,7 @@
 
 .goal {
   margin: 6px 0 0;
-  font-size: 14.5px;
+  font-size: 16px;
   line-height: 1.5;
   font-style: italic;
   color: var(--muted);
@@ -415,7 +414,9 @@
   background: var(--faint);
 }
 
+/* `flex: 1` so a step's sub-point box spans the column, not just its text. */
 .itemBody {
+  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 8px;
