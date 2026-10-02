@@ -4,18 +4,14 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Suspense } from "react";
 
-import { SignOutButton } from "@/components/bench/SignOutButton";
-
 import { dispatchNavClick } from "./nav-events";
 import styles from "./NavTabBar.module.css";
 import { NAV_ITEMS } from "./nav-items";
 
 /**
- * Sign out rides along as this bar's sixth tab, not a separate corner icon
- * — one reachable control instead of two. It isn't in `NAV_ITEMS`: that list
- * is shared with `NavRail`, which already has its own full "Sign out" row,
- * and a route-shaped nav item is the wrong model for an action with no page
- * of its own anyway.
+ * Routes only. Sign out used to ride along as an extra tab here; it now sits
+ * as an icon in `PhoneHeader`'s top-right corner, which keeps this bar to
+ * the screens themselves.
  *
  * The tabs sit behind their own inner `<Suspense>` — same reasoning as
  * `NavRail`'s own `NavItemsActive`: `usePathname()` is genuinely
@@ -28,12 +24,6 @@ export function NavTabBar() {
       <Suspense fallback={<NavTabs pathname={null} />}>
         <NavTabsActive />
       </Suspense>
-      <SignOutButton
-        formClassName={styles.signOutItem}
-        className={styles.item}
-        labelClassName={styles.itemLabel}
-        iconSize={22}
-      />
     </nav>
   );
 }

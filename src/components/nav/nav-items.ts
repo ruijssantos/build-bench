@@ -19,9 +19,9 @@ export interface NavItem {
 }
 
 /**
- * Six, plus the tab bar's own Sign out — seven across a phone. §4.1 sized the
- * bar for five; at 360px seven tabs still leave ~51px each, which the longest
- * labels ("Wishlist", "Sign out") fit inside at 10.5px. An eighth would not.
+ * Six across a phone — §4.1 sized the bar for five; at 360px six tabs leave
+ * 60px each, which the longest label ("Wishlist") fits inside at 10.5px.
+ * Sign out isn't a tab: it's an icon in `PhoneHeader`'s corner.
  */
 export const NAV_ITEMS: NavItem[] = [
   { key: "dashboard", href: "/dashboard", railLabel: "Dashboard", tabLabel: "Home", icon: HomeIcon },

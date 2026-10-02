@@ -21,6 +21,33 @@
   height: 44px;
 }
 
+/* Transparent rounded square — an outline only, so the livery sweep behind
+   it still shows through. */
+.signOutForm {
+  position: absolute;
+  top: 12px;
+  right: 20px;
+  margin: 0;
+}
+
+.signOut {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid var(--faint);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.signOut:hover {
+  color: var(--ink);
+  border-color: var(--muted-2);
+}
+
 .row {
   position: relative;
   padding: 8px 20px 18px;

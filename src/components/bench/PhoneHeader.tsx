@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 
 import styles from "./PhoneHeader.module.css";
+import { SignOutButton } from "./SignOutButton";
 
 /**
  * The phone header. A Server Component: the title is usually this screen's LCP
@@ -20,9 +21,9 @@ import styles from "./PhoneHeader.module.css";
  * with the buttons stranded halfway down them. Defaults to the side-by-side
  * layout so every other screen is unaffected.
  *
- * Sign out lives in `NavTabBar` as its sixth tab, not up here — one control,
- * reachable at a thumb's swipe on every screen, rather than a corner icon
- * duplicated per header.
+ * Sign out is a bare icon in the top-right corner, in the status-bar band
+ * above the title row — clear of `trailing`, which sits at the row's bottom
+ * edge, so it never collides with an Add button or Edit/Remove.
  */
 export function PhoneHeader({
   title,
@@ -43,6 +44,8 @@ export function PhoneHeader({
       </svg>
 
       <div className={styles.statusBarSpace} />
+
+      <SignOutButton formClassName={styles.signOutForm} className={styles.signOut} iconOnly iconSize={18} />
 
       <div className={`${styles.row} ${stackTrailing ? styles.rowStacked : ""}`}>
         <div>
