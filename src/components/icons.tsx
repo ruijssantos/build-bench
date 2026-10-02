@@ -219,3 +219,13 @@ export function UploadIcon(props: IconProps) {
     </svg>
   );
 }
+
+/** The Tips & Guides tab — an open book. */
+export function GuidesIcon(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      <path d="M12 6.5C10.3 5.2 7.8 4.5 4 4.5V18c3.8 0 6.3.7 8 2 1.7-1.3 4.2-2 8-2V4.5c-3.8 0-6.3.7-8 2z" />
+      <path d="M12 6.5V20" />
+    </svg>
+  );
+}

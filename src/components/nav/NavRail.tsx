@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Suspense, type ReactNode } from "react";
+import { Suspense } from "react";
 
 import { SignOutButton } from "@/components/bench/SignOutButton";
 import { ThinnerIcon } from "@/components/icons";
@@ -13,9 +13,7 @@ import { NAV_ITEMS } from "./nav-items";
 
 /**
  * Client only for `usePathname` — the active-link highlight is the one thing
- * on this rail that has to react to navigation. `rig` arrives as an already
- * rendered Server Component (see NavRailRig), so the Tips & Guide text stays
- * off the client entirely.
+ * on this rail that has to react to navigation.
  *
  * The items themselves sit behind their own inner `<Suspense>`
  * (`NavItemsActive`): `usePathname()` returns the exact current path, which
@@ -28,7 +26,7 @@ import { NAV_ITEMS } from "./nav-items";
  * changes there; only a dynamic-segment page ever streams the highlight in
  * a beat later.
  */
-export function NavRail({ rig }: { rig: ReactNode }) {
+export function NavRail() {
   return (
     <nav className={styles.rail} aria-label="Primary">
       <svg
@@ -58,8 +56,6 @@ export function NavRail({ rig }: { rig: ReactNode }) {
       </div>
 
       <div className={styles.spacer} />
-
-      {rig}
 
       <div className={styles.signOut}>
         <SignOutButton />

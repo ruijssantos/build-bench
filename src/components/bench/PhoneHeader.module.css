@@ -57,30 +57,3 @@
   letter-spacing: 0.005em;
   line-height: 0.98;
 }
-
-.rigPill {
-  flex: none;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-pill);
-  padding: 7px 12px;
-  margin-bottom: 3px;
-  cursor: pointer;
-}
-
-.rigDot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--ok);
-}
-
-.rigLabel {
-  font-family: var(--font-ui);
-  font-size: 12px;
-  font-weight: 600;
-  color: #5f5849;
-}

@@ -53,8 +53,16 @@ const BUDGETS = {
    * the wishlist's row and card vocabulary instead of restating it and only
    * declares what the screen genuinely adds (stat tiles, its two-column
    * split, three modifiers). The first draft, which restated them, cost
-   * more than this whole phase did. */
-  cssGzip: 11.0 * 1024,
+   * more than this whole phase did.
+   *
+   * 12.0 kB for Tips & Guides (+0.9 kB measured, ~11.75 kB after): a reading
+   * page with vocabulary nothing else had — numbered steps, setup and note
+   * callouts, reference tables, a contents column. The "Current rig"
+   * rail block, phone pill and dry-tip modal it replaces were deleted in the
+   * same change, so that is the net cost. Collapsing the repeated label and
+   * card declarations into shared selectors was measured and saved nothing
+   * gzipped. */
+  cssGzip: 12.0 * 1024,
 };
 
 interface Failure {
@@ -183,7 +191,7 @@ if (!blobPatternConfigured) {
 const appDir = join(BUILD_DIR, "server/app");
 const prerendered = readdirSync(appDir).filter((f) => f.endsWith(".html"));
 
-const ROUTES_THAT_MUST_PRERENDER = ["dashboard", "thinner", "inventory", "kits", "wishlist", "login"];
+const ROUTES_THAT_MUST_PRERENDER = ["dashboard", "thinner", "inventory", "kits", "wishlist", "guides", "login"];
 
 for (const route of ROUTES_THAT_MUST_PRERENDER) {
   if (!prerendered.includes(`${route}.html`)) {

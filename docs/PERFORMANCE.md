@@ -95,13 +95,15 @@ smallest thing that actually needs state:
 - `SearchBox` — an input and a listbox.
 - `RatioHero` — the drops slider.
 - `NavRail` / `NavTabBar` — `usePathname` for the active link.
-- `DryTipTrigger` — an open/closed boolean.
+- The Paints/Wishlist dialog triggers — an open/closed boolean each.
 
 **The rule: `"use client"` goes on the component that owns the state, not on
 its parent.** When a client component needs to *display* server-rendered
-content, pass it as `children` or a prop — `DryTipTrigger` and `PhoneHeader`'s
-`rigPill` both do this, which is why the Tips & Guide text appears in no client
-chunk at all.
+content, pass it as `children` or a prop. The airbrush's tips used to be the
+example here — a modal island off the rail's "Current rig" block, its prose
+passed in as `children` so it reached no client chunk. They now live on their
+own fully static page, `/guides/airbrush`, alongside the body-painting manual:
+no client component at all.
 
 Rarely-used interactive UI is lazy: the modal and the ratio-correction form are
 `lazy()` chunks fetched on click.
@@ -289,10 +291,10 @@ shell and accept the gap.
 | `/wishlist` initial JS, gzipped | 150 kB | 149.4 kB |
 | `/thinner` static shell, gzipped | 8 kB | 3.4 kB |
 | `/wishlist` static shell, gzipped | 8 kB | 3.3 kB |
-| CSS, gzipped (shared by both) | 11.0 kB | 10.6 kB |
+| CSS, gzipped (shared by both) | 12.0 kB | 11.7 kB |
 | Paint catalogue in an eagerly-loaded chunk | never | behind its dynamic import |
 | `images.remotePatterns` covers the Blob store | required | configured |
-| Every app route ships a static shell | all 6 | all 6 |
+| Every app route ships a static shell | all 7 | all 7 |
 
 These guard regressions that are invisible in review: a `"use client"` one level
 too high, a static import of the catalogue, a page that quietly stops being
@@ -349,6 +351,14 @@ nudged it once more, to 10.5 kB — small, real CSS in the shared
 `Inventory`/`InventoryForm` stylesheets `/thinner` also loads, so it counts
 against `/thinner`'s number even though none of it touches Thinner's own
 screen. Same deal as before: raised deliberately, not a rounding error.
+
+Tips & Guides moved it to 11.7 kB, so the budget became 12.0 kB. It is a reading
+page with vocabulary nothing else in the app had (numbered steps, setup and
+note callouts, reference tables, a contents column). The "Current rig"
+rail block, phone pill and dry-tip modal it replaces were deleted in the same
+change, so +0.9 kB is the net cost. Folding the repeated label and card
+declarations into shared selectors was measured and saved nothing gzipped,
+because gzip had already compressed the repetition away.
 
 ## 12. Checklist for a new screen
 

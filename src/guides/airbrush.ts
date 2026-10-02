@@ -1,16 +1,15 @@
 import { RIG } from "@/catalogue/rig";
 
-import styles from "./DryTipContent.module.css";
+import type { Guide } from "./types";
 
 /**
- * The rig's dry-tip/clogging guidance, ported from the prototype's <details>
- * phases — every rig fact (nozzle size, cup capacity, model name) is
- * interpolated from the compiled rig, never hard-coded (§2.3). Lives in a
- * Modal triggered from the Current Rig chrome (desktop rail / phone header
- * pill) rather than on the Thinner Bench screen — it's a fact about the
- * airbrush, not about whichever paint happens to be loaded.
+ * The rig's own guide — dry tip and clogging, ported from the prototype's
+ * <details> phases. Every rig fact (nozzle size, cup capacity, model name) is
+ * interpolated from the compiled rig, never hard-coded (§2.3). This used to
+ * be a modal off a "Current rig" block in the rail and phone header; the guide
+ * page is now the one place the airbrush is described.
  */
-function phasesFor() {
+function phases() {
   const nozzle = `${RIG.nozzleMm} mm`;
   const cup = `${RIG.cupCc} cc`;
   const model = RIG.model;
@@ -49,24 +48,15 @@ function phasesFor() {
   ];
 }
 
-export function DryTipContent() {
-  const phases = phasesFor();
-
-  return (
-    <div className={styles.phases}>
-      {phases.map((phase) => (
-        <div className={styles.phase} key={phase.key}>
-          <div className={styles.phaseTitle}>{phase.title}</div>
-          <div className={styles.list}>
-            {phase.items.map((item) => (
-              <div className={styles.item} key={item}>
-                <span className={styles.dot} />
-                <span className={styles.text}>{item}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
+export const AIRBRUSH_GUIDE: Guide = {
+  slug: "airbrush",
+  title: RIG.model,
+  topic: "Airbrush",
+  specs: [`${RIG.nozzleMm} mm nozzle`, `${RIG.cupCc} cc cup`],
+  summary: `Keeping the ${RIG.nozzleMm} mm tip from drying and clogging: what to check before a session, what to watch for during one, and how to put the airbrush away.`,
+  sections: phases().map((phase) => ({
+    id: phase.key,
+    title: phase.title,
+    blocks: [{ kind: "bullets", items: phase.items }],
+  })),
+};

@@ -13,8 +13,8 @@ const nextConfig: NextConfig = {
 
   /**
    * One reusable App Shell prefetched per route rather than one prefetch per
-   * visible link. The nav rail links to five routes from every screen, so this
-   * is the difference between five prefetches per page and five cache hits.
+   * visible link. The nav rail links to six routes from every screen, so this
+   * is the difference between six prefetches per page and six cache hits.
    */
   partialPrefetching: true,
 
