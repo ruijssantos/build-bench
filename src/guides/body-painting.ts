@@ -25,7 +25,7 @@ export const BODY_PAINTING_GUIDE: Guide = {
             },
             {
               lead: "Paint the body first, not last.",
-              text: "The final clear needs about a week to cure before polishing. Build the chassis, interior and engine while it cures.",
+              text: "The final clear needs 1–2 weeks to cure before polishing. Build the chassis, interior and engine while it cures.",
             },
             {
               lead: "Practise first.",
@@ -111,7 +111,10 @@ export const BODY_PAINTING_GUIDE: Guide = {
           items: [
             "Spray one light coat and let it flash for 10 minutes before the wet coat.",
             "Spray one wet coat (technique in Stage 5).",
-            "Let it dry for 24 hours.",
+            {
+              lead: "Let it dry for 48 hours (X-22).",
+              text: "Acrylic clear is dry to the touch long before it's hard, and Micro Sol or Mark Fit can soften or wrinkle it if decals go on too soon. Lacquer clear needs only 24 hours.",
+            },
           ],
         },
         {
@@ -183,7 +186,11 @@ export const BODY_PAINTING_GUIDE: Guide = {
         {
           kind: "steps",
           items: [
-            "Wait 5–7 days for lacquer clear. Polishing early makes the clear shrink and dull afterwards.",
+            {
+              lead: "Wait about 1–2 weeks for X-22.",
+              text: "Polishing early makes the clear shrink and dull afterwards. Acrylic stays soft longer than lacquer, so it must be hard right through, not just dry to the touch, and it cuts faster in Stage 7: use lighter pressure on the 3000 sponge and Compound Coarse.",
+            },
+            "Using lacquer clear instead? 5–7 days is enough.",
             "Keep the body under a dust cover, such as an upturned plastic box.",
           ],
         },
@@ -257,7 +264,7 @@ export const BODY_PAINTING_GUIDE: Guide = {
             ["Runs", "Too close, too slow, or going back over a wet area", "One pass per panel, then leave it"],
             ["Spitting or uneven delivery", "Compressor pulsing at low pressure", "Keep it nearer 20 PSI for wet coats"],
             ["Silvering around decals", "Decals applied on satin colour", "Gloss clear before decals (Stage 3)"],
-            ["Dull after polishing", "Clear not fully cured", "Wait the full week"],
+            ["Dull after polishing", "Clear not fully cured", "Wait the full cure: 1–2 weeks for X-22"],
             ["Colour showing through while sanding", "Sanded through the clear", "Stop; re-clear the panel; cure; re-polish"],
           ],
         },
