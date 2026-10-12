@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useEffect, useRef, useState, useTransition } from "react";
 
 import { deleteManual } from "@/app/(bench)/kits/actions";
 import { CheckIcon, ExternalLinkIcon, FileIcon, TrashIcon } from "@/components/icons";
@@ -21,7 +21,19 @@ function formatBytes(bytes: number | null): string {
  * "Open" already does (the browser's own PDF viewer, in a new tab) for the
  * cost of a second render path, so it's gone rather than fixed.
  */
-export function ManualRow({ manual, kitId }: { manual: KitManualRow; kitId: number }) {
+export function ManualRow({
+  manual,
+  kitId,
+  autoExtract = false,
+  onAutoExtractStarted,
+}: {
+  manual: KitManualRow;
+  kitId: number;
+  /** Set on the row a fresh upload just created: extract once on arrival,
+   * through the same path as the button. */
+  autoExtract?: boolean;
+  onAutoExtractStarted?: () => void;
+}) {
   const router = useRouter();
   const [extracting, startExtract] = useTransition();
   const [extractError, setExtractError] = useState<string | null>(null);
@@ -52,6 +64,17 @@ export function ManualRow({ manual, kitId }: { manual: KitManualRow; kitId: numb
       }
     });
   }
+
+  // A ref, not just the parent clearing `autoExtract`: Strict Mode runs this
+  // effect twice in development, and extraction is a paid API call.
+  const autoExtractStarted = useRef(false);
+  useEffect(() => {
+    if (!autoExtract || autoExtractStarted.current || manual.paintsExtractedAt) return;
+    autoExtractStarted.current = true;
+    onAutoExtractStarted?.();
+    void runExtract(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- once per arrival, not per render
+  }, [autoExtract]);
 
   function runDelete() {
     setDeleteError(null);
