@@ -3,7 +3,7 @@ import { getCatalogueRatioRule, type CatalogueRatioRule } from "@/catalogue/rati
 import { RIG, type Rig } from "@/catalogue/rig";
 import { getInventoryForPaint } from "@/db/repositories/inventory";
 import { getOverrideForPaint, type RatioOverrideRow } from "@/db/repositories/ratio-overrides";
-import { formLabel } from "@/domain/inventory";
+import { formLabel, isRunningLow } from "@/domain/inventory";
 import {
   familyFromLinePrefix,
   normalizePaintCode,
@@ -36,6 +36,9 @@ export interface PaintOwnership {
   owned: boolean;
   /** What of it you have — "10 ml bottle", "spray can · decanted jar". */
   detail: string | null;
+  /** Any of its shelf rows marked running low — the same per-code rule the
+   * shop run lists by. */
+  low: boolean;
 }
 
 export interface ThinnerBenchBundle {
@@ -155,14 +158,14 @@ export async function resolveThinnerBench(
  * from it are two shelf entries, and "do I own TS-8?" is about the code.
  */
 function summariseOwnership(
-  stash: { form: string | null; paintSizeMl: number | null }[],
+  stash: { form: string | null; state: string | null; paintSizeMl: number | null }[],
 ): PaintOwnership {
-  if (stash.length === 0) return { owned: false, detail: null };
+  if (stash.length === 0) return { owned: false, detail: null, low: false };
 
   const forms = [...new Set(stash.map((item) => formLabel(item.form)))];
   const sizeMl = stash[0].paintSizeMl;
   const detail =
     forms.length === 1 && sizeMl ? `${sizeMl} ml ${forms[0]}` : forms.join(" · ");
 
-  return { owned: true, detail };
+  return { owned: true, detail, low: stash.some((item) => isRunningLow(item.state)) };
 }

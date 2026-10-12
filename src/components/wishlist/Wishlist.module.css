@@ -235,6 +235,12 @@
   background: var(--accent-tint);
 }
 
+.manualButton:disabled {
+  cursor: progress;
+  background: none;
+  color: var(--muted);
+}
+
 /* Search status: loading spinner, an error, or "no matches" — mutually
    exclusive with the candidate grid, so this sits in the same slot. */
 .status {
@@ -1200,23 +1206,6 @@ a.iconButton:hover {
   background: var(--ok-tint);
 }
 
-.dropzone {
-  border: 1.5px dashed var(--line-strong);
-  border-radius: 14px;
-  padding: 18px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  text-align: center;
-  color: var(--icon-idle);
-}
-
-/* Extra gap above "Choose a file", beyond `.dropzone`'s own uniform one. */
-.dropzoneUpload {
-  margin-top: 6px;
-}
-
 /* ---- paints ---- */
 
 /* Base margin puts real air under the "Paints" title above the first
@@ -1392,6 +1381,25 @@ a.iconButton:hover {
 
 .equivalentChip:hover {
   background: var(--ok-tint);
+}
+
+/* "Running low" inside an Owned or Equivalent chip. Alert ink on the chip's
+   own ground; on hover the Owned chip fills `--ok`, where alert ink would
+   vanish, so the mark takes the chip's text colour instead. */
+.lowMark {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-left: 2px;
+  color: var(--alert);
+  font-family: var(--font-ui);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.ownedChip:hover .lowMark {
+  color: inherit;
 }
 
 .equivalentArrow {

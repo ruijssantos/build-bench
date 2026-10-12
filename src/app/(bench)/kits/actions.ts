@@ -470,7 +470,6 @@ export interface CreateManualInput {
   kitId: number;
   blobUrl: string;
   filename: string;
-  label: string;
   sizeBytes: number;
 }
 
@@ -499,7 +498,6 @@ export async function createManualForKit(input: CreateManualInput): Promise<KitR
     kitId: input.kitId,
     blobUrl,
     filename: readText(input.filename, 300),
-    label: readText(input.label, 60),
     sizeBytes: Number.isFinite(input.sizeBytes) ? Math.round(input.sizeBytes) : null,
   });
 

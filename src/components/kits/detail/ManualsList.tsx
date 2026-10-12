@@ -3,12 +3,11 @@
 import { useRef, useState } from "react";
 
 import { createManualForKit } from "@/app/(bench)/kits/actions";
-import { PlusIcon, UploadIcon } from "@/components/icons";
+import { PlusIcon } from "@/components/icons";
 import formStyles from "@/components/inventory/InventoryForm.module.css";
 import inventoryStyles from "@/components/inventory/Inventory.module.css";
 import styles from "@/components/wishlist/Wishlist.module.css";
 import type { KitManualRow } from "@/db/repositories/kit-manuals";
-import { MANUAL_LABELS, type ManualLabel } from "@/domain/kit-manual";
 
 import { ManualRow } from "./ManualRow";
 
@@ -19,11 +18,9 @@ import { ManualRow } from "./ManualRow";
 const FALLBACK_MAX_BYTES = 4 * 1024 * 1024;
 
 /**
- * The Manuals panel's client half — upload (open state, the label picker,
- * the file input) plus the list of `ManualRow`s. One component rather than
- * a separate trigger-in-header/dropzone-in-body split: both need the same
- * `uploadOpen` state, and there's nothing here a server boundary would save
- * (every manual row needs its own client interactivity regardless).
+ * The Manuals panel's client half — the upload button (which opens the file
+ * picker straight away: no label picker, no dropzone step in between) plus
+ * the list of `ManualRow`s.
  *
  * Upload tries `upload()` from `@vercel/blob/client` first — client-direct
  * to Blob, no size worry for the file itself (docs/PLAN.md §4.3: real
@@ -36,8 +33,6 @@ const FALLBACK_MAX_BYTES = 4 * 1024 * 1024;
  * `onUploadCompleted` — see `upload-token/route.ts`'s comment.
  */
 export function ManualsList({ kitId, manuals }: { kitId: number; manuals: KitManualRow[] }) {
-  const [uploadOpen, setUploadOpen] = useState(false);
-  const [label, setLabel] = useState<ManualLabel>(MANUAL_LABELS[0]);
   const [phase, setPhase] = useState<"idle" | "uploading" | "saving">("idle");
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -80,12 +75,11 @@ export function ManualsList({ kitId, manuals }: { kitId: number; manuals: KitMan
       }
 
       setPhase("saving");
-      const result = await createManualForKit({ kitId, blobUrl, filename: file.name, label, sizeBytes: file.size });
+      const result = await createManualForKit({ kitId, blobUrl, filename: file.name, sizeBytes: file.size });
       if (!result.ok) {
         setError(result.error);
         return;
       }
-      setUploadOpen(false);
     } catch (err) {
       console.error("[manual-upload] failed:", err);
       setError("Couldn't upload that manual — try again.");
@@ -94,59 +88,41 @@ export function ManualsList({ kitId, manuals }: { kitId: number; manuals: KitMan
     }
   }
 
+  const busy = phase !== "idle";
+
   return (
     <>
       <div className={styles.subHead}>
         <span className={styles.moduleTitle}>Manuals ({manuals.length})</span>
-        <button type="button" className={styles.manualButton} onClick={() => setUploadOpen((o) => !o)}>
-          <PlusIcon size={11} /> Upload manual
+        <button
+          type="button"
+          className={styles.manualButton}
+          onClick={() => fileInputRef.current?.click()}
+          disabled={busy}
+        >
+          {busy ? null : <PlusIcon size={11} />}
+          {phase === "uploading" ? "Uploading…" : phase === "saving" ? "Saving…" : "Upload manual"}
         </button>
+        <input
+          ref={fileInputRef}
+          className={styles.srOnly}
+          type="file"
+          accept="application/pdf"
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            e.target.value = "";
+            if (file) void handleFile(file);
+          }}
+        />
       </div>
 
-      {manuals.length === 0 && !uploadOpen ? <div className={inventoryStyles.emptyCard}>No manuals uploaded yet.</div> : null}
+      {error ? <div className={formStyles.error}>{error}</div> : null}
+
+      {manuals.length === 0 ? <div className={inventoryStyles.emptyCard}>No manuals uploaded yet.</div> : null}
 
       {manuals.map((manual) => (
         <ManualRow key={manual.id} manual={manual} kitId={kitId} />
       ))}
-
-      {uploadOpen ? (
-        <div className={styles.dropzone}>
-          <UploadIcon size={22} />
-          <span className={styles.moduleTitle}>Choose a PDF</span>
-          <div className={inventoryStyles.filters}>
-            {MANUAL_LABELS.map((l) => (
-              <button
-                key={l}
-                type="button"
-                className={`${inventoryStyles.filterPill} ${label === l ? inventoryStyles.filterPillActive : ""}`}
-                onClick={() => setLabel(l)}
-              >
-                {l}
-              </button>
-            ))}
-          </div>
-          <button
-            type="button"
-            className={`${formStyles.primaryButton} ${styles.dropzoneUpload}`}
-            onClick={() => fileInputRef.current?.click()}
-            disabled={phase !== "idle"}
-          >
-            {phase === "uploading" ? "Uploading…" : phase === "saving" ? "Saving…" : "Choose a file"}
-          </button>
-          <input
-            ref={fileInputRef}
-            className={styles.srOnly}
-            type="file"
-            accept="application/pdf"
-            onChange={(e) => {
-              const file = e.target.files?.[0];
-              e.target.value = "";
-              if (file) void handleFile(file);
-            }}
-          />
-          {error ? <div className={formStyles.error}>{error}</div> : null}
-        </div>
-      ) : null}
     </>
   );
 }

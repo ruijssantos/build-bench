@@ -57,7 +57,6 @@ export interface CreateKitManualInput {
   kitId: number;
   blobUrl: string;
   filename: string | null;
-  label: string | null;
   sizeBytes: number | null;
 }
 

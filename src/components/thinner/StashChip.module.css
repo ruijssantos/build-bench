@@ -21,6 +21,13 @@
   }
 }
 
+/* Owned, but marked running low on the shelf — same chip, alert ground and
+   ink, because this one is something to act on. */
+.chipLow {
+  background: var(--alert-tint);
+  color: var(--alert);
+}
+
 .icon {
   flex: none;
 }

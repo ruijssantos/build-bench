@@ -1,9 +1,10 @@
 import Link from "next/link";
 
+import { LowBottleIcon } from "@/components/icons";
 import inventoryStyles from "@/components/inventory/Inventory.module.css";
 import { MarkBought } from "@/components/kits/MarkBought";
 import styles from "@/components/wishlist/Wishlist.module.css";
-import { listOwnedPaintCodes } from "@/db/repositories/inventory";
+import { listShelfPaintCodes } from "@/db/repositories/inventory";
 import { listKitPaintRequirements } from "@/db/repositories/kit-paint-requirements";
 import { bucketPaintRequirements, codesToCheckOnShelf } from "@/domain/kit-paints";
 
@@ -32,8 +33,9 @@ export async function PaintsPanel({ kitId }: { kitId: number }) {
   }
 
   const codes = [...new Set(requirements.map((r) => r.paintCode).filter((c): c is string => Boolean(c)))];
-  const owned = await listOwnedPaintCodes(codesToCheckOnShelf(codes));
-  const buckets = bucketPaintRequirements(requirements, owned);
+  const shelf = await listShelfPaintCodes(codesToCheckOnShelf(codes));
+  const buckets = bucketPaintRequirements(requirements, shelf.owned);
+  const ownedLow = buckets.owned.filter((p) => shelf.low.has(p.code)).length;
 
   return (
     <div className={styles.card}>
@@ -45,7 +47,10 @@ export async function PaintsPanel({ kitId }: { kitId: number }) {
         <div className={styles.paintBucket}>
           <div className={styles.bucketHead}>
             <span className={`${styles.bucketDot} ${styles.bucketDotOwned}`} />
-            <span className={styles.moduleTitle}>Owned ({buckets.owned.length})</span>
+            <span className={styles.moduleTitle}>
+              Owned ({buckets.owned.length}
+              {ownedLow > 0 ? ` · ${ownedLow} low` : ""})
+            </span>
           </div>
           {buckets.owned.length > 0 ? (
             <div className={styles.cardChips}>
@@ -55,10 +60,11 @@ export async function PaintsPanel({ kitId }: { kitId: number }) {
                   className={styles.ownedChip}
                   href={`/thinner?code=${encodeURIComponent(p.code)}`}
                   title={p.name ?? undefined}
-                  aria-label={`${p.code}${p.name ? `, ${p.name}` : ""} — open on the Thinner bench`}
+                  aria-label={`${p.code}${p.name ? `, ${p.name}` : ""}${shelf.low.has(p.code) ? ", running low" : ""} — open on the Thinner bench`}
                 >
                   <span className={styles.paintDot} style={{ background: p.hex }} />
                   {p.code}
+                  {shelf.low.has(p.code) ? <LowMark /> : null}
                 </Link>
               ))}
             </div>
@@ -99,13 +105,14 @@ export async function PaintsPanel({ kitId }: { kitId: number }) {
                   className={styles.equivalentChip}
                   href={`/thinner?code=${encodeURIComponent(p.substitute.code)}`}
                   title={`${p.code} ${p.name} — you own ${p.substitute.code} ${p.substitute.name}, Tamiya's acrylic match. Colours may vary slightly.`}
-                  aria-label={`${p.code}, ${p.name} — covered by ${p.substitute.code}, ${p.substitute.name}, which you own. Open ${p.substitute.code} on the Thinner bench`}
+                  aria-label={`${p.code}, ${p.name} — covered by ${p.substitute.code}, ${p.substitute.name}, which you own${shelf.low.has(p.substitute.code) ? " and is running low" : ""}. Open ${p.substitute.code} on the Thinner bench`}
                 >
                   <span className={styles.paintDot} style={{ background: p.hex }} />
                   {p.code}
                   <span className={styles.equivalentArrow} aria-hidden="true">→</span>
                   <span className={styles.paintDot} style={{ background: p.substitute.hex }} />
                   {p.substitute.code}
+                  {shelf.low.has(p.substitute.code) ? <LowMark /> : null}
                 </Link>
               ))}
             </div>
@@ -141,7 +148,7 @@ export async function PaintsPanel({ kitId }: { kitId: number }) {
                     />
                     <span>
                       {match.code} {match.name}
-                      {match.owned ? " · OWNED" : ""}
+                      {match.owned ? (shelf.low.has(match.code) ? " · OWNED · LOW" : " · OWNED") : ""}
                     </span>
                     <span className={styles.closestDelta}>ΔE {match.deltaE.toFixed(1)}</span>
                   </div>
@@ -155,5 +162,16 @@ export async function PaintsPanel({ kitId }: { kitId: number }) {
         ) : null}
       </div>
     </div>
+  );
+}
+
+/** "Running low" on a chip — the Stash grid's own bottle mark, in `--alert`
+ * because a low paint is the one thing on an Owned chip worth acting on. */
+function LowMark() {
+  return (
+    <span className={styles.lowMark} title="Running low">
+      <LowBottleIcon size={12} strokeWidth={2.4} aria-hidden="true" />
+      Low
+    </span>
   );
 }
