@@ -601,7 +601,10 @@ Mechanically: drag-drop or file-pick → `PUT` to Vercel Blob → `kit_manual` r
 straight to the stored PDF — the browser's own viewer, in a new tab, phone and desktop alike;
 an earlier desktop-only inline `<iframe>` toggle duplicated that for no real benefit and was
 removed (§7 round 5). An **Extract paint list** action uploads the stored PDF to Claude through
-the Files API and writes `kit_paint_requirement` rows, feeding the shopping list. Kit research
+the Files API and writes `kit_paint_requirement` rows, feeding the shopping list. It runs on its
+own straight after an upload (the new row triggers the same call its button makes, so the
+"Extracting…" state and any error show exactly as for a click); the button stays for re-runs.
+Kit research
 neither fetches a manual nor links to one (§7).
 
 **Extraction reads the first `DEFAULT_EXTRACT_PAGES` pages, not the whole file.** Every page of

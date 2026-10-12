@@ -478,8 +478,13 @@ export interface CreateManualInput {
  * already put the file in Blob (docs/PLAN.md §6 Phase 4a, §4.3) — not from
  * Blob's `onUploadCompleted` callback, which needs a public URL and never
  * fires against a local dev server. This is that Server Action.
+ *
+ * Returns the new row's id so the upload can go straight on to paint
+ * extraction for it, without a second click.
  */
-export async function createManualForKit(input: CreateManualInput): Promise<KitResult> {
+export async function createManualForKit(
+  input: CreateManualInput,
+): Promise<{ ok: true; manualId: number } | { ok: false; error: string }> {
   if (!Number.isInteger(input.kitId)) return { ok: false, error: "Unknown kit." };
 
   const existing = await findKitById(input.kitId);
@@ -494,7 +499,7 @@ export async function createManualForKit(input: CreateManualInput): Promise<KitR
     return { ok: false, error: "That upload didn't come through — try again." };
   }
 
-  await createKitManual({
+  const manualId = await createKitManual({
     kitId: input.kitId,
     blobUrl,
     filename: readText(input.filename, 300),
@@ -502,7 +507,7 @@ export async function createManualForKit(input: CreateManualInput): Promise<KitR
   });
 
   updateTag(kitTag(input.kitId));
-  return { ok: true };
+  return { ok: true, manualId };
 }
 
 /** Removes a manual and its blob — the row is the only reference to it. */

@@ -20,7 +20,10 @@ const FALLBACK_MAX_BYTES = 4 * 1024 * 1024;
 /**
  * The Manuals panel's client half — the upload button (which opens the file
  * picker straight away: no label picker, no dropzone step in between) plus
- * the list of `ManualRow`s.
+ * the list of `ManualRow`s. A fresh upload goes straight on to paint
+ * extraction: the new row is rendered with `autoExtract`, and runs the same
+ * extraction its own button does — so the feedback ("Extracting…", an error,
+ * the "read the whole manual" offer) is exactly what a click would give.
  *
  * Upload tries `upload()` from `@vercel/blob/client` first — client-direct
  * to Blob, no size worry for the file itself (docs/PLAN.md §4.3: real
@@ -35,6 +38,7 @@ const FALLBACK_MAX_BYTES = 4 * 1024 * 1024;
 export function ManualsList({ kitId, manuals }: { kitId: number; manuals: KitManualRow[] }) {
   const [phase, setPhase] = useState<"idle" | "uploading" | "saving">("idle");
   const [error, setError] = useState<string | null>(null);
+  const [autoExtractId, setAutoExtractId] = useState<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   async function handleFile(file: File) {
@@ -80,6 +84,7 @@ export function ManualsList({ kitId, manuals }: { kitId: number; manuals: KitMan
         setError(result.error);
         return;
       }
+      setAutoExtractId(result.manualId);
     } catch (err) {
       console.error("[manual-upload] failed:", err);
       setError("Couldn't upload that manual — try again.");
@@ -121,7 +126,13 @@ export function ManualsList({ kitId, manuals }: { kitId: number; manuals: KitMan
       {manuals.length === 0 ? <div className={inventoryStyles.emptyCard}>No manuals uploaded yet.</div> : null}
 
       {manuals.map((manual) => (
-        <ManualRow key={manual.id} manual={manual} kitId={kitId} />
+        <ManualRow
+          key={manual.id}
+          manual={manual}
+          kitId={kitId}
+          autoExtract={manual.id === autoExtractId}
+          onAutoExtractStarted={() => setAutoExtractId(null)}
+        />
       ))}
     </>
   );
