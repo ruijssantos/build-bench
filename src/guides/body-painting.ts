@@ -184,6 +184,10 @@ export const BODY_PAINTING_GUIDE: Guide = {
           kind: "steps",
           items: [
             "Wait 5–7 days for lacquer clear. Polishing early makes the clear shrink and dull afterwards.",
+            {
+              lead: "Using X-22 (acrylic clear)?",
+              text: "Wait about 1–2 weeks instead. It stays soft longer than lacquer, so it must be hard right through, not just dry to the touch, and it cuts faster in Stage 7: use lighter pressure on the 3000 sponge and Compound Coarse.",
+            },
             "Keep the body under a dust cover, such as an upturned plastic box.",
           ],
         },
