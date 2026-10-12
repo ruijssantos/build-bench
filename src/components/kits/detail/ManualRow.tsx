@@ -142,7 +142,7 @@ export function ManualRow({
             disabled={extracting}
             onClick={() => void runExtract(false)}
           >
-            <FileIcon size={13} /> {extracting ? "Extracting…" : "Extract paint list"}
+            <FileIcon size={13} /> {extracting ? "Extracting paints…" : "Extract paint list"}
           </button>
         )}
       </div>
