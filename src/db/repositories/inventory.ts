@@ -4,7 +4,7 @@ import { connection } from "next/server";
 
 import { db } from "@/db/client";
 import { inventoryItem, paint } from "@/db/schema";
-import type { InventoryForm, InventoryState } from "@/domain/inventory";
+import { isRunningLow, type InventoryForm, type InventoryState } from "@/domain/inventory";
 
 /**
  * The paint half of feature 4 — docs/PLAN.md §3.2.
@@ -203,29 +203,42 @@ export async function deleteInventoryItem(id: number): Promise<boolean> {
 }
 
 /**
- * Which of these paint codes are on the shelf at all — the Stash detail
- * page's Owned/Missing split (docs/PLAN.md §6 Phase 4a). A `Set`, not the
- * full rows: the caller only ever asks "is this code owned", never "by which
- * shelf row", and a code with several rows (a spray can and the jar decanted
- * from it) should answer that question once, not once per row.
+ * Which of these paint codes are on the shelf at all, and which of those are
+ * running low — the Stash detail page's Owned/Missing split (docs/PLAN.md §6
+ * Phase 4a) and its Low marks. Sets, not the full rows: the caller only ever
+ * asks "is this code owned / low", never "by which shelf row", and a code
+ * with several rows (a spray can and the jar decanted from it) should answer
+ * that question once, not once per row.
+ *
+ * A code is low when any of its rows is — the same rule the shop run lists
+ * by (`domain/dashboard.ts`), so a paint marked on the kit is the paint
+ * waiting on the shopping list.
  */
-export async function listOwnedPaintCodes(codes: string[]): Promise<Set<string>> {
-  await connection();
-  return queryOwnedPaintCodes(codes);
+export interface ShelfPaintCodes {
+  owned: Set<string>;
+  low: Set<string>;
 }
 
-async function queryOwnedPaintCodes(codes: string[]): Promise<Set<string>> {
+export async function listShelfPaintCodes(codes: string[]): Promise<ShelfPaintCodes> {
+  await connection();
+  return queryShelfPaintCodes(codes);
+}
+
+async function queryShelfPaintCodes(codes: string[]): Promise<ShelfPaintCodes> {
   "use cache";
   cacheLife("inventory");
   cacheTag(INVENTORY_TAG);
 
-  if (codes.length === 0) return new Set();
+  if (codes.length === 0) return { owned: new Set(), low: new Set() };
 
   const rows = await db
-    .selectDistinct({ paintCode: inventoryItem.paintCode })
+    .selectDistinct({ paintCode: inventoryItem.paintCode, state: inventoryItem.state })
     .from(inventoryItem)
     .where(inArray(inventoryItem.paintCode, codes));
-  return new Set(rows.map((row) => row.paintCode));
+  return {
+    owned: new Set(rows.map((row) => row.paintCode)),
+    low: new Set(rows.filter((row) => isRunningLow(row.state)).map((row) => row.paintCode)),
+  };
 }
 
 /** Guards the Add flow against a second row for the same code in the same

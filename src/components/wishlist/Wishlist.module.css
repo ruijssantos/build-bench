@@ -1394,6 +1394,25 @@ a.iconButton:hover {
   background: var(--ok-tint);
 }
 
+/* "Running low" inside an Owned or Equivalent chip. Alert ink on the chip's
+   own ground; on hover the Owned chip fills `--ok`, where alert ink would
+   vanish, so the mark takes the chip's text colour instead. */
+.lowMark {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-left: 2px;
+  color: var(--alert);
+  font-family: var(--font-ui);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.ownedChip:hover .lowMark {
+  color: inherit;
+}
+
 .equivalentArrow {
   color: var(--muted);
   font-weight: 400;
