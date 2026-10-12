@@ -1032,9 +1032,10 @@ Edit already looks everywhere else in the app rather than introducing a one-off 
 this single spot, and it cost nothing new from the CSS budget this phase was already spending
 carefully.
 
-`kit_manual.label` is nullable free text with four suggested values (`MANUAL_LABELS` in
-`src/domain/kit-manual.ts` — Instructions, Decal guide, Painting guide, Other), the same shape
-as `kit.category` before it: a label the upload UI suggests, not an enum the column enforces.
+`kit_manual.label` is nullable free text. It was once picked on upload (Instructions, Decal
+guide, Painting guide, Other) and shown as a chip on each manual; both were removed at the
+owner's request — "Upload manual" now opens the file picker directly. The column is left in
+place, unread and unwritten, holding whatever older rows were given.
 `kit.started_at`/`completed_at` are `date`, not `timestamptz` — they're "which day," matching
 `purchased_at`'s own existing type — and `updateKitStatus` stamps them with a `coalesce`
 against `current_date` on the transition in, so a kit moved back a step and forward again

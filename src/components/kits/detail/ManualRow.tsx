@@ -7,7 +7,7 @@ import { deleteManual } from "@/app/(bench)/kits/actions";
 import { CheckIcon, ExternalLinkIcon, FileIcon, TrashIcon } from "@/components/icons";
 import styles from "@/components/wishlist/Wishlist.module.css";
 import type { KitManualRow } from "@/db/repositories/kit-manuals";
-import { DEFAULT_EXTRACT_PAGES, manualLabel } from "@/domain/kit-manual";
+import { DEFAULT_EXTRACT_PAGES } from "@/domain/kit-manual";
 
 function formatBytes(bytes: number | null): string {
   if (!bytes) return "";
@@ -15,7 +15,7 @@ function formatBytes(bytes: number | null): string {
 }
 
 /**
- * One manual: label, filename, size — plus what you do with it. Just "Open"
+ * One manual: filename, size — plus what you do with it. Just "Open"
  * (a plain link, `target="_blank"`) and "Extract paint list" — there was
  * also an inline `<iframe>` viewer, desktop-only, but it duplicated what
  * "Open" already does (the browser's own PDF viewer, in a new tab) for the
@@ -76,9 +76,6 @@ export function ManualRow({ manual, kitId }: { manual: KitManualRow; kitId: numb
           <FileIcon size={17} />
         </span>
         <div className={styles.manualInfo}>
-          <div className={styles.cardChips}>
-            <span className={styles.chip}>{manualLabel(manual.label)}</span>
-          </div>
           <div className={styles.manualName}>{manual.filename ?? "manual.pdf"}</div>
           <div className={styles.manualMeta}>
             {formatBytes(manual.sizeBytes)}

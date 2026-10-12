@@ -148,7 +148,7 @@ export const kitManual = pgTable("kit_manual", {
     .references(() => kit.id),
   blobUrl: text("blob_url").notNull(), // Vercel Blob
   filename: text("filename"),
-  label: text("label"), // "Instructions" | "Decal guide" | "Painting guide" | free text
+  label: text("label"), // legacy: no longer written or shown (docs/PLAN.md §6 Phase 4a)
   sizeBytes: integer("size_bytes"),
   pageCount: integer("page_count"), // written by extraction, which counts to trim
   paintsExtractedAt: timestamp("paints_extracted_at", { withTimezone: true }),

@@ -235,6 +235,12 @@
   background: var(--accent-tint);
 }
 
+.manualButton:disabled {
+  cursor: progress;
+  background: none;
+  color: var(--muted);
+}
+
 /* Search status: loading spinner, an error, or "no matches" — mutually
    exclusive with the candidate grid, so this sits in the same slot. */
 .status {
@@ -1198,23 +1204,6 @@ a.iconButton:hover {
   border-color: var(--ok);
   color: var(--ok);
   background: var(--ok-tint);
-}
-
-.dropzone {
-  border: 1.5px dashed var(--line-strong);
-  border-radius: 14px;
-  padding: 18px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  text-align: center;
-  color: var(--icon-idle);
-}
-
-/* Extra gap above "Choose a file", beyond `.dropzone`'s own uniform one. */
-.dropzoneUpload {
-  margin-top: 6px;
 }
 
 /* ---- paints ---- */
