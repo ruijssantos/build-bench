@@ -109,7 +109,7 @@ export const BODY_PAINTING_GUIDE: Guide = {
         {
           kind: "steps",
           items: [
-            "Spray one light coat and let it flash.",
+            "Spray one light coat and let it flash for 10 minutes before the wet coat.",
             "Spray one wet coat (technique in Stage 5).",
             "Let it dry for 24 hours.",
           ],
@@ -155,7 +155,10 @@ export const BODY_PAINTING_GUIDE: Guide = {
         {
           kind: "steps",
           items: [
-            { lead: "Mist coat:", text: "one light pass to seal the decals before any wet coat hits them." },
+            {
+              lead: "Mist coat:",
+              text: "one light pass to seal the decals before any wet coat hits them. Let it flash for 10–15 minutes before the first wet coat.",
+            },
             {
               lead: "Wet coats (2–3):",
               text: "",
