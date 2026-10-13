@@ -317,6 +317,34 @@
   border: 1px solid var(--line);
   border-radius: 18px;
   overflow: hidden;
+  transition:
+    transform var(--dur-base) var(--ease-out),
+    box-shadow var(--dur-base) var(--ease-out),
+    border-color var(--dur-base) var(--ease-out);
+}
+
+/* Hover (docs/PLAN.md §4.1 Motion). A card that navigates — it carries the
+   stretched link — lifts 1px onto the hero shadow; one that doesn't (a search
+   candidate, the kit page's own identity panel) stays put, so the lift keeps
+   meaning "this opens". Box art scales on every card. Keyboard focus on the
+   stretched link gets the same lift. Hover-capable pointers only, so a tap
+   on a phone doesn't leave a card stuck mid-lift. */
+@media (hover: hover) {
+  .card:has(> .cardStretchLink):hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-hero);
+    border-color: var(--line-strong);
+  }
+
+  .card:hover .cardArtImg {
+    transform: scale(var(--art-hover-scale));
+  }
+}
+
+.card:has(> .cardStretchLink:focus-visible) {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-hero);
+  border-color: var(--line-strong);
 }
 
 /* A whole-card link on the Stash grid (docs/PLAN.md §6 Phase 4a) without
@@ -374,6 +402,7 @@
   height: 100%;
   object-fit: cover;
   display: block;
+  transition: transform var(--dur-slow) var(--ease-out);
 }
 
 .cardArtFallback {

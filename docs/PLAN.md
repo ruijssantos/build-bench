@@ -573,8 +573,10 @@ why it works on screens (Paints, Shopping) that have nothing to do with instrume
 - **Radii:** card 20 (22 desktop) · tile, input 14 · chip 6–12 · pill 999.
 - **Borders:** 1px `--line`. Hairlines do the separating.
 - **Elevation:** exactly one shadow in the whole app, on the hero card —
-  `0 1px 2px rgba(28,26,23,.04), 0 10px 28px rgba(28,26,23,.045)`. Everything else is a
+  `0 1px 2px rgba(18,20,23,.04), 0 10px 28px rgba(18,20,23,.05)`. Everything else is a
   hairline. Don't add a second elevation level.
+  The same shadow is what a navigating card lifts onto on hover (see *Motion*); it is
+  never a resting second level.
 - **Touch targets:** ≥44px everywhere; tab-bar items 44px.
 - **Tab bar:** 60px tall, hairline top, 6 items (5 routes + sign out), active in `--accent`.
 - **Left rail:** 260px, items 44px, active state is an `--accent-tint` pill at radius 12.
@@ -590,6 +592,21 @@ The one decorative element, and it costs no colour:
   filled `--livery` on a `--card-sunken` ground.
 - On `--card` surfaces use `--livery-card` instead, one step lighter.
 - The livery never uses `--accent`.
+
+#### Motion
+
+Motion confirms something you did or can do; it never decorates, and nothing waits on it.
+One curve, three speeds, in `tokens.css`:
+
+- `--ease-out` `cubic-bezier(.2, 0, 0, 1)`, no overshoot. `--dur-fast` 120ms (colour, tints),
+  `--dur-base` 200ms (lifts, small moves), `--dur-slow` 320ms (box art, fills).
+- **Hover:** box art scales to `--art-hover-scale` (1.04) inside its frame, on every card
+  and dashboard row. A card that navigates (it has the stretched link, or is a stat tile)
+  also lifts 1px onto `--shadow-hero`; a card that doesn't stays put, so the lift keeps
+  meaning *this opens*. Keyboard focus gets the same lift. Hover rules sit inside
+  `@media (hover: hover)` so a tap never leaves a phone card stuck lifted.
+- `prefers-reduced-motion: reduce` collapses every transition and animation to 1ms,
+  globally, in `tokens.css`.
 
 #### Icons
 
