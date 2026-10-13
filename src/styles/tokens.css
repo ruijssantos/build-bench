@@ -6,42 +6,52 @@
  */
 
 :root {
-  /* surfaces */
-  --bg: #f6f2e9;
-  --card: #fffdf8;
-  --card-sunken: #f2ece0;
-  --line: #ece5d7;
-  --line-strong: #e8e1d3;
+  /* surfaces — a cutting mat: cool paper with a faint 24px grid */
+  --bg: #f3f4f1;   /* page */
+  --card: #ffffff;
+  --card-sunken: #eceeea;   /* inset tracks, card strip ground */
+  --line: #e3e5e1;   /* hairline border */
+  --line-strong: #d7dad6;   /* input borders */
+  --bg-grid: linear-gradient(rgba(18, 20, 23, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(18, 20, 23, 0.045) 1px, transparent 1px);
+  --bg-grid-size: 24px 24px;
 
   /* livery — a neutral, never a colour */
-  --livery: #e3dbc8;
-  --livery-card: #efe8d8;
+  --livery: #e2e4e0;   /* tonal stripe on --bg */
+  --livery-card: #eef0ec;   /* tonal stripe on --card */
 
   /* ink */
-  --ink: #1b1a17;
-  --ink-soft: #4a4437;
-  --muted: #7c766a;
-  --muted-2: #9c9483;
-  --faint: #c3bba8;
-  --icon-idle: #a89f8c;
+  --ink: #121417;
+  --ink-soft: #3d4249;   /* body inside tinted panels */
+  --muted: #697077;   /* secondary text */
+  --muted-2: #8a9097;   /* labels, captions */
+  --muted-hover: #4c5258;   /* --muted on hover */
+  --faint: #c4c8cc;   /* separators inside text, disabled glyphs */
+  --icon-idle: #9a9fa5;
 
   /* accent — selection and primary values ONLY */
-  --accent: #1b3a6b;
-  --accent-tint: #edf1f7;
+  --accent: #1d4ed8;
+  --accent-hover: #1a3fae;
+  --accent-tint: #e7edfc;
 
   /* semantic — in range / owned */
-  --ok: #4a6f52;
-  --ok-tint: #e9eee9;
-  --ok-track: #d3ded4;
+  --ok: #1f7a4d;
+  --ok-tint: #e6f2ea;
+  --ok-track: #cfe6d8;   /* the workable-window band */
 
   /* semantic — act on this */
-  --alert: #8c1c24;
-  --alert-tint: #f7ecea;
+  --alert: #d4231c;
+  --alert-tint: #fdeceb;
+
+  /* ink at alpha — scrims and overlays */
+  --scrim: rgba(18, 20, 23, 0.4);
+  --scrim-strong: rgba(18, 20, 23, 0.55);
+  --scrim-stronger: rgba(18, 20, 23, 0.72);
 
   /* type — bridged from next/font/google variables in layout.tsx */
-  --font-display: var(--font-barlow-condensed), "Arial Narrow", sans-serif;
-  --font-ui: var(--font-plus-jakarta-sans), system-ui, sans-serif;
-  --font-mono: var(--font-dm-mono), ui-monospace, monospace;
+  --font-display: var(--font-saira-condensed), "Arial Narrow", sans-serif;
+  --font-ui: var(--font-hanken-grotesk), system-ui, sans-serif;
+  --font-mono: var(--font-martian-mono), ui-monospace, monospace;
 
   /* geometry */
   --radius-card: 20px;
@@ -49,7 +59,7 @@
   --radius-tile: 14px;
   --radius-pill: 999px;
 
-  --shadow-hero: 0 1px 2px rgba(28, 26, 23, 0.04), 0 10px 28px rgba(28, 26, 23, 0.045);
+  --shadow-hero: 0 1px 2px rgba(18, 20, 23, 0.04), 0 10px 28px rgba(18, 20, 23, 0.05);
 
   --gutter: 20px;
 }
@@ -73,7 +83,9 @@ body {
 }
 
 body {
-  background: var(--bg);
+  background-color: var(--bg);
+  background-image: var(--bg-grid);
+  background-size: var(--bg-grid-size);
   color: var(--ink);
   font-family: var(--font-ui);
   -webkit-font-smoothing: antialiased;
@@ -85,5 +97,5 @@ a {
 }
 
 a:hover {
-  color: #14294c;
+  color: var(--accent-hover);
 }

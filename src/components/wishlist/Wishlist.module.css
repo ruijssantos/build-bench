@@ -200,7 +200,7 @@
 }
 
 .searchButton:not(:disabled):hover {
-  background: #14294c;
+  background: var(--accent-hover);
 }
 
 .manualButton {
@@ -396,7 +396,7 @@
   height: 30px;
   border: none;
   border-radius: 9px;
-  background: rgba(27, 26, 23, 0.55);
+  background: var(--scrim-strong);
   color: #fff;
   display: inline-flex;
   align-items: center;
@@ -405,7 +405,7 @@
 }
 
 .artEditButton:hover {
-  background: rgba(27, 26, 23, 0.72);
+  background: var(--scrim-stronger);
 }
 
 
@@ -586,7 +586,7 @@
 }
 
 .saveButton:not(:disabled):hover {
-  background: #14294c;
+  background: var(--accent-hover);
 }
 
 .savedLabel {
@@ -810,7 +810,7 @@ a.iconButton:hover {
 }
 
 .addButton:hover {
-  background: #14294c;
+  background: var(--accent-hover);
 }
 
 /* --------------------------------------------------------------- skeleton

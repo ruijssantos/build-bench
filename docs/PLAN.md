@@ -25,7 +25,7 @@ Section numbers below are stable and cited from code (`schema.ts`, `PERFORMANCE.
 | Auth | App-level signed cookie, one passphrase |
 | Airbrush | **Single-rig: Tamiya 74540 HG Trigger** |
 | Phone | PWA / responsive web. Desktop for manuals, phone for quick lookups |
-| Visual design | Warm cream, one accent, tonal livery, Barlow Condensed display — §4.1 |
+| Visual design | Cutting-mat paper, one manual blue, tonal livery, Saira Condensed display — §4.1 |
 | Theme | Light only |
 | Performance | Partial Prerendering, compiled reference data, client islands — `PERFORMANCE.md` |
 
@@ -459,40 +459,54 @@ Reference canvas (mockups for the screens built so far, and the rejected visual 
 Clean product UI (Apple / Airbnb / Revolut as reference points) carrying a classic-car
 palette, rather than imitating a dashboard.
 
+**Redesign in progress (Oct 2026).** The cream palette read as beige and generic. The
+direction now is the *Instruction Sheet* palette (a cool paper ground with the faint
+grid of a cutting mat, ink, one manual blue) with *Pit Board* type and, later, some of its
+components. The three directions that were compared, live:
+<https://claude.ai/artifact/J3swgzccXtk3WoWM8iETyy>. Step one swaps tokens and fonts
+only; no component changes yet.
+
 #### Colour
 
 ```css
-/* surfaces */
---bg:            #f6f2e9;   /* page */
---card:          #fffdf8;
---card-sunken:   #f2ece0;   /* inset tracks, card strip ground */
---line:          #ece5d7;   /* hairline border */
---line-strong:   #e8e1d3;   /* input borders */
+/* surfaces — a cutting mat */
+--bg:            #f3f4f1;   /* page, under --bg-grid (24px, ink at 4.5%) */
+--card:          #ffffff;
+--card-sunken:   #eceeea;   /* inset tracks, card strip ground */
+--line:          #e3e5e1;   /* hairline border */
+--line-strong:   #d7dad6;   /* input borders */
 
 /* livery — a neutral, never a colour */
---livery:        #e3dbc8;   /* tonal stripe on --bg */
---livery-card:   #efe8d8;   /* tonal stripe on --card */
+--livery:        #e2e4e0;   /* tonal stripe on --bg */
+--livery-card:   #eef0ec;   /* tonal stripe on --card */
 
 /* ink */
---ink:           #1b1a17;
---ink-soft:      #4a4437;   /* body inside tinted panels */
---muted:         #7c766a;   /* secondary text */
---muted-2:       #9c9483;   /* labels, captions */
---faint:         #c3bba8;   /* separators inside text, disabled glyphs */
---icon-idle:     #a89f8c;
+--ink:           #121417;
+--ink-soft:      #3d4249;   /* body inside tinted panels */
+--muted:         #697077;   /* secondary text */
+--muted-2:       #8a9097;   /* labels, captions */
+--muted-hover:   #4c5258;   /* --muted on hover */
+--faint:         #c4c8cc;   /* separators inside text, disabled glyphs */
+--icon-idle:     #9a9fa5;
 
 /* accent — selection and primary values ONLY */
---accent:        #1b3a6b;
---accent-tint:   #edf1f7;
+--accent:        #1d4ed8;
+--accent-hover:  #1a3fae;
+--accent-tint:   #e7edfc;
 
 /* semantic — in range / owned */
---ok:            #4a6f52;
---ok-tint:       #e9eee9;
---ok-track:      #d3ded4;   /* the workable-window band */
+--ok:            #1f7a4d;
+--ok-tint:       #e6f2ea;
+--ok-track:      #cfe6d8;   /* the workable-window band */
 
 /* semantic — act on this */
---alert:         #8c1c24;
---alert-tint:    #f7ecea;
+--alert:         #d4231c;
+--alert-tint:    #fdeceb;
+
+/* ink at alpha — scrims over content and box art */
+--scrim:         rgba(18, 20, 23, .40);
+--scrim-strong:  rgba(18, 20, 23, .55);
+--scrim-stronger: rgba(18, 20, 23, .72);
 ```
 
 **The rule that keeps this coherent:** three colours, all of them earning their place.
@@ -508,9 +522,9 @@ Three faces, one job each. All from Google Fonts, each with a fallback stack.
 
 | Token | Face | Used for |
 |---|---|---|
-| `--font-display` | Barlow Condensed | Screen titles (uppercase), hero numerals, small-caps labels |
-| `--font-ui` | Plus Jakarta Sans | Everything that is read: values, body, rows, buttons |
-| `--font-mono` | DM Mono | Paint codes only — `TS-8`, `XF-64` |
+| `--font-display` | Saira Condensed | Screen titles (uppercase), hero numerals, small-caps labels |
+| `--font-ui` | Hanken Grotesk | Everything that is read: values, body, rows, buttons |
+| `--font-mono` | Martian Mono | Paint codes only — `TS-8`, `XF-64` |
 
 | Role | Spec |
 |---|---|
@@ -545,7 +559,7 @@ Rules for every module, regardless of screen:
   smaller and quieter than the title of the module containing it.
 - Emphasis inside these roles is **weight, not size or colour**.
 
-Barlow Condensed carries the app's automotive voice through type, not ornament — which is
+Saira Condensed carries the app's automotive voice through type, not ornament — which is
 why it works on screens (Paints, Shopping) that have nothing to do with instruments.
 
 #### Geometry

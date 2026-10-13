@@ -2,7 +2,9 @@
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
-  background: var(--bg);
+  background-color: var(--bg);
+  background-image: var(--bg-grid);
+  background-size: var(--bg-grid-size);
 }
 
 @media (min-width: 900px) {

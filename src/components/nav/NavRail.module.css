@@ -77,7 +77,7 @@
   font-family: var(--font-ui);
   font-size: 14px;
   font-weight: 600;
-  color: #6b6456;
+  color: var(--muted-hover);
 }
 
 .itemActive {
