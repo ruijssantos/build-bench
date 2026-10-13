@@ -584,12 +584,11 @@ why it works on screens (Paints, Shopping) that have nothing to do with instrume
 
 The one decorative element, and it costs no colour:
 
-- **Header sweep** — `rotate(-21deg)`, two bars 26px and 10px with a 6px gap, filled
-  `--livery`, bleeding off the top-right of the header (`overflow: hidden`).
+- **No header sweep.** The diagonal bars that bled off the rail and the phone header
+  were removed in the Oct 2026 redesign: on the cutting-mat grid they read as noise.
 - **Card echo** — a 4px strip on the hero card's top edge: 44px bar, 9px gap, 17px bar,
-  filled `--livery` on a `--card-sunken` ground — this is what makes it read as a system
-  rather than a header flourish.
-- On `--card` surfaces (the desktop rail) use `--livery-card` instead, one step lighter.
+  filled `--livery` on a `--card-sunken` ground.
+- On `--card` surfaces use `--livery-card` instead, one step lighter.
 - The livery never uses `--accent`.
 
 #### Icons

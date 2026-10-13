@@ -16,13 +16,6 @@
   }
 }
 
-.sweep {
-  position: absolute;
-  top: -76px;
-  right: -36px;
-  pointer-events: none;
-}
-
 .brand {
   position: relative;
   padding: 0 20px 24px;
