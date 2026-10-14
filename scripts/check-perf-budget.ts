@@ -11,8 +11,15 @@ import { join } from "node:path";
  * a page that quietly stops being prerenderable. All three cost real
  * milliseconds and none of them show up as a failing test.
  *
- * When a budget legitimately needs to move, move it in the same commit as the
- * change that needs it, and say why in the message.
+ * The size ceilings are loose on purpose (the owner's call): this is an
+ * internal tool, and the aim is good Core Web Vitals as practice, not a
+ * byte-count contest. They sit well above today's numbers and exist to catch
+ * a *step* change, such as a dependency pulled into the eager bundle or a whole
+ * stylesheet duplicated, not to make every feature fight for bytes. When
+ * one is hit, raise it and note why in docs/PERFORMANCE.md §11. The
+ * structural checks below (catalogue behind its import, a static shell on
+ * every route) are the ones that actually protect load speed, and those stay
+ * strict.
  */
 
 const BUILD_DIR = ".next";
@@ -20,56 +27,14 @@ const BUILD_DIR = ".next";
 const BUDGETS = {
   /** Scripts the browser must have before the Thinner Bench is interactive,
    * gzipped. Framework included — it's what the user actually downloads. */
-  initialJsGzip: 150 * 1024,
+  initialJsGzip: 200 * 1024,
   /** The prerendered static shell for the busiest screen, gzipped — what a
    * CDN hands over before anything streams. */
   documentGzip: 8 * 1024,
-  /** Stylesheets are cached across navigations, so this can be generous —
-   * but not unbounded. Raised from 8.0 kB alongside Phase 3 (Wishlist):
-   * search UI, bigger result cards and the manual-entry/photo-upload dialog
-   * pushed the shared `(bench)` stylesheet to ~8.0 kB. Raised again, to 9.0 kB,
-   * for the sticky mobile tab bar and its sixth sign-out tab — global chrome
-   * every screen shares, not a phase-specific cost, and it left the previous
-   * ceiling with room for about one more CSS rule. Raised a third time, to
-   * 10.0 kB, for Phase 4a (the Stash): the app's first detail route, with
-   * genuinely new UI vocabulary throughout it (a status stepper, manual rows
-   * with an inline PDF viewer, three paint buckets, a two-column desktop
-   * layout) that nothing already on the shelf could fully cover. This is the
-   * phase PLAN.md §10 named as the one that might need to split the `(bench)`
-   * route group's shared stylesheet instead of raising this number again —
-   * a real split was judged the worse trade for now (every bench screen
-   * currently shares one cached stylesheet; splitting means a first
-   * navigation into the Stash costs its own fetch), so the number moved
-   * instead, deliberately, not silently. See docs/PERFORMANCE.md §10.
-   * Nudged to 10.5 kB for the round of preview polish after Phase 4a shipped:
-   * a bordered Edit button to match Delete, a pointer cursor on the manual
-   * label pills, and a touch more spacing in the upload dropzone — all in
-   * the shared `Inventory`/`InventoryForm` stylesheets `/thinner` also
-   * loads, so a few real lines there cost this budget even though none of
-   * them touch Thinner's own UI.
-   *
-   * 11.0 kB for Phase 6's Dashboard — the smallest of the four raises,
-   * +0.2 kB for a whole new screen, because `Dashboard.module.css` imports
-   * the wishlist's row and card vocabulary instead of restating it and only
-   * declares what the screen genuinely adds (stat tiles, its two-column
-   * split, three modifiers). The first draft, which restated them, cost
-   * more than this whole phase did.
-   *
-   * 12.0 kB for Tips & Guides (+0.9 kB measured, ~11.75 kB after): a reading
-   * page with vocabulary nothing else had — numbered steps, setup and note
-   * callouts, reference tables, a contents column. The "Current rig"
-   * rail block, phone pill and dry-tip modal it replaces were deleted in the
-   * same change, so that is the net cost. Collapsing the repeated label and
-   * card declarations into shared selectors was measured and saved nothing
-   * gzipped.
-   *
-   * 12.25 kB for dialog motion (+0.23 kB measured, ~12.22 kB after): every
-   * dialog slides up as a bottom sheet on a phone and back down on close,
-   * and lifts in on a desk (`Modal.module.css`). Four keyframes and the
-   * curves; folding the phone and desk keyframes into one pair driven by
-   * custom properties was measured and saved nothing gzipped. Every bench
-   * screen pays it because a dialog's styles ship in the shared bundle. */
-  cssGzip: 12.25 * 1024,
+  /** Every bench screen shares one cached stylesheet, so this is paid once
+   * per visit, not per navigation. The history of how it grew is in
+   * docs/PERFORMANCE.md §11. */
+  cssGzip: 20 * 1024,
 };
 
 interface Failure {

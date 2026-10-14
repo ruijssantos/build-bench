@@ -390,7 +390,7 @@ build-bench/
 │   ├── build-catalogue.ts          ← generates seed/paints.tamiya.json, §2.2
 │   ├── verify-catalogue.ts         ← runs in CI, fails the build on a missing code
 │   ├── migrate.mts  ·  seed.mts
-│   └── check-perf-budget.ts        ← runs in CI after `next build`, PERFORMANCE.md §10
+│   └── check-perf-budget.ts        ← runs in CI after `next build`, PERFORMANCE.md §11
 ├── src/
 │   ├── app/
 │   │   ├── (bench)/                ← the authenticated app shell (nav rail + tab bar)
@@ -1067,10 +1067,6 @@ plan and the code's comments cite as "§7", and the items it left open.
 - **`/api/login` has no rate limiting**, and is the one route outside the
   session check. Fixing it needs somewhere to keep a counter (Vercel KV, a
   table, or the platform firewall), which is a decision rather than an edit.
-- **`/wishlist` initial JS sits about 0.5 kB under its 150 kB budget.** The
-  next feature on that screen hits it first, and `PERFORMANCE.md` §10's
-  raise-or-split question will be about JavaScript rather than CSS when it
-  does.
 - **XF-83 and XF-84's swatches are estimates**, flagged in
   `scripts/build-catalogue.ts`; correct them by eye against a real bottle.
 

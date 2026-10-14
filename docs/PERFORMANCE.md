@@ -287,85 +287,36 @@ shell and accept the gap.
 
 | Check | Budget | Currently |
 |---|---|---|
-| `/thinner` initial JS, gzipped (framework included) | 150 kB | 143.6 kB |
-| `/wishlist` initial JS, gzipped | 150 kB | 149.4 kB |
-| `/thinner` static shell, gzipped | 8 kB | 3.4 kB |
-| `/wishlist` static shell, gzipped | 8 kB | 3.3 kB |
-| CSS, gzipped (shared by both) | 12.25 kB | 12.2 kB |
+| `/thinner` initial JS, gzipped (framework included) | 200 kB | 143.4 kB |
+| `/wishlist` initial JS, gzipped | 200 kB | 149.6 kB |
+| `/thinner` static shell, gzipped | 8 kB | 3.3 kB |
+| `/wishlist` static shell, gzipped | 8 kB | 3.2 kB |
+| CSS, gzipped (shared by both) | 20 kB | 12.2 kB |
 | Paint catalogue in an eagerly-loaded chunk | never | behind its dynamic import |
 | `images.remotePatterns` covers the Blob store | required | configured |
 | Every app route ships a static shell | all 7 | all 7 |
 
-These guard regressions that are invisible in review: a `"use client"` one level
-too high, a static import of the catalogue, a page that quietly stops being
-prerenderable. Move a budget only in the commit that needs it, and say why.
+**The stance: good Core Web Vitals, not byte-counting.** This is an internal
+tool. The owner wants it fast because that's good practice, and not every
+feature fighting for bytes. So the size ceilings sit well above today's
+numbers. They're there to catch a *step* change (a dependency pulled into the
+eager bundle, a stylesheet duplicated, a `"use client"` one level too high
+that drags a tree with it), not a feature's honest cost. When one is hit,
+raise it and add a line here saying why. Don't trim working UI to fit.
 
-`/wishlist`'s JS has 0.6 kB of headroom left against the 150 kB ceiling, tighter
-than `/thinner`'s 6.4 kB — Phase 4a's art-edit affordance (`ArtEditButton`)
-landed on every saved-kit card on both screens, and even lazy-loaded (its dialog
-is its own chunk, fetched only on click) the trigger itself still cost a sliver
-of eager JS on `/wishlist`. Real, not a rounding artefact: the next thing that
-adds a client dependency to either screen should check this number before
-merging, not find out from CI.
+What stays strict are the checks that actually move load speed: the catalogue
+stays behind its dynamic import, every route ships a prerendered static
+shell, and the shell itself stays small. Those are regressions invisible in
+review that cost real milliseconds.
 
-**One stylesheet per route group.** The CSS number is measured on `/thinner`
-but is not `/thinner`'s alone: every route under `(bench)` shares one hashed
-stylesheet, so Phase 2's Paints screen moved it from 5.5 kB to 7.0 kB without
-touching the Thinner Bench, and Phase 3's Wishlist — search UI, bigger result
-cards, the manual-entry/photo-upload dialog — moved it again to 8.0 kB, past
-the original 8 kB budget, which is why that number became 8.5 kB. The sticky
-mobile tab bar and its sixth sign-out tab moved it once more, to 8.5 kB
-exactly — global chrome shared by every screen, not a phase's own cost, but
-spent from the same allowance regardless — so the budget became 9.0 kB. Phase
-4a moved it a third time, to 10.0 kB: the app's first detail route
-(`/kits/[id]`) needed real new UI vocabulary — a status stepper, manual rows
-with an inline PDF viewer, three paint buckets, a two-column desktop layout —
-that the existing card/chip/pill language could carry the *content* of but not
-the *shape* of, on top of the art-edit affordance and coloured status chips
-this phase added to the existing grid cards. This is the phase called out
-below as the one likely to force the question, and the question was answered:
-raise the number, deliberately, rather than split the group now. That is the
-deal the grouping makes — a navigation between bench screens fetches no new
-CSS at all — but it does mean the budget is a shared allowance, and Phases
-5–8 each spend from it too.
-
-Phase 6's Dashboard is the fourth move, 10.5 → 11.0 kB, and the smallest:
-+0.2 kB for a whole new screen. That is the grouping paying off rather than
-straining. The first draft of `Dashboard.module.css` restated the card and
-row rules it needed and came in at +0.3 kB over the then-budget; rewriting it
-to import `Wishlist.module.css`'s `.itemList`/`.itemRow`/`.itemBody`/
-`.itemTitle`/`.itemNotes`/`.paintDot` and the `.moduleTitle` tier — the same
-cross-folder move `EmptyKits` and `StashKitCard` already make — left only
-what the screen genuinely adds: four stat tiles, a two-column desktop split,
-and three modifiers. **The rule that fell out of it, worth applying before
-the next raise: when a new screen's stylesheet needs a card or a row, check
-whether one exists before writing one.** The split question stays open and
-unchanged — at some point a screen different enough in kind may be better
-served by its own stylesheet than by stretching one shared by six — but this
-phase was not it.
-
-A round of preview polish right after Phase 4a shipped (a bordered Edit
-button to match Delete on the kit detail header, a pointer cursor on the
-manual upload's label pills, a touch more spacing in that same dropzone)
-nudged it once more, to 10.5 kB — small, real CSS in the shared
-`Inventory`/`InventoryForm` stylesheets `/thinner` also loads, so it counts
-against `/thinner`'s number even though none of it touches Thinner's own
-screen. Same deal as before: raised deliberately, not a rounding error.
-
-Tips & Guides moved it to 11.7 kB, so the budget became 12.0 kB. It is a reading
-page with vocabulary nothing else in the app had (numbered steps, setup and
-note callouts, reference tables, a contents column). The "Current rig"
-rail block, phone pill and dry-tip modal it replaces were deleted in the same
-change, so +0.9 kB is the net cost. Folding the repeated label and card
-declarations into shared selectors was measured and saved nothing gzipped,
-because gzip had already compressed the repetition away.
-
-Dialog motion moved it to 12.25 kB (+0.23 kB, to ~12.22 kB). Every dialog now
-rises as a bottom sheet on a phone and slides back down on close, and lifts in
-on a desk (`Modal.module.css`). That's four keyframes and their curves, and every
-bench screen pays for them because a dialog's styles ship in the shared bundle.
-Folding the phone and desk keyframes into one pair driven by custom properties
-was measured and saved nothing gzipped.
+**One stylesheet per route group.** Every route under `(bench)` shares one
+hashed stylesheet, so a navigation between bench screens fetches no new CSS,
+but every screen's styles count against the one number. It grew from 5.5 kB
+(Phase 1) to 12.2 kB across the Paints, Wishlist, Stash, Dashboard, Tips &
+Guides and dialog-motion work. The per-step history is in git
+(`scripts/check-perf-budget.ts` and this section, before the budgets were
+loosened). One rule from that history still pays: **when a new screen needs
+a card or a row, check whether one exists before writing one.**
 
 ## 12. Checklist for a new screen
 
