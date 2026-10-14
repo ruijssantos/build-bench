@@ -398,7 +398,7 @@ build-bench/
 │   │   │   ├── dashboard/          ← the landing screen, Phase 6
 │   │   │   ├── thinner/            ← page.tsx + actions.ts
 │   │   │   ├── inventory/          ← the paint shelf, page.tsx + actions.ts
-│   │   │   ├── wishlist/           ← Phase 3
+│   │   │   ├── wishlist/           ← Phase 3, + /wishlist/[id] for a wishlist kit
 │   │   │   └── kits/               ← the stash + /kits/[id], Phase 4a
 │   │   ├── api/                    ← only where a Server Action doesn't fit (search,
 │   │   │                             external callbacks, kit research's staged calls)
@@ -900,7 +900,9 @@ list** action per manual (Claude Opus 5, streaming, effort high), and the result
 `kit_paint_requirement` rows shown as three buckets — Owned, Missing, Unresolved — against the
 shelf. The per-kit bucket view is one targeted query; the Stash grid's "14 of 17 · 3 missing"
 line on every card comes from one aggregate query across every kit, not N+1. Wishlist kits
-later got the same detail page (§3.3, and HISTORY.md "A kit is a kit").
+later got the same detail page (§3.3, and HISTORY.md "A kit is a kit"), served at
+`/wishlist/[id]` so the nav lights the list the kit is on; a kit whose status no longer matches
+its URL (an old link, or one marked bought while open) redirects to the other.
 
 Manual upload does what §4.3 originally hoped for and Phase 3's photo upload couldn't:
 client-direct upload via `@vercel/blob/client`'s `upload()` against a token route
