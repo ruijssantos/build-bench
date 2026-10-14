@@ -44,7 +44,7 @@ export function SavedKitCard({
         notes={kit.notes}
         priority={priority}
         kit={kit}
-        extra={<ReadyLine readiness={readiness} wanted />}
+        extra={<ReadyLine readiness={readiness} />}
       />
       <div className={styles.savedCardActions}>
         <MarkBoughtButton id={kit.id} />

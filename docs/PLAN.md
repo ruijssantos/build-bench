@@ -361,8 +361,8 @@ research and finding build videos are all as useful for deciding whether to buy 
 building it, and they stay attached when it's bought. What stays status-shaped is only what's
 genuinely about ownership — the "Purchase & dates" panel appears once it's bought, the status
 ladder shows a Wishlist step only while the kit is still on it, and the shop run (§6 Phase 6)
-counts only kits you own. Wishlist and Stash cards share one readiness line ("3 missing");
-only the full-shelf wording differs ("You have them all" against "Ready to build").
+counts only kits you own. Wishlist and Stash cards share one readiness line, word for word:
+"3 missing", or "Ready to build" once the shelf covers it.
 
 `wishlist_item` is genuinely separate, and that's the test working rather than failing: a
 tool or a bottle of glue has no brand, no scale, no kit number and no reference page, and it
@@ -2025,7 +2025,7 @@ migration.
 - "Purchase & dates" is hidden on a wishlist kit. Remove redirects to the list the kit was on.
 - `getStashReadiness` became `getKitReadiness` and covers every status. The Wishlist grid now
   asks for it, and its cards link to the detail page and show "Own 3 of 5 · 2 missing" /
-  "You have them all". The shop run stays scoped to `stash`/`building` — a kit you haven't
+  "Ready to build". The shop run stays scoped to `stash`/`building` — a kit you haven't
   bought doesn't put paint on the run.
 - Research is still only ever started by its button. It's the paid path (§5.3), and wishlists
   hold more speculative kits than stashes do.
@@ -2055,7 +2055,7 @@ the owner's rule is "I have it in X or XF". No migration.
   whose only gaps are equivalents is Ready to build. On the kit cards they simply count as
   owned ("Own 14 of 17") — the detail page's Equivalents section is where they're itemised.
   (A first cut added "(2 via X/XF)" to the card line; the owner found it noise.) A card with
-  nothing missing reads just "Ready to build" / "You have them all", without the count.
+  nothing missing reads just "Ready to build", without the count.
 - The chip reads `● LP-8 → ● X-8` — both swatches, solid outline in Owned's green — and opens
   the acrylic on the Thinner bench: that's the bottle being thinned.
 - Card counts and the detail page are computed in different places (SQL aggregate vs.
