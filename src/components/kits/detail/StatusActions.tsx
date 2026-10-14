@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 
 import { advanceKitStatus, regressKitStatus } from "@/app/(bench)/kits/actions";
 import { markKitBought } from "@/app/(bench)/wishlist/actions";
-import styles from "@/components/wishlist/Wishlist.module.css";
+import styles from "@/components/kits/Kits.module.css";
 import { nextStashStatus, previousStashStatus, statusLabel, type KitStatus } from "@/domain/kit";
 import type { Result } from "@/lib/result";
 import ui from "@/styles/ui.module.css";

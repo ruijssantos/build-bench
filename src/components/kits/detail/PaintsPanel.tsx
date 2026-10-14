@@ -1,12 +1,12 @@
 import Link from "next/link";
 
 import { LowBottleIcon } from "@/components/icons";
-import inventoryStyles from "@/components/inventory/Inventory.module.css";
 import { MarkBought } from "@/components/kits/MarkBought";
-import styles from "@/components/wishlist/Wishlist.module.css";
+import styles from "@/components/kits/Kits.module.css";
 import { listShelfPaintCodes } from "@/db/repositories/inventory";
 import { listKitPaintRequirements } from "@/db/repositories/kit-paint-requirements";
 import { bucketPaintRequirements, codesToCheckOnShelf } from "@/domain/kit-paints";
+import page from "@/styles/page.module.css";
 import ui from "@/styles/ui.module.css";
 
 import { DismissUnresolved } from "./DismissUnresolved";
@@ -25,7 +25,7 @@ export async function PaintsPanel({ kitId }: { kitId: number }) {
       <div className={styles.card}>
         <div className={styles.cardBody}>
           <span className={ui.moduleTitle}>Paints</span>
-          <div className={inventoryStyles.emptyCard}>
+          <div className={page.emptyCard}>
             Upload a manual and extract its paint list to see what this kit needs.
           </div>
         </div>
@@ -41,7 +41,7 @@ export async function PaintsPanel({ kitId }: { kitId: number }) {
   return (
     <div className={styles.card}>
       <div className={styles.cardBody}>
-        <div className={styles.subHead}>
+        <div className={page.subHead}>
           <span className={ui.moduleTitle}>Paints</span>
         </div>
 

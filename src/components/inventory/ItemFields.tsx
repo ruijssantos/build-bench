@@ -10,7 +10,7 @@ import {
 } from "@/domain/inventory";
 import ui from "@/styles/ui.module.css";
 
-import styles from "./InventoryForm.module.css";
+import styles from "@/components/bench/Form.module.css";
 
 /**
  * The fields Add and Edit have in common — decanted-vs-stock, bottle state,

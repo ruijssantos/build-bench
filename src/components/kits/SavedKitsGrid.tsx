@@ -3,9 +3,10 @@ import type { ReactNode } from "react";
 import { getKitReadiness, type KitReadiness } from "@/db/repositories/kit-paint-requirements";
 import { listKitsByStatuses, type KitRow } from "@/db/repositories/kits";
 import type { KitStatus } from "@/domain/kit";
+import page from "@/styles/page.module.css";
 import ui from "@/styles/ui.module.css";
 
-import styles from "./Wishlist.module.css";
+import styles from "./Kits.module.css";
 
 /**
  * The saved half of the Kits module — everything the database owns here,
@@ -48,7 +49,7 @@ export async function SavedKitsGrid({
 
   return (
     <>
-      <div className={styles.subHead}>
+      <div className={page.subHead}>
         <span className={ui.moduleTitle}>
           {moduleLabel} ({kits.length})
         </span>

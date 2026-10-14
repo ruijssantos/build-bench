@@ -5,7 +5,7 @@ import { useState } from "react";
 
 import { KitsIcon } from "@/components/icons";
 
-import styles from "./Wishlist.module.css";
+import styles from "./Kits.module.css";
 
 /** The suffix `next.config.ts`'s `images.remotePatterns` allowlists — a
  * saved kit's art, always re-hosted on our own Blob store by `saveBoxArt`. A

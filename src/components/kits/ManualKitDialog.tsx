@@ -5,15 +5,15 @@ import { useEffect, useRef, useState, type ChangeEvent } from "react";
 import { addManualKit, fetchKitArt, promoteKitToStash, updateManualKit } from "@/app/(bench)/kits/actions";
 import { Modal } from "@/components/bench/Modal";
 import { KitsIcon } from "@/components/icons";
-import formStyles from "@/components/inventory/InventoryForm.module.css";
-import { PurchaseFields, purchaseValuesOf } from "@/components/kits/PurchaseFields";
+import formStyles from "@/components/bench/Form.module.css";
+import { PurchaseFields, purchaseValuesOf } from "./PurchaseFields";
 import type { KitRow } from "@/db/repositories/kits";
 import { categoryLabel, isStashStatus, KIT_CATEGORIES, type KitStatus } from "@/domain/kit";
 import { resizeImage } from "@/lib/resize-image";
 import type { Result } from "@/lib/result";
 import ui from "@/styles/ui.module.css";
 
-import styles from "./Wishlist.module.css";
+import styles from "./Kits.module.css";
 
 /** Long edge, in pixels, an uploaded photo is resized down to before it
  * leaves the browser (see `resizeImage`). Generous for a card thumbnail,

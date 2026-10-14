@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import { updateKitPurchaseAction } from "@/app/(bench)/kits/actions";
 import { Modal } from "@/components/bench/Modal";
-import formStyles from "@/components/inventory/InventoryForm.module.css";
+import formStyles from "@/components/bench/Form.module.css";
 import { PurchaseFields, purchaseValuesOf } from "@/components/kits/PurchaseFields";
 import type { KitRow } from "@/db/repositories/kits";
 import ui from "@/styles/ui.module.css";

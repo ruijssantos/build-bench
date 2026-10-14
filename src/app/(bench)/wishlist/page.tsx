@@ -6,14 +6,14 @@ import { DesktopHeader } from "@/components/bench/DesktopHeader";
 import { PhoneHeader } from "@/components/bench/PhoneHeader";
 import { AddItemTrigger } from "@/components/wishlist/AddItemTrigger";
 import { EmptyKits } from "@/components/wishlist/EmptyKits";
-import { KitSearch } from "@/components/wishlist/KitSearch";
-import { KitsSkeleton } from "@/components/wishlist/KitsSkeleton";
+import { KitSearch } from "@/components/kits/KitSearch";
+import { KitsSkeleton } from "@/components/kits/KitsSkeleton";
 import { OtherItemsList } from "@/components/wishlist/OtherItemsList";
 import { OtherItemsSkeleton } from "@/components/wishlist/OtherItemsSkeleton";
 import { SavedKitCard } from "@/components/wishlist/SavedKitCard";
-import { SavedKitsGrid } from "@/components/wishlist/SavedKitsGrid";
-import styles from "@/components/wishlist/Wishlist.module.css";
+import { SavedKitsGrid } from "@/components/kits/SavedKitsGrid";
 import { blobStoreOrigin } from "@/lib/box-art";
+import page from "@/styles/page.module.css";
 import ui from "@/styles/ui.module.css";
 
 export const metadata = { title: "Wishlist" };
@@ -42,10 +42,10 @@ export default function WishlistPage() {
       <PhoneHeader title="Wishlist" />
       <DesktopHeader title="Wishlist" />
 
-      <div className={ui.scrollArea}>
-        <div className={styles.grid}>
-          <section className={styles.section}>
-            <div className={styles.sectionHead}>
+      <div className={page.scrollArea}>
+        <div className={page.grid}>
+          <section className={page.section}>
+            <div className={page.sectionHead}>
               <h2 className={ui.sectionTitle}>Kits</h2>
             </div>
             <KitSearch saveStatus="wishlist" homeHref="/wishlist" />
@@ -64,8 +64,8 @@ export default function WishlistPage() {
             </BenchError>
           </section>
 
-          <section className={styles.section}>
-            <div className={styles.sectionHead}>
+          <section className={page.section}>
+            <div className={page.sectionHead}>
               <h2 className={ui.sectionTitle}>Other items</h2>
               <AddItemTrigger />
             </div>

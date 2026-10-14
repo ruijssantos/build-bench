@@ -1,5 +1,5 @@
 import { PaintsIcon } from "@/components/icons";
-import styles from "@/components/wishlist/Wishlist.module.css";
+import styles from "./Kits.module.css";
 import type { ReadinessCounts } from "@/domain/kit-paints";
 
 /**

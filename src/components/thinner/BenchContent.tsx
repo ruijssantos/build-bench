@@ -7,6 +7,7 @@ import { resolveBenchParams, type BenchSearchParams } from "./bench-params";
 import styles from "./ThinnerBench.module.css";
 
 import { resolveThinnerBench } from "@/lib/thinner-bench";
+import page from "@/styles/page.module.css";
 
 /**
  * The part of the bench that needs the database — any saved correction, and
@@ -24,7 +25,7 @@ export async function BenchContent({ searchParams }: { searchParams: Promise<Ben
 
   if (!bundle.paint) {
     return (
-      <div className={styles.emptyCard}>
+      <div className={`${page.emptyCard} ${styles.fullRow}`}>
         No match. Tamiya codes look like <b>X-7</b>, <b>XF-64</b>, <b>LP-2</b>, <b>TS-8</b> or{" "}
         <b>AS-12</b>.
       </div>
@@ -44,7 +45,7 @@ export async function BenchContent({ searchParams }: { searchParams: Promise<Ben
   }
 
   if (!bundle.effectiveRatio) {
-    return <div className={styles.emptyCard}>No ratio rule is seeded for this family yet.</div>;
+    return <div className={`${page.emptyCard} ${styles.fullRow}`}>No ratio rule is seeded for this family yet.</div>;
   }
 
   return (

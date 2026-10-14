@@ -1,12 +1,13 @@
 "use client";
 
-import { lazy, Suspense, useState } from "react";
+import { lazy } from "react";
 
+import { DialogTrigger } from "@/components/bench/DialogTrigger";
 import { CameraIcon } from "@/components/icons";
 import type { KitRow } from "@/db/repositories/kits";
 import ui from "@/styles/ui.module.css";
 
-import styles from "./Wishlist.module.css";
+import styles from "./Kits.module.css";
 
 const ManualKitDialog = lazy(() => import("./ManualKitDialog").then((m) => ({ default: m.ManualKitDialog })));
 
@@ -26,32 +27,17 @@ const ManualKitDialog = lazy(() => import("./ManualKitDialog").then((m) => ({ de
  * the `updateKitArt` action behind it) entirely.
  */
 export function ArtEditButton({ kit }: { kit: KitRow }) {
-  const [open, setOpen] = useState(false);
-
   if (kit.imageUrl) return null;
 
   return (
-    <>
-      <button
-        type="button"
-        className={`${ui.iconBtn} ${ui.iconBtnScrim} ${styles.artEditButton}`}
-        onClick={(e) => {
-          // The Stash card is a stretched link; without this the click
-          // navigates to the detail page instead of opening the dialog.
-          e.preventDefault();
-          e.stopPropagation();
-          setOpen(true);
-        }}
-        title="Add a photo"
-        aria-label={`Add a photo for ${kit.name ?? "this kit"}`}
-      >
-        <CameraIcon size={16} />
-      </button>
-      {open ? (
-        <Suspense fallback={null}>
-          <ManualKitDialog kit={kit} onClose={() => setOpen(false)} />
-        </Suspense>
-      ) : null}
-    </>
+    <DialogTrigger
+      dialog={ManualKitDialog}
+      dialogProps={{ kit }}
+      className={`${ui.iconBtn} ${ui.iconBtnScrim} ${styles.artEditButton}`}
+      title="Add a photo"
+      aria-label={`Add a photo for ${kit.name ?? "this kit"}`}
+    >
+      <CameraIcon size={16} />
+    </DialogTrigger>
   );
 }

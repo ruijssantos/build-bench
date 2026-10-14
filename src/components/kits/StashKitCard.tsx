@@ -2,9 +2,9 @@ import Link from "next/link";
 
 import { removeKit } from "@/app/(bench)/kits/actions";
 import { ExternalLinkIcon, TrashIcon } from "@/components/icons";
-import { EditKitTrigger } from "@/components/wishlist/EditKitTrigger";
-import { KitCardBody } from "@/components/wishlist/KitCardBody";
-import styles from "@/components/wishlist/Wishlist.module.css";
+import { EditKitTrigger } from "./EditKitTrigger";
+import { KitCardBody } from "./KitCardBody";
+import styles from "./Kits.module.css";
 import type { KitReadiness } from "@/db/repositories/kit-paint-requirements";
 import type { KitRow } from "@/db/repositories/kits";
 import { isStashStatus } from "@/domain/kit";

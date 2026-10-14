@@ -3,7 +3,7 @@
 import { useState, useTransition, type ReactNode } from "react";
 
 import { markLowRestocked, markPaintBought } from "@/app/(bench)/inventory/actions";
-import styles from "@/components/wishlist/Wishlist.module.css";
+import styles from "./Kits.module.css";
 
 /**
  * One-click "Bought" on a Missing paint — the kit Paints panel's chips and

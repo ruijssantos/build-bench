@@ -1,4 +1,4 @@
-import styles from "@/components/wishlist/Wishlist.module.css";
+import styles from "@/components/kits/Kits.module.css";
 import { listKitManuals } from "@/db/repositories/kit-manuals";
 
 import { ManualsList } from "./ManualsList";

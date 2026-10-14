@@ -7,10 +7,10 @@ import type { KitReadiness } from "@/db/repositories/kit-paint-requirements";
 import type { KitRow } from "@/db/repositories/kits";
 import ui from "@/styles/ui.module.css";
 
-import { EditKitTrigger } from "./EditKitTrigger";
-import { KitCardBody } from "./KitCardBody";
+import { EditKitTrigger } from "@/components/kits/EditKitTrigger";
+import { KitCardBody } from "@/components/kits/KitCardBody";
 import { MarkBoughtButton } from "./MarkBoughtButton";
-import styles from "./Wishlist.module.css";
+import styles from "@/components/kits/Kits.module.css";
 
 /** One saved kit — box art, identity, and the things you do with it: mark it
  * bought, edit its properties, open its link, or remove it. A Server

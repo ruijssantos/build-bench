@@ -15,8 +15,8 @@ import { ShopRun } from "@/components/dashboard/ShopRun";
 import { SummaryStats } from "@/components/dashboard/SummaryStats";
 import { WishlistSnapshot } from "@/components/dashboard/WishlistSnapshot";
 import styles from "@/components/dashboard/Dashboard.module.css";
-import cardStyles from "@/components/wishlist/Wishlist.module.css";
 import { blobStoreOrigin } from "@/lib/box-art";
+import page from "@/styles/page.module.css";
 import ui from "@/styles/ui.module.css";
 
 export const metadata = { title: "Dashboard" };
@@ -51,16 +51,16 @@ export default function DashboardPage() {
       <PhoneHeader title="Dashboard" />
       <DesktopHeader title="Dashboard" />
 
-      <div className={ui.scrollArea}>
-        <div className={cardStyles.grid}>
+      <div className={page.scrollArea}>
+        <div className={page.grid}>
           <BenchError label="The summary">
             <Suspense fallback={<StatsSkeleton />}>
               <SummaryStats />
             </Suspense>
           </BenchError>
 
-          <section className={cardStyles.section}>
-            <div className={cardStyles.sectionHead}>
+          <section className={page.section}>
+            <div className={page.sectionHead}>
               <h2 className={ui.sectionTitle}>On the bench</h2>
             </div>
             <BenchError label="On the bench">
@@ -71,8 +71,8 @@ export default function DashboardPage() {
           </section>
 
           <div className={styles.columns}>
-            <section className={cardStyles.section}>
-              <div className={cardStyles.sectionHead}>
+            <section className={page.section}>
+              <div className={page.sectionHead}>
                 <h2 className={ui.sectionTitle}>What you could start</h2>
               </div>
               <BenchError label="Ready to build">
@@ -82,8 +82,8 @@ export default function DashboardPage() {
               </BenchError>
             </section>
 
-            <section className={cardStyles.section}>
-              <div className={cardStyles.sectionHead}>
+            <section className={page.section}>
+              <div className={page.sectionHead}>
                 <h2 className={ui.sectionTitle}>Next shop run</h2>
               </div>
               <BenchError label="The shop list">
@@ -93,8 +93,8 @@ export default function DashboardPage() {
               </BenchError>
             </section>
 
-            <section className={cardStyles.section}>
-              <div className={cardStyles.sectionHead}>
+            <section className={page.section}>
+              <div className={page.sectionHead}>
                 <h2 className={ui.sectionTitle}>Wishlist</h2>
               </div>
               <BenchError label="The wishlist">

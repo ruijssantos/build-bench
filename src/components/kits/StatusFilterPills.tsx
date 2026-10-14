@@ -1,7 +1,7 @@
 import Link from "next/link";
 
-import inventoryStyles from "@/components/inventory/Inventory.module.css";
 import { STASH_DISPLAY_ORDER, statusLabel } from "@/domain/kit";
+import page from "@/styles/page.module.css";
 import ui from "@/styles/ui.module.css";
 
 import { kitsHref, type KitsStatusFilter } from "./kits-params";
@@ -24,7 +24,7 @@ export function StatusFilterPills({
   const total = STASH_DISPLAY_ORDER.reduce((sum, s) => sum + (counts[s] ?? 0), 0);
 
   return (
-    <nav className={inventoryStyles.filters} aria-label="Filter the stash">
+    <nav className={page.filters} aria-label="Filter the stash">
       <Link
         href={kitsHref(null)}
         scroll={false}

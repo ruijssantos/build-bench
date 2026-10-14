@@ -6,10 +6,11 @@ import { BenchError } from "@/components/bench/BenchError";
 import { DesktopHeader } from "@/components/bench/DesktopHeader";
 import { PhoneHeader } from "@/components/bench/PhoneHeader";
 import { ChevronLeftIcon } from "@/components/icons";
-import { EditKitTrigger } from "@/components/wishlist/EditKitTrigger";
-import styles from "@/components/wishlist/Wishlist.module.css";
+import { EditKitTrigger } from "@/components/kits/EditKitTrigger";
+import styles from "@/components/kits/Kits.module.css";
 import { getKitById } from "@/db/repositories/kits";
 import { isKitStatus } from "@/domain/kit";
+import page from "@/styles/page.module.css";
 import ui from "@/styles/ui.module.css";
 
 import { DeleteKitButton } from "./DeleteKitButton";
@@ -87,7 +88,7 @@ export async function KitDetailSection({
       <PhoneHeader title={title} eyebrow={crumb} trailing={headerActions} stackTrailing />
       <DesktopHeader title={title} trailing={headerActions} />
 
-      <div className={ui.scrollArea}>
+      <div className={page.scrollArea}>
         <div className={styles.detailGrid}>
           <div className={styles.railCol}>
             <IdentityPanel kit={kit} />

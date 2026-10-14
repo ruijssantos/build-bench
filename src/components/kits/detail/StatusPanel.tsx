@@ -1,5 +1,5 @@
 import { StatusBar } from "@/components/kits/StatusBar";
-import styles from "@/components/wishlist/Wishlist.module.css";
+import styles from "@/components/kits/Kits.module.css";
 import type { KitStatus } from "@/domain/kit";
 import ui from "@/styles/ui.module.css";
 

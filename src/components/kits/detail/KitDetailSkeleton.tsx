@@ -1,7 +1,8 @@
 import { DesktopHeader } from "@/components/bench/DesktopHeader";
 import { PhoneHeader } from "@/components/bench/PhoneHeader";
 import { ChevronLeftIcon } from "@/components/icons";
-import styles from "@/components/wishlist/Wishlist.module.css";
+import styles from "@/components/kits/Kits.module.css";
+import page from "@/styles/page.module.css";
 import ui from "@/styles/ui.module.css";
 
 /**
@@ -38,36 +39,36 @@ export function KitDetailSkeleton() {
         }
       />
       <DesktopHeader title="Kit" />
-      <div className={ui.scrollArea}>
+      <div className={page.scrollArea}>
         <div className={styles.detailGrid}>
           <div className={styles.railCol}>
             <div className={styles.card}>
-              <div className={`${styles.cardArt} ${styles.skeletonSwatch}`} />
+              <div className={`${styles.cardArt} ${page.skeletonSwatch}`} />
               <div className={styles.cardBody}>
-                <span className={`${styles.cardName} ${styles.skeletonLine}`} style={{ width: "70%" }} />
-                <span className={`${styles.cardNumber} ${styles.skeletonLine}`} style={{ width: 60 }} />
+                <span className={`${styles.cardName} ${page.skeletonLine}`} style={{ width: "70%" }} />
+                <span className={`${styles.cardNumber} ${page.skeletonLine}`} style={{ width: 60 }} />
               </div>
             </div>
             <div className={styles.card}>
               <div className={styles.cardBody}>
-                <span className={`${ui.moduleTitle} ${styles.skeletonLine}`} style={{ width: 56 }} />
+                <span className={`${ui.moduleTitle} ${page.skeletonLine}`} style={{ width: 56 }} />
               </div>
             </div>
             <div className={styles.card}>
               <div className={styles.cardBody}>
-                <span className={`${ui.moduleTitle} ${styles.skeletonLine}`} style={{ width: 120 }} />
+                <span className={`${ui.moduleTitle} ${page.skeletonLine}`} style={{ width: 120 }} />
               </div>
             </div>
           </div>
           <div className={styles.mainCol}>
             <div className={styles.card}>
               <div className={styles.cardBody}>
-                <span className={`${ui.moduleTitle} ${styles.skeletonLine}`} style={{ width: 90 }} />
+                <span className={`${ui.moduleTitle} ${page.skeletonLine}`} style={{ width: 90 }} />
               </div>
             </div>
             <div className={styles.card}>
               <div className={styles.cardBody}>
-                <span className={`${ui.moduleTitle} ${styles.skeletonLine}`} style={{ width: 70 }} />
+                <span className={`${ui.moduleTitle} ${page.skeletonLine}`} style={{ width: 70 }} />
               </div>
             </div>
           </div>

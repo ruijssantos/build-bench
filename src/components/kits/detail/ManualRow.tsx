@@ -5,7 +5,7 @@ import { useEffect, useRef, useState, useTransition } from "react";
 
 import { deleteManual } from "@/app/(bench)/kits/actions";
 import { CheckIcon, ExternalLinkIcon, FileIcon, TrashIcon } from "@/components/icons";
-import styles from "@/components/wishlist/Wishlist.module.css";
+import styles from "@/components/kits/Kits.module.css";
 import type { KitManualRow } from "@/db/repositories/kit-manuals";
 import { DEFAULT_EXTRACT_PAGES } from "@/domain/kit-manual";
 import ui from "@/styles/ui.module.css";

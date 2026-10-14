@@ -6,7 +6,7 @@ import { SearchIcon } from "@/components/icons";
 import type { PaintHit } from "@/components/thinner/paint-search-index";
 import ui from "@/styles/ui.module.css";
 
-import styles from "./InventoryForm.module.css";
+import styles from "./PaintPicker.module.css";
 
 /**
  * Which paint you're adding, chosen by type-ahead.
