@@ -28,6 +28,11 @@ jobs:
       # dependency nothing needs (knip.json). The scripts under scripts/ are
       # entry points of their own, run by hand.
       - run: npm run lint:dead
+
+      # The pure logic in src/domain and the colour matcher: ratio and cup
+      # maths, paint codes and search, status rules, extraction and research
+      # normalisation. No database, no network, under two seconds.
+      - run: npm test
       - run: npm run build
 
       # docs/PERFORMANCE.md — fails the build if the Thinner Bench's initial
