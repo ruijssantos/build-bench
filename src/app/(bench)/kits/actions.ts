@@ -28,6 +28,7 @@ import {
   isStashStatus,
   nextStashStatus,
   previousStashStatus,
+  statusAfterDateEdit,
   statusPhrase,
   type KitStatus,
   type StashStatus,
@@ -196,6 +197,7 @@ export async function addManualKit(input: AddManualKitInput, status: KitStatus):
   const scalematesUrl = readText(input.scalematesUrl, 500);
   const providedImage = readText(input.imageUrl ?? "", 2000);
   const alreadyStored = isStoredBlobUrl(providedImage);
+  const purchase = input.purchase && isStashStatus(status) ? readPurchase(input.purchase) : undefined;
 
   const id = await createKit({
     brand,
@@ -203,11 +205,15 @@ export async function addManualKit(input: AddManualKitInput, status: KitStatus):
     name,
     scale: readText(input.scale, 40),
     category: isKitCategory(input.category) ? input.category : "other",
-    status,
+    // A kit added with a start (or finish) date already set goes straight to
+    // Building (or Built), same as editing those dates in later would.
+    status: purchase && isStashStatus(status)
+      ? statusAfterDateEdit(status, { startedAt: null, completedAt: null }, purchase)
+      : status,
     scalematesUrl,
     imageUrl: alreadyStored ? providedImage : null,
     notes: readText(input.notes, 2000),
-    ...(input.purchase && isStashStatus(status) ? readPurchase(input.purchase) : {}),
+    ...purchase,
   });
 
   updateTag(KIT_TAG);
@@ -261,6 +267,7 @@ export async function updateManualKit(input: UpdateManualKitInput): Promise<KitR
 
   const newImageUrl = readText(input.imageUrl ?? "", 2000) ?? undefined;
   const scalematesUrl = readText(input.scalematesUrl, 500);
+  const purchase = input.purchase && isStashStatus(status) ? readPurchase(input.purchase) : undefined;
 
   const updated = await updateKit(input.id, status, {
     brand,
@@ -271,7 +278,8 @@ export async function updateManualKit(input: UpdateManualKitInput): Promise<KitR
     scalematesUrl,
     notes: readText(input.notes, 2000),
     imageUrl: newImageUrl,
-    purchase: input.purchase && isStashStatus(status) ? readPurchase(input.purchase) : undefined,
+    purchase,
+    nextStatus: purchase && isStashStatus(status) ? statusAfterDateEdit(status, existing, purchase) : undefined,
   });
   if (!updated) return { ok: false, error: "That kit is no longer here." };
 
@@ -471,7 +479,9 @@ export async function updateKitPurchaseAction(input: UpdateKitPurchaseActionInpu
     return { ok: false, error: "That kit is no longer in the stash." };
   }
 
-  const updated = await updateKitPurchase(input.id, existing.status, readPurchase(input));
+  const purchase = readPurchase(input);
+  const next = statusAfterDateEdit(existing.status, existing, purchase);
+  const updated = await updateKitPurchase(input.id, existing.status, purchase, next);
   if (!updated) return { ok: false, error: "That kit is no longer in the stash." };
 
   updateTag(KIT_TAG);

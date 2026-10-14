@@ -142,6 +142,40 @@ export function previousStashStatus(status: StashStatus): StashStatus | null {
  * inventory.ts` builds its shop link: a plain search URL, no API, no key to
  * manage.
  */
+export interface KitDates {
+  /** "YYYY-MM-DD" or `null`. */
+  startedAt: string | null;
+  completedAt: string | null;
+}
+
+/**
+ * Where a hand edit of the Started/Completed dates leaves the status — the
+ * mirror of `updateKitStatus`, which stamps the dates when the status moves.
+ * Without it, typing a start date into a stashed kit left it reading "Stash"
+ * with a start date beside it.
+ *
+ * Only a date that actually *changed* in this edit moves anything: a kit that
+ * reached Building before dates were stamped has no `startedAt`, and saving
+ * its purchase shop alone mustn't send it back to the shelf.
+ *
+ * - Completed set → Built.
+ * - Completed cleared on a built kit → Building, or Stash if it has no start.
+ * - Started set on a stashed kit → Building.
+ * - Started cleared on a kit being built → Stash.
+ */
+export function statusAfterDateEdit(status: StashStatus, before: KitDates, after: KitDates): StashStatus {
+  let next = status;
+  if (after.completedAt !== before.completedAt) {
+    if (after.completedAt) return "built";
+    if (next === "built") next = after.startedAt ? "building" : "stash";
+  }
+  if (after.startedAt !== before.startedAt) {
+    if (after.startedAt && next === "stash") next = "building";
+    if (!after.startedAt && next === "building") next = "stash";
+  }
+  return next;
+}
+
 export function kitYoutubeSearchUrl(brand: string | null, kitNumber: string | null, name: string | null): string {
   const query = [brand, kitNumber, name, "build"].filter(Boolean).join(" ").trim();
   return `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;

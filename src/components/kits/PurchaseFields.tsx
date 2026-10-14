@@ -99,8 +99,8 @@ export function PurchaseFields({
         />
       </div>
       <span className={formStyles.hint}>
-        Started and Completed are stamped automatically when you change the status; this is where to correct or
-        backfill them.
+        Started and Completed fill in on their own when you change the status. Setting or clearing one here moves the
+        status to match.
       </span>
     </>
   );

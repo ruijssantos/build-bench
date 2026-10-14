@@ -2037,6 +2037,13 @@ migration.
   `PurchaseFields` and save in the same UPDATE as the identity fields. They show only for a
   stash-side kit, on the same rule as the panel. The panel's own small dialog stays for
   editing just those.
+- Status and dates move together both ways. The status buttons stamp Started/Completed
+  (`updateKitStatus`, as before); now editing those dates by hand moves the status to match
+  (`statusAfterDateEdit`), in the same UPDATE: a start date set on a stashed kit makes it
+  Building, a completion date makes it Built, and clearing one steps it back. Only a date
+  that changed in the edit moves anything, so a kit with no start date that reached Building
+  before stamping existed isn't sent back to the shelf by an unrelated save. Adding a kit by
+  hand with dates already filled in saves it straight into the matching status.
 - `getStashReadiness` became `getKitReadiness` and covers every status. The Wishlist grid now
   asks for it, and its cards link to the detail page and show "Own 3 of 5 · 2 missing" /
   "Ready to build". The shop run stays scoped to `stash`/`building` — a kit you haven't

@@ -283,6 +283,9 @@ export interface UpdateKitInput {
   /** Purchase & dates, written in the same UPDATE when the full kit dialog
    * sends them — omitted (a wishlist kit) leaves those columns alone. */
   purchase?: UpdateKitPurchaseInput;
+  /** Set when those dates move the kit (`statusAfterDateEdit`) — written in
+   * the same UPDATE. Omitted leaves the status alone. */
+  nextStatus?: KitStatus;
 }
 
 /** Edits a kit's identity fields in place — same status scoping as every
@@ -300,6 +303,7 @@ export async function updateKit(id: number, status: KitStatus, input: UpdateKitI
       notes: input.notes,
       ...(input.imageUrl ? { imageUrl: input.imageUrl } : {}),
       ...(input.purchase ?? {}),
+      ...(input.nextStatus ? { status: input.nextStatus } : {}),
     })
     .where(and(eq(kit.id, id), eq(kit.status, status)))
     .returning({ id: kit.id });
@@ -316,15 +320,18 @@ export interface UpdateKitPurchaseInput {
 
 /** The detail page's Purchase & dates panel — plumbing only (docs/PLAN.md §6
  * Phase 4a: the columns already existed, this is what finally writes them).
- * Same status scoping as every mutation above. */
+ * Same status scoping as every mutation above. `nextStatus` is where the
+ * edited dates leave the kit (`statusAfterDateEdit`), written in the same
+ * UPDATE so the dates and the status can't disagree. */
 export async function updateKitPurchase(
   id: number,
   status: KitStatus,
   input: UpdateKitPurchaseInput,
+  nextStatus: KitStatus = status,
 ): Promise<boolean> {
   const rows = await db
     .update(kit)
-    .set(input)
+    .set({ ...input, status: nextStatus })
     .where(and(eq(kit.id, id), eq(kit.status, status)))
     .returning({ id: kit.id });
   return rows.length > 0;
