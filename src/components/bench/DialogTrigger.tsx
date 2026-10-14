@@ -1,6 +1,20 @@
 "use client";
 
-import { Suspense, useState, type ButtonHTMLAttributes, type ComponentType, type ReactNode } from "react";
+import {
+  Suspense,
+  useEffect,
+  useState,
+  type ButtonHTMLAttributes,
+  type ComponentType,
+  type ReactNode,
+} from "react";
+
+import { ModalExit } from "./modal-exit";
+
+/** Longer than any exit animation in Modal.module.css. A backstop only: if
+ * `animationend` never arrives — the tab hidden mid-close, say — the dialog
+ * still goes. */
+const EXIT_BACKSTOP_MS = 600;
 
 /**
  * A button that opens a dialog, and the open/closed state between them — the
@@ -15,6 +29,9 @@ import { Suspense, useState, type ButtonHTMLAttributes, type ComponentType, type
  * The click never reaches anything behind the button. On a kit card the
  * whole card is a stretched link, and without this a click on the camera
  * badge navigated to the detail page instead of opening the dialog.
+ *
+ * Closing keeps the dialog mounted until its exit animation has played — see
+ * `ModalExit` for why that takes a third state.
  */
 export function DialogTrigger<P extends object>({
   dialog: Dialog,
@@ -26,27 +43,35 @@ export function DialogTrigger<P extends object>({
   dialogProps: P;
   children: ReactNode;
 } & Omit<ButtonHTMLAttributes<HTMLButtonElement>, "type" | "onClick" | "children">) {
-  const [open, setOpen] = useState(false);
+  const [phase, setPhase] = useState<"closed" | "open" | "closing">("closed");
+
+  useEffect(() => {
+    if (phase !== "closing") return;
+    const timer = setTimeout(() => setPhase("closed"), EXIT_BACKSTOP_MS);
+    return () => clearTimeout(timer);
+  }, [phase]);
 
   return (
     <>
       <button
         type="button"
         aria-haspopup="dialog"
-        aria-expanded={open}
+        aria-expanded={phase === "open"}
         {...button}
         onClick={(e) => {
           e.preventDefault();
           e.stopPropagation();
-          setOpen(true);
+          setPhase("open");
         }}
       >
         {children}
       </button>
-      {open ? (
-        <Suspense fallback={null}>
-          <Dialog {...dialogProps} onClose={() => setOpen(false)} />
-        </Suspense>
+      {phase !== "closed" ? (
+        <ModalExit value={{ closing: phase === "closing", exited: () => setPhase("closed") }}>
+          <Suspense fallback={null}>
+            <Dialog {...dialogProps} onClose={() => setPhase((p) => (p === "open" ? "closing" : p))} />
+          </Suspense>
+        </ModalExit>
       ) : null}
     </>
   );

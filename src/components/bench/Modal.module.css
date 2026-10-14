@@ -1,4 +1,20 @@
+/*
+ * Motion. On a phone this is a bottom sheet, so it moves like one: it rises
+ * from below the screen on a long, decelerating curve that settles rather
+ * than stops, and leaves faster than it came, accelerating away, because a
+ * dismissal shouldn't make you wait. On a desk it's a centred dialog, and
+ * a sheet's travel would be theatre there, so it only lifts a few pixels and
+ * fades. The scrim fades its colour rather than its opacity, so it never
+ * fades the sheet along with it.
+ *
+ * Reduced motion needs nothing here: tokens.css cuts every animation to 1ms,
+ * which still ends, so `animationend` still unmounts the dialog.
+ */
 .overlay {
+  --sheet-in: 420ms cubic-bezier(0.32, 0.72, 0, 1);
+  --sheet-out: 260ms cubic-bezier(0.32, 0, 0.67, 0);
+  /* Where the dialog comes from and goes back to. */
+  --away: translateY(100%);
   position: fixed;
   inset: 0;
   z-index: 50;
@@ -7,10 +23,55 @@
   align-items: flex-end;
   justify-content: center;
   padding: 0;
+  animation: scrimIn var(--sheet-in) both;
+}
+
+.dialog {
+  animation: enter var(--sheet-in) both;
+}
+
+/* Closing: no more clicks, while it goes. */
+.closing {
+  pointer-events: none;
+  animation: scrimOut var(--sheet-out) both;
+}
+
+.closing .dialog {
+  animation: leave var(--sheet-out) both;
+}
+
+@keyframes scrimIn {
+  from {
+    background-color: transparent;
+  }
+}
+
+@keyframes scrimOut {
+  to {
+    background-color: transparent;
+  }
+}
+
+@keyframes enter {
+  from {
+    opacity: var(--away-opacity, 1);
+    transform: var(--away);
+  }
+}
+
+@keyframes leave {
+  to {
+    opacity: var(--away-opacity, 1);
+    transform: var(--away);
+  }
 }
 
 @media (min-width: 900px) {
   .overlay {
+    --sheet-in: 240ms var(--ease-out);
+    --sheet-out: 160ms cubic-bezier(0.4, 0, 1, 1);
+    --away: translateY(8px) scale(0.98);
+    --away-opacity: 0;
     align-items: center;
     padding: 24px;
   }

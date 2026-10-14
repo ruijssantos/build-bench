@@ -135,13 +135,6 @@ export function previousStashStatus(status: StashStatus): StashStatus | null {
   return null;
 }
 
-/**
- * The detail page's "Search YouTube" link — the free part of §5.1's kit
- * research this phase ships (deep research with a real build video is
- * Phase 4b). Built exactly the way `paintSearchUrl` in `src/domain/
- * inventory.ts` builds its shop link: a plain search URL, no API, no key to
- * manage.
- */
 export interface KitDates {
   /** "YYYY-MM-DD" or `null`. */
   startedAt: string | null;
@@ -176,6 +169,10 @@ export function statusAfterDateEdit(status: StashStatus, before: KitDates, after
   return next;
 }
 
+/**
+ * The References panel's "Build videos" link: a plain YouTube search URL,
+ * no API, no key to manage.
+ */
 export function kitYoutubeSearchUrl(brand: string | null, kitNumber: string | null, name: string | null): string {
   const query = [brand, kitNumber, name, "build"].filter(Boolean).join(" ").trim();
   return `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;

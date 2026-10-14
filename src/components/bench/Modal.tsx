@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect } from "react";
+import { use, useEffect } from "react";
 import { createPortal } from "react-dom";
 import type { ReactNode } from "react";
 
 import { XIcon } from "@/components/icons";
 import ui from "@/styles/ui.module.css";
 
+import { ModalExit } from "./modal-exit";
 import styles from "./Modal.module.css";
 
 /**
@@ -33,10 +34,14 @@ import styles from "./Modal.module.css";
  */
 export function Modal({
   title,
+  lead,
   onClose,
   children,
 }: {
   title: string;
+  /** Shown before the title — a paint's colour swatch, say. The title stays
+   * a string so it can name the dialog for a screen reader. */
+  lead?: ReactNode;
   onClose: () => void;
   children: ReactNode;
 }) {
@@ -48,17 +53,31 @@ export function Modal({
     return () => document.removeEventListener("keydown", handleKey);
   }, [onClose]);
 
+  useEffect(lockPageScroll, []);
+
+  const exit = use(ModalExit);
+
   if (typeof document === "undefined") return null;
 
   return createPortal(
     <div
-      className={styles.overlay}
+      className={`${styles.overlay} ${exit?.closing ? styles.closing : ""}`}
       onMouseDown={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className={styles.dialog} role="dialog" aria-modal="true" aria-label={title}>
+      <div
+        className={styles.dialog}
+        role="dialog"
+        aria-modal="true"
+        aria-label={title}
+        onAnimationEnd={(e) => {
+          // Only the dialog's own exit — a spinner inside it animates too.
+          if (exit?.closing && e.target === e.currentTarget) exit.exited();
+        }}
+      >
         <div className={styles.header}>
+          {lead}
           <span className={styles.title}>{title}</span>
           <button type="button" className={ui.iconBtn} aria-label="Close" onClick={onClose}>
             <XIcon size={16} />
@@ -69,4 +88,37 @@ export function Modal({
     </div>,
     document.body,
   );
+}
+
+/** How many modals are open, so closing one of two doesn't unlock the page
+ * under the other. */
+let openModals = 0;
+
+/**
+ * Stops the page behind the dialog scrolling, on a phone and a desk alike.
+ *
+ * The document is what scrolls in this app: the bench shell is only a
+ * `min-height`, so it grows with its content. An overlay can't stop that by
+ * itself: a swipe or wheel over the scrim scrolls whatever is beneath, and
+ * one inside the dialog that runs past the end of its body chains on to the
+ * page. `overflow: hidden` on the root element stops both — with the page
+ * not scrollable there's nothing to chain to — and iOS Safari honours it on
+ * `<html>`.
+ *
+ * The padding stands in for the scrollbar the lock removes, so a desktop
+ * page doesn't jump sideways when a dialog opens.
+ */
+function lockPageScroll(): () => void {
+  const root = document.documentElement;
+  if (openModals++ === 0) {
+    const scrollbar = window.innerWidth - root.clientWidth;
+    root.style.overflow = "hidden";
+    if (scrollbar > 0) root.style.paddingRight = `${scrollbar}px`;
+  }
+  return () => {
+    if (--openModals === 0) {
+      root.style.overflow = "";
+      root.style.paddingRight = "";
+    }
+  };
 }

@@ -8,6 +8,7 @@ import { TrashIcon } from "@/components/icons";
 import type { InventoryForm, InventoryState } from "@/domain/inventory";
 import ui from "@/styles/ui.module.css";
 
+import shelf from "./Inventory.module.css";
 import { ItemFields, type ItemFieldsValue } from "./ItemFields";
 import styles from "@/components/bench/Form.module.css";
 
@@ -22,7 +23,10 @@ export interface EditableItem {
   notes: string;
 }
 
-/** Edit one shelf entry. Same chunk-on-click rule as the Add dialog. */
+/** Edit one shelf entry. Same chunk-on-click rule as the Add dialog.
+ *
+ * No "Paint" field: the title already names it, beside its swatch, and which
+ * paint an entry is for can't change here — remove it and add the other one. */
 export function EditItemDialog({ item, onClose }: { item: EditableItem; onClose: () => void }) {
   const [fields, setFields] = useState<ItemFieldsValue>({
     form: item.form,
@@ -82,23 +86,13 @@ export function EditItemDialog({ item, onClose }: { item: EditableItem; onClose:
   }
 
   return (
-    <Modal title={`${item.paintCode} ${item.paintName ?? ""}`.trim()} onClose={onClose}>
+    <Modal
+      title={`${item.paintCode} ${item.paintName ?? ""}`.trim()}
+      // The shelf row's own swatch, so the dialog reads as that row opened up.
+      lead={<span className={shelf.cellSwatch} style={{ background: item.paintHex ?? "#c7c9d1" }} aria-hidden="true" />}
+      onClose={onClose}
+    >
       <div className={styles.form}>
-        <div className={styles.field}>
-          <span className={ui.fieldLabel}>Paint</span>
-          <div className={styles.picked}>
-            <span
-              className={styles.pickedSwatch}
-              style={{ background: item.paintHex ?? "#c7c9d1" }}
-            />
-            <span className={styles.pickedCode}>{item.paintCode}</span>
-            <span className={styles.pickedName}>{item.paintName}</span>
-          </div>
-          <span className={styles.hint}>
-            The paint a shelf entry is for doesn&apos;t change — remove it and add the other one.
-          </span>
-        </div>
-
         <ItemFields value={fields} onChange={setFields} disabled={saving} />
 
         {error ? <div className={styles.error}>{error}</div> : null}
