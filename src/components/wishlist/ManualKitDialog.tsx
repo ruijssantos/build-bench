@@ -6,8 +6,9 @@ import { addManualKit, fetchKitArt, promoteKitToStash, updateManualKit } from "@
 import { Modal } from "@/components/bench/Modal";
 import { KitsIcon } from "@/components/icons";
 import formStyles from "@/components/inventory/InventoryForm.module.css";
+import { PurchaseFields, purchaseValuesOf } from "@/components/kits/PurchaseFields";
 import type { KitRow } from "@/db/repositories/kits";
-import { categoryLabel, KIT_CATEGORIES, type KitStatus } from "@/domain/kit";
+import { categoryLabel, isStashStatus, KIT_CATEGORIES, type KitStatus } from "@/domain/kit";
 import { resizeImage } from "@/lib/resize-image";
 
 import styles from "./Wishlist.module.css";
@@ -29,7 +30,10 @@ const UPLOAD_TIMEOUT_MS = 30_000;
  * kit by hand" (or a saved kit's Edit) is actually clicked.
  *
  * The same form drives both add and edit: pass a `kit` to pre-fill it and
- * save through `updateManualKit` instead of `addManualKit`. A photo picker
+ * save through `updateManualKit` instead of `addManualKit`. It carries every
+ * field a kit has, Purchase & dates included (for a kit in the stash; a
+ * wishlist kit hasn't been bought), so this is the one place to edit all of
+ * it — the kit page's smaller Purchase & dates dialog stays for just those. A photo picker
  * only appears when the kit has no box art yet — a resolved or already
  * hand-uploaded photo isn't replaced from here.
  */
@@ -54,6 +58,8 @@ export function ManualKitDialog({
   const [category, setCategory] = useState<string>(kit?.category ?? "cars");
   const [scalematesUrl, setScalematesUrl] = useState(kit?.scalematesUrl ?? "");
   const [notes, setNotes] = useState(kit?.notes ?? "");
+  const [purchase, setPurchase] = useState(() => purchaseValuesOf(kit));
+  const showPurchase = isStashStatus(status);
   /** Split from a single `saving` boolean so a stuck save is visible as
    * "Uploading…" vs "Saving…" rather than one undifferentiated state. */
   const [phase, setPhase] = useState<"idle" | "uploading" | "saving" | "fetching">("idle");
@@ -175,9 +181,30 @@ export function ManualKitDialog({
 
       const result =
         editing && kit
-          ? await updateManualKit({ id: kit.id, brand, kitNumber, name, scale, category, scalematesUrl, notes, imageUrl })
+          ? await updateManualKit({
+              id: kit.id,
+              brand,
+              kitNumber,
+              name,
+              scale,
+              category,
+              scalematesUrl,
+              notes,
+              imageUrl,
+              purchase: showPurchase ? purchase : undefined,
+            })
           : await addManualKit(
-              { brand, kitNumber, name, scale, category, scalematesUrl, notes, imageUrl: art },
+              {
+                brand,
+                kitNumber,
+                name,
+                scale,
+                category,
+                scalematesUrl,
+                notes,
+                imageUrl: art,
+                purchase: showPurchase ? purchase : undefined,
+              },
               status,
             );
 
@@ -390,6 +417,13 @@ export function ManualKitDialog({
                 "Optional — upload from your computer, or paste the address of a picture you found online."}
             </span>
         </div>
+
+        {showPurchase ? (
+          <>
+            <span className={formStyles.sectionTitle}>Purchase &amp; dates</span>
+            <PurchaseFields values={purchase} onChange={setPurchase} disabled={saving} idPrefix="manual-kit" />
+          </>
+        ) : null}
 
         {error ? <div className={formStyles.error}>{error}</div> : null}
 

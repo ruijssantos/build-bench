@@ -2032,6 +2032,11 @@ migration.
   on the wishlist, with **Move to stash** as its one action — the Wishlist card's own
   `markKitBought`. Once bought it's the old three steps; buying is still one-directional.
 - "Purchase & dates" is hidden on a wishlist kit. Remove redirects to the list the kit was on.
+- The full kit dialog (Edit / Add Manually) carries every field a kit has, Purchase & dates
+  included, so there is one place to edit all of it; the four fields come from the shared
+  `PurchaseFields` and save in the same UPDATE as the identity fields. They show only for a
+  stash-side kit, on the same rule as the panel. The panel's own small dialog stays for
+  editing just those.
 - `getStashReadiness` became `getKitReadiness` and covers every status. The Wishlist grid now
   asks for it, and its cards link to the detail page and show "Own 3 of 5 · 2 missing" /
   "Ready to build". The shop run stays scoped to `stash`/`building` — a kit you haven't

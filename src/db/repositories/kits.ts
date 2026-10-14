@@ -139,6 +139,12 @@ export interface CreateKitInput {
   scalematesUrl: string | null;
   imageUrl: string | null;
   notes: string | null;
+  /** Purchase & dates, when the kit is created straight into the stash with
+   * them filled in (the hand-entry dialog carries every field a kit has). */
+  purchasedFrom?: string | null;
+  purchasedAt?: string | null;
+  startedAt?: string | null;
+  completedAt?: string | null;
 }
 
 /** Returns the new row's id so the caller can patch `image_url` in later —
@@ -274,6 +280,9 @@ export interface UpdateKitInput {
   /** Only set when the edit uploaded a new photo — omitted leaves the
    * existing `image_url` (or lack of one) alone. */
   imageUrl?: string;
+  /** Purchase & dates, written in the same UPDATE when the full kit dialog
+   * sends them — omitted (a wishlist kit) leaves those columns alone. */
+  purchase?: UpdateKitPurchaseInput;
 }
 
 /** Edits a kit's identity fields in place — same status scoping as every
@@ -290,6 +299,7 @@ export async function updateKit(id: number, status: KitStatus, input: UpdateKitI
       scalematesUrl: input.scalematesUrl,
       notes: input.notes,
       ...(input.imageUrl ? { imageUrl: input.imageUrl } : {}),
+      ...(input.purchase ?? {}),
     })
     .where(and(eq(kit.id, id), eq(kit.status, status)))
     .returning({ id: kit.id });

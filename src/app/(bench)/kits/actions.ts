@@ -171,6 +171,10 @@ export interface AddManualKitInput {
    * image URL typed in by hand — the second gets copied into Blob after the
    * response, the same as a searched kit's box art. */
   imageUrl?: string;
+  /** Purchase & dates — honoured only when the kit is saved into the stash;
+   * a wishlist kit hasn't been bought, so it has none (the kit page hides
+   * that panel for it too). */
+  purchase?: KitPurchaseFields;
 }
 
 /** Manual entry — always available, saving directly into `status`. A photo
@@ -203,6 +207,7 @@ export async function addManualKit(input: AddManualKitInput, status: KitStatus):
     scalematesUrl,
     imageUrl: alreadyStored ? providedImage : null,
     notes: readText(input.notes, 2000),
+    ...(input.purchase && isStashStatus(status) ? readPurchase(input.purchase) : {}),
   });
 
   updateTag(KIT_TAG);
@@ -227,6 +232,9 @@ export interface UpdateManualKitInput {
   scalematesUrl: string;
   notes: string;
   imageUrl?: string;
+  /** Purchase & dates, from the full kit dialog. Written in the same UPDATE as
+   * the identity fields, and only for a kit that's in the stash. */
+  purchase?: KitPurchaseFields;
 }
 
 /** Edits a kit's identity fields in place, whichever screen it's currently
@@ -263,6 +271,7 @@ export async function updateManualKit(input: UpdateManualKitInput): Promise<KitR
     scalematesUrl,
     notes: readText(input.notes, 2000),
     imageUrl: newImageUrl,
+    purchase: input.purchase && isStashStatus(status) ? readPurchase(input.purchase) : undefined,
   });
   if (!updated) return { ok: false, error: "That kit is no longer here." };
 
@@ -426,13 +435,30 @@ export async function promoteKitToStash(id: number): Promise<KitResult> {
 // Purchase & dates
 // ---------------------------------------------------------------------------
 
-export interface UpdateKitPurchaseActionInput {
-  id: number;
+export interface KitPurchaseFields {
   purchasedFrom: string;
   /** `<input type="date">` values — "YYYY-MM-DD" or "" for unset. */
   purchasedAt: string;
   startedAt: string;
   completedAt: string;
+}
+
+export interface UpdateKitPurchaseActionInput extends KitPurchaseFields {
+  id: number;
+}
+
+/** `readIsoDate`, not `readText`: the three dates go straight into `date`
+ * columns, and a value that isn't a date fails inside Neon rather than here
+ * — see `readIsoDate`'s own note. A malformed one reads as "cleared", which
+ * is what an empty input already meant. Shared by the Purchase & dates
+ * dialog and the full kit dialog, so both validate identically. */
+function readPurchase(input: KitPurchaseFields) {
+  return {
+    purchasedFrom: readText(input.purchasedFrom, 200),
+    purchasedAt: readIsoDate(input.purchasedAt),
+    startedAt: readIsoDate(input.startedAt),
+    completedAt: readIsoDate(input.completedAt),
+  };
 }
 
 /** The detail page's Purchase & dates edit — also the backfill/correction
@@ -445,16 +471,7 @@ export async function updateKitPurchaseAction(input: UpdateKitPurchaseActionInpu
     return { ok: false, error: "That kit is no longer in the stash." };
   }
 
-  // `readIsoDate`, not `readText`: these three go straight into `date`
-  // columns, and a value that isn't a date fails inside Neon rather than here
-  // — see `readIsoDate`'s own note. A malformed one reads as "cleared", which
-  // is what an empty input already meant.
-  const updated = await updateKitPurchase(input.id, existing.status, {
-    purchasedFrom: readText(input.purchasedFrom, 200),
-    purchasedAt: readIsoDate(input.purchasedAt),
-    startedAt: readIsoDate(input.startedAt),
-    completedAt: readIsoDate(input.completedAt),
-  });
+  const updated = await updateKitPurchase(input.id, existing.status, readPurchase(input));
   if (!updated) return { ok: false, error: "That kit is no longer in the stash." };
 
   updateTag(KIT_TAG);
