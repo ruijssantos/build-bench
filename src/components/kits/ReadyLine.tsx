@@ -9,7 +9,7 @@ import type { ReadinessCounts } from "@/domain/kit-paints";
  * line as being about paints without spending a text label on saying so).
  *
  * `wanted` is a wishlist kit's reading of the same counts: it isn't yours
- * yet, so the gap is paint you'd need rather than paint to buy, and a full
+ * yet, so the gap reads as paint missing rather than paint to buy, and a full
  * shelf means you already have every paint rather than that it's ready to
  * build.
  *
@@ -40,7 +40,7 @@ export function ReadyLine({ readiness, wanted = false }: { readiness: ReadinessC
             Own {have} of {have + readiness.missingCount}
           </span>
           <span className={styles.readyBuy}>
-            · {readiness.missingCount} {wanted ? "you'd need" : "to buy"}
+            · {readiness.missingCount} {wanted ? "missing" : "to buy"}
           </span>
         </>
       ) : (

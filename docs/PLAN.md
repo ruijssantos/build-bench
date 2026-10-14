@@ -361,7 +361,7 @@ research and finding build videos are all as useful for deciding whether to buy 
 building it, and they stay attached when it's bought. What stays status-shaped is only what's
 genuinely about ownership — the "Purchase & dates" panel appears once it's bought, the status
 ladder shows a Wishlist step only while the kit is still on it, and the shop run (§6 Phase 6)
-counts only kits you own. A wishlist card reads the shared readiness line as "3 you'd need"
+counts only kits you own. A wishlist card reads the shared readiness line as "3 missing"
 rather than "3 to buy".
 
 `wishlist_item` is genuinely separate, and that's the test working rather than failing: a
@@ -2022,7 +2022,7 @@ migration.
   `markKitBought`. Once bought it's the old three steps; buying is still one-directional.
 - "Purchase & dates" is hidden on a wishlist kit. Remove redirects to the list the kit was on.
 - `getStashReadiness` became `getKitReadiness` and covers every status. The Wishlist grid now
-  asks for it, and its cards link to the detail page and show "Own 3 of 5 · 2 you'd need" /
+  asks for it, and its cards link to the detail page and show "Own 3 of 5 · 2 missing" /
   "You have them all". The shop run stays scoped to `stash`/`building` — a kit you haven't
   bought doesn't put paint on the run.
 - Research is still only ever started by its button. It's the paid path (§5.3), and wishlists
