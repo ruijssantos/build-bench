@@ -600,10 +600,12 @@ One curve, three speeds, in `tokens.css`:
 
 - `--ease-out` `cubic-bezier(.2, 0, 0, 1)`, no overshoot. `--dur-fast` 120ms (colour, tints),
   `--dur-base` 200ms (lifts, small moves), `--dur-slow` 320ms (box art, fills).
-- **Hover:** box art scales to `--art-hover-scale` (1.04) inside its frame, on every card
-  and dashboard row. A card that navigates (it has the stretched link, or is a stat tile)
-  also takes `--shadow-hero`, in place: cards never move. A card that doesn't navigate
-  stays flat, so the shadow keeps meaning *this opens*. Keyboard focus gets the same
+- **Hover:** only on things that navigate. A card with the stretched link takes
+  `--shadow-hero` in place (cards never move) and its box art scales to
+  `--art-hover-scale` (1.04) inside its frame; a dashboard row's thumbnail scales the same
+  way, and a stat tile takes the shadow. A card that doesn't navigate (a search
+  candidate, the kit page's identity panel) gets no hover at all, so hover keeps meaning
+  *this opens*. Keyboard focus gets the same
   shadow. Hover rules sit inside `@media (hover: hover)` so a tap never leaves a phone
   card stuck in its hover state.
 - `prefers-reduced-motion: reduce` collapses every transition and animation to 1ms,

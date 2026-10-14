@@ -323,10 +323,10 @@
 }
 
 /* Hover (docs/PLAN.md §4.1 Motion). A card that navigates — it carries the
-   stretched link — takes the hero shadow in place (no lift); one that doesn't
-   (a search candidate, the kit page's own identity panel) stays flat, so the
-   shadow keeps meaning "this opens". Box art scales on every card. Keyboard
-   focus on the stretched link gets the same shadow. Hover-capable pointers only, so a tap
+   stretched link — takes the hero shadow in place (no lift) and its box art
+   scales. One that doesn't (a search candidate, the kit page's own identity
+   panel) gets neither, so hover keeps meaning "this opens". Keyboard focus on
+   the stretched link gets the same shadow. Hover-capable pointers only, so a tap
    on a phone doesn't leave a card stuck mid-lift. */
 @media (hover: hover) {
   .card:has(> .cardStretchLink):hover {
@@ -334,7 +334,7 @@
     border-color: var(--line-strong);
   }
 
-  .card:hover .cardArtImg {
+  .card:has(> .cardStretchLink):hover .cardArtImg {
     transform: scale(var(--art-hover-scale));
   }
 }
