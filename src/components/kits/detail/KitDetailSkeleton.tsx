@@ -24,10 +24,19 @@ import ui from "@/styles/ui.module.css";
 export function KitDetailSkeleton() {
   return (
     <div aria-hidden="true">
-      <span className={styles.crumb}>
-        <ChevronLeftIcon size={18} /> Kits
-      </span>
-      <PhoneHeader title="Kit" />
+      <div className={styles.crumbBar}>
+        <span className={`${ui.moduleTitle} ${styles.crumb}`}>
+          <ChevronLeftIcon size={14} /> Kits
+        </span>
+      </div>
+      <PhoneHeader
+        title="Kit"
+        eyebrow={
+          <span className={`${ui.moduleTitle} ${styles.crumb}`}>
+            <ChevronLeftIcon size={14} /> Kits
+          </span>
+        }
+      />
       <DesktopHeader title="Kit" />
       <div className={ui.scrollArea}>
         <div className={styles.detailGrid}>

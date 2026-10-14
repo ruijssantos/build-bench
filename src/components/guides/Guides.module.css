@@ -125,25 +125,19 @@
 
 /* ---- guide page ---- */
 
+/* The phone header's eyebrow on a guide page (`ui.moduleTitle` + this) — the
+   same crumb a kit page uses. A desktop has the guide list beside it and no
+   phone header, so there is no crumb there. */
 .crumb {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  font-size: var(--text-md);
-  font-weight: 700;
-  color: var(--muted);
+  gap: 4px;
   text-decoration: none;
-  padding: 2px var(--gutter) 0;
+  transition: color var(--dur-fast) var(--ease-out);
 }
 
 .crumb:hover {
   color: var(--accent);
-}
-
-@media (min-width: 900px) {
-  .crumb {
-    display: none;
-  }
 }
 
 .layout {

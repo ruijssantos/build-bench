@@ -754,21 +754,25 @@
    two-column layout, the status stepper, manual rows, paint buckets) get
    new classes here. */
 
+/* The way back: `ui.moduleTitle`'s voice — a quiet label above the screen
+   title, not a second heading competing with it. This adds the layout. */
 .crumb {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  font-size: var(--text-md);
-  font-weight: 700;
-  color: var(--muted);
+  gap: 4px;
   text-decoration: none;
-  /* The bottom padding is the gap to the title below it — the phone header
-     that follows has no top margin of its own. */
-  padding: 14px var(--gutter) 10px;
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+/* A desktop has no phone header to carry the crumb as its eyebrow, so it
+   gets its own row above the desktop title. */
+.crumbBar {
+  display: none;
 }
 
 @media (min-width: 900px) {
-  .crumb {
+  .crumbBar {
+    display: block;
     padding: 26px 0 12px;
   }
 }
