@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, useTransition } from "react";
 
 import { removeKitAndReturn } from "@/app/(bench)/kits/actions";
 import { TrashIcon } from "@/components/icons";
-import formStyles from "@/components/inventory/InventoryForm.module.css";
+import formStyles from "@/components/bench/Form.module.css";
 import ui from "@/styles/ui.module.css";
 
 /**

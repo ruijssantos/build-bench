@@ -1,42 +1,24 @@
 "use client";
 
-import { lazy, Suspense, useState } from "react";
+import { lazy } from "react";
 
+import { DialogTrigger } from "@/components/bench/DialogTrigger";
 import { PlusIcon } from "@/components/icons";
 import ui from "@/styles/ui.module.css";
 
 import styles from "./Inventory.module.css";
 
+/** Everything the dialog needs — the paint index, the fields, the mutation —
+ * is behind this `lazy()`, so the shelf screen paints without any of it. */
 const AddPaintDialog = lazy(() =>
   import("./AddPaintDialog").then((m) => ({ default: m.AddPaintDialog })),
 );
 
-/**
- * The Add button, and an open/closed boolean. Everything the dialog needs —
- * the paint index, the fields, the mutation — is behind that `lazy()`, so the
- * shelf screen paints without any of it.
- */
 export function AddPaintTrigger() {
-  const [open, setOpen] = useState(false);
-
   return (
-    <>
-      <button
-        type="button"
-        className={`${ui.btn} ${ui.btnPrimary} ${styles.addButton}`}
-        aria-haspopup="dialog"
-        aria-expanded={open}
-        onClick={() => setOpen(true)}
-      >
-        <PlusIcon size={16} />
-        <span>Add</span>
-      </button>
-
-      {open ? (
-        <Suspense fallback={null}>
-          <AddPaintDialog onClose={() => setOpen(false)} />
-        </Suspense>
-      ) : null}
-    </>
+    <DialogTrigger dialog={AddPaintDialog} dialogProps={{}} className={`${ui.btn} ${ui.btnPrimary} ${styles.addButton}`}>
+      <PlusIcon size={16} />
+      <span>Add</span>
+    </DialogTrigger>
   );
 }

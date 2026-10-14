@@ -1,6 +1,7 @@
-import styles from "@/components/wishlist/Wishlist.module.css";
+import styles from "@/components/kits/Kits.module.css";
 import type { KitRow } from "@/db/repositories/kits";
 import { formatIsoDate } from "@/domain/dates";
+import page from "@/styles/page.module.css";
 import ui from "@/styles/ui.module.css";
 
 import { EditPurchaseTrigger } from "./EditPurchaseTrigger";
@@ -25,7 +26,7 @@ export function DetailsPanel({ kit }: { kit: KitRow }) {
   return (
     <div className={styles.card}>
       <div className={styles.cardBody}>
-        <div className={styles.subHead}>
+        <div className={page.subHead}>
           <span className={ui.moduleTitle}>Purchase &amp; dates</span>
           <EditPurchaseTrigger kit={kit} />
         </div>

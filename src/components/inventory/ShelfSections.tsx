@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import type { InventoryItemRow } from "@/db/repositories/inventory";
 import { familyChipLabel } from "@/domain/inventory";
+import page from "@/styles/page.module.css";
 import ui from "@/styles/ui.module.css";
 
 import { inventoryHref, type InventoryParams } from "./inventory-params";
@@ -95,7 +96,7 @@ export function FilterPills({
   params: InventoryParams;
 }) {
   return (
-    <nav className={styles.filters} aria-label="Filter the shelf">
+    <nav className={page.filters} aria-label="Filter the shelf">
       <Link
         href={inventoryHref(params, { family: null })}
         scroll={false}

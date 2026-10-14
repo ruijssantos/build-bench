@@ -1,10 +1,10 @@
 import { ExternalLinkIcon } from "@/components/icons";
-import inventoryStyles from "@/components/inventory/Inventory.module.css";
-import styles from "@/components/wishlist/Wishlist.module.css";
+import styles from "@/components/kits/Kits.module.css";
 import { getKitResearch } from "@/db/repositories/kit-research";
 import type { KitRow } from "@/db/repositories/kits";
 import { formatTimestampDate } from "@/domain/dates";
 import { difficultyRating, severityLabel, sourceHost, tipCategoryLabel } from "@/domain/kit-research";
+import page from "@/styles/page.module.css";
 import ui from "@/styles/ui.module.css";
 
 import { ResearchRunner } from "./ResearchRunner";
@@ -31,7 +31,7 @@ export async function ResearchPanel({ kit }: { kit: KitRow }) {
       <div className={styles.card}>
         <div className={styles.cardBody}>
           <span className={ui.moduleTitle}>Research</span>
-          <div className={inventoryStyles.emptyCard}>
+          <div className={page.emptyCard}>
             Search the web for what builders say about this kit — difficulty, fit issues to expect,
             and tips. Takes a couple of minutes and costs a little.
           </div>
@@ -50,7 +50,7 @@ export async function ResearchPanel({ kit }: { kit: KitRow }) {
   return (
     <div className={styles.card}>
       <div className={styles.cardBody}>
-        <div className={styles.subHead}>
+        <div className={page.subHead}>
           <span className={ui.moduleTitle}>Research</span>
           {/* A chip, in the same language as the kit's own scale and category
               — it is an attribute of the kit. Absent entirely when there is no
@@ -123,7 +123,7 @@ export async function ResearchPanel({ kit }: { kit: KitRow }) {
         ) : null}
 
         {issues.length === 0 && tips.length === 0 ? (
-          <div className={inventoryStyles.emptyCard}>
+          <div className={page.emptyCard}>
             Nothing specific turned up for this kit that could be sourced.
           </div>
         ) : null}

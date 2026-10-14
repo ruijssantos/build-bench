@@ -5,12 +5,10 @@
  * is a shared allowance across every `(bench)` route, and the first draft of
  * this file blew it by restating card and row rules that already existed.
  *
- * So everything this screen shares with the Wishlist and the Stash is
- * imported from `wishlist/Wishlist.module.css` on the same cross-folder terms
- * `EmptyKits` and `StashKitCard` already use — `.scrollArea`, `.grid`,
- * `.section*`, `.subHead`, `.moduleTitle`, `.card`, `.itemList`, `.itemRow`,
- * `.itemBody`, `.itemTitle`, `.itemNotes`, `.paintDot`, and the readiness
- * line via `ReadyLine`. What is left below is only what this screen genuinely
+ * So everything this screen shares with the Wishlist and the Stash comes
+ * from the shared sheets: the screen stack, sections and list rows from
+ * `src/styles/page.module.css`, the kit card, `.paintDot` and the readiness
+ * line from `kits/Kits.module.css`. What is left below is only what this screen genuinely
  * adds: stat tiles, its two-column desktop split, and three small modifiers.
  */
 
@@ -111,14 +109,16 @@
   /* `flex-direction` has to be restated: `.card` is a column everywhere else
      in the app, and inheriting that here put the art on top at 320px wide
      with the body stranded beneath it — the stacked card, just narrower. */
-  .benchCard {
+  /* `.benchList >` outranks `.card` (Kits.module.css) by specificity, so
+     the row direction doesn't depend on which stylesheet loads last. */
+  .benchList > .benchCard {
     display: flex;
     flex-direction: row;
     align-items: stretch;
   }
 
   /* The art. Targeted structurally rather than by class because it belongs to
-     `Wishlist.module.css` and CSS-module names are hashed per file — this is
+     `Kits.module.css` and CSS-module names are hashed per file — this is
      the one place the Dashboard reaches into `KitCardBody`'s shape.
      `div:first-of-type`, deliberately, not `:first-child`: the card's first
      child is the stretched `<a>` overlay that makes the whole card a link, so
@@ -216,7 +216,7 @@
   transition: transform var(--dur-slow) var(--ease-out);
 }
 
-/* The row's box art scales with the row, same as a card's (Wishlist.module.css). */
+/* The row's box art scales with the row, same as a card's (Kits.module.css). */
 @media (hover: hover) {
   .rowLink:hover .thumbImg {
     transform: scale(var(--art-hover-scale));

@@ -9,7 +9,7 @@ import { LineToggle, SearchArea } from "@/components/thinner/BenchHeadings";
 import { BenchSkeleton } from "@/components/thinner/BenchSkeleton";
 import searchStyles from "@/components/thinner/SearchBox.module.css";
 import styles from "@/components/thinner/ThinnerBench.module.css";
-import ui from "@/styles/ui.module.css";
+import page from "@/styles/page.module.css";
 
 export const metadata = { title: "Thinner Bench" };
 
@@ -40,7 +40,7 @@ export default function ThinnerPage(props: PageProps<"/thinner">) {
         <LineToggle searchParams={props.searchParams} />
       </Suspense>
 
-      <div className={ui.scrollArea}>
+      <div className={page.scrollArea}>
         {/* Outside the content boundary on purpose: search is the one thing
             that must work the instant the screen paints, and it needs nothing
             from the database to do so. Outside the *grid* too — it spans the

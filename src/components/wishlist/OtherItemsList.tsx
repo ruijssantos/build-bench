@@ -1,8 +1,8 @@
 import { listWishlistItems } from "@/db/repositories/wishlist-items";
+import page from "@/styles/page.module.css";
 
 import { EmptyOtherItems } from "./EmptyOtherItems";
 import { OtherItemRow } from "./OtherItemRow";
-import styles from "./Wishlist.module.css";
 
 /** The "Other items" list, behind its own boundary — independent from the
  * Kits module, so a slow or failed kit search never holds this up. */
@@ -14,7 +14,7 @@ export async function OtherItemsList() {
   }
 
   return (
-    <div className={styles.itemList}>
+    <div className={page.itemList}>
       {items.map((item) => (
         <OtherItemRow key={item.id} item={item} />
       ))}

@@ -1,5 +1,6 @@
 import { listInventory, type InventoryItemRow } from "@/db/repositories/inventory";
 import { familyChipLabel, isRunningLow, stateLabel } from "@/domain/inventory";
+import page from "@/styles/page.module.css";
 
 import { EmptyShelf } from "./EmptyShelf";
 import { InventoryTable } from "./InventoryTable";
@@ -10,7 +11,6 @@ import {
   type SortColumn,
   type SortDirection,
 } from "./inventory-params";
-import styles from "./Inventory.module.css";
 
 /**
  * Everything on this screen that the database owns, behind one boundary.
@@ -50,7 +50,7 @@ export async function InventoryContent({
       <ShelfPalette items={items} visible={visible} params={params} />
       <FilterPills total={items.length} lowCount={lowCount} counts={counts} params={params} />
       {visible.length === 0 ? (
-        <div className={styles.emptyCard}>Nothing on the shelf matches that filter.</div>
+        <div className={page.emptyCard}>Nothing on the shelf matches that filter.</div>
       ) : (
         <InventoryTable items={visible} params={params} />
       )}

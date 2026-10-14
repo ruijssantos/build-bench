@@ -1,4 +1,5 @@
-import styles from "@/components/wishlist/Wishlist.module.css";
+import styles from "@/components/kits/Kits.module.css";
+import page from "@/styles/page.module.css";
 import ui from "@/styles/ui.module.css";
 
 /** Same shape and reservation rule as `PaintsSkeleton` — a title line and one
@@ -9,8 +10,8 @@ export function ResearchSkeleton() {
   return (
     <div className={styles.card} aria-hidden="true">
       <div className={styles.cardBody}>
-        <span className={`${ui.moduleTitle} ${styles.skeletonLine}`} style={{ width: 82 }} />
-        <div className={`${styles.chip} ${styles.skeletonLine}`} style={{ width: "100%", height: 60 }} />
+        <span className={`${ui.moduleTitle} ${page.skeletonLine}`} style={{ width: 82 }} />
+        <div className={`${styles.chip} ${page.skeletonLine}`} style={{ width: "100%", height: 60 }} />
       </div>
     </div>
   );

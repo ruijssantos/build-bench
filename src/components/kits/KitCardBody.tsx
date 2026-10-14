@@ -5,10 +5,10 @@ import { categoryLabel, statusLabel } from "@/domain/kit";
 
 import { ArtEditButton } from "./ArtEditButton";
 import { KitArt } from "./KitArt";
-import styles from "./Wishlist.module.css";
+import styles from "./Kits.module.css";
 
 /** Three distinct looks so a status is scannable down a grid — see the
- * `.chipStatus*` note in `Wishlist.module.css` for the token choices, and for
+ * `.chipStatus*` note in `Kits.module.css` for the token choices, and for
  * why those rules have to sit after `.chip` in that file. `wishlist` keeps the
  * plain chip: on the Wishlist screen every card has that status, so colouring
  * it would say nothing. */

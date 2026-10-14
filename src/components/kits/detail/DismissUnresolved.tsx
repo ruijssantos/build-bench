@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 
 import { dismissUnresolvedPaint } from "@/app/(bench)/kits/actions";
-import styles from "@/components/wishlist/Wishlist.module.css";
+import styles from "@/components/kits/Kits.module.css";
 import ui from "@/styles/ui.module.css";
 
 /**

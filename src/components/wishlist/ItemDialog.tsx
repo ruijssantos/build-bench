@@ -2,18 +2,20 @@
 
 import { useState } from "react";
 
-import { updateWishlistItem } from "@/app/(bench)/wishlist/actions";
+import { addWishlistItem, updateWishlistItem } from "@/app/(bench)/wishlist/actions";
 import { Modal } from "@/components/bench/Modal";
-import formStyles from "@/components/inventory/InventoryForm.module.css";
+import formStyles from "@/components/bench/Form.module.css";
 import type { WishlistItemRow } from "@/db/repositories/wishlist-items";
 import ui from "@/styles/ui.module.css";
 
-/** Edit an "Other items" row — the same three fields `AddItemDialog` takes,
- * pre-filled. Its own chunk, loaded on click. */
-export function EditWishlistItemDialog({ item, onClose }: { item: WishlistItemRow; onClose: () => void }) {
-  const [title, setTitle] = useState(item.title);
-  const [url, setUrl] = useState(item.url ?? "");
-  const [notes, setNotes] = useState(item.notes ?? "");
+/** A tool or supply on the "Other items" list — title, optional URL and
+ * notes (docs/PLAN.md §6 Phase 3). Adds a new row, or edits `item` when given
+ * one, pre-filled; one dialog for both so the two can't drift apart. Its own
+ * chunk, loaded on click. */
+export function ItemDialog({ item, onClose }: { item?: WishlistItemRow; onClose: () => void }) {
+  const [title, setTitle] = useState(item?.title ?? "");
+  const [url, setUrl] = useState(item?.url ?? "");
+  const [notes, setNotes] = useState(item?.notes ?? "");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -25,7 +27,9 @@ export function EditWishlistItemDialog({ item, onClose }: { item: WishlistItemRo
     setSaving(true);
     setError(null);
     try {
-      const result = await updateWishlistItem({ id: item.id, title, url, notes });
+      const result = item
+        ? await updateWishlistItem({ id: item.id, title, url, notes })
+        : await addWishlistItem({ title, url, notes });
       if (!result.ok) {
         setError(result.error);
         return;
@@ -39,14 +43,14 @@ export function EditWishlistItemDialog({ item, onClose }: { item: WishlistItemRo
   }
 
   return (
-    <Modal title="Edit item" onClose={onClose}>
+    <Modal title={item ? "Edit item" : "Add to the list"} onClose={onClose}>
       <div className={formStyles.form}>
         <div className={formStyles.field}>
-          <label className={ui.fieldLabel} htmlFor="edit-wishlist-item-title">
+          <label className={ui.fieldLabel} htmlFor="wishlist-item-title">
             Title
           </label>
           <input
-            id="edit-wishlist-item-title"
+            id="wishlist-item-title"
             className={ui.input}
             type="text"
             placeholder="Flush cutters, masking tape…"
@@ -57,11 +61,11 @@ export function EditWishlistItemDialog({ item, onClose }: { item: WishlistItemRo
         </div>
 
         <div className={formStyles.field}>
-          <label className={ui.fieldLabel} htmlFor="edit-wishlist-item-url">
+          <label className={ui.fieldLabel} htmlFor="wishlist-item-url">
             Link
           </label>
           <input
-            id="edit-wishlist-item-url"
+            id="wishlist-item-url"
             className={ui.input}
             type="url"
             placeholder="Optional"
@@ -72,11 +76,11 @@ export function EditWishlistItemDialog({ item, onClose }: { item: WishlistItemRo
         </div>
 
         <div className={formStyles.field}>
-          <label className={ui.fieldLabel} htmlFor="edit-wishlist-item-notes">
+          <label className={ui.fieldLabel} htmlFor="wishlist-item-notes">
             Notes
           </label>
           <input
-            id="edit-wishlist-item-notes"
+            id="wishlist-item-notes"
             className={ui.input}
             type="text"
             placeholder="Optional"
@@ -94,7 +98,7 @@ export function EditWishlistItemDialog({ item, onClose }: { item: WishlistItemRo
             Cancel
           </button>
           <button type="button" className={`${ui.btn} ${ui.btnPrimary}`} onClick={() => void save()} disabled={saving}>
-            {saving ? "Saving…" : "Save changes"}
+            {item ? (saving ? "Saving…" : "Save changes") : saving ? "Adding…" : "Add"}
           </button>
         </div>
       </div>

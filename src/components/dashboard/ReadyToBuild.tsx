@@ -1,9 +1,9 @@
 import Link from "next/link";
 
-import cardStyles from "@/components/wishlist/Wishlist.module.css";
 import { getKitReadiness } from "@/db/repositories/kit-paint-requirements";
 import { listKitsByStatuses } from "@/db/repositories/kits";
 import { isReadyToBuild } from "@/domain/dashboard";
+import page from "@/styles/page.module.css";
 
 import { KitThumb } from "./KitThumb";
 import styles from "./Dashboard.module.css";
@@ -30,7 +30,7 @@ export async function ReadyToBuild() {
 
   if (ready.length === 0) {
     return (
-      <div className={cardStyles.itemList}>
+      <div className={page.itemList}>
         <p className={styles.quiet}>
           Nothing in the stash has a complete paint list yet. Upload a manual and extract its paints
           from a <Link href="/kits">kit&apos;s page</Link>.
@@ -40,15 +40,15 @@ export async function ReadyToBuild() {
   }
 
   return (
-    <div className={cardStyles.itemList}>
+    <div className={page.itemList}>
       {ready.slice(0, MAX_ROWS).map((kit) => {
         const counts = byKit.get(kit.id);
         const total = counts ? counts.ownedCount + counts.equivalentCount + counts.missingCount : 0;
         return (
-          <Link href={`/kits/${kit.id}`} className={`${cardStyles.itemRow} ${styles.rowLink}`} key={kit.id}>
+          <Link href={`/kits/${kit.id}`} className={`${page.itemRow} ${styles.rowLink}`} key={kit.id}>
             <KitThumb src={kit.imageUrl} alt="" />
-            <span className={cardStyles.itemBody}>
-              <span className={cardStyles.itemTitle}>{kit.name ?? "Untitled kit"}</span>
+            <span className={page.itemBody}>
+              <span className={page.itemTitle}>{kit.name ?? "Untitled kit"}</span>
               <span className={styles.ready}>All {total} paints ready</span>
             </span>
           </Link>

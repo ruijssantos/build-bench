@@ -84,20 +84,9 @@
   }
 }
 
-.emptyCard {
+/* `page.emptyCard`, across both columns of the bench grid. */
+.fullRow {
   grid-column: 1 / -1;
-  background: var(--card);
-  border: 1px dashed var(--line-strong);
-  border-radius: var(--radius-card);
-  padding: 28px 20px;
-  text-align: center;
-  font-size: var(--text-base);
-  line-height: 1.5;
-  color: var(--muted);
-}
-
-.emptyCard b {
-  color: var(--ink);
 }
 
 .lineToggle {

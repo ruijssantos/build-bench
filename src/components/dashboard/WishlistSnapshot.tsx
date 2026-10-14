@@ -1,8 +1,8 @@
 import Link from "next/link";
 
-import cardStyles from "@/components/wishlist/Wishlist.module.css";
 import { listKitsByStatuses } from "@/db/repositories/kits";
 import { listWishlistItems } from "@/db/repositories/wishlist-items";
+import page from "@/styles/page.module.css";
 
 import { KitThumb } from "./KitThumb";
 import styles from "./Dashboard.module.css";
@@ -26,7 +26,7 @@ export async function WishlistSnapshot() {
 
   if (kits.length === 0 && wanted.length === 0) {
     return (
-      <div className={cardStyles.itemList}>
+      <div className={page.itemList}>
         <p className={styles.quiet}>
           Nothing on the <Link href="/wishlist">wishlist</Link> yet.
         </p>
@@ -35,22 +35,22 @@ export async function WishlistSnapshot() {
   }
 
   return (
-    <div className={cardStyles.itemList}>
+    <div className={page.itemList}>
       {kits.slice(0, MAX_ROWS).map((kit) => (
-        <Link href="/wishlist" className={`${cardStyles.itemRow} ${styles.rowLink}`} key={kit.id}>
+        <Link href="/wishlist" className={`${page.itemRow} ${styles.rowLink}`} key={kit.id}>
           <KitThumb src={kit.imageUrl} alt="" />
-          <span className={cardStyles.itemBody}>
-            <span className={cardStyles.itemTitle}>{kit.name ?? "Untitled kit"}</span>
-            <span className={cardStyles.itemNotes}>
+          <span className={page.itemBody}>
+            <span className={page.itemTitle}>{kit.name ?? "Untitled kit"}</span>
+            <span className={page.itemNotes}>
               {[kit.brand, kit.kitNumber].filter(Boolean).join(" · ") || "No details yet"}
             </span>
           </span>
         </Link>
       ))}
       {wanted.length > 0 ? (
-        <Link href="/wishlist" className={`${cardStyles.itemRow} ${styles.rowLink}`}>
-          <span className={cardStyles.itemBody}>
-            <span className={cardStyles.itemNotes}>
+        <Link href="/wishlist" className={`${page.itemRow} ${styles.rowLink}`}>
+          <span className={page.itemBody}>
+            <span className={page.itemNotes}>
               {wanted.length} other {wanted.length === 1 ? "item" : "items"} wanted
             </span>
           </span>

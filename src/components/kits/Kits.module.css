@@ -1,75 +1,14 @@
 /*
- * The Wishlist screen — docs/PLAN.md §6 Phase 3. Two modules, Kits and Other
- * items, stacked in one column — following the card language already set by
- * `src/components/inventory/*`, plus a section-title tier documented in
- * docs/PLAN.md §4.1 as a deliberate addition for screens with more than one
- * top-level module.
+ * Kit vocabulary — docs/PLAN.md §6 Phases 3 and 4a. The kit search, the kit
+ * card in all its states, the photo field of the kit dialog, and the kit
+ * detail page. Built for the Wishlist first, which is why it lived in
+ * `wishlist/` until the Stash, the Dashboard and the detail page had become
+ * most of its users.
  *
- * Box art is the only new source of saturated colour on this screen, same
- * rule as the paint swatches on the shelf (§4.1). The one semantic colour
- * this screen actually uses beyond the neutral/alert pair already in the
- * app is `--ok` on "mark bought" — the token's own definition is "in range /
- * owned", and owning a kit is exactly that.
+ * Box art is the only saturated colour these add, same rule as the paint
+ * swatches on the shelf (§4.1); `--ok` carries "owned" (bought, built) and
+ * `--accent` "on the bench now", nothing else.
  */
-
-/* ----------------------------------------------------------------- layout */
-
-/* One column at every width — Other Items reads top to bottom below Kits,
-   not beside it, so it never strands as a mostly-empty side column. */
-.grid {
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-  padding: 0 var(--gutter) 28px;
-}
-
-@media (min-width: 900px) {
-  .grid {
-    /* Wider than the 16px rhythm inside a section — Other Items wants a
-       clearer break from Kits above it than from its own children. */
-    gap: 40px;
-    padding: 0 0 8px;
-  }
-}
-
-.section {
-  display: flex;
-  flex-direction: column;
-  /* The same rhythm as the Paints screen's stack (Inventory.module.css). */
-  gap: 16px;
-  min-width: 0;
-}
-
-/* The section head: title, then its trailing action. Desktop keeps them
-   adjacent; mobile puts the action flush right, where a thumb reaches it.
-   The title itself is `ui.sectionTitle`. */
-.sectionHead {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-}
-
-@media (min-width: 900px) {
-  .sectionHead {
-    justify-content: flex-start;
-  }
-}
-
-/* A module title (`ui.moduleTitle`) with its count or action beside it. */
-.subHead {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.moduleMeta {
-  font-size: var(--text-xs);
-  font-weight: 600;
-  color: var(--muted);
-  white-space: nowrap;
-}
 
 /* ------------------------------------------------- kit search, matched to
    Thinner's SearchBox (src/components/thinner/SearchBox.module.css) */
@@ -120,48 +59,18 @@
   }
 }
 
-/* Search grows to the row on a phone; Add Manually keeps its own width. */
-.searchButton {
+/* Search grows to the row on a phone; Add Manually keeps its own width.
+   `.searchActions >` so the desktop padding outranks `ui.btn`'s by
+   specificity rather than by stylesheet order. */
+.searchActions > .searchButton {
   flex: 1;
 }
 
 @media (min-width: 900px) {
-  .searchButton {
+  .searchActions > .searchButton {
     flex: none;
     padding: 0 28px;
   }
-}
-
-/* Search status: loading spinner, an error, or "no matches" — mutually
-   exclusive with the candidate grid, so this sits in the same slot. */
-.status {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: var(--text-sm);
-  color: var(--muted);
-  padding: 4px 2px;
-}
-
-.spinner {
-  flex: none;
-  width: 15px;
-  height: 15px;
-  border-radius: 50%;
-  border: 2px solid var(--line-strong);
-  border-top-color: var(--accent);
-  animation: spin 0.7s linear infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.statusError {
-  color: var(--alert);
-  font-weight: 600;
 }
 
 /* Results live inside .searchCard once a search has run — a hairline break
@@ -552,151 +461,6 @@
 
 .savedSpacer {
   flex: 1;
-}
-
-/* -------------------------------------------------------------- other items */
-
-.itemList {
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-card);
-  overflow: hidden;
-}
-
-.itemRow {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 14px;
-  border-bottom: 1px solid var(--card-sunken);
-}
-
-.itemRow:last-child {
-  border-bottom: none;
-}
-
-.itemTick {
-  flex: none;
-  width: 24px;
-  height: 24px;
-  border-radius: 7px;
-  border: 1.5px solid var(--line-strong);
-  background: var(--card);
-  color: transparent;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-}
-
-.itemTick:hover {
-  border-color: var(--ok);
-}
-
-.itemTickChecked {
-  background: var(--ok);
-  border-color: var(--ok);
-  color: var(--bg);
-}
-
-.itemBody {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.itemTitleRow {
-  display: flex;
-  align-items: baseline;
-  gap: 6px;
-  min-width: 0;
-}
-
-.itemTitle {
-  font-size: var(--text-md);
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  color: var(--ink);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.itemTitleBought {
-  color: var(--muted);
-  text-decoration: line-through;
-  font-weight: 600;
-}
-
-.itemLink {
-  flex: none;
-  color: var(--muted-2);
-  display: inline-flex;
-}
-
-.itemLink:hover {
-  color: var(--accent);
-}
-
-.itemNotes {
-  font-size: var(--text-sm);
-  color: var(--muted);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-/* --------------------------------------------------------------- skeleton
-   Built from the real card/row classnames — `.card`, `.cardArt`, `.cardBody`,
-   `.itemRow` and friends, reused as-is below — rather than one undifferen-
-   tiated block (docs/PERFORMANCE.md §11 point 3). A single block the wrong
-   height was the whole CLS problem here: it was ~220px where a populated
-   grid is often 1,000px+, so the entire section jumped once real content
-   landed. Shaped placeholders can't know the real *count* before the query
-   resolves — `KitsSkeleton`/`OtherItemsSkeleton` render a small fixed
-   number, so a wishlist within that bound sees no shift at all, and a
-   bigger one only shifts by its extra rows, not by the whole section. See
-   docs/PERFORMANCE.md, Wishlist section, for the accepted residual. */
-
-.skeletonSwatch {
-  background: var(--card-sunken);
-}
-
-/* Every skeleton in the app borrows a real component's class for its font
-   metrics and adds this one for the grey bar. It used to hold a hidden
-   character — real text, painted out with `color: transparent` — and that was
-   a cascade bet: both class names are single selectors, so whichever module
-   the bundler emits last wins `color`. On the Thinner Bench SpecGrid's own
-   `.label`/`.value` won, and a column of "0"s appeared across the spec tiles
-   while the page loaded.
-
-   So there is no text in any skeleton any more, and `1lh` supplies the height
-   the text used to — exactly one line box of whatever metrics the borrowed
-   class carries, so the reserved space is unchanged. `1em` is the fallback
-   for browsers without the unit. */
-.skeletonLine {
-  display: inline-block;
-  background: var(--card-sunken);
-  border-radius: 6px;
-  max-width: 100%;
-  height: 1em;
-  height: 1lh;
-}
-
-/* The action row's button, before it exists — `ui.btnSm`'s box, so the row
-   keeps its height. */
-.skeletonButton {
-  display: inline-block;
-  height: var(--control-h-sm);
-  border-radius: var(--radius-control-sm);
-  background: var(--card-sunken);
-}
-
-.skeletonTick {
-  border-color: transparent;
-  background: var(--card-sunken);
 }
 
 /* ------------------------------------------------------------- photo upload

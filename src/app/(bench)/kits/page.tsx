@@ -4,12 +4,11 @@ import { preconnect } from "react-dom";
 import { BenchError } from "@/components/bench/BenchError";
 import { DesktopHeader } from "@/components/bench/DesktopHeader";
 import { PhoneHeader } from "@/components/bench/PhoneHeader";
-import { KitsSkeleton } from "@/components/wishlist/KitsSkeleton";
-import { KitSearch } from "@/components/wishlist/KitSearch";
-import styles from "@/components/wishlist/Wishlist.module.css";
+import { KitsSkeleton } from "@/components/kits/KitsSkeleton";
+import { KitSearch } from "@/components/kits/KitSearch";
 import { StashSection } from "@/components/kits/StashSection";
 import { blobStoreOrigin } from "@/lib/box-art";
-import ui from "@/styles/ui.module.css";
+import page from "@/styles/page.module.css";
 
 export const metadata = { title: "Stash" };
 
@@ -38,12 +37,12 @@ export default function KitsPage(props: PageProps<"/kits">) {
       <PhoneHeader title="Stash" />
       <DesktopHeader title="Stash" />
 
-      <div className={ui.scrollArea}>
-        <div className={styles.grid}>
+      <div className={page.scrollArea}>
+        <div className={page.grid}>
           {/* One section, so search, filters, title and grid keep the 16px
               rhythm Wishlist and Paints use — as direct children of `.grid`
               they each sat 40px apart. */}
-          <section className={styles.section}>
+          <section className={page.section}>
             <KitSearch saveStatus="stash" homeHref="/kits" />
             <BenchError label="Stash">
               <Suspense fallback={<KitsSkeleton />}>
