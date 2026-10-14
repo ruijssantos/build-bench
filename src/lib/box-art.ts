@@ -113,7 +113,7 @@ function isPublicAddress(address: string): boolean {
 
 /** Parses a URL and rejects it unless it is http(s) and every address its
  * hostname resolves to is public. Returns the parsed URL, or `null`. */
-export async function safeUrl(raw: string): Promise<URL | null> {
+async function safeUrl(raw: string): Promise<URL | null> {
   let parsed: URL;
   try {
     parsed = new URL(raw);

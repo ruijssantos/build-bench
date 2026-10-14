@@ -210,16 +210,6 @@ export function ChevronLeftIcon(props: IconProps) {
   );
 }
 
-export function UploadIcon(props: IconProps) {
-  return (
-    <svg {...base(props)}>
-      <path d="M12 16V4" />
-      <path d="M6 10l6-6 6 6" />
-      <path d="M4 20h16" />
-    </svg>
-  );
-}
-
 /** The Tips & Guides tab — an open book. */
 export function GuidesIcon(props: IconProps) {
   return (

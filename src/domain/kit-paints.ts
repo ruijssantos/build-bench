@@ -159,11 +159,3 @@ export interface ReadinessCounts {
   unresolvedCount: number;
 }
 
-export function readinessCounts(buckets: PaintBuckets): ReadinessCounts {
-  return {
-    ownedCount: buckets.owned.length,
-    equivalentCount: buckets.equivalents.length,
-    missingCount: buckets.missing.length,
-    unresolvedCount: buckets.unresolved.length,
-  };
-}

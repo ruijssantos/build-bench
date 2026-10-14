@@ -4,6 +4,7 @@ import { NextResponse, type NextRequest } from "next/server";
 import { createResearchJob, recordStage } from "@/db/repositories/kit-research";
 import { getKitById } from "@/db/repositories/kits";
 import { describeAnthropicError, logAnthropicError, webToolErrored } from "@/lib/anthropic-errors";
+import type { Result } from "@/lib/result";
 
 /**
  * Kit research, stage B — docs/PLAN.md §5.1, §5.4, §6 Phase 7.
@@ -84,7 +85,7 @@ For every claim, write the full URL you got it from inline, right next to the cl
 
 A claim you found in only one place is fine — say that it was one builder's experience. What is not fine is presenting something you inferred, or know generally about kits of this type, as though a source said it about this kit. If you found very little, report very little; a short honest answer is more useful than a padded one, because the person reading it is about to spend a weekend on this model.`;
 
-type InvestigateResponse = { ok: true; jobId: string } | { ok: false; error: string };
+type InvestigateResponse = Result<{ jobId: string }>;
 
 function jsonError(error: string, status = 200) {
   return NextResponse.json<InvestigateResponse>({ ok: false, error }, { status });
@@ -302,8 +303,8 @@ export async function POST(request: NextRequest) {
  * The citations are collected here rather than left for stage C to re-derive
  * from the prose, because they are *structured* at this point — the API
  * attaches them to the text blocks that used them — and become plain text the
- * moment the prose is handed on. `sources` is what `countSources` counts and
- * what stage C is told to draw its `sourceUrl` values from.
+ * moment the prose is handed on. `sources` is what the difficulty rating is
+ * gated on and what stage C is told to draw its `sourceUrl` values from.
  */
 function collectProseAndSources(response: Anthropic.Message): { prose: string; sources: string[] } {
   const parts: string[] = [];

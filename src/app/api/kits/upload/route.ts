@@ -2,6 +2,7 @@ import { put } from "@vercel/blob";
 import { NextResponse } from "next/server";
 
 import { describeBlobError } from "@/lib/box-art";
+import type { Result } from "@/lib/result";
 
 /**
  * Photo upload behind `ManualKitDialog` — docs/PLAN.md §6 Phase 3.
@@ -42,7 +43,7 @@ const EXTENSION_BY_CONTENT_TYPE = new Map<string, string>([
   ["image/webp", ".webp"],
 ]);
 
-type UploadResponse = { ok: true; url: string } | { ok: false; error: string };
+type UploadResponse = Result<{ url: string }>;
 
 function jsonError(error: string, status: number) {
   return NextResponse.json<UploadResponse>({ ok: false, error }, { status });

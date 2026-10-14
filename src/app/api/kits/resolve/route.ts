@@ -11,6 +11,7 @@ import {
 } from "@/domain/kit-candidate";
 import { describeAnthropicError, logAnthropicError, webToolErrored } from "@/lib/anthropic-errors";
 import { resolveBoxArtUrl } from "@/lib/box-art";
+import type { Result } from "@/lib/result";
 
 /**
  * Kit resolve — docs/PLAN.md §5.1 stage A, §2.4, §5.2.
@@ -99,7 +100,7 @@ For each candidate:
 - scalematesUrl: the kit's Scalemates page, or failing that the best product page you found for this exact kit; null only if you genuinely found no page for it
 - imageUrl: a direct URL to a box art image file if you happen to have one, else null — null is completely fine and expected, since the app can read the picture off scalematesUrl by itself. Never guess or construct an image URL to fill this in.`;
 
-type ResolveResponse = { ok: true; candidates: KitCandidate[] } | { ok: false; error: string };
+type ResolveResponse = Result<{ candidates: KitCandidate[] }>;
 
 function jsonError(error: string, status = 200) {
   return NextResponse.json<ResolveResponse>({ ok: false, error }, { status });

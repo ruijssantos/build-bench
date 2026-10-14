@@ -10,6 +10,7 @@ import { PurchaseFields, purchaseValuesOf } from "@/components/kits/PurchaseFiel
 import type { KitRow } from "@/db/repositories/kits";
 import { categoryLabel, isStashStatus, KIT_CATEGORIES, type KitStatus } from "@/domain/kit";
 import { resizeImage } from "@/lib/resize-image";
+import type { Result } from "@/lib/result";
 import ui from "@/styles/ui.module.css";
 
 import styles from "./Wishlist.module.css";
@@ -162,7 +163,7 @@ export function ManualKitDialog({
             body,
             signal: AbortSignal.timeout(UPLOAD_TIMEOUT_MS),
           });
-          const data = (await res.json()) as { ok: true; url: string } | { ok: false; error: string };
+          const data = (await res.json()) as Result<{ url: string }>;
           if (!data.ok) {
             setError(data.error);
             return;

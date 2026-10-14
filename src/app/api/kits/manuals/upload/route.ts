@@ -2,6 +2,7 @@ import { put } from "@vercel/blob";
 import { NextResponse } from "next/server";
 
 import { describeBlobError } from "@/lib/box-art";
+import type { Result } from "@/lib/result";
 
 /**
  * The manual upload fallback — docs/PLAN.md §6 Phase 4a, §4.3.
@@ -18,7 +19,7 @@ import { describeBlobError } from "@/lib/box-art";
 
 const MAX_UPLOAD_BYTES = 4 * 1024 * 1024;
 
-type UploadResponse = { ok: true; url: string } | { ok: false; error: string };
+type UploadResponse = Result<{ url: string }>;
 
 function jsonError(error: string, status: number) {
   return NextResponse.json<UploadResponse>({ ok: false, error }, { status });

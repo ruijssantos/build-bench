@@ -7,6 +7,7 @@ import { PlusIcon } from "@/components/icons";
 import { NAV_RECLICK_EVENT } from "@/components/nav/nav-events";
 import type { KitStatus } from "@/domain/kit";
 import type { KitCandidate } from "@/domain/kit-candidate";
+import type { Result } from "@/lib/result";
 import ui from "@/styles/ui.module.css";
 
 import { KitCandidateCard } from "./KitCandidateCard";
@@ -14,7 +15,7 @@ import styles from "./Wishlist.module.css";
 
 const ManualKitDialog = lazy(() => import("./ManualKitDialog").then((m) => ({ default: m.ManualKitDialog })));
 
-type ResolveResponse = { ok: true; candidates: KitCandidate[] } | { ok: false; error: string };
+type ResolveResponse = Result<{ candidates: KitCandidate[] }>;
 
 type SearchState =
   | { status: "idle" }

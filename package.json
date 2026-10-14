@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "lint:css": "tsx scripts/check-design-tokens.ts",
+    "lint:dead": "knip",
     "typecheck": "next typegen && tsc --noEmit",
     "perf:budget": "tsx scripts/check-perf-budget.ts",
     "db:generate": "drizzle-kit generate",
@@ -37,6 +38,7 @@
     "drizzle-kit": "^0.31.10",
     "eslint": "^9",
     "eslint-config-next": "16.3.2",
+    "knip": "5.88.1",
     "tsx": "^4.23.12",
     "typescript": "^5"
   }

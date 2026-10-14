@@ -6,6 +6,7 @@ import { getCataloguePaint } from "@/catalogue/paints";
 import { createOverride, overrideTag } from "@/db/repositories/ratio-overrides";
 import { normalizePaintCode } from "@/domain/paint-code";
 import { readText } from "@/lib/form-text";
+import type { Result } from "@/lib/result";
 
 export interface SaveOverrideInput {
   code: string;
@@ -14,7 +15,6 @@ export interface SaveOverrideInput {
   reason?: string;
 }
 
-export type SaveOverrideResult = { ok: true } | { ok: false; error: string };
 
 function isPositive(value: unknown): value is number {
   return typeof value === "number" && Number.isFinite(value) && value > 0;
@@ -27,7 +27,7 @@ function isPositive(value: unknown): value is number {
  * re-render travel in one round trip instead of two, and `updateTag` gives
  * read-your-own-writes on the cached override without dropping anything else.
  */
-export async function saveRatioOverride(input: SaveOverrideInput): Promise<SaveOverrideResult> {
+export async function saveRatioOverride(input: SaveOverrideInput): Promise<Result> {
   const code = normalizePaintCode(input.code);
 
   if (!getCataloguePaint(code)) {
