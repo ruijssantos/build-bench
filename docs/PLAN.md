@@ -714,6 +714,31 @@ manual row. The expensive path exists and costs what it costs — it just has to
 
 ## 5. Kit research pipeline design
 
+> **Now the upgrades search.** After daily use the owner never read difficulty, fit issues or
+> tips; what they looked up every build was the aftermarket made for the kit in front of them.
+> So stages B and C now find **parts made for this exact kit** — maker, product, code, kind,
+> what it adds, every site that lists it — and the old claims and their data are gone
+> (`0009_upgrades_replace_research`). What's unchanged: the B → C split, Sonnet 5 at
+> `medium`, direct web search for citations, and §5.4's rule that nothing ships without its
+> page. What changed:
+>
+> - **It runs on every add**, wishlist or stash, searched or typed — the owner's call, on the
+>   condition that the cost is measured. The add action writes a `research_job` row and the
+>   search runs in `after()` (`src/lib/kit-upgrades-research.ts`), within the 300s the
+>   `(bench)` layout's `maxDuration` grants every Server Action. No route handlers, no client
+>   orchestration: the kit page reads the job row, polls while it runs, and shows the reason
+>   and Try again when it fails. A job silent for 6 minutes is presumed killed.
+> - **"Made for this kit" is enforced in code.** Stage C must quote the evidence (`madeFor`);
+>   `normalizeUpgrades` drops a part without it, as it drops one without a source. Ranked by
+>   how many distinct sites list each part.
+> - **Spotmodel first.** The owner buys there and its search lists a kit's upgrades beside
+>   it, so its search URL for the kit goes in the user turn — web fetch can only open URLs
+>   already in the conversation.
+> - **Cost is recorded in full** — see §5.3.
+>
+> Read the rest of §5 as the history of how the pipeline got its shape; where it says
+> "difficulty", "fit issues" or `/api/kits/research/*`, that is what this replaced.
+
 Three findings shaped this:
 
 1. **Scalemates is bot-hostile.** Best kit database on the web, doesn't want scrapers (§2.4).
@@ -834,8 +859,18 @@ models:
   **re-baseline the figure here from `kit_research.input_tokens` / `output_tokens` after the
   next few runs** rather than trusting another estimate.
 
-Every call records its own token counts regardless of stage, and those two columns are the
-measurement — not this section. At personal-hobby volumes (a handful of kits a week) stage A
+Every call records its own token counts regardless of stage, and those columns are the
+measurement — not this section.
+
+**Since the upgrades search (§5 note above), the measurement is complete.** Two token columns
+couldn't price a run: cache writes and reads bill at 1.25× and 0.1×, web searches bill per call
+($10 per 1,000), and the old code kept only the *last* response's usage across `pause_turn`
+resumes. Now `research_job.usage` sums every call a job makes — both stages, every resume, and
+the attempts that failed — and `kit_research.usage` holds the successful run's total. The
+panel's caveat line prints the dollar figure (`runCostUsd`, prices in
+`src/domain/kit-upgrades.ts`), and each run logs one `[kit-upgrades]` line with the counts.
+**Estimate before the first real run: ~$0.15–0.40 per kit** — three searches, two fetches
+capped at 6K tokens, two stages on Sonnet 5. Re-baseline from the logged figures. At personal-hobby volumes (a handful of kits a week) stage A
 is pocket change either way; stage B is the one worth watching, and the only one where a
 config change moves the bill.
 
@@ -1222,6 +1257,7 @@ journal is merged by hand, check the ordering.
 | `0006_kit_research_tips` | `kit_research.tips`, plus a `kit_id` index on `kit_research` and `research_job` | Phase 7 |
 | `0007_drop_dead_columns` | drops `paint_brand`, `paint_equivalent` and ten unread columns; adds `kit_manual.paint_chart_found` | Phase 7 cleanup |
 | `0008_dismiss_paint_requirement` | `kit_paint_requirement.dismissed_at` | Dismissing an unresolved callout |
+| `0009_upgrades_replace_research` | **deletes every research row and job**; drops `kit_research`'s difficulty, fit-issue, tip and token columns; adds `kit_research.upgrades`/`usage`, `research_job.usage` | Kit upgrades |
 
 **Phase 5 added no migration** — `paint_brand` and `paint_equivalent` have existed since
 `0000_init` and were simply empty. What it needs instead is exactly step 5.5 above: a re-seed,

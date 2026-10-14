@@ -34,12 +34,12 @@ already on the shelf, what to buy on the next shop run, and a wishlist
 glance — all read-only, all derived from what the earlier phases already
 store.
 
-Most recently kit research (Phase 7): a Research panel on each stash kit that
-searches the web for what other builders say about it — difficulty, fit issues
-to expect, and tips. Everything it reports carries a link to the
-source it came from, and a difficulty rating only appears when a source backs it
-(`docs/PLAN.md` §5.4). It is synthesised from forum
-posts, and the screen never lets you forget that.
+Most recently the kit page's Upgrades and References. Every kit added — to the
+wishlist or the stash, searched or typed in — starts a background web search
+for the aftermarket parts made for that exact kit: detail-up sets, photo-etch,
+decal sheets, wheels. Each part carries the sites that list it, and the panel
+shows what the search cost (`docs/PLAN.md` §5). References are free search
+links — build videos, and photos of the real thing chosen by what the kit is.
 
 Next is Phase 8, the build log — a per-kit dated journal with photos, to be
 detailed when we get there.

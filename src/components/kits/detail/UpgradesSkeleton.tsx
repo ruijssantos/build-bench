@@ -6,7 +6,7 @@ import ui from "@/styles/ui.module.css";
  * block standing in for the panel's body, text-free so nothing has to be
  * hidden with `color: transparent` (see `BenchSkeleton.module.css` for why
  * that lost). */
-export function ResearchSkeleton() {
+export function UpgradesSkeleton() {
   return (
     <div className={styles.card} aria-hidden="true">
       <div className={styles.cardBody}>
