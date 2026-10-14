@@ -36,12 +36,6 @@ export function PhoneHeader({
 }) {
   return (
     <div className={styles.header}>
-      <svg className={styles.sweep} width="230" height="230" viewBox="0 0 230 230" aria-hidden="true">
-        <g transform="rotate(-21 115 115)">
-          <rect x="58" y="-70" width="26" height="330" fill="var(--livery)" />
-          <rect x="90" y="-70" width="10" height="330" fill="var(--livery)" />
-        </g>
-      </svg>
 
       <div className={styles.statusBarSpace} />
 

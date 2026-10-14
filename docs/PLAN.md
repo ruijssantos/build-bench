@@ -25,7 +25,7 @@ Section numbers below are stable and cited from code (`schema.ts`, `PERFORMANCE.
 | Auth | App-level signed cookie, one passphrase |
 | Airbrush | **Single-rig: Tamiya 74540 HG Trigger** |
 | Phone | PWA / responsive web. Desktop for manuals, phone for quick lookups |
-| Visual design | Warm cream, one accent, tonal livery, Barlow Condensed display — §4.1 |
+| Visual design | Cutting-mat paper, one manual blue, tonal livery, Saira Condensed display — §4.1 |
 | Theme | Light only |
 | Performance | Partial Prerendering, compiled reference data, client islands — `PERFORMANCE.md` |
 
@@ -361,8 +361,8 @@ research and finding build videos are all as useful for deciding whether to buy 
 building it, and they stay attached when it's bought. What stays status-shaped is only what's
 genuinely about ownership — the "Purchase & dates" panel appears once it's bought, the status
 ladder shows a Wishlist step only while the kit is still on it, and the shop run (§6 Phase 6)
-counts only kits you own. A wishlist card reads the shared readiness line as "3 you'd need"
-rather than "3 to buy".
+counts only kits you own. Wishlist and Stash cards share one readiness line, word for word:
+"3 missing", or "Ready to build" once the shelf covers it.
 
 `wishlist_item` is genuinely separate, and that's the test working rather than failing: a
 tool or a bottle of glue has no brand, no scale, no kit number and no reference page, and it
@@ -459,40 +459,54 @@ Reference canvas (mockups for the screens built so far, and the rejected visual 
 Clean product UI (Apple / Airbnb / Revolut as reference points) carrying a classic-car
 palette, rather than imitating a dashboard.
 
+**Redesign in progress (Oct 2026).** The cream palette read as beige and generic. The
+direction now is the *Instruction Sheet* palette (a cool paper ground with the faint
+grid of a cutting mat, ink, one manual blue) with *Pit Board* type and, later, some of its
+components. The three directions that were compared, live:
+<https://claude.ai/artifact/J3swgzccXtk3WoWM8iETyy>. Step one swaps tokens and fonts
+only; no component changes yet.
+
 #### Colour
 
 ```css
-/* surfaces */
---bg:            #f6f2e9;   /* page */
---card:          #fffdf8;
---card-sunken:   #f2ece0;   /* inset tracks, card strip ground */
---line:          #ece5d7;   /* hairline border */
---line-strong:   #e8e1d3;   /* input borders */
+/* surfaces — a cutting mat */
+--bg:            #f3f4f1;   /* page, under --bg-grid (24px, ink at 4.5%) */
+--card:          #ffffff;
+--card-sunken:   #eceeea;   /* inset tracks, card strip ground */
+--line:          #e3e5e1;   /* hairline border */
+--line-strong:   #d7dad6;   /* input borders */
 
 /* livery — a neutral, never a colour */
---livery:        #e3dbc8;   /* tonal stripe on --bg */
---livery-card:   #efe8d8;   /* tonal stripe on --card */
+--livery:        #e2e4e0;   /* tonal stripe on --bg */
+--livery-card:   #eef0ec;   /* tonal stripe on --card */
 
 /* ink */
---ink:           #1b1a17;
---ink-soft:      #4a4437;   /* body inside tinted panels */
---muted:         #7c766a;   /* secondary text */
---muted-2:       #9c9483;   /* labels, captions */
---faint:         #c3bba8;   /* separators inside text, disabled glyphs */
---icon-idle:     #a89f8c;
+--ink:           #121417;
+--ink-soft:      #3d4249;   /* body inside tinted panels */
+--muted:         #697077;   /* secondary text */
+--muted-2:       #8a9097;   /* labels, captions */
+--muted-hover:   #4c5258;   /* --muted on hover */
+--faint:         #c4c8cc;   /* separators inside text, disabled glyphs */
+--icon-idle:     #9a9fa5;
 
 /* accent — selection and primary values ONLY */
---accent:        #1b3a6b;
---accent-tint:   #edf1f7;
+--accent:        #1d4ed8;
+--accent-hover:  #1a3fae;
+--accent-tint:   #e7edfc;
 
 /* semantic — in range / owned */
---ok:            #4a6f52;
---ok-tint:       #e9eee9;
---ok-track:      #d3ded4;   /* the workable-window band */
+--ok:            #1f7a4d;
+--ok-tint:       #e6f2ea;
+--ok-track:      #cfe6d8;   /* the workable-window band */
 
 /* semantic — act on this */
---alert:         #8c1c24;
---alert-tint:    #f7ecea;
+--alert:         #d4231c;
+--alert-tint:    #fdeceb;
+
+/* ink at alpha — scrims over content and box art */
+--scrim:         rgba(18, 20, 23, .40);
+--scrim-strong:  rgba(18, 20, 23, .55);
+--scrim-stronger: rgba(18, 20, 23, .72);
 ```
 
 **The rule that keeps this coherent:** three colours, all of them earning their place.
@@ -508,9 +522,9 @@ Three faces, one job each. All from Google Fonts, each with a fallback stack.
 
 | Token | Face | Used for |
 |---|---|---|
-| `--font-display` | Barlow Condensed | Screen titles (uppercase), hero numerals, small-caps labels |
-| `--font-ui` | Plus Jakarta Sans | Everything that is read: values, body, rows, buttons |
-| `--font-mono` | DM Mono | Paint codes only — `TS-8`, `XF-64` |
+| `--font-display` | Saira Condensed | Screen titles (uppercase), hero numerals, small-caps labels |
+| `--font-ui` | Hanken Grotesk | Everything that is read: values, body, rows, buttons |
+| `--font-mono` | Martian Mono | Paint codes only — `TS-8`, `XF-64` |
 
 | Role | Spec |
 |---|---|
@@ -545,7 +559,7 @@ Rules for every module, regardless of screen:
   smaller and quieter than the title of the module containing it.
 - Emphasis inside these roles is **weight, not size or colour**.
 
-Barlow Condensed carries the app's automotive voice through type, not ornament — which is
+Saira Condensed carries the app's automotive voice through type, not ornament — which is
 why it works on screens (Paints, Shopping) that have nothing to do with instruments.
 
 #### Geometry
@@ -559,8 +573,10 @@ why it works on screens (Paints, Shopping) that have nothing to do with instrume
 - **Radii:** card 20 (22 desktop) · tile, input 14 · chip 6–12 · pill 999.
 - **Borders:** 1px `--line`. Hairlines do the separating.
 - **Elevation:** exactly one shadow in the whole app, on the hero card —
-  `0 1px 2px rgba(28,26,23,.04), 0 10px 28px rgba(28,26,23,.045)`. Everything else is a
+  `0 1px 2px rgba(18,20,23,.04), 0 10px 28px rgba(18,20,23,.05)`. Everything else is a
   hairline. Don't add a second elevation level.
+  The same shadow is what a navigating card takes on hover (see *Motion*); it is
+  never a resting second level.
 - **Touch targets:** ≥44px everywhere; tab-bar items 44px.
 - **Tab bar:** 60px tall, hairline top, 6 items (5 routes + sign out), active in `--accent`.
 - **Left rail:** 260px, items 44px, active state is an `--accent-tint` pill at radius 12.
@@ -570,13 +586,36 @@ why it works on screens (Paints, Shopping) that have nothing to do with instrume
 
 The one decorative element, and it costs no colour:
 
-- **Header sweep** — `rotate(-21deg)`, two bars 26px and 10px with a 6px gap, filled
-  `--livery`, bleeding off the top-right of the header (`overflow: hidden`).
+- **No header sweep.** The diagonal bars that bled off the rail and the phone header
+  were removed in the Oct 2026 redesign: on the cutting-mat grid they read as noise.
 - **Card echo** — a 4px strip on the hero card's top edge: 44px bar, 9px gap, 17px bar,
-  filled `--livery` on a `--card-sunken` ground — this is what makes it read as a system
-  rather than a header flourish.
-- On `--card` surfaces (the desktop rail) use `--livery-card` instead, one step lighter.
+  filled `--livery` on a `--card-sunken` ground.
+- On `--card` surfaces use `--livery-card` instead, one step lighter.
 - The livery never uses `--accent`.
+
+#### Motion
+
+Motion confirms something you did or can do; it never decorates, and nothing waits on it.
+One curve, three speeds, in `tokens.css`:
+
+- `--ease-out` `cubic-bezier(.2, 0, 0, 1)`, no overshoot. `--dur-fast` 120ms (colour, tints),
+  `--dur-base` 200ms (lifts, small moves), `--dur-slow` 320ms (box art, fills).
+- **Hover:** only on things that navigate. A card with the stretched link takes
+  `--shadow-hero` in place (cards never move) and its box art scales to
+  `--art-hover-scale` (1.04) inside its frame; a dashboard row's thumbnail scales the same
+  way, and a stat tile takes the shadow. A card that doesn't navigate (a search
+  candidate, the kit page's identity panel) gets no hover at all, so hover keeps meaning
+  *this opens*. Keyboard focus gets the same
+  shadow. Hover rules sit inside `@media (hover: hover)` so a tap never leaves a phone
+  card stuck in its hover state.
+- **Status bar** (`StatusBar`, shared by the dashboard's bench card and the kit page's
+  Status panel): one segment per step, done in `--ok`, current in `--accent`, future an
+  empty track; Built reads done. Filled segments fill left to right once on first paint
+  (`--dur-slow`, 90ms stagger). On the kit page, where status changes in place, forward
+  fills the next segment from the left, back drains it from the right in its own colour,
+  and reaching Built runs one chequered sweep. Nothing loops.
+- `prefers-reduced-motion: reduce` collapses every transition and animation to 1ms,
+  globally, in `tokens.css`.
 
 #### Icons
 
@@ -820,7 +859,7 @@ a three-step status stepper (`stash → building → built`, stamping `started_a
 on the way in, editable after), purchase details, manual PDF upload with an **Extract paint
 list** action per manual (Claude Opus 5, streaming, effort high), and the resulting
 `kit_paint_requirement` rows shown as three buckets — Owned, Missing, Unresolved — against the
-shelf. The per-kit bucket view is one targeted query; the Stash grid's "14 of 17 · 3 to buy"
+shelf. The per-kit bucket view is one targeted query; the Stash grid's "14 of 17 · 3 missing"
 line on every card comes from one aggregate query across every kit, not N+1. Wishlist kits
 later got the same detail page (§3.3, and §7 "A kit is a kit").
 
@@ -852,7 +891,10 @@ Bench's "Also sold as" card (§7), the chart's first UI.
 slot became this one, so the phone tab bar still holds five items plus Sign out). Five
 read-only modules over data Phases 2–5 already store, each behind its own `<Suspense>` inside
 its own `<BenchError>`: four linked stat tiles (shelf size, running low, stash, wishlist);
-**On the bench** — every `building` kit as a full card with its readiness line and start date;
+**On the bench** — every `building` kit as a full card, with a status column beside the
+details: days on the bench (counted on the viewer's own calendar, client-side, since the
+shell is prerendered) over the shared status bar. No readiness line: you only start a kit
+once its paints are in;
 **What you could start** — stashed kits whose every called-for paint is already owned, which
 is the module that makes this screen a decision rather than a readout; **Next shop run** —
 missing paints across unfinished kits rolled up with how many kits each blocks, then bottles
@@ -1141,14 +1183,14 @@ the dates stamp on the way up and clear on the way back; checked `replaceManualP
 replaces exactly (6 rows → 2, no duplication); and confirmed `getStashReadiness` against a
 fixture built for the case it exists to handle — a code owned through two shelf rows (a spray
 can and the jar decanted from it) counting once, a repeated non-Tamiya callout counting once —
-giving owned 2 / missing 1 / unresolved 2, i.e. "Own 2 of 3 · 1 to buy · +2 unresolved".
+giving owned 2 / missing 1 / unresolved 2, i.e. "Own 2 of 3 · 1 missing · +2 unresolved".
 
 The UI then got the same treatment, which is what all of the above was found by: a local
 Postgres seeded with the real 395-paint catalogue, a ten-bottle shelf and five kits spread
 across all three statuses, with the driver temporarily pointed at it (reverted before commit —
 `src/db/client.ts` is untouched). That confirmed, on phone and desktop, the display ordering,
 the three chip colours, the filter pills and their counts, the readiness lines against a kit
-deliberately built for the awkward case ("Own 3 of 5 · 2 to buy · +2 unresolved", with TS-8
+deliberately built for the awkward case ("Own 3 of 5 · 2 missing · +2 unresolved", with TS-8
 owned through two shelf rows and one non-Tamiya callout repeated), the detail page's stepper,
 manuals and three paint buckets, and the modal painting cleanly above everything. It also
 exercised the foreign-key delete through the actual UI rather than through SQL: removing a kit
@@ -1834,7 +1876,7 @@ either of which alone was enough:
    line, because "first row that isn't a spray can" took whatever order Cybermodeler happened
    to list. The shelf (§2.1) is 29 of 33 bottles in `X`/`XF` and holds **all eight** of the
    acrylics those codes also map to. So the screen would have gone from "10 unresolved" to
-   "8 to buy" — every one of them already in the rack.
+   "8 missing" — every one of them already in the rack.
 
 The second is the more instructive failure, because it is the one that looks like success. A
 missing answer announces itself; a confident wrong one gets acted on, and the action here is
@@ -1990,9 +2032,21 @@ migration.
   on the wishlist, with **Move to stash** as its one action — the Wishlist card's own
   `markKitBought`. Once bought it's the old three steps; buying is still one-directional.
 - "Purchase & dates" is hidden on a wishlist kit. Remove redirects to the list the kit was on.
+- The full kit dialog (Edit / Add Manually) carries every field a kit has, Purchase & dates
+  included, so there is one place to edit all of it; the four fields come from the shared
+  `PurchaseFields` and save in the same UPDATE as the identity fields. They show only for a
+  stash-side kit, on the same rule as the panel. The panel's own small dialog stays for
+  editing just those.
+- Status and dates move together both ways. The status buttons stamp Started/Completed
+  (`updateKitStatus`, as before); now editing those dates by hand moves the status to match
+  (`statusAfterDateEdit`), in the same UPDATE: a start date set on a stashed kit makes it
+  Building, a completion date makes it Built, and clearing one steps it back. Only a date
+  that changed in the edit moves anything, so a kit with no start date that reached Building
+  before stamping existed isn't sent back to the shelf by an unrelated save. Adding a kit by
+  hand with dates already filled in saves it straight into the matching status.
 - `getStashReadiness` became `getKitReadiness` and covers every status. The Wishlist grid now
-  asks for it, and its cards link to the detail page and show "Own 3 of 5 · 2 you'd need" /
-  "You have them all". The shop run stays scoped to `stash`/`building` — a kit you haven't
+  asks for it, and its cards link to the detail page and show "Own 3 of 5 · 2 missing" /
+  "Ready to build". The shop run stays scoped to `stash`/`building` — a kit you haven't
   bought doesn't put paint on the run.
 - Research is still only ever started by its button. It's the paid path (§5.3), and wishlists
   hold more speculative kits than stashes do.
@@ -2022,7 +2076,7 @@ the owner's rule is "I have it in X or XF". No migration.
   whose only gaps are equivalents is Ready to build. On the kit cards they simply count as
   owned ("Own 14 of 17") — the detail page's Equivalents section is where they're itemised.
   (A first cut added "(2 via X/XF)" to the card line; the owner found it noise.) A card with
-  nothing missing reads just "Ready to build" / "You have them all", without the count.
+  nothing missing reads just "Ready to build", without the count.
 - The chip reads `● LP-8 → ● X-8` — both swatches, solid outline in Owned's green — and opens
   the acrylic on the Thinner bench: that's the bottle being thinned.
 - Card counts and the detail page are computed in different places (SQL aggregate vs.

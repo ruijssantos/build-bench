@@ -44,5 +44,5 @@
 }
 
 .retry:hover {
-  color: #14294c;
+  color: var(--accent-hover);
 }

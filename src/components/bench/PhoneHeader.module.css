@@ -10,19 +10,11 @@
   }
 }
 
-.sweep {
-  position: absolute;
-  top: -58px;
-  right: -26px;
-  pointer-events: none;
-}
-
 .statusBarSpace {
   height: 44px;
 }
 
-/* Transparent rounded square — an outline only, so the livery sweep behind
-   it still shows through. */
+/* Transparent rounded square — an outline only. */
 .signOutForm {
   position: absolute;
   top: 12px;

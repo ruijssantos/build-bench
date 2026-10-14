@@ -117,7 +117,7 @@
   padding: 4px 10px;
   font-size: 12px;
   font-weight: 600;
-  color: #6b6456;
+  color: var(--muted-hover);
 }
 
 /* ---- guide page ---- */

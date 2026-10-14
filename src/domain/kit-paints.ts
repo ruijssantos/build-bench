@@ -148,7 +148,7 @@ export function bucketPaintRequirements(
 /** Shape shared by the Stash grid's aggregate query (`KitReadiness`, one row
  * per kit) and the detail page's own per-kit buckets (derived from
  * `PaintBuckets`) — the same `ReadyLine` component renders "Own 14 of 17 ·
- * 3 to buy" from either. */
+ * 3 missing" from either. */
 export interface ReadinessCounts {
   ownedCount: number;
   /** Covered by an owned acrylic twin — see `EquivalentPaintDisplay`. On the

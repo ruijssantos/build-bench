@@ -23,7 +23,7 @@ import { acrylicTwinCode, substituteShelf } from "./acrylic-twin-shelf";
  * Scoped to the statuses below, unlike `getKitReadiness`, which covers every
  * kit. `built` is excluded because a finished kit's missing paints are a
  * historical fact, not a shopping list; `wishlist` because a kit you haven't
- * bought yet shouldn't put paint on the run — its card says "3 you'd need"
+ * bought yet shouldn't put paint on the run — its card says "3 missing"
  * instead. Only `stash` and `building` describe paint you still need to buy.
  */
 

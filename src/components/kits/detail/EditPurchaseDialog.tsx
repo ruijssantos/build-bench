@@ -5,13 +5,11 @@ import { useState } from "react";
 import { updateKitPurchaseAction } from "@/app/(bench)/kits/actions";
 import { Modal } from "@/components/bench/Modal";
 import formStyles from "@/components/inventory/InventoryForm.module.css";
+import { PurchaseFields, purchaseValuesOf } from "@/components/kits/PurchaseFields";
 import type { KitRow } from "@/db/repositories/kits";
 
 export function EditPurchaseDialog({ kit, onClose }: { kit: KitRow; onClose: () => void }) {
-  const [purchasedFrom, setPurchasedFrom] = useState(kit.purchasedFrom ?? "");
-  const [purchasedAt, setPurchasedAt] = useState(kit.purchasedAt ?? "");
-  const [startedAt, setStartedAt] = useState(kit.startedAt ?? "");
-  const [completedAt, setCompletedAt] = useState(kit.completedAt ?? "");
+  const [purchase, setPurchase] = useState(() => purchaseValuesOf(kit));
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -19,7 +17,7 @@ export function EditPurchaseDialog({ kit, onClose }: { kit: KitRow; onClose: () 
     setSaving(true);
     setError(null);
     try {
-      const result = await updateKitPurchaseAction({ id: kit.id, purchasedFrom, purchasedAt, startedAt, completedAt });
+      const result = await updateKitPurchaseAction({ id: kit.id, ...purchase });
       if (!result.ok) {
         setError(result.error);
         return;
@@ -35,64 +33,7 @@ export function EditPurchaseDialog({ kit, onClose }: { kit: KitRow; onClose: () 
   return (
     <Modal title="Purchase & dates" onClose={onClose}>
       <div className={formStyles.form}>
-        <div className={formStyles.field}>
-          <label className={formStyles.label} htmlFor="purchase-from">
-            Purchased from
-          </label>
-          <input
-            id="purchase-from"
-            className={formStyles.input}
-            type="text"
-            placeholder="Shop name"
-            value={purchasedFrom}
-            onChange={(e) => setPurchasedFrom(e.target.value)}
-            disabled={saving}
-          />
-        </div>
-        <div className={formStyles.field}>
-          <label className={formStyles.label} htmlFor="purchase-at">
-            Purchased on
-          </label>
-          <input
-            id="purchase-at"
-            className={formStyles.input}
-            type="date"
-            value={purchasedAt}
-            onChange={(e) => setPurchasedAt(e.target.value)}
-            disabled={saving}
-          />
-        </div>
-        <div className={formStyles.field}>
-          <label className={formStyles.label} htmlFor="started-at">
-            Started
-          </label>
-          <input
-            id="started-at"
-            className={formStyles.input}
-            type="date"
-            value={startedAt}
-            onChange={(e) => setStartedAt(e.target.value)}
-            disabled={saving}
-          />
-        </div>
-        <div className={formStyles.field}>
-          <label className={formStyles.label} htmlFor="completed-at">
-            Completed
-          </label>
-          <input
-            id="completed-at"
-            className={formStyles.input}
-            type="date"
-            value={completedAt}
-            onChange={(e) => setCompletedAt(e.target.value)}
-            disabled={saving}
-          />
-        </div>
-
-        <span className={formStyles.hint}>
-          Started/Completed are stamped automatically when you advance the status above — this is where to correct or
-          backfill them.
-        </span>
+        <PurchaseFields values={purchase} onChange={setPurchase} disabled={saving} idPrefix="purchase" />
 
         {error ? <div className={formStyles.error}>{error}</div> : null}
 

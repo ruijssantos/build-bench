@@ -193,8 +193,8 @@ so it isn't there.
 
 ## 7. Fonts
 
-Three families, locked in PLAN §4.1. Plus Jakarta Sans is variable, so it takes
-no `weight` option — one file covers 400–800. DM Mono sets only small secondary
+Three families, locked in PLAN §4.1. Hanken Grotesk is variable, so it takes
+no `weight` option — one file covers 400–800. Martian Mono sets only small secondary
 labels and is `preload: false`, so it doesn't compete for bandwidth during
 first paint. All three use `display: "swap"`.
 

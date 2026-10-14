@@ -39,11 +39,21 @@
   padding: 14px 16px;
   text-decoration: none;
   color: inherit;
+  transition:
+    box-shadow var(--dur-base) var(--ease-out),
+    border-color var(--dur-base) var(--ease-out);
 }
 
-.stat:hover {
-  border-color: var(--line-strong);
-  color: inherit;
+@media (hover: hover) {
+  .stat:hover {
+    box-shadow: var(--shadow-hero);
+    border-color: var(--line-strong);
+    color: inherit;
+  }
+}
+
+.stat:focus-visible {
+  box-shadow: var(--shadow-hero);
 }
 
 .statRow {
@@ -130,6 +140,32 @@
   }
 }
 
+/* The bench card's status column (`DaysOnBench`): a big count over its unit.
+   Holds its height while the count is still blank before hydration. */
+.benchDays {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-height: 42px;
+}
+
+.benchDaysValue {
+  font-family: var(--font-display);
+  font-size: 44px;
+  font-weight: 700;
+  line-height: 0.9;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.benchDaysUnit {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+}
+
 /* One column on a phone; three equal ones on a desktop. */
 .columns {
   display: flex;
@@ -178,6 +214,14 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform var(--dur-slow) var(--ease-out);
+}
+
+/* The row's box art scales with the row, same as a card's (Wishlist.module.css). */
+@media (hover: hover) {
+  .rowLink:hover .thumbImg {
+    transform: scale(var(--art-hover-scale));
+  }
 }
 
 .ready {

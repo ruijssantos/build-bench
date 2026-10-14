@@ -29,18 +29,6 @@ import { NAV_ITEMS } from "./nav-items";
 export function NavRail() {
   return (
     <nav className={styles.rail} aria-label="Primary">
-      <svg
-        className={styles.sweep}
-        width="200"
-        height="200"
-        viewBox="0 0 200 200"
-        aria-hidden="true"
-      >
-        <g transform="rotate(-21 100 100)">
-          <rect x="50" y="-60" width="23" height="290" fill="var(--livery-card)" />
-          <rect x="79" y="-60" width="9" height="290" fill="var(--livery-card)" />
-        </g>
-      </svg>
 
       <div className={styles.brand}>
         <div className={styles.brandMark}>

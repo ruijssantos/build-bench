@@ -12,8 +12,8 @@ import styles from "@/components/wishlist/Wishlist.module.css";
  *
  * It renders the *real* `PhoneHeader`/`DesktopHeader` rather than omitting
  * them: the title comes from the kit, so the header lives inside the boundary,
- * and a fallback without one let ~110px of header (sweep graphic, eyebrow,
- * title) drop in above already-painted cards when the query resolved — a CLS
+ * and a fallback without one let ~110px of header (eyebrow, title) drop in
+ * above already-painted cards when the query resolved — a CLS
  * hit on the one route this phase added, against §11's own rule. Using the
  * same components with a placeholder title reserves exactly the right height
  * by construction, rather than a guess at it. The breadcrumb is inside the
