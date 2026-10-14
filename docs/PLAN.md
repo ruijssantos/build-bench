@@ -608,6 +608,12 @@ One curve, three speeds, in `tokens.css`:
   *this opens*. Keyboard focus gets the same
   shadow. Hover rules sit inside `@media (hover: hover)` so a tap never leaves a phone
   card stuck in its hover state.
+- **Status bar** (`StatusBar`, shared by the dashboard's bench card and the kit page's
+  Status panel): one segment per step, done in `--ok`, current in `--accent`, future an
+  empty track; Built reads done. Filled segments fill left to right once on first paint
+  (`--dur-slow`, 90ms stagger). On the kit page, where status changes in place, forward
+  fills the next segment from the left, back drains it from the right in its own colour,
+  and reaching Built runs one chequered sweep. Nothing loops.
 - `prefers-reduced-motion: reduce` collapses every transition and animation to 1ms,
   globally, in `tokens.css`.
 
@@ -885,8 +891,10 @@ Bench's "Also sold as" card (§7), the chart's first UI.
 slot became this one, so the phone tab bar still holds five items plus Sign out). Five
 read-only modules over data Phases 2–5 already store, each behind its own `<Suspense>` inside
 its own `<BenchError>`: four linked stat tiles (shelf size, running low, stash, wishlist);
-**On the bench** — every `building` kit as a full card with its start date (no readiness line:
-you only start a kit once its paints are in);
+**On the bench** — every `building` kit as a full card, with a status column beside the
+details: days on the bench (counted on the viewer's own calendar, client-side, since the
+shell is prerendered) over the shared status bar. No readiness line: you only start a kit
+once its paints are in;
 **What you could start** — stashed kits whose every called-for paint is already owned, which
 is the module that makes this screen a decision rather than a readout; **Next shop run** —
 missing paints across unfinished kits rolled up with how many kits each blocks, then bottles

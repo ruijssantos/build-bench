@@ -38,6 +38,7 @@ export function KitCardBody({
   priority,
   kit,
   extra,
+  aside,
 }: {
   imageUrl: string | null;
   brand: string | null;
@@ -62,8 +63,30 @@ export function KitCardBody({
   kit?: KitRow;
   /** Extra content rendered inside the card body, after the chips — the
    * Stash card's readiness line ("Own 14 of 17 · 3 missing"). */
+  /** A second column beside the details, on a desktop — the dashboard's
+   * bench card puts its status there. Stacks under the details on a phone. */
+  aside?: ReactNode;
   extra?: ReactNode;
 }) {
+  const details = (
+    <>
+      {brand ? <span className={styles.cardBrand}>{brand}</span> : null}
+      <span className={styles.cardName}>{name ?? "Untitled kit"}</span>
+      {kitNumber ? <span className={styles.cardNumber}>{kitNumber}</span> : null}
+      {scale || category || status ? (
+        <div className={styles.cardChips}>
+          {scale ? <span className={styles.chip}>{scale}</span> : null}
+          {category ? <span className={styles.chip}>{categoryLabel(category)}</span> : null}
+          {status ? (
+            <span className={`${styles.chip} ${statusChipClass(status)}`}>{statusLabel(status)}</span>
+          ) : null}
+        </div>
+      ) : null}
+      {extra}
+      {notes ? <span className={styles.cardNotes}>{notes}</span> : null}
+    </>
+  );
+
   return (
     <>
       {kit ? (
@@ -75,20 +98,14 @@ export function KitCardBody({
         <KitArt src={imageUrl} alt="" priority={priority} />
       )}
       <div className={styles.cardBody}>
-        {brand ? <span className={styles.cardBrand}>{brand}</span> : null}
-        <span className={styles.cardName}>{name ?? "Untitled kit"}</span>
-        {kitNumber ? <span className={styles.cardNumber}>{kitNumber}</span> : null}
-        {scale || category || status ? (
-          <div className={styles.cardChips}>
-            {scale ? <span className={styles.chip}>{scale}</span> : null}
-            {category ? <span className={styles.chip}>{categoryLabel(category)}</span> : null}
-            {status ? (
-              <span className={`${styles.chip} ${statusChipClass(status)}`}>{statusLabel(status)}</span>
-            ) : null}
+        {aside ? (
+          <div className={styles.cardBodySplit}>
+            <div className={styles.cardBodyMain}>{details}</div>
+            <div className={styles.cardAside}>{aside}</div>
           </div>
-        ) : null}
-        {extra}
-        {notes ? <span className={styles.cardNotes}>{notes}</span> : null}
+        ) : (
+          details
+        )}
       </div>
     </>
   );

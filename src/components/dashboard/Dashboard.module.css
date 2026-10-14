@@ -140,6 +140,32 @@
   }
 }
 
+/* The bench card's status column (`DaysOnBench`): a big count over its unit.
+   Holds its height while the count is still blank before hydration. */
+.benchDays {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-height: 42px;
+}
+
+.benchDaysValue {
+  font-family: var(--font-display);
+  font-size: 44px;
+  font-weight: 700;
+  line-height: 0.9;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.benchDaysUnit {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+}
+
 /* One column on a phone; three equal ones on a desktop. */
 .columns {
   display: flex;

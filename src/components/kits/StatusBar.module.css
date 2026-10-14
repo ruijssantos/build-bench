@@ -1,0 +1,149 @@
+/* The status ladder as a segmented bar — see StatusBar.tsx. */
+
+.bar {
+  position: relative;
+  --segment-height: 8px;
+}
+
+.large {
+  --segment-height: 10px;
+}
+
+.steps {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.segment {
+  position: relative;
+  display: block;
+  height: var(--segment-height);
+  border-radius: 3px;
+  background: var(--card-sunken);
+  box-shadow: inset 0 0 0 1px var(--line);
+  overflow: hidden;
+}
+
+/* The fill. Scaled rather than sized so it never reflows, and filled from the
+   left; `.backwards` flips the origin so moving back drains from the right. */
+.segment::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition:
+    transform var(--dur-slow) var(--ease-out),
+    background-color var(--dur-base) var(--ease-out);
+}
+
+.backwards .segment::after {
+  transform-origin: right;
+}
+
+/* An emptied segment keeps the colour it had while it drains; the colour
+   resets only once it's empty, so a draining green step doesn't flash blue. */
+.step:not(.done):not(.current) .segment::after {
+  transition:
+    transform var(--dur-slow) var(--ease-out),
+    background-color 0s linear var(--dur-slow);
+}
+
+.done .segment::after,
+.current .segment::after {
+  transform: scaleX(1);
+  /* First paint: filled segments fill left to right, staggered. `backwards`
+     fill mode only, so once it ends the transition above owns the value. */
+  animation: fill var(--dur-slow) var(--ease-out) backwards;
+}
+
+.done .segment::after {
+  background: var(--ok);
+}
+
+.step:nth-child(2) .segment::after {
+  animation-delay: 90ms;
+}
+
+.step:nth-child(3) .segment::after {
+  animation-delay: 180ms;
+}
+
+.step:nth-child(4) .segment::after {
+  animation-delay: 270ms;
+}
+
+@keyframes fill {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+.label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--muted-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  transition: color var(--dur-base) var(--ease-out);
+}
+
+.large .label {
+  font-size: 10.5px;
+}
+
+.done .label {
+  color: var(--ok);
+}
+
+.current .label {
+  color: var(--ink);
+}
+
+/* Reaching Built: one chequered pass over the segments, then gone. */
+.sweep {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: var(--segment-height);
+  border-radius: 3px;
+  pointer-events: none;
+  background: repeating-conic-gradient(var(--ink) 0 25%, var(--card) 0 50%) 0 0 / 10px 10px;
+  mix-blend-mode: multiply;
+  opacity: 0;
+  animation: sweep 700ms var(--ease-out) 200ms;
+}
+
+@keyframes sweep {
+  0% {
+    opacity: 0;
+    clip-path: inset(0 100% 0 0);
+  }
+  20% {
+    opacity: 0.55;
+  }
+  60% {
+    clip-path: inset(0 0 0 0);
+    opacity: 0.55;
+  }
+  100% {
+    opacity: 0;
+    clip-path: inset(0 0 0 100%);
+  }
+}
