@@ -20,6 +20,7 @@ import { ManualsPanel } from "./ManualsPanel";
 import { ManualsSkeleton } from "./ManualsSkeleton";
 import { PaintsPanel } from "./PaintsPanel";
 import { PaintsSkeleton } from "./PaintsSkeleton";
+import { ReferencesPanel } from "./ReferencesPanel";
 import { ResearchPanel } from "./ResearchPanel";
 import { ResearchSkeleton } from "./ResearchSkeleton";
 import { StatusPanel } from "./StatusPanel";
@@ -92,6 +93,7 @@ export async function KitDetailSection({
         <div className={styles.detailGrid}>
           <div className={styles.railCol}>
             <IdentityPanel kit={kit} />
+            <ReferencesPanel kit={kit} />
             <StatusPanel id={kit.id} status={kit.status} />
             {wanted ? null : <DetailsPanel kit={kit} />}
           </div>

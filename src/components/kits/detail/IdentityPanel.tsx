@@ -1,8 +1,8 @@
-import { ExternalLinkIcon, PlayIcon } from "@/components/icons";
+import { ExternalLinkIcon, SearchIcon } from "@/components/icons";
 import { KitCardBody } from "@/components/kits/KitCardBody";
 import styles from "@/components/kits/Kits.module.css";
 import type { KitRow } from "@/db/repositories/kits";
-import { kitYoutubeSearchUrl } from "@/domain/kit";
+import { spotmodelSearchUrl } from "@/domain/kit-references";
 import ui from "@/styles/ui.module.css";
 
 /**
@@ -11,11 +11,12 @@ import ui from "@/styles/ui.module.css";
  * (art, brand, name, number, chips) is identical to a grid card's, just the
  * first thing on the page instead of one tile among many, and it comes with
  * the "change photo" affordance and the status chip for free. The
- * Scalemates and YouTube-search links ride in its `extra` slot — both are
- * "go elsewhere to learn more," so they sit together as one small row
- * rather than earning a section each.
+ * Scalemates page and a Spotmodel search ride in its `extra` slot: the kit's
+ * own reference page and the shop the owner buys its parts from. Build
+ * videos and photos of the real thing are the References panel's.
  */
 export function IdentityPanel({ kit }: { kit: KitRow }) {
+  const spotmodel = spotmodelSearchUrl(kit);
   return (
     <div className={styles.card}>
       <KitCardBody
@@ -35,14 +36,11 @@ export function IdentityPanel({ kit }: { kit: KitRow }) {
                 <ExternalLinkIcon size={14} /> Scalemates
               </a>
             ) : null}
-            <a
-              className={`${ui.btn} ${ui.btnSm}`}
-              href={kitYoutubeSearchUrl(kit.brand, kit.kitNumber, kit.name)}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <PlayIcon size={14} /> Search YouTube
-            </a>
+            {spotmodel ? (
+              <a className={`${ui.btn} ${ui.btnSm}`} href={spotmodel} target="_blank" rel="noopener noreferrer">
+                <SearchIcon size={14} /> Spotmodel
+              </a>
+            ) : null}
           </div>
         }
       />

@@ -541,6 +541,32 @@
   }
 }
 
+/* ---- references ---- */
+
+/* `page.itemRow`s run edge to edge of the card, as a Dashboard module's do:
+   the list cancels the card body's padding, each row restores it. The child
+   combinator is what lets the row's padding outrank `.itemRow`'s own. */
+.referenceList {
+  margin: 4px -16px -16px;
+}
+
+.referenceList > .referenceRow {
+  padding-inline: 16px;
+  color: inherit;
+  text-decoration: none;
+  transition: background-color var(--dur-fast) var(--ease-out);
+}
+
+.referenceList > .referenceRow:hover {
+  background: var(--card-sunken);
+  color: inherit;
+}
+
+.referenceIcon {
+  flex: none;
+  color: var(--icon-idle);
+}
+
 /* Edit + Remove, side by side in the detail header's trailing slot. */
 .headerActions {
   display: flex;
