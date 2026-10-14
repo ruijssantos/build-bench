@@ -21,7 +21,6 @@ import { ManualsSkeleton } from "./ManualsSkeleton";
 import { PaintsPanel } from "./PaintsPanel";
 import { PaintsSkeleton } from "./PaintsSkeleton";
 import { ReferencesPanel } from "./ReferencesPanel";
-import { StatusPanel } from "./StatusPanel";
 import { UpgradesPanel } from "./UpgradesPanel";
 import { UpgradesSkeleton } from "./UpgradesSkeleton";
 
@@ -92,9 +91,8 @@ export async function KitDetailSection({
       <div className={page.scrollArea}>
         <div className={styles.detailGrid}>
           <div className={styles.railCol}>
-            <IdentityPanel kit={kit} />
+            <IdentityPanel kit={kit} status={kit.status} />
             <ReferencesPanel kit={kit} />
-            <StatusPanel id={kit.id} status={kit.status} />
             {wanted ? null : <DetailsPanel kit={kit} />}
           </div>
           <div className={styles.mainCol}>
