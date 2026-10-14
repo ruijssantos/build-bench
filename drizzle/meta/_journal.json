@@ -64,6 +64,13 @@
       "when": 1788817719738,
       "tag": "0008_dismiss_paint_requirement",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1791993895429,
+      "tag": "0009_upgrades_replace_research",
+      "breakpoints": true
     }
   ]
 }

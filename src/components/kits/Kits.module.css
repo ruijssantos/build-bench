@@ -541,6 +541,32 @@
   }
 }
 
+/* ---- references ---- */
+
+/* `page.itemRow`s run edge to edge of the card, as a Dashboard module's do:
+   the list cancels the card body's padding, each row restores it. The child
+   combinator is what lets the row's padding outrank `.itemRow`'s own. */
+.referenceList {
+  margin: 4px -16px -16px;
+}
+
+.referenceList > .referenceRow {
+  padding-inline: 16px;
+  color: inherit;
+  text-decoration: none;
+  transition: background-color var(--dur-fast) var(--ease-out);
+}
+
+.referenceList > .referenceRow:hover {
+  background: var(--card-sunken);
+  color: inherit;
+}
+
+.referenceIcon {
+  flex: none;
+  color: var(--icon-idle);
+}
+
 /* Edit + Remove, side by side in the detail header's trailing slot. */
 .headerActions {
   display: flex;
@@ -952,51 +978,33 @@
 
 /* Sets the action apart from the suggestions it sits under — they are things
    to read, this is a thing to do. The gap has to clear `.dismissAction`'s own
-   -12px, so the number here is larger than the space it buys. */
-.dismissRow {
+   -12px, so the number here is larger than the space it buys.
+
+   The upgrades panel's action row shares it for the same reason: it sits
+   under a list of things to read. Its own class rather than a change to
+   `.manualActions`, which a manual row also uses where there's no such need. */
+.dismissRow,
+.upgradesActions {
   margin-top: 16px;
 }
 
-/* ----------------------------------------------------------------- research */
+/* ----------------------------------------------------------------- upgrades */
 
-/* The standing caveat above the claims — docs/PLAN.md §5.4. Deliberately not
+/* The standing caveat above the list — docs/PLAN.md §5.4. Deliberately not
    an info panel or a callout box: this is the frame the whole panel is read
    through, not a notice to dismiss, and a bordered box would invite exactly
    the "seen it, ignore it" reflex the rule exists to prevent. */
-.researchCaveat,
-.researchNote {
+.upgradesCaveat,
+.upgradeAdds {
   margin: 0;
   font-size: var(--text-sm);
   line-height: 1.5;
-  color: var(--muted-2);
-}
-
-.researchNote {
-  font-size: var(--text-base);
-  color: var(--ink-soft);
-}
-
-/* One claim — a fit issue or a tip. Same dashed treatment as `.unresolvedRow`,
-   which already means "this is provisional" everywhere else in the app. */
-.claimRow {
-  padding: 8px 10px;
-  border: 1px dashed var(--line-strong);
-  border-radius: var(--radius-control-sm);
-}
-
-.claimRow + .claimRow {
-  margin-top: 6px;
-}
-
-.claimText {
-  display: block;
-  font-size: var(--text-base);
-  line-height: 1.5;
-  color: var(--ink);
+  color: var(--muted);
 }
 
 .claimMeta {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 8px;
   margin-top: 5px;
@@ -1019,8 +1027,8 @@
    target, and this is the one thing on the panel a person actually needs to
    hit. The padding takes it to ~37px; the matching negative margin gives the
    space back to the layout, so a bigger target costs no extra scrolling
-   through six claims. Overlapping the claim text above it is harmless —
-   that text isn't interactive. */
+   through a dozen parts. Overlapping the text above it is harmless — that
+   text isn't interactive. */
 .claimSource {
   display: inline-flex;
   align-items: center;
@@ -1035,14 +1043,4 @@
 
 .claimSource:hover {
   text-decoration: underline;
-}
-
-/* The research panel's action row, which sits at the very bottom after either
-   the empty card or the last claim. `.cardBody`'s own 6px gap is too tight
-   against a bordered block — and every block above this one is bordered, so
-   the button reads as stuck to the card above it rather than as its own row.
-   Its own class rather than a change to `.manualActions`, which a manual row
-   also uses in a context that has no such problem. */
-.researchActions {
-  margin-top: 10px;
 }

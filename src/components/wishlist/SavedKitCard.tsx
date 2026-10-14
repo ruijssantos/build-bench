@@ -19,7 +19,7 @@ import styles from "@/components/kits/Kits.module.css";
  *
  * Like `StashKitCard`, the whole card links to the kit's page, here
  * `/wishlist/[id]`: a kit is the same object on either screen, and manuals,
- * paints and research are as useful before buying it as after. Same stretched-overlay link, for the same
+ * paints and upgrades are as useful before buying it as after. Same stretched-overlay link, for the same
  * reason (no controls nested inside an `<a>`). */
 export function SavedKitCard({
   kit,

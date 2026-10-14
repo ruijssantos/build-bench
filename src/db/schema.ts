@@ -165,12 +165,16 @@ export const researchJob = pgTable(
     id: uuid("id").primaryKey().defaultRandom(),
     kitId: integer("kit_id").references(() => kit.id), // nullable: research before buying
     query: text("query"),
-    stage: text("stage"), // resolve | investigate | extract | done | failed
+    stage: text("stage"), // investigate | extract (running) | done | failed
     stageStatus: jsonb("stage_status").$type<
       Record<string, { ok: boolean; error?: string; durationMs?: number; tokens?: number }>
     >(),
     partial: jsonb("partial").$type<Record<string, unknown>>(), // accumulated result between stages
     error: text("error"),
+    /** Every call this job made, summed as it goes — including the ones that
+     * failed, which `kit_research.usage` never sees. The cost of a run that
+     * produced nothing is still a cost (§7). */
+    usage: jsonb("usage").$type<Record<string, number>>(),
     startedAt: timestamp("started_at", { withTimezone: true }).defaultNow(),
     updatedAt: timestamp("updated_at", { withTimezone: true }).defaultNow(),
   },
@@ -186,23 +190,18 @@ export const kitResearch = pgTable(
     jobId: uuid("job_id")
       .notNull()
       .references(() => researchJob.id),
-    difficulty: text("difficulty"), // beginner | intermediate | advanced
-    difficultyNote: text("difficulty_note"),
-    fitIssues: jsonb("fit_issues").$type<
-      Array<{ issue: string; severity: string; sourceUrl: string; confidence: number }>
-    >(),
-    /** Build advice as opposed to problems — §5.1 stage C. A separate column
-     * from `fit_issues` because they are different claims: "the bonnet needs
-     * sanding to sit flush" is a defect in the kit, "let the clear coat cure
-     * 48h before polishing" is technique. Same shape, so one component renders
-     * both with the same source-link rule (§5.4). */
-    tips: jsonb("tips").$type<
-      Array<{ tip: string; category: string; sourceUrl: string; confidence: number }>
+    /** The parts made for this kit — `KitUpgrade` in `domain/kit-upgrades.ts`.
+     * The table keeps its name from when it held difficulty, fit issues and
+     * tips (dropped in 0009); renaming it buys nothing but a riskier migration. */
+    upgrades: jsonb("upgrades").$type<
+      Array<{ maker: string | null; name: string; code: string | null; kind: string; adds: string | null; sourceUrls: string[] }>
     >(),
     sources: jsonb("sources").$type<string[]>(),
     modelUsed: text("model_used"),
-    inputTokens: integer("input_tokens"),
-    outputTokens: integer("output_tokens"),
+    /** What the run that produced this cost — `RunUsage`, both stages and any
+     * retries summed. Raw counts, not dollars, so a price change re-prices
+     * history rather than leaving it frozen at an old rate. */
+    usage: jsonb("usage").$type<Record<string, number>>(),
     researchedAt: timestamp("researched_at", { withTimezone: true }).defaultNow(),
   },
   (table) => [index("kit_research_kit_idx").on(table.kitId)],

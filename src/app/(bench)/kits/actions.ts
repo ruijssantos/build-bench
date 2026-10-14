@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { after } from "next/server";
 
 import { createKitManual, deleteKitManual } from "@/db/repositories/kit-manuals";
+import { createUpgradesJob, getLatestUpgradesJob, setUpgradesJobStage } from "@/db/repositories/kit-upgrades";
 import {
   dismissPaintRequirement,
   KIT_REQUIREMENTS_TAG,
@@ -34,7 +35,9 @@ import {
   type StashStatus,
 } from "@/domain/kit";
 import type { KitCandidate } from "@/domain/kit-candidate";
+import { upgradesJobState } from "@/domain/kit-upgrades";
 import { deleteBoxArt, isStoredBlobUrl, saveBoxArt } from "@/lib/box-art";
+import { runUpgradesResearch } from "@/lib/kit-upgrades-research";
 import { readText } from "@/lib/form-text";
 import type { Result } from "@/lib/result";
 
@@ -123,6 +126,7 @@ export async function saveKitCandidate(input: KitCandidate, status: KitStatus): 
   if (artSources.some(Boolean)) {
     after(() => storeArtAfterResponse(id, artSources));
   }
+  await searchUpgradesAfterResponse(id, [brand, kitNumber, name].filter(Boolean).join(" "));
 
   return { ok: true };
 }
@@ -161,6 +165,26 @@ async function storeArtAfterResponse(id: number, sources: Array<string | null>):
 
   updateTag(KIT_TAG);
   updateTag(kitTag(id));
+}
+
+/**
+ * Every added kit gets an upgrades search — the owner's call, on condition
+ * that its cost is measured (it is: `research_job.usage`, the panel's caveat
+ * line, and one log line per run).
+ *
+ * The job row is written now, before the response, so the kit page shows
+ * "Finding upgrades…" from its very first render; the search itself runs in
+ * `after()`, inside the 300s the bench layout's `maxDuration` grants. A failed
+ * insert costs the search, never the add: the kit is saved, and its page
+ * offers "Find upgrades" by hand.
+ */
+async function searchUpgradesAfterResponse(kitId: number, query: string): Promise<void> {
+  try {
+    const jobId = await createUpgradesJob(kitId, query);
+    after(() => runUpgradesResearch(jobId, kitId));
+  } catch (error) {
+    console.error(`[kits/actions] couldn't queue the upgrades search for kit ${kitId}:`, error);
+  }
 }
 
 export interface AddManualKitInput {
@@ -227,6 +251,7 @@ export async function addManualKit(input: AddManualKitInput, status: KitStatus):
       after(() => storeArtAfterResponse(id, sources));
     }
   }
+  await searchUpgradesAfterResponse(id, [brand, kitNumber, name].filter(Boolean).join(" "));
 
   return { ok: true };
 }
@@ -573,5 +598,41 @@ export async function dismissUnresolvedPaint(kitId: number, rawLabel: string): P
 
   updateTag(kitTag(kitId));
   updateTag(KIT_REQUIREMENTS_TAG);
+  return { ok: true };
+}
+
+// ---------------------------------------------------------------------------
+// Upgrades
+// ---------------------------------------------------------------------------
+
+/**
+ * The kit page's "Find upgrades" / "Search again" / "Try again".
+ *
+ * Refuses while a search is already running — two at once would pay twice
+ * for one answer. After a failure whose stage B is already paid for, resumes
+ * that job at stage C instead of starting over (§5.1). Either way the run
+ * happens in `after()`; the caller refreshes to pick up the running state.
+ */
+export async function searchKitUpgrades(kitId: number): Promise<KitResult> {
+  if (!Number.isInteger(kitId)) return { ok: false, error: "Unknown kit." };
+
+  const kit = await findKitById(kitId);
+  if (!kit) return { ok: false, error: "That kit is no longer here." };
+
+  const job = await getLatestUpgradesJob(kitId);
+  const state = upgradesJobState(job, new Date());
+
+  if (state.state === "running") {
+    return { ok: false, error: "Already searching — the list shows here when it's done." };
+  }
+
+  if (job && state.state === "failed" && state.canResume) {
+    await setUpgradesJobStage(job.id, "extract");
+    after(() => runUpgradesResearch(job.id, kitId, true));
+    return { ok: true };
+  }
+
+  const jobId = await createUpgradesJob(kitId, [kit.brand, kit.kitNumber, kit.name].filter(Boolean).join(" "));
+  after(() => runUpgradesResearch(jobId, kitId));
   return { ok: true };
 }
