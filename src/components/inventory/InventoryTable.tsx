@@ -1,15 +1,13 @@
 import Link from "next/link";
 
-import { ChevronDownIcon, ExternalLinkIcon, SortIcon } from "@/components/icons";
+import { ChevronDownIcon, SortIcon } from "@/components/icons";
 import type { InventoryItemRow } from "@/db/repositories/inventory";
 import {
   familyChipLabel,
   formLabel,
   isInventoryForm,
   isInventoryState,
-  paintSearchUrl,
 } from "@/domain/inventory";
-import ui from "@/styles/ui.module.css";
 
 import { EditItemTrigger } from "./EditItemTrigger";
 import { LowToggle } from "./LowToggle";
@@ -23,7 +21,7 @@ import styles from "./Inventory.module.css";
  * A real `<table>` rather than a stack of divs: it is a table, it is read by
  * scanning down one column, and the header row is what makes the scan work.
  * Family — the one column that only earns its place on a desk (§4.2) — drops
- * out below 900px; what stays is the paint and the four things you tap.
+ * out below 900px; what stays is the paint and the three things you tap.
  *
  * State *is* the Low toggle. A paint on this screen is on the shelf by
  * definition, so a read-only "In Stock" chip told you nothing the row's
@@ -36,7 +34,7 @@ import styles from "./Inventory.module.css";
  *
  * A Server Component. The only client code in a row is the pencil, which owns
  * an open/closed boolean; the sort headers are links, the running-low and
- * remove controls are forms, and the find-a-shop link is a link.
+ * remove controls are forms.
  */
 export function InventoryTable({
   items,
@@ -115,7 +113,6 @@ export function InventoryTable({
                         id: item.id,
                         paintCode: item.paintCode,
                         paintName: item.paintName,
-                        paintHex: item.paintHex,
                         form: isInventoryForm(item.form) ? item.form : "bottle",
                         state: isInventoryState(item.state) ? item.state : null,
                         quantity: item.quantity ?? 1,
@@ -124,19 +121,6 @@ export function InventoryTable({
                     />
 
                     <RemoveButton id={item.id} paintCode={item.paintCode} />
-
-                    {/* Deliberately a search, not a shop: the app carries no
-                        pricing (§8) and the right shop differs per paint. */}
-                    <a
-                      className={ui.iconBtn}
-                      href={paintSearchUrl(item.paintCode, item.paintName)}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      title={`Search the web for ${item.paintCode}`}
-                      aria-label={`Search the web for ${item.paintCode} ${name}`}
-                    >
-                      <ExternalLinkIcon size={16} />
-                    </a>
                   </div>
                 </td>
               </tr>

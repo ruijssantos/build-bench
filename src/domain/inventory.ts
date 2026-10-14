@@ -107,15 +107,3 @@ export function familyChipLabel(family: string | null): string {
   return FAMILY_CHIP_LABEL[family] ?? family;
 }
 
-/**
- * The "find somewhere that sells this" link.
- *
- * A plain Google search rather than a vendor deep-link on purpose: the app
- * carries no pricing and no stock data (§8), and the shops worth checking
- * differ per paint and per week. Handing the query to a search engine is the
- * honest version of that, and it costs no integration to maintain.
- */
-export function paintSearchUrl(code: string, name: string | null): string {
-  const query = ["Tamiya", code, name ?? ""].filter(Boolean).join(" ").trim();
-  return `https://www.google.com/search?q=${encodeURIComponent(query)}`;
-}

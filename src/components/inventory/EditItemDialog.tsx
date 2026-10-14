@@ -15,14 +15,16 @@ export interface EditableItem {
   id: number;
   paintCode: string;
   paintName: string | null;
-  paintHex: string | null;
   form: InventoryForm;
   state: InventoryState | null;
   quantity: number;
   notes: string;
 }
 
-/** Edit one shelf entry. Same chunk-on-click rule as the Add dialog. */
+/** Edit one shelf entry. Same chunk-on-click rule as the Add dialog.
+ *
+ * No "Paint" field: the title already names it, and which paint an entry is
+ * for can't change here — remove it and add the other one. */
 export function EditItemDialog({ item, onClose }: { item: EditableItem; onClose: () => void }) {
   const [fields, setFields] = useState<ItemFieldsValue>({
     form: item.form,
@@ -84,21 +86,6 @@ export function EditItemDialog({ item, onClose }: { item: EditableItem; onClose:
   return (
     <Modal title={`${item.paintCode} ${item.paintName ?? ""}`.trim()} onClose={onClose}>
       <div className={styles.form}>
-        <div className={styles.field}>
-          <span className={ui.fieldLabel}>Paint</span>
-          <div className={styles.picked}>
-            <span
-              className={styles.pickedSwatch}
-              style={{ background: item.paintHex ?? "#c7c9d1" }}
-            />
-            <span className={styles.pickedCode}>{item.paintCode}</span>
-            <span className={styles.pickedName}>{item.paintName}</span>
-          </div>
-          <span className={styles.hint}>
-            The paint a shelf entry is for doesn&apos;t change — remove it and add the other one.
-          </span>
-        </div>
-
         <ItemFields value={fields} onChange={setFields} disabled={saving} />
 
         {error ? <div className={styles.error}>{error}</div> : null}

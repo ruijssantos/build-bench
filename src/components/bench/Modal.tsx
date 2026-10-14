@@ -48,6 +48,8 @@ export function Modal({
     return () => document.removeEventListener("keydown", handleKey);
   }, [onClose]);
 
+  useEffect(lockPageScroll, []);
+
   if (typeof document === "undefined") return null;
 
   return createPortal(
@@ -69,4 +71,37 @@ export function Modal({
     </div>,
     document.body,
   );
+}
+
+/** How many modals are open, so closing one of two doesn't unlock the page
+ * under the other. */
+let openModals = 0;
+
+/**
+ * Stops the page behind the dialog scrolling, on a phone and a desk alike.
+ *
+ * The document is what scrolls in this app: the bench shell is only a
+ * `min-height`, so it grows with its content. An overlay can't stop that by
+ * itself: a swipe or wheel over the scrim scrolls whatever is beneath, and
+ * one inside the dialog that runs past the end of its body chains on to the
+ * page. `overflow: hidden` on the root element stops both — with the page
+ * not scrollable there's nothing to chain to — and iOS Safari honours it on
+ * `<html>`.
+ *
+ * The padding stands in for the scrollbar the lock removes, so a desktop
+ * page doesn't jump sideways when a dialog opens.
+ */
+function lockPageScroll(): () => void {
+  const root = document.documentElement;
+  if (openModals++ === 0) {
+    const scrollbar = window.innerWidth - root.clientWidth;
+    root.style.overflow = "hidden";
+    if (scrollbar > 0) root.style.paddingRight = `${scrollbar}px`;
+  }
+  return () => {
+    if (--openModals === 0) {
+      root.style.overflow = "";
+      root.style.paddingRight = "";
+    }
+  };
 }
