@@ -3,6 +3,7 @@
 import { lazy, Suspense, useState } from "react";
 
 import { PlusIcon } from "@/components/icons";
+import ui from "@/styles/ui.module.css";
 
 import styles from "./Inventory.module.css";
 
@@ -22,12 +23,12 @@ export function AddPaintTrigger() {
     <>
       <button
         type="button"
-        className={styles.addButton}
+        className={`${ui.btn} ${ui.btnPrimary} ${styles.addButton}`}
         aria-haspopup="dialog"
         aria-expanded={open}
         onClick={() => setOpen(true)}
       >
-        <PlusIcon size={15} />
+        <PlusIcon size={16} />
         <span>Add</span>
       </button>
 

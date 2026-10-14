@@ -17,6 +17,7 @@ import { WishlistSnapshot } from "@/components/dashboard/WishlistSnapshot";
 import styles from "@/components/dashboard/Dashboard.module.css";
 import cardStyles from "@/components/wishlist/Wishlist.module.css";
 import { blobStoreOrigin } from "@/lib/box-art";
+import ui from "@/styles/ui.module.css";
 
 export const metadata = { title: "Dashboard" };
 
@@ -50,7 +51,7 @@ export default function DashboardPage() {
       <PhoneHeader title="Dashboard" />
       <DesktopHeader title="Dashboard" />
 
-      <div className={cardStyles.scrollArea}>
+      <div className={ui.scrollArea}>
         <div className={cardStyles.grid}>
           <BenchError label="The summary">
             <Suspense fallback={<StatsSkeleton />}>
@@ -60,7 +61,7 @@ export default function DashboardPage() {
 
           <section className={cardStyles.section}>
             <div className={cardStyles.sectionHead}>
-              <h2 className={cardStyles.sectionTitle}>On the bench</h2>
+              <h2 className={ui.sectionTitle}>On the bench</h2>
             </div>
             <BenchError label="On the bench">
               <Suspense fallback={<BenchSkeleton />}>
@@ -72,7 +73,7 @@ export default function DashboardPage() {
           <div className={styles.columns}>
             <section className={cardStyles.section}>
               <div className={cardStyles.sectionHead}>
-                <h2 className={cardStyles.sectionTitle}>What you could start</h2>
+                <h2 className={ui.sectionTitle}>What you could start</h2>
               </div>
               <BenchError label="Ready to build">
                 <Suspense fallback={<RowsSkeleton />}>
@@ -83,7 +84,7 @@ export default function DashboardPage() {
 
             <section className={cardStyles.section}>
               <div className={cardStyles.sectionHead}>
-                <h2 className={cardStyles.sectionTitle}>Next shop run</h2>
+                <h2 className={ui.sectionTitle}>Next shop run</h2>
               </div>
               <BenchError label="The shop list">
                 <Suspense fallback={<RowsSkeleton />}>
@@ -94,7 +95,7 @@ export default function DashboardPage() {
 
             <section className={cardStyles.section}>
               <div className={cardStyles.sectionHead}>
-                <h2 className={cardStyles.sectionTitle}>Wishlist</h2>
+                <h2 className={ui.sectionTitle}>Wishlist</h2>
               </div>
               <BenchError label="The wishlist">
                 <Suspense fallback={<RowsSkeleton />}>

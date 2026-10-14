@@ -9,18 +9,6 @@
   }
 }
 
-.scrollArea {
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
-}
-
-@media (min-width: 900px) {
-  .scrollArea {
-    overflow: visible;
-  }
-}
-
 .grid {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -103,8 +91,8 @@
   border-radius: var(--radius-card);
   padding: 28px 20px;
   text-align: center;
-  font-family: var(--font-ui);
-  font-size: 13.5px;
+  font-size: var(--text-base);
+  line-height: 1.5;
   color: var(--muted);
 }
 
@@ -125,52 +113,8 @@
   }
 }
 
-/* Links, not buttons: the acrylic/enamel choice is part of the URL now, so
-   each option is a real destination the router can prefetch. */
-.lineButton,
-.lineButton:hover {
-  display: inline-block;
-  background: transparent;
-  border: 1px solid var(--line-strong);
-  color: var(--muted);
-  border-radius: var(--radius-tile);
-  font-family: var(--font-display);
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  text-decoration: none;
-  padding: 8px 13px;
-  cursor: pointer;
-}
-
-.lineButtonActive,
-.lineButtonActive:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-  background: var(--accent-tint);
-}
-
-.notice {
-  /* Lives inside .grid now that the bench content streams into it. */
-  grid-column: 1 / -1;
-  margin: 20px;
-  background: var(--card);
-  border: 1px dashed var(--line-strong);
-  border-radius: var(--radius-card);
-  padding: 24px 20px;
-  font-family: var(--font-ui);
-  font-size: 13.5px;
-  color: var(--muted);
-}
-
-.notice code {
-  font-family: var(--font-mono);
-  background: var(--card-sunken);
-  padding: 2px 6px;
-  border-radius: 6px;
-  color: var(--ink);
-}
+/* Acrylic or enamel — `ui.pill`s. Links, not buttons: the choice is part of
+   the URL, so each option is a real destination the router can prefetch. */
 
 /* --------------------------------------------------- "Also sold as" card */
 
@@ -186,16 +130,6 @@
   display: flex;
   flex-direction: column;
   gap: 14px;
-}
-
-/* The locked module-title tier — §4.1. */
-.equivalentsTitle {
-  font-family: var(--font-display);
-  font-size: 13px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  color: var(--muted);
 }
 
 /* One column on a phone, two on a desktop: ten brands in one column would
@@ -229,8 +163,7 @@
    so a longer brand added to the seed later degrades into two lines instead
    of overlapping its own codes. */
 .equivalentsBrand {
-  font-family: var(--font-ui);
-  font-size: 12.5px;
+  font-size: var(--text-sm);
   font-weight: 700;
   color: var(--muted);
   width: 132px;
@@ -246,7 +179,7 @@
 
 .equivalentsCode {
   font-family: var(--font-mono);
-  font-size: 11.5px;
+  font-size: var(--text-xs);
   background: var(--card-sunken);
   color: var(--ink-soft);
   border-radius: var(--radius-pill);

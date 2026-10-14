@@ -8,6 +8,7 @@ import {
   type InventoryForm,
   type InventoryState,
 } from "@/domain/inventory";
+import ui from "@/styles/ui.module.css";
 
 import styles from "./InventoryForm.module.css";
 
@@ -46,7 +47,7 @@ export function ItemFields({
   return (
     <>
       <div className={styles.field}>
-        <span className={styles.label}>Form</span>
+        <span className={ui.fieldLabel}>Form</span>
         <div className={styles.segmented} role="group" aria-label="Form">
           {INVENTORY_FORMS.map((form) => (
             <button
@@ -54,7 +55,7 @@ export function ItemFields({
               type="button"
               disabled={disabled}
               aria-pressed={value.form === form}
-              className={`${styles.segment} ${value.form === form ? styles.segmentActive : ""}`}
+              className={`${ui.pill} ${value.form === form ? ui.pillOn : ""}`}
               onClick={() => set("form", form)}
             >
               {formLabelTitleCase(form)}
@@ -64,13 +65,13 @@ export function ItemFields({
       </div>
 
       <div className={styles.field}>
-        <span className={styles.label}>Bottle state</span>
+        <span className={ui.fieldLabel}>Bottle state</span>
         <div className={styles.segmented} role="group" aria-label="Bottle state">
           <button
             type="button"
             disabled={disabled}
             aria-pressed={value.state === null}
-            className={`${styles.segment} ${value.state === null ? styles.segmentActive : ""}`}
+            className={`${ui.pill} ${value.state === null ? ui.pillOn : ""}`}
             onClick={() => set("state", null)}
           >
             {stateLabel(null)}
@@ -81,7 +82,7 @@ export function ItemFields({
               type="button"
               disabled={disabled}
               aria-pressed={value.state === state}
-              className={`${styles.segment} ${value.state === state ? styles.segmentActive : ""}`}
+              className={`${ui.pill} ${value.state === state ? ui.pillOn : ""}`}
               onClick={() => set("state", state)}
             >
               {stateLabel(state)}
@@ -91,12 +92,12 @@ export function ItemFields({
       </div>
 
       <div className={styles.field}>
-        <label className={styles.label} htmlFor="inventory-quantity">
+        <label className={ui.fieldLabel} htmlFor="inventory-quantity">
           How many
         </label>
         <input
           id="inventory-quantity"
-          className={styles.input}
+          className={ui.input}
           type="number"
           inputMode="numeric"
           min="1"
@@ -108,12 +109,12 @@ export function ItemFields({
       </div>
 
       <div className={styles.field}>
-        <label className={styles.label} htmlFor="inventory-notes">
+        <label className={ui.fieldLabel} htmlFor="inventory-notes">
           Notes
         </label>
         <input
           id="inventory-notes"
-          className={styles.input}
+          className={ui.input}
           type="text"
           placeholder="Optional"
           disabled={disabled}

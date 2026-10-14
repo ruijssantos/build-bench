@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { saveRatioOverride } from "@/app/(bench)/thinner/actions";
+import ui from "@/styles/ui.module.css";
 
 import styles from "./RatioHero.module.css";
 
@@ -60,12 +61,12 @@ export function RatioOverridePanel({
     <div className={styles.editPanel}>
       <div className={styles.editRow}>
         <div className={styles.editField}>
-          <label className={styles.editLabel} htmlFor="override-paint-parts">
+          <label className={ui.fieldLabel} htmlFor="override-paint-parts">
             Paint
           </label>
           <input
             id="override-paint-parts"
-            className={styles.editInput}
+            className={ui.input}
             type="number"
             inputMode="decimal"
             min="0"
@@ -75,12 +76,12 @@ export function RatioOverridePanel({
           />
         </div>
         <div className={styles.editField}>
-          <label className={styles.editLabel} htmlFor="override-thinner-parts">
+          <label className={ui.fieldLabel} htmlFor="override-thinner-parts">
             Thinner
           </label>
           <input
             id="override-thinner-parts"
-            className={styles.editInput}
+            className={ui.input}
             type="number"
             inputMode="decimal"
             min="0"
@@ -91,12 +92,12 @@ export function RatioOverridePanel({
         </div>
       </div>
       <div className={styles.editField}>
-        <label className={styles.editLabel} htmlFor="override-reason">
+        <label className={ui.fieldLabel} htmlFor="override-reason">
           Why (optional)
         </label>
         <input
           id="override-reason"
-          className={styles.editInput}
+          className={ui.input}
           type="text"
           placeholder="e.g. ran wetter in a damp workshop"
           value={reason}
@@ -107,7 +108,7 @@ export function RatioOverridePanel({
       <div className={styles.editActions}>
         <button
           type="button"
-          className={styles.editButtonGhost}
+          className={`${ui.btn} ${ui.btnSm}`}
           onClick={onClose}
           disabled={saving}
         >
@@ -115,7 +116,7 @@ export function RatioOverridePanel({
         </button>
         <button
           type="button"
-          className={styles.editButtonPrimary}
+          className={`${ui.btn} ${ui.btnSm} ${ui.btnPrimary}`}
           onClick={handleSave}
           disabled={saving}
         >

@@ -4,8 +4,7 @@ import { useTransition } from "react";
 
 import { markKitBought } from "@/app/(bench)/wishlist/actions";
 import { CheckIcon } from "@/components/icons";
-
-import styles from "./Wishlist.module.css";
+import ui from "@/styles/ui.module.css";
 
 /**
  * The saved kit card's "Stash" tick — `status: wishlist → stash` (§3.3).
@@ -24,7 +23,7 @@ export function MarkBoughtButton({ id }: { id: number }) {
   return (
     <button
       type="button"
-      className={styles.boughtButton}
+      className={`${ui.btn} ${ui.btnSm} ${ui.btnOk}`}
       disabled={pending}
       onClick={() =>
         startTransition(async () => {
@@ -32,7 +31,7 @@ export function MarkBoughtButton({ id }: { id: number }) {
         })
       }
     >
-      <CheckIcon size={13} />
+      <CheckIcon size={14} />
       <span>{pending ? "Stashing…" : "Stash"}</span>
     </button>
   );

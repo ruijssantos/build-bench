@@ -14,6 +14,7 @@ import { SavedKitCard } from "@/components/wishlist/SavedKitCard";
 import { SavedKitsGrid } from "@/components/wishlist/SavedKitsGrid";
 import styles from "@/components/wishlist/Wishlist.module.css";
 import { blobStoreOrigin } from "@/lib/box-art";
+import ui from "@/styles/ui.module.css";
 
 export const metadata = { title: "Wishlist" };
 
@@ -41,11 +42,11 @@ export default function WishlistPage() {
       <PhoneHeader title="Wishlist" />
       <DesktopHeader title="Wishlist" />
 
-      <div className={styles.scrollArea}>
+      <div className={ui.scrollArea}>
         <div className={styles.grid}>
           <section className={styles.section}>
             <div className={styles.sectionHead}>
-              <h2 className={styles.sectionTitle}>Kits</h2>
+              <h2 className={ui.sectionTitle}>Kits</h2>
             </div>
             <KitSearch saveStatus="wishlist" homeHref="/wishlist" />
             <BenchError label="Saved kits">
@@ -65,7 +66,7 @@ export default function WishlistPage() {
 
           <section className={styles.section}>
             <div className={styles.sectionHead}>
-              <h2 className={styles.sectionTitle}>Other items</h2>
+              <h2 className={ui.sectionTitle}>Other items</h2>
               <AddItemTrigger />
             </div>
             <BenchError label="Other items">

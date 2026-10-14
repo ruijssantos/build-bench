@@ -1,19 +1,29 @@
+/* The rail's sign-out reads as one more rail item (NavRail.module.css):
+   same height, inset, type and neutral hover. */
 .button {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 11px;
   width: 100%;
-  border: none;
-  background: none;
+  height: 44px;
   padding: 0 12px;
-  height: 36px;
-  cursor: pointer;
-  color: var(--muted);
-  font-family: var(--font-ui);
-  font-size: 13px;
+  border: none;
+  border-radius: 12px;
+  background: none;
+  color: var(--muted-hover);
+  font-size: var(--text-base);
   font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+
+.button svg {
+  color: var(--icon-idle);
 }
 
 .button:hover {
+  background: var(--card-sunken);
   color: var(--ink);
 }

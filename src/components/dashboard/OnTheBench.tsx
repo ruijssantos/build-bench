@@ -4,6 +4,7 @@ import { StatusBar } from "@/components/kits/StatusBar";
 import { KitCardBody } from "@/components/wishlist/KitCardBody";
 import cardStyles from "@/components/wishlist/Wishlist.module.css";
 import { listKitsByStatuses } from "@/db/repositories/kits";
+import ui from "@/styles/ui.module.css";
 
 import styles from "./Dashboard.module.css";
 import { DaysOnBench } from "./DaysOnBench";
@@ -61,7 +62,7 @@ export async function OnTheBench() {
               priority={index === 0}
               aside={
                 <>
-                  <span className={cardStyles.moduleTitle}>On the bench</span>
+                  <span className={ui.moduleTitle}>On the bench</span>
                   {kit.startedAt ? <DaysOnBench startedAt={kit.startedAt} /> : null}
                   {/* Every kit here is `building` — that's the query. */}
                   <StatusBar status="building" />

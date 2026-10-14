@@ -10,6 +10,7 @@ import { PurchaseFields, purchaseValuesOf } from "@/components/kits/PurchaseFiel
 import type { KitRow } from "@/db/repositories/kits";
 import { categoryLabel, isStashStatus, KIT_CATEGORIES, type KitStatus } from "@/domain/kit";
 import { resizeImage } from "@/lib/resize-image";
+import ui from "@/styles/ui.module.css";
 
 import styles from "./Wishlist.module.css";
 
@@ -240,12 +241,12 @@ export function ManualKitDialog({
     <Modal title={editing ? "Edit kit" : "Add a kit by hand"} onClose={onClose}>
       <div className={formStyles.form}>
         <div className={formStyles.field}>
-          <label className={formStyles.label} htmlFor="manual-kit-brand">
+          <label className={ui.fieldLabel} htmlFor="manual-kit-brand">
             Brand
           </label>
           <input
             id="manual-kit-brand"
-            className={formStyles.input}
+            className={ui.input}
             type="text"
             placeholder="Tamiya"
             value={brand}
@@ -255,12 +256,12 @@ export function ManualKitDialog({
         </div>
 
         <div className={formStyles.field}>
-          <label className={formStyles.label} htmlFor="manual-kit-name">
+          <label className={ui.fieldLabel} htmlFor="manual-kit-name">
             Name
           </label>
           <input
             id="manual-kit-name"
-            className={formStyles.input}
+            className={ui.input}
             type="text"
             placeholder="Nissan Skyline GT-R (R34)"
             value={name}
@@ -270,12 +271,12 @@ export function ManualKitDialog({
         </div>
 
         <div className={formStyles.field}>
-          <label className={formStyles.label} htmlFor="manual-kit-number">
+          <label className={ui.fieldLabel} htmlFor="manual-kit-number">
             Kit number
           </label>
           <input
             id="manual-kit-number"
-            className={formStyles.input}
+            className={ui.input}
             type="text"
             placeholder="24345"
             value={kitNumber}
@@ -285,12 +286,12 @@ export function ManualKitDialog({
         </div>
 
         <div className={formStyles.field}>
-          <label className={formStyles.label} htmlFor="manual-kit-scale">
+          <label className={ui.fieldLabel} htmlFor="manual-kit-scale">
             Scale
           </label>
           <input
             id="manual-kit-scale"
-            className={formStyles.input}
+            className={ui.input}
             type="text"
             placeholder="1:24"
             value={scale}
@@ -300,12 +301,12 @@ export function ManualKitDialog({
         </div>
 
         <div className={formStyles.field}>
-          <label className={formStyles.label} htmlFor="manual-kit-category">
+          <label className={ui.fieldLabel} htmlFor="manual-kit-category">
             Category
           </label>
           <select
             id="manual-kit-category"
-            className={formStyles.input}
+            className={ui.input}
             value={category}
             onChange={(e) => setCategory(e.target.value)}
             disabled={saving}
@@ -319,12 +320,12 @@ export function ManualKitDialog({
         </div>
 
         <div className={formStyles.field}>
-          <label className={formStyles.label} htmlFor="manual-kit-scalemates">
+          <label className={ui.fieldLabel} htmlFor="manual-kit-scalemates">
             Link
           </label>
           <input
             id="manual-kit-scalemates"
-            className={formStyles.input}
+            className={ui.input}
             type="url"
             placeholder="Optional"
             value={scalematesUrl}
@@ -334,12 +335,12 @@ export function ManualKitDialog({
         </div>
 
         <div className={formStyles.field}>
-          <label className={formStyles.label} htmlFor="manual-kit-notes">
+          <label className={ui.fieldLabel} htmlFor="manual-kit-notes">
             Notes
           </label>
           <input
             id="manual-kit-notes"
-            className={formStyles.input}
+            className={ui.input}
             type="text"
             placeholder="Optional"
             value={notes}
@@ -354,7 +355,7 @@ export function ManualKitDialog({
             starts as whatever art the kit already has, so the field shows what
             you're replacing rather than an empty frame. */}
         <div className={formStyles.field}>
-          <label className={formStyles.label} htmlFor="manual-kit-photo">
+          <label className={ui.fieldLabel} htmlFor="manual-kit-photo">
             Photo
           </label>
             <div className={styles.photoField}>
@@ -368,7 +369,7 @@ export function ManualKitDialog({
               </div>
               <button
                 type="button"
-                className={styles.photoUploadButton}
+                className={ui.btn}
                 onClick={() => fileInputRef.current?.click()}
                 disabled={saving}
               >
@@ -377,7 +378,7 @@ export function ManualKitDialog({
               <input
                 ref={fileInputRef}
                 id="manual-kit-photo"
-                className={styles.srOnly}
+                className={ui.srOnly}
                 type="file"
                 accept="image/*"
                 onChange={(e) => void onPhotoChosen(e)}
@@ -392,7 +393,7 @@ export function ManualKitDialog({
                 rides along with the save. */}
             <div className={styles.photoUrlRow}>
               <input
-                className={formStyles.input}
+                className={ui.input}
                 type="url"
                 placeholder="…or paste an image address"
                 value={photoUrl}
@@ -403,7 +404,7 @@ export function ManualKitDialog({
               {editing && kit ? (
                 <button
                   type="button"
-                  className={styles.photoUploadButton}
+                  className={ui.btn}
                   onClick={() => void fetchFromUrl(photoUrl)}
                   disabled={saving || !photoUrl.trim()}
                 >
@@ -420,7 +421,7 @@ export function ManualKitDialog({
 
         {showPurchase ? (
           <>
-            <span className={formStyles.sectionTitle}>Purchase &amp; dates</span>
+            <span className={`${ui.moduleTitle} ${formStyles.sectionTitle}`}>Purchase &amp; dates</span>
             <PurchaseFields values={purchase} onChange={setPurchase} disabled={saving} idPrefix="manual-kit" />
           </>
         ) : null}
@@ -433,15 +434,15 @@ export function ManualKitDialog({
 
         <div className={formStyles.actions}>
           <div className={formStyles.spacer} />
-          <button type="button" className={formStyles.ghostButton} onClick={onClose} disabled={saving}>
+          <button type="button" className={ui.btn} onClick={onClose} disabled={saving}>
             Cancel
           </button>
           {promote ? (
-            <button type="button" className={formStyles.primaryButton} onClick={() => void doPromote()} disabled={saving}>
+            <button type="button" className={`${ui.btn} ${ui.btnPrimary}`} onClick={() => void doPromote()} disabled={saving}>
               {phase === "saving" ? "Promoting…" : "Promote to Stash"}
             </button>
           ) : (
-            <button type="button" className={formStyles.primaryButton} onClick={() => void save()} disabled={saving}>
+            <button type="button" className={`${ui.btn} ${ui.btnPrimary}`} onClick={() => void save()} disabled={saving}>
               {phase === "uploading"
                 ? "Uploading photo…"
                 : phase === "saving"

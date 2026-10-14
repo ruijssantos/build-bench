@@ -3,6 +3,7 @@ import { KitCardBody } from "@/components/wishlist/KitCardBody";
 import styles from "@/components/wishlist/Wishlist.module.css";
 import type { KitRow } from "@/db/repositories/kits";
 import { kitYoutubeSearchUrl } from "@/domain/kit";
+import ui from "@/styles/ui.module.css";
 
 /**
  * Identity + art + Scalemates link — docs/PLAN.md §6 Phase 4a. Reuses
@@ -30,17 +31,17 @@ export function IdentityPanel({ kit }: { kit: KitRow }) {
         extra={
           <div className={styles.kitLinks}>
             {kit.scalematesUrl ? (
-              <a className={styles.manualButton} href={kit.scalematesUrl} target="_blank" rel="noopener noreferrer">
-                <ExternalLinkIcon size={12} /> Scalemates
+              <a className={`${ui.btn} ${ui.btnSm}`} href={kit.scalematesUrl} target="_blank" rel="noopener noreferrer">
+                <ExternalLinkIcon size={14} /> Scalemates
               </a>
             ) : null}
             <a
-              className={styles.manualButton}
+              className={`${ui.btn} ${ui.btnSm}`}
               href={kitYoutubeSearchUrl(kit.brand, kit.kitNumber, kit.name)}
               target="_blank"
               rel="noopener noreferrer"
             >
-              <PlayIcon size={12} /> Search YouTube
+              <PlayIcon size={14} /> Search YouTube
             </a>
           </div>
         }

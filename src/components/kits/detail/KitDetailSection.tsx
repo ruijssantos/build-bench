@@ -10,6 +10,7 @@ import { EditKitTrigger } from "@/components/wishlist/EditKitTrigger";
 import styles from "@/components/wishlist/Wishlist.module.css";
 import { getKitById } from "@/db/repositories/kits";
 import { isKitStatus } from "@/domain/kit";
+import ui from "@/styles/ui.module.css";
 
 import { DeleteKitButton } from "./DeleteKitButton";
 import { DetailsPanel } from "./DetailsPanel";
@@ -67,7 +68,7 @@ export async function KitDetailSection({ params }: { params: Promise<{ id: strin
       <PhoneHeader title={title} trailing={headerActions} stackTrailing />
       <DesktopHeader title={title} trailing={headerActions} />
 
-      <div className={styles.scrollArea}>
+      <div className={ui.scrollArea}>
         <div className={styles.detailGrid}>
           <div className={styles.railCol}>
             <IdentityPanel kit={kit} />

@@ -21,7 +21,7 @@
   max-width: 560px;
   max-height: 88vh;
   background: var(--card);
-  border-radius: 20px 20px 0 0;
+  border-radius: var(--radius-card) var(--radius-card) 0 0;
   box-shadow: var(--shadow-hero);
   display: flex;
   flex-direction: column;
@@ -30,7 +30,7 @@
 
 @media (min-width: 900px) {
   .dialog {
-    border-radius: var(--radius-card-desktop);
+    border-radius: var(--radius-card);
     max-height: 80vh;
   }
 }
@@ -41,7 +41,9 @@
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  padding: 18px 20px;
+  /* Tighter on the right: the close button's own 36px square carries the
+     rest, so its glyph lines up with the body's 20px edge. */
+  padding: 12px 12px 12px 20px;
   border-bottom: 1px solid var(--line);
 }
 
@@ -49,30 +51,11 @@
   flex: 1;
   min-width: 0;
   font-family: var(--font-display);
-  font-size: 15px;
+  font-size: var(--text-md);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--ink);
-}
-
-.closeButton {
-  flex: none;
-  width: 30px;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 999px;
-  border: none;
-  background: none;
-  color: var(--icon-idle);
-  cursor: pointer;
-}
-
-.closeButton:hover {
-  color: var(--ink);
-  background: var(--card-sunken);
 }
 
 .body {

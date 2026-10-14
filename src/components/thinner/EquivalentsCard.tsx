@@ -1,4 +1,5 @@
 import { getEquivalentsFor } from "@/catalogue/equivalents";
+import ui from "@/styles/ui.module.css";
 
 import styles from "./ThinnerBench.module.css";
 
@@ -24,7 +25,7 @@ export function EquivalentsCard({ code }: { code: string }) {
 
   return (
     <div className={styles.equivalentsCard}>
-      <span className={styles.equivalentsTitle}>Also sold as</span>
+      <span className={ui.moduleTitle}>Also sold as</span>
       <div className={styles.equivalentsGrid}>
         {brands.map((brand) => (
           <div className={styles.equivalentsRow} key={brand.brandKey}>

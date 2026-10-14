@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 
 import { dismissUnresolvedPaint } from "@/app/(bench)/kits/actions";
 import styles from "@/components/wishlist/Wishlist.module.css";
+import ui from "@/styles/ui.module.css";
 
 /**
  * "Dismiss" on an unresolved callout.
@@ -28,7 +29,7 @@ export function DismissUnresolved({ kitId, rawLabel }: { kitId: number; rawLabel
     <>
       <button
         type="button"
-        className={`${styles.linkButton} ${styles.dismissAction}`}
+        className={`${ui.textBtn} ${styles.dismissAction}`}
         disabled={pending}
         onClick={() =>
           start(async () => {

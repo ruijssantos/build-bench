@@ -1,10 +1,12 @@
+import ui from "@/styles/ui.module.css";
+
 import { thinnerTypeLabel } from "./spec-format";
 import styles from "./SpecGrid.module.css";
 
 function Tile({ label, text }: { label: string; text: string }) {
   return (
     <div className={styles.tile}>
-      <div className={styles.label}>{label}</div>
+      <div className={ui.moduleTitle}>{label}</div>
       <div className={styles.value}>{text}</div>
     </div>
   );

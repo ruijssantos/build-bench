@@ -1,31 +1,13 @@
 .card {
   background: var(--card);
   border: 1px solid var(--line);
-  border-radius: var(--radius-tile);
+  border-radius: var(--radius-card);
   padding: 18px 20px;
 }
 
-@media (min-width: 900px) {
-  .card {
-    border-radius: 16px;
-  }
-}
-
+/* `ui.moduleTitle`, plus the gap above the list. Shared with AdditiveCard. */
 .title {
-  font-family: var(--font-display);
-  font-size: 13px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  color: var(--muted);
   margin-bottom: 12px;
-}
-
-@media (min-width: 900px) {
-  .title {
-    font-size: 15px;
-    color: var(--muted);
-  }
 }
 
 .list {
@@ -50,8 +32,7 @@
 }
 
 .text {
-  font-family: var(--font-ui);
-  font-size: 13.5px;
+  font-size: var(--text-base);
   line-height: 1.5;
   color: var(--ink-soft);
 }

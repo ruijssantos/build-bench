@@ -7,6 +7,7 @@ import { AddPaintTrigger } from "@/components/inventory/AddPaintTrigger";
 import { InventoryContent } from "@/components/inventory/InventoryContent";
 import { InventorySkeleton } from "@/components/inventory/InventorySkeleton";
 import styles from "@/components/inventory/Inventory.module.css";
+import ui from "@/styles/ui.module.css";
 
 export const metadata = { title: "Paints" };
 
@@ -29,7 +30,7 @@ export default function InventoryPage(props: PageProps<"/inventory">) {
 
       <DesktopHeader title="Paints" trailing={<AddPaintTrigger />} />
 
-      <div className={styles.scrollArea}>
+      <div className={ui.scrollArea}>
         <div className={styles.grid}>
           <BenchError label="The shelf">
             <Suspense fallback={<InventorySkeleton />}>

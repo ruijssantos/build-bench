@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "lint:css": "tsx scripts/check-design-tokens.ts",
     "typecheck": "next typegen && tsc --noEmit",
     "perf:budget": "tsx scripts/check-perf-budget.ts",
     "db:generate": "drizzle-kit generate",

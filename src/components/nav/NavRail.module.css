@@ -37,8 +37,7 @@
 }
 
 .brandName {
-  font-family: var(--font-ui);
-  font-size: 16px;
+  font-size: var(--text-lg);
   font-weight: 800;
   letter-spacing: -0.02em;
 }
@@ -59,6 +58,13 @@
   border-radius: 12px;
   text-decoration: none;
   color: var(--ink-soft);
+  transition: background-color var(--dur-fast) var(--ease-out);
+}
+
+/* A place, not a control: hover is the neutral sunken ground, one step short
+   of the accent tint the active item wears. */
+.item:hover {
+  background: var(--card-sunken);
 }
 
 .item svg {
@@ -67,13 +73,13 @@
 }
 
 .itemLabel {
-  font-family: var(--font-ui);
-  font-size: 14px;
+  font-size: var(--text-base);
   font-weight: 600;
   color: var(--muted-hover);
 }
 
-.itemActive {
+.itemActive,
+.itemActive:hover {
   background: var(--accent-tint);
 }
 

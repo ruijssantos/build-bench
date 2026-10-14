@@ -6,6 +6,7 @@ import { advanceKitStatus, regressKitStatus } from "@/app/(bench)/kits/actions";
 import { CheckIcon } from "@/components/icons";
 import { nextStashStatus, type StashStatus } from "@/domain/kit";
 import styles from "@/components/wishlist/Wishlist.module.css";
+import ui from "@/styles/ui.module.css";
 
 /**
  * The Stash card's one-tap advance — forked from the Wishlist's
@@ -28,7 +29,7 @@ export function AdvanceStatusButton({ id, status }: { id: number; status: StashS
       <>
         <button
           type="button"
-          className={`${styles.boughtButton} ${styles.boughtButtonDone}`}
+          className={`${ui.btn} ${ui.btnSm} ${ui.btnOkOn}`}
           disabled={pending}
           onClick={() =>
             startTransition(async () => {
@@ -42,7 +43,7 @@ export function AdvanceStatusButton({ id, status }: { id: number; status: StashS
             })
           }
         >
-          <CheckIcon size={13} />
+          <CheckIcon size={14} />
           <span>{pending ? "Updating…" : "Built"}</span>
         </button>
         {error ? <span className={styles.cardError}>{error}</span> : null}
@@ -59,7 +60,7 @@ export function AdvanceStatusButton({ id, status }: { id: number; status: StashS
     <>
       <button
         type="button"
-        className={styles.boughtButton}
+        className={`${ui.btn} ${ui.btnSm} ${next === "built" ? ui.btnOk : ""}`}
         disabled={pending}
         onClick={() =>
           startTransition(async () => {
@@ -77,7 +78,7 @@ export function AdvanceStatusButton({ id, status }: { id: number; status: StashS
           })
         }
       >
-        <CheckIcon size={13} />
+        <CheckIcon size={14} />
         <span>{pending ? "Updating…" : label}</span>
       </button>
       {error ? <span className={styles.cardError}>{error}</span> : null}

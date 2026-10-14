@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 
+import ui from "@/styles/ui.module.css";
+
 import styles from "./PhoneHeader.module.css";
 import { SignOutButton } from "./SignOutButton";
 
@@ -39,7 +41,7 @@ export function PhoneHeader({
 
       <div className={styles.statusBarSpace} />
 
-      <SignOutButton formClassName={styles.signOutForm} className={styles.signOut} iconOnly iconSize={18} />
+      <SignOutButton formClassName={styles.signOutForm} className={ui.iconBtn} iconOnly iconSize={16} />
 
       <div className={`${styles.row} ${stackTrailing ? styles.rowStacked : ""}`}>
         <div>

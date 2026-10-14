@@ -3,8 +3,8 @@
 import { lazy, Suspense, useState } from "react";
 
 import { PencilIcon } from "@/components/icons";
-import styles from "@/components/wishlist/Wishlist.module.css";
 import type { KitRow } from "@/db/repositories/kits";
+import ui from "@/styles/ui.module.css";
 
 const EditPurchaseDialog = lazy(() => import("./EditPurchaseDialog").then((m) => ({ default: m.EditPurchaseDialog })));
 
@@ -15,14 +15,14 @@ export function EditPurchaseTrigger({ kit }: { kit: KitRow }) {
     <>
       <button
         type="button"
-        className={styles.iconButton}
+        className={ui.iconBtn}
         aria-haspopup="dialog"
         aria-expanded={open}
         title="Edit purchase & dates"
         aria-label="Edit purchase & dates"
         onClick={() => setOpen(true)}
       >
-        <PencilIcon size={14} />
+        <PencilIcon size={16} />
       </button>
       {open ? (
         <Suspense fallback={null}>

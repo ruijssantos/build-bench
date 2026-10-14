@@ -5,6 +5,7 @@ import { useState, useTransition } from "react";
 
 import { SearchIcon } from "@/components/icons";
 import styles from "@/components/wishlist/Wishlist.module.css";
+import ui from "@/styles/ui.module.css";
 
 /**
  * Runs the two-stage research pipeline — docs/PLAN.md §5.1 stages B and C.
@@ -93,11 +94,11 @@ export function ResearchRunner({ kitId, hasResearch }: { kitId: number; hasResea
     <>
       <button
         type="button"
-        className={`${styles.boughtButton} ${styles.manualActionButton}`}
+        className={`${ui.btn} ${ui.btnSm}`}
         onClick={run}
         disabled={running}
       >
-        <SearchIcon size={13} /> {running ? "Researching…" : label}
+        <SearchIcon size={14} /> {running ? "Researching…" : label}
       </button>
 
       {running ? (

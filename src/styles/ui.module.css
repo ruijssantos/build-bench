@@ -1,0 +1,346 @@
+/*
+ * The shared control vocabulary — docs/PLAN.md §4.1 "Components". Imported as
+ * `ui` everywhere, so a button, an icon button, a filter pill or an input is
+ * one rule in one place rather than a copy per screen that drifts.
+ *
+ * Every class here sets box, type and colour only — never `flex`, `margin`,
+ * `width` (inputs aside) or `position` beyond its own hit area. A caller adds
+ * layout with a class of its own, and because the two never set the same
+ * property, which CSS module the bundler emits last cannot matter (see
+ * `.skeletonLine` in Wishlist.module.css for what that tie cost once).
+ *
+ * The rules that keep the family coherent:
+ *
+ * - Actions are rounded rectangles; pills are for filters and chips only.
+ * - Every control sits on `--card`, never transparent — on the cutting-mat
+ *   grid a transparent button shows the grid through it.
+ * - Hover on a neutral control previews the accent: border, ink and tint all
+ *   go blue. A control that carries a meaning hovers to that meaning instead
+ *   (`.btnAlert` to alert, `.btnOk` to ok). Rows and nav items, which are
+ *   places rather than controls, hover to a neutral `--card-sunken`.
+ * - A selected pill is filled accent, so hover (tint) and selected (solid)
+ *   never look alike.
+ */
+
+/* ------------------------------------------------------------- type roles */
+
+/* Section title — a screen with more than one top-level module (§4.1). */
+.sectionTitle {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+}
+
+/* Module title — the same treatment whatever the module's size. */
+.moduleTitle {
+  font-family: var(--font-display);
+  font-size: var(--text-base);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+}
+
+@media (min-width: 900px) {
+  .sectionTitle {
+    font-size: 22px;
+  }
+
+  .moduleTitle {
+    font-size: var(--text-md);
+  }
+}
+
+/* Field label — names an input, or a value in a detail row; deliberately
+   quieter than the module title above it. */
+.fieldLabel {
+  font-family: var(--font-display);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--muted-2);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ----------------------------------------------------------------- layout */
+
+/* A screen's content below its header. Scrolls on its own on a phone, where
+   the header and tab bar stay put; on a desktop the content column scrolls
+   instead (layout.module.css). */
+.scrollArea {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+@media (min-width: 900px) {
+  .scrollArea {
+    overflow: visible;
+  }
+}
+
+/* ---------------------------------------------------------------- buttons */
+
+.btn,
+.iconBtn,
+.pill {
+  font-weight: 600;
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+
+/* Secondary by default: the quiet one beside a primary, and every bordered
+   action that isn't the main thing on its surface. */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: var(--control-h);
+  padding: 0 16px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-control);
+  background: var(--card);
+  color: var(--ink-soft);
+  font-size: var(--text-base);
+}
+
+.btnSm {
+  gap: 5px;
+  height: var(--control-h-sm);
+  padding: 0 12px;
+  border-radius: var(--radius-control-sm);
+  font-size: var(--text-sm);
+}
+
+.btnLg {
+  height: var(--control-h-lg);
+  padding: 0 20px;
+}
+
+.btn:not(:disabled):hover {
+  border-color: var(--accent);
+  background: var(--accent-tint);
+  color: var(--accent);
+}
+
+/* The one action a surface exists for. */
+.btnPrimary {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--card);
+}
+
+.btnPrimary:not(:disabled):hover {
+  border-color: var(--accent-hover);
+  background: var(--accent-hover);
+  color: var(--card);
+}
+
+/* Destructive, or "running low": neutral at rest, alert on hover, and
+   `.btnAlertOn` for the armed / switched-on state. */
+.btnAlert:not(:disabled):hover,
+.btnAlertOn {
+  border-color: var(--alert);
+  background: var(--alert-tint);
+  color: var(--alert);
+}
+
+/* Heading somewhere `--ok` means — bought, built. Hover previews it;
+   `.btnOkOn` is already there. */
+.btnOk:not(:disabled):hover,
+.btnOkOn {
+  border-color: var(--ok);
+  background: var(--ok-tint);
+  color: var(--ok);
+}
+
+.btnAlertOn,
+.btnOkOn {
+  font-weight: 700;
+}
+
+.btn:disabled,
+.iconBtn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+/* An action offered inside a sentence or beside a value — no box at all.
+   Takes the size of the text around it, so it never sets its own. */
+.textBtn {
+  padding: 0;
+  border: none;
+  background: none;
+  font: inherit;
+  font-weight: 600;
+  color: var(--accent);
+  cursor: pointer;
+}
+
+.textBtn:not(:disabled):hover {
+  color: var(--accent-hover);
+  text-decoration: underline;
+}
+
+.textBtn:disabled {
+  color: var(--muted-2);
+  cursor: default;
+}
+
+/* ----------------------------------------------------------- icon buttons */
+
+/* A 36px square that answers to 44px: the `::after` carries the rest of the
+   touch target (§4.1) without the glyph looking oversized or the row
+   growing to fit it. Every icon inside one is 16px. */
+.iconBtn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-control-sm);
+  background: none;
+  color: var(--icon-idle);
+}
+
+.iconBtn::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+}
+
+.iconBtn:not(:disabled):hover {
+  background: var(--accent-tint);
+  color: var(--accent);
+}
+
+.iconBtnAlert:not(:disabled):hover {
+  background: var(--alert-tint);
+  color: var(--alert);
+}
+
+/* Over box art, where an un-grounded glyph would vanish into the picture. */
+.iconBtnScrim,
+.iconBtnScrim:not(:disabled):hover {
+  color: var(--card);
+}
+
+.iconBtnScrim {
+  background: var(--scrim-strong);
+}
+
+.iconBtnScrim:not(:disabled):hover {
+  background: var(--scrim-stronger);
+}
+
+/* ------------------------------------------------------------------ pills */
+
+/* Filters and single-choice options — the shelf's families, the Stash's
+   statuses, acrylic or enamel, a form's segmented choice. */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: var(--control-h-sm);
+  padding: 0 14px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-pill);
+  background: var(--card);
+  color: var(--ink-soft);
+  font-size: var(--text-sm);
+}
+
+.pill:hover {
+  border-color: var(--accent);
+  background: var(--accent-tint);
+  color: var(--accent);
+}
+
+.pillOn,
+.pillOn:hover {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--card);
+  font-weight: 700;
+}
+
+/* "Running low" — the one filter that means act on this (§4.1). */
+.pillAlert,
+.pillAlert:hover {
+  border-color: var(--alert);
+  color: var(--alert);
+}
+
+.pillAlert:hover {
+  background: var(--alert-tint);
+}
+
+.pillAlert.pillOn {
+  background: var(--alert);
+  color: var(--card);
+}
+
+/* ----------------------------------------------------------------- inputs */
+
+.input {
+  width: 100%;
+  height: var(--control-h);
+  padding: 0 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-control);
+  background: var(--card);
+  font-size: 16px;
+  color: var(--ink);
+  transition:
+    border-color var(--dur-fast) var(--ease-out),
+    outline-color var(--dur-fast) var(--ease-out);
+}
+
+@media (min-width: 900px) {
+  .input {
+    font-size: var(--text-base);
+  }
+}
+
+.input::placeholder {
+  color: var(--muted-2);
+}
+
+/* The halo, shared with `SearchField` and the paint picker's box: the border
+   turns accent and a soft tint rings it — focus, not elevation. */
+.input:focus,
+.inputFocus:focus-within {
+  outline: 3px solid var(--accent-tint);
+  outline-offset: 0;
+  border-color: var(--accent);
+}
+
+/* A `type="date"` input's "/" separators aren't covered by the browser's own
+   dimming of an unfilled month/day/year segment, so an empty field read as
+   light digits around darker slashes. `GrayText` is the system colour the
+   browser paints those segments with, so the two read as one. */
+.input::-webkit-datetime-edit-text {
+  color: GrayText;
+}

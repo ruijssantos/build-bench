@@ -9,6 +9,7 @@ import { KitSearch } from "@/components/wishlist/KitSearch";
 import styles from "@/components/wishlist/Wishlist.module.css";
 import { StashSection } from "@/components/kits/StashSection";
 import { blobStoreOrigin } from "@/lib/box-art";
+import ui from "@/styles/ui.module.css";
 
 export const metadata = { title: "Stash" };
 
@@ -37,7 +38,7 @@ export default function KitsPage(props: PageProps<"/kits">) {
       <PhoneHeader title="Stash" />
       <DesktopHeader title="Stash" />
 
-      <div className={styles.scrollArea}>
+      <div className={ui.scrollArea}>
         <div className={styles.grid}>
           <KitSearch saveStatus="stash" homeHref="/kits" />
           <BenchError label="Stash">

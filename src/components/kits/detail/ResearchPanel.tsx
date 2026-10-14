@@ -5,6 +5,7 @@ import { getKitResearch } from "@/db/repositories/kit-research";
 import type { KitRow } from "@/db/repositories/kits";
 import { formatTimestampDate } from "@/domain/dates";
 import { difficultyRating, severityLabel, sourceHost, tipCategoryLabel } from "@/domain/kit-research";
+import ui from "@/styles/ui.module.css";
 
 import { ResearchRunner } from "./ResearchRunner";
 
@@ -29,7 +30,7 @@ export async function ResearchPanel({ kit }: { kit: KitRow }) {
     return (
       <div className={styles.card}>
         <div className={styles.cardBody}>
-          <span className={styles.moduleTitle}>Research</span>
+          <span className={ui.moduleTitle}>Research</span>
           <div className={inventoryStyles.emptyCard}>
             Search the web for what builders say about this kit — difficulty, fit issues to expect,
             and tips. Takes a couple of minutes and costs a little.
@@ -50,7 +51,7 @@ export async function ResearchPanel({ kit }: { kit: KitRow }) {
     <div className={styles.card}>
       <div className={styles.cardBody}>
         <div className={styles.subHead}>
-          <span className={styles.moduleTitle}>Research</span>
+          <span className={ui.moduleTitle}>Research</span>
           {/* A chip, in the same language as the kit's own scale and category
               — it is an attribute of the kit. Absent entirely when there is no
               difficulty or nothing was cited, rather than shown with no
@@ -75,7 +76,7 @@ export async function ResearchPanel({ kit }: { kit: KitRow }) {
           <div className={styles.paintBucket}>
             <div className={styles.bucketHead}>
               <span className={`${styles.bucketDot} ${styles.bucketDotMissing}`} />
-              <span className={styles.moduleTitle}>Watch out for ({issues.length})</span>
+              <span className={ui.moduleTitle}>Watch out for ({issues.length})</span>
             </div>
             {issues.map((issue) => (
               <div key={issue.sourceUrl + issue.issue} className={styles.claimRow}>
@@ -100,7 +101,7 @@ export async function ResearchPanel({ kit }: { kit: KitRow }) {
           <div className={styles.paintBucket}>
             <div className={styles.bucketHead}>
               <span className={`${styles.bucketDot} ${styles.bucketDotOwned}`} />
-              <span className={styles.moduleTitle}>Tips ({tips.length})</span>
+              <span className={ui.moduleTitle}>Tips ({tips.length})</span>
             </div>
             {tips.map((tip) => (
               <div key={tip.sourceUrl + tip.tip} className={styles.claimRow}>

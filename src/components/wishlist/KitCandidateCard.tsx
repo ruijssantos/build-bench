@@ -6,6 +6,7 @@ import { promoteKitToStash, saveKitCandidate } from "@/app/(bench)/kits/actions"
 import { CheckIcon } from "@/components/icons";
 import type { KitStatus } from "@/domain/kit";
 import type { KitCandidate } from "@/domain/kit-candidate";
+import ui from "@/styles/ui.module.css";
 
 import { KitCardBody } from "./KitCardBody";
 import styles from "./Wishlist.module.css";
@@ -79,14 +80,14 @@ export function KitCandidateCard({ candidate, status }: { candidate: KitCandidat
       <div className={styles.cardActions}>
         {saved ? (
           <span className={styles.savedLabel}>
-            <CheckIcon size={12} /> Saved
+            <CheckIcon size={16} /> Saved
           </span>
         ) : promote ? (
-          <button type="button" className={styles.saveButton} onClick={() => void doPromote()} disabled={saving}>
+          <button type="button" className={`${ui.btn} ${ui.btnPrimary} ${styles.saveButton}`} onClick={() => void doPromote()} disabled={saving}>
             {saving ? "Promoting…" : "Promote to Stash"}
           </button>
         ) : (
-          <button type="button" className={styles.saveButton} onClick={() => void save()} disabled={saving}>
+          <button type="button" className={`${ui.btn} ${ui.btnPrimary} ${styles.saveButton}`} onClick={() => void save()} disabled={saving}>
             {saving ? "Saving…" : status === "wishlist" ? "Save to wishlist" : "Save to stash"}
           </button>
         )}

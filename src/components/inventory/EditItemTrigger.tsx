@@ -3,9 +3,9 @@
 import { lazy, Suspense, useState } from "react";
 
 import { PencilIcon } from "@/components/icons";
+import ui from "@/styles/ui.module.css";
 
 import type { EditableItem } from "./EditItemDialog";
-import styles from "./Inventory.module.css";
 
 const EditItemDialog = lazy(() =>
   import("./EditItemDialog").then((m) => ({ default: m.EditItemDialog })),
@@ -24,7 +24,7 @@ export function EditItemTrigger({ item }: { item: EditableItem }) {
     <>
       <button
         type="button"
-        className={styles.iconButton}
+        className={ui.iconBtn}
         aria-haspopup="dialog"
         aria-expanded={open}
         aria-label={`Edit ${item.paintCode}`}

@@ -4,6 +4,7 @@ import { forwardRef } from "react";
 import type { InputHTMLAttributes } from "react";
 
 import { SearchIcon, XIcon } from "@/components/icons";
+import ui from "@/styles/ui.module.css";
 
 import styles from "./SearchField.module.css";
 
@@ -38,9 +39,9 @@ export const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(functi
   ref,
 ) {
   return (
-    <div className={styles.box}>
+    <div className={`${styles.box} ${ui.inputFocus}`}>
       <SearchIcon size={19} className={styles.icon} />
-      <label htmlFor={id} className={styles.srOnly}>
+      <label htmlFor={id} className={ui.srOnly}>
         {label}
       </label>
       <input
@@ -56,7 +57,7 @@ export const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(functi
       {onClear && value ? (
         <button
           type="button"
-          className={styles.clearButton}
+          className={`${ui.iconBtn} ${styles.clearButton}`}
           aria-label="Clear search"
           onMouseDown={(e) => {
             // preventDefault, not onClick: keeps focus on the input rather

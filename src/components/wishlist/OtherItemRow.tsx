@@ -1,6 +1,7 @@
 import { removeWishlistItemAction, toggleWishlistItemBought } from "@/app/(bench)/wishlist/actions";
 import { CheckIcon, ExternalLinkIcon, TrashIcon } from "@/components/icons";
 import type { WishlistItemRow } from "@/db/repositories/wishlist-items";
+import ui from "@/styles/ui.module.css";
 
 import { EditWishlistItemTrigger } from "./EditWishlistItemTrigger";
 import styles from "./Wishlist.module.css";
@@ -54,11 +55,11 @@ export function OtherItemRow({ item }: { item: WishlistItemRow }) {
         <input type="hidden" name="id" value={item.id} />
         <button
           type="submit"
-          className={styles.iconButton}
+          className={`${ui.iconBtn} ${ui.iconBtnAlert}`}
           title={`Remove ${item.title}`}
           aria-label={`Remove ${item.title}`}
         >
-          <TrashIcon size={15} />
+          <TrashIcon size={16} />
         </button>
       </form>
     </div>

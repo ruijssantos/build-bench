@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import inventoryStyles from "@/components/inventory/Inventory.module.css";
 import { STASH_DISPLAY_ORDER, statusLabel } from "@/domain/kit";
+import ui from "@/styles/ui.module.css";
 
 import { kitsHref, type KitsStatusFilter } from "./kits-params";
 
@@ -28,7 +29,7 @@ export function StatusFilterPills({
         href={kitsHref(null)}
         scroll={false}
         aria-current={active === null ? "page" : undefined}
-        className={`${inventoryStyles.filterPill} ${active === null ? inventoryStyles.filterPillActive : ""}`}
+        className={`${ui.pill} ${active === null ? ui.pillOn : ""}`}
       >
         All ({total})
       </Link>
@@ -38,7 +39,7 @@ export function StatusFilterPills({
           href={kitsHref(status)}
           scroll={false}
           aria-current={active === status ? "page" : undefined}
-          className={`${inventoryStyles.filterPill} ${active === status ? inventoryStyles.filterPillActive : ""}`}
+          className={`${ui.pill} ${active === status ? ui.pillOn : ""}`}
         >
           {statusLabel(status)} ({counts[status] ?? 0})
         </Link>
