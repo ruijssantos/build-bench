@@ -8,6 +8,7 @@ import { TrashIcon } from "@/components/icons";
 import type { InventoryForm, InventoryState } from "@/domain/inventory";
 import ui from "@/styles/ui.module.css";
 
+import shelf from "./Inventory.module.css";
 import { ItemFields, type ItemFieldsValue } from "./ItemFields";
 import styles from "@/components/bench/Form.module.css";
 
@@ -15,6 +16,7 @@ export interface EditableItem {
   id: number;
   paintCode: string;
   paintName: string | null;
+  paintHex: string | null;
   form: InventoryForm;
   state: InventoryState | null;
   quantity: number;
@@ -23,8 +25,8 @@ export interface EditableItem {
 
 /** Edit one shelf entry. Same chunk-on-click rule as the Add dialog.
  *
- * No "Paint" field: the title already names it, and which paint an entry is
- * for can't change here — remove it and add the other one. */
+ * No "Paint" field: the title already names it, beside its swatch, and which
+ * paint an entry is for can't change here — remove it and add the other one. */
 export function EditItemDialog({ item, onClose }: { item: EditableItem; onClose: () => void }) {
   const [fields, setFields] = useState<ItemFieldsValue>({
     form: item.form,
@@ -84,7 +86,12 @@ export function EditItemDialog({ item, onClose }: { item: EditableItem; onClose:
   }
 
   return (
-    <Modal title={`${item.paintCode} ${item.paintName ?? ""}`.trim()} onClose={onClose}>
+    <Modal
+      title={`${item.paintCode} ${item.paintName ?? ""}`.trim()}
+      // The shelf row's own swatch, so the dialog reads as that row opened up.
+      lead={<span className={shelf.cellSwatch} style={{ background: item.paintHex ?? "#c7c9d1" }} aria-hidden="true" />}
+      onClose={onClose}
+    >
       <div className={styles.form}>
         <ItemFields value={fields} onChange={setFields} disabled={saving} />
 

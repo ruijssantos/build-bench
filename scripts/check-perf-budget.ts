@@ -61,8 +61,15 @@ const BUDGETS = {
    * rail block, phone pill and dry-tip modal it replaces were deleted in the
    * same change, so that is the net cost. Collapsing the repeated label and
    * card declarations into shared selectors was measured and saved nothing
-   * gzipped. */
-  cssGzip: 12.0 * 1024,
+   * gzipped.
+   *
+   * 12.25 kB for dialog motion (+0.23 kB measured, ~12.22 kB after): every
+   * dialog slides up as a bottom sheet on a phone and back down on close,
+   * and lifts in on a desk (`Modal.module.css`). Four keyframes and the
+   * curves; folding the phone and desk keyframes into one pair driven by
+   * custom properties was measured and saved nothing gzipped. Every bench
+   * screen pays it because a dialog's styles ship in the shared bundle. */
+  cssGzip: 12.25 * 1024,
 };
 
 interface Failure {

@@ -291,7 +291,7 @@ shell and accept the gap.
 | `/wishlist` initial JS, gzipped | 150 kB | 149.4 kB |
 | `/thinner` static shell, gzipped | 8 kB | 3.4 kB |
 | `/wishlist` static shell, gzipped | 8 kB | 3.3 kB |
-| CSS, gzipped (shared by both) | 12.0 kB | 11.7 kB |
+| CSS, gzipped (shared by both) | 12.25 kB | 12.2 kB |
 | Paint catalogue in an eagerly-loaded chunk | never | behind its dynamic import |
 | `images.remotePatterns` covers the Blob store | required | configured |
 | Every app route ships a static shell | all 7 | all 7 |
@@ -359,6 +359,13 @@ rail block, phone pill and dry-tip modal it replaces were deleted in the same
 change, so +0.9 kB is the net cost. Folding the repeated label and card
 declarations into shared selectors was measured and saved nothing gzipped,
 because gzip had already compressed the repetition away.
+
+Dialog motion moved it to 12.25 kB (+0.23 kB, to ~12.22 kB). Every dialog now
+rises as a bottom sheet on a phone and slides back down on close, and lifts in
+on a desk (`Modal.module.css`). That's four keyframes and their curves, and every
+bench screen pays for them because a dialog's styles ship in the shared bundle.
+Folding the phone and desk keyframes into one pair driven by custom properties
+was measured and saved nothing gzipped.
 
 ## 12. Checklist for a new screen
 

@@ -113,6 +113,7 @@ export function InventoryTable({
                         id: item.id,
                         paintCode: item.paintCode,
                         paintName: item.paintName,
+                        paintHex: item.paintHex,
                         form: isInventoryForm(item.form) ? item.form : "bottle",
                         state: isInventoryState(item.state) ? item.state : null,
                         quantity: item.quantity ?? 1,

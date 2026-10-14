@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect } from "react";
+import { use, useEffect } from "react";
 import { createPortal } from "react-dom";
 import type { ReactNode } from "react";
 
 import { XIcon } from "@/components/icons";
 import ui from "@/styles/ui.module.css";
 
+import { ModalExit } from "./modal-exit";
 import styles from "./Modal.module.css";
 
 /**
@@ -33,10 +34,14 @@ import styles from "./Modal.module.css";
  */
 export function Modal({
   title,
+  lead,
   onClose,
   children,
 }: {
   title: string;
+  /** Shown before the title — a paint's colour swatch, say. The title stays
+   * a string so it can name the dialog for a screen reader. */
+  lead?: ReactNode;
   onClose: () => void;
   children: ReactNode;
 }) {
@@ -50,17 +55,29 @@ export function Modal({
 
   useEffect(lockPageScroll, []);
 
+  const exit = use(ModalExit);
+
   if (typeof document === "undefined") return null;
 
   return createPortal(
     <div
-      className={styles.overlay}
+      className={`${styles.overlay} ${exit?.closing ? styles.closing : ""}`}
       onMouseDown={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className={styles.dialog} role="dialog" aria-modal="true" aria-label={title}>
+      <div
+        className={styles.dialog}
+        role="dialog"
+        aria-modal="true"
+        aria-label={title}
+        onAnimationEnd={(e) => {
+          // Only the dialog's own exit — a spinner inside it animates too.
+          if (exit?.closing && e.target === e.currentTarget) exit.exited();
+        }}
+      >
         <div className={styles.header}>
+          {lead}
           <span className={styles.title}>{title}</span>
           <button type="button" className={ui.iconBtn} aria-label="Close" onClick={onClose}>
             <XIcon size={16} />
