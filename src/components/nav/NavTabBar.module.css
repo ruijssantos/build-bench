@@ -43,8 +43,7 @@
 }
 
 .itemLabel {
-  font-family: var(--font-ui);
-  font-size: 10.5px;
+  font-size: var(--text-2xs);
   font-weight: 600;
   color: var(--icon-idle);
 }

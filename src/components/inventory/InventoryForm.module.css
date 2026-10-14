@@ -1,5 +1,7 @@
-/* The Add and Edit dialogs. Loaded on click, so none of this reaches a
-   browser that never opens one. */
+/* The Add and Edit dialogs' layout. Labels, inputs, choices and buttons are
+   the shared controls in `src/styles/ui.module.css` — `ui.fieldLabel`,
+   `ui.input`, `ui.pill`, `ui.btn` — so a dialog's Save looks like every
+   other Save in the app. */
 
 .form {
   display: flex;
@@ -13,103 +15,32 @@
   gap: 6px;
 }
 
-/* Field label — §4.1: deliberately quieter than a module title, because it
-   names an input inside a module rather than the module itself. */
-.label {
-  font-family: var(--font-display);
-  font-size: 12.5px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--muted-2);
-}
-
-.input {
-  width: 100%;
-  height: 42px;
-  padding: 0 12px;
-  border: 1px solid var(--line-strong);
-  border-radius: var(--radius-tile);
-  background: var(--card);
-  font-family: var(--font-ui);
-  font-size: 14px;
-  color: var(--ink);
-}
-
-.input:focus {
-  outline: none;
-  border-color: var(--accent);
-}
-
-/* A `type="date"` input's "/" separators aren't covered by the browser's own
-   dimming of an unfilled month/day/year segment — those go a lighter grey
-   on their own, the separators between them just inherit `.input`'s regular
-   ink colour, so an empty field reads as light digits around noticeably
-   darker slashes. `GrayText` is the system colour the browser itself already
-   paints those unfilled segments with, so matching the separator to it (not
-   to `--muted`, a different, warmer grey) is what actually makes the two
-   read as one colour, and it does so without touching the segments
-   themselves (which would mean fighting the browser's own fill-state logic
-   to avoid a value that's actually been entered rendering grey). */
-.input::-webkit-datetime-edit-text {
-  color: GrayText;
-}
-
 .segmented {
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
 }
 
-.segment {
-  flex: none;
-  height: 38px;
-  padding: 0 13px;
-  border: 1px solid var(--line-strong);
-  border-radius: var(--radius-tile);
-  background: var(--card);
-  font-family: var(--font-ui);
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--muted);
-  cursor: pointer;
-}
-
-.segmentActive {
-  border-color: var(--accent);
-  background: var(--accent-tint);
-  color: var(--accent);
-  font-weight: 700;
-}
-
 /* A heading splitting a long form into parts (the kit dialog's Purchase &
-   dates) — the module-title treatment, over a hairline. */
+   dates) — `ui.moduleTitle` over a hairline; this is only the hairline. */
 .sectionTitle {
   margin-top: 4px;
   padding-top: 18px;
   border-top: 1px solid var(--line);
-  font-family: var(--font-display);
-  font-size: 13px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.14em;
-  color: var(--muted);
 }
 
 .hint {
-  font-family: var(--font-ui);
-  font-size: 11.5px;
+  font-size: var(--text-xs);
   font-weight: 500;
   color: var(--muted-2);
 }
 
 .error {
-  font-family: var(--font-ui);
-  font-size: 12.5px;
+  font-size: var(--text-sm);
   font-weight: 600;
   color: var(--alert);
   background: var(--alert-tint);
-  border-radius: 10px;
+  border-radius: var(--radius-control-sm);
   padding: 9px 12px;
 }
 
@@ -124,110 +55,23 @@
   flex: 1;
 }
 
-.ghostButton {
-  height: 42px;
-  padding: 0 16px;
-  border: 1px solid var(--line-strong);
-  border-radius: var(--radius-tile);
-  background: none;
-  font-family: var(--font-ui);
-  font-size: 13.5px;
-  font-weight: 600;
-  color: var(--muted);
-  cursor: pointer;
-}
-
-/* Every dialog's "Cancel" and the status stepper's "Move back to …" share
-   this class, and none of them had any hover feedback at all — the resting
-   state is already subtle (a thin border on `--muted` text), so with no
-   hover it just looks inert. Same accent treatment every bordered
-   "default" button in the app hovers to (`.editButtonHover`,
-   `.manualActionButton` in Wishlist.module.css, `.iconButton` below) — one
-   hover rule for the whole family, not a different shade per button. */
-.ghostButton:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-  background: var(--accent-tint);
-}
-
-.primaryButton {
-  height: 42px;
-  padding: 0 18px;
-  border: none;
-  border-radius: var(--radius-tile);
-  background: var(--accent);
-  color: var(--bg);
-  font-family: var(--font-ui);
-  font-size: 13.5px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.primaryButton:disabled,
-.ghostButton:disabled {
-  opacity: 0.55;
-  cursor: default;
-}
-
-.deleteButton {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  height: 42px;
-  padding: 0 13px;
-  border: 1px solid var(--line-strong);
-  border-radius: var(--radius-tile);
-  background: none;
-  font-family: var(--font-ui);
-  font-size: 13.5px;
-  font-weight: 600;
-  color: var(--muted);
-  cursor: pointer;
-}
-
-.deleteButton:hover {
-  border-color: var(--alert);
-  color: var(--alert);
-}
-
-.deleteArmed {
-  border-color: var(--alert);
-  background: var(--alert-tint);
-  color: var(--alert);
-  font-weight: 700;
-}
-
-/* Reuses `.deleteButton`'s box entirely — its resting state (line-strong
-   border, muted ink) is already the right look for Edit; only the hover
-   colour needs to differ (accent, not alert), which this overrides when
-   paired with `.deleteButton` on the same element. Same accent/tint pair
-   as `.ghostButton:hover` and `.iconButton:hover` — one hover treatment
-   for every bordered "default" button, not a shade picked per caller. */
-.editButtonHover:hover {
-  border-color: var(--accent);
-  color: var(--accent);
-  background: var(--accent-tint);
-}
-
 /* ------------------------------------------------------------ paint picker */
 
 .pickerWrap {
   position: relative;
 }
 
+/* `ui.input`'s box around an icon and a bare input — focus is
+   `ui.inputFocus`, the same halo. */
 .pickerBox {
   display: flex;
   align-items: center;
   gap: 10px;
-  height: 42px;
+  height: var(--control-h);
   padding: 0 12px;
   border: 1px solid var(--line-strong);
-  border-radius: var(--radius-tile);
+  border-radius: var(--radius-control);
   background: var(--card);
-}
-
-.pickerBox:focus-within {
-  border-color: var(--accent);
 }
 
 .pickerIcon {
@@ -241,9 +85,14 @@
   border: none;
   background: none;
   outline: none;
-  font-family: var(--font-ui);
-  font-size: 14px;
+  font-size: 16px;
   color: var(--ink);
+}
+
+@media (min-width: 900px) {
+  .pickerInput {
+    font-size: var(--text-base);
+  }
 }
 
 .pickerHits {
@@ -273,13 +122,12 @@
 }
 
 .pickerHit:hover {
-  background: var(--accent-tint);
+  background: var(--card-sunken);
 }
 
 .pickerEmpty {
   padding: 10px;
-  font-family: var(--font-ui);
-  font-size: 13px;
+  font-size: var(--text-sm);
   color: var(--muted);
 }
 
@@ -293,29 +141,31 @@
 
 .pickerHitCode {
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: var(--text-xs);
   color: var(--muted-2);
   flex: none;
 }
 
 .pickerHitName {
-  font-family: var(--font-ui);
-  font-size: 13.5px;
+  font-size: var(--text-base);
   font-weight: 600;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
+/* The chosen paint, in the input's box. Its font size is what `Change`
+   (`ui.textBtn`, which inherits) reads at. */
 .picked {
   display: flex;
   align-items: center;
   gap: 10px;
-  height: 42px;
+  height: var(--control-h);
   padding: 0 12px;
   border: 1px solid var(--line-strong);
-  border-radius: var(--radius-tile);
+  border-radius: var(--radius-control);
   background: var(--card-sunken);
+  font-size: var(--text-sm);
 }
 
 .pickedSwatch {
@@ -328,14 +178,13 @@
 
 .pickedCode {
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: var(--text-xs);
   color: var(--muted-2);
   flex: none;
 }
 
 .pickedName {
-  font-family: var(--font-ui);
-  font-size: 14px;
+  font-size: var(--text-base);
   font-weight: 700;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -345,11 +194,4 @@
 .pickedChange {
   margin-left: auto;
   flex: none;
-  border: none;
-  background: none;
-  font-family: var(--font-ui);
-  font-size: 12.5px;
-  font-weight: 700;
-  color: var(--accent);
-  cursor: pointer;
 }

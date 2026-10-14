@@ -1,6 +1,7 @@
 import { StatusBar } from "@/components/kits/StatusBar";
 import styles from "@/components/wishlist/Wishlist.module.css";
 import type { KitStatus } from "@/domain/kit";
+import ui from "@/styles/ui.module.css";
 
 import { StatusActions } from "./StatusActions";
 
@@ -15,7 +16,7 @@ export function StatusPanel({ id, status }: { id: number; status: KitStatus }) {
   return (
     <div className={styles.card}>
       <div className={`${styles.cardBody} ${styles.statusBody}`}>
-        <span className={styles.moduleTitle}>Status</span>
+        <span className={ui.moduleTitle}>Status</span>
         <StatusBar status={status} size="large" />
         <StatusActions id={id} status={status} />
       </div>

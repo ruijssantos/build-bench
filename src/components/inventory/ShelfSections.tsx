@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import type { InventoryItemRow } from "@/db/repositories/inventory";
 import { familyChipLabel } from "@/domain/inventory";
+import ui from "@/styles/ui.module.css";
 
 import { inventoryHref, type InventoryParams } from "./inventory-params";
 import styles from "./Inventory.module.css";
@@ -35,7 +36,7 @@ export function ShelfPalette({
   return (
     <div className={styles.shelfCard}>
       <div className={styles.shelfHead}>
-        <span className={styles.moduleTitle}>Your shelf</span>
+        <span className={ui.moduleTitle}>Your shelf</span>
         <span className={styles.shelfCount}>
           {filtered ? `${visible.length} of ${items.length}` : `${items.length} paints`}
         </span>
@@ -99,7 +100,7 @@ export function FilterPills({
         href={inventoryHref(params, { family: null })}
         scroll={false}
         aria-current={params.family === null ? "page" : undefined}
-        className={`${styles.filterPill} ${params.family === null ? styles.filterPillActive : ""}`}
+        className={`${ui.pill} ${params.family === null ? ui.pillOn : ""}`}
       >
         All ({total})
       </Link>
@@ -108,7 +109,7 @@ export function FilterPills({
         href={inventoryHref(params, { low: !params.low })}
         scroll={false}
         aria-current={params.low ? "page" : undefined}
-        className={`${styles.filterPillAlert} ${params.low ? styles.filterPillAlertActive : ""}`}
+        className={`${ui.pill} ${ui.pillAlert} ${params.low ? ui.pillOn : ""}`}
       >
         Running low ({lowCount})
       </Link>
@@ -119,7 +120,7 @@ export function FilterPills({
           href={inventoryHref(params, { family })}
           scroll={false}
           aria-current={params.family === family ? "page" : undefined}
-          className={`${styles.filterPill} ${params.family === family ? styles.filterPillActive : ""}`}
+          className={`${ui.pill} ${params.family === family ? ui.pillOn : ""}`}
         >
           {familyChipLabel(family)} ({count})
         </Link>

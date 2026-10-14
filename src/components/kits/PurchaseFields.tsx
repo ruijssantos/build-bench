@@ -2,6 +2,7 @@
 
 import formStyles from "@/components/inventory/InventoryForm.module.css";
 import type { KitRow } from "@/db/repositories/kits";
+import ui from "@/styles/ui.module.css";
 
 /** The four Purchase & dates values as the form holds them: plain strings,
  * `<input type="date">` values being "YYYY-MM-DD" or "" for unset. */
@@ -46,12 +47,12 @@ export function PurchaseFields({
   return (
     <>
       <div className={formStyles.field}>
-        <label className={formStyles.label} htmlFor={`${idPrefix}-purchased-from`}>
+        <label className={ui.fieldLabel} htmlFor={`${idPrefix}-purchased-from`}>
           Purchased from
         </label>
         <input
           id={`${idPrefix}-purchased-from`}
-          className={formStyles.input}
+          className={ui.input}
           type="text"
           placeholder="Shop name"
           value={values.purchasedFrom}
@@ -60,12 +61,12 @@ export function PurchaseFields({
         />
       </div>
       <div className={formStyles.field}>
-        <label className={formStyles.label} htmlFor={`${idPrefix}-purchased-at`}>
+        <label className={ui.fieldLabel} htmlFor={`${idPrefix}-purchased-at`}>
           Purchased on
         </label>
         <input
           id={`${idPrefix}-purchased-at`}
-          className={formStyles.input}
+          className={ui.input}
           type="date"
           value={values.purchasedAt}
           onChange={set("purchasedAt")}
@@ -73,12 +74,12 @@ export function PurchaseFields({
         />
       </div>
       <div className={formStyles.field}>
-        <label className={formStyles.label} htmlFor={`${idPrefix}-started-at`}>
+        <label className={ui.fieldLabel} htmlFor={`${idPrefix}-started-at`}>
           Started
         </label>
         <input
           id={`${idPrefix}-started-at`}
-          className={formStyles.input}
+          className={ui.input}
           type="date"
           value={values.startedAt}
           onChange={set("startedAt")}
@@ -86,12 +87,12 @@ export function PurchaseFields({
         />
       </div>
       <div className={formStyles.field}>
-        <label className={formStyles.label} htmlFor={`${idPrefix}-completed-at`}>
+        <label className={ui.fieldLabel} htmlFor={`${idPrefix}-completed-at`}>
           Completed
         </label>
         <input
           id={`${idPrefix}-completed-at`}
-          className={formStyles.input}
+          className={ui.input}
           type="date"
           value={values.completedAt}
           onChange={set("completedAt")}

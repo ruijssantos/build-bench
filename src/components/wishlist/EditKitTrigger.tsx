@@ -3,10 +3,8 @@
 import { lazy, Suspense, useState } from "react";
 
 import { PencilIcon } from "@/components/icons";
-import formStyles from "@/components/inventory/InventoryForm.module.css";
 import type { KitRow } from "@/db/repositories/kits";
-
-import styles from "./Wishlist.module.css";
+import ui from "@/styles/ui.module.css";
 
 const ManualKitDialog = lazy(() => import("./ManualKitDialog").then((m) => ({ default: m.ManualKitDialog })));
 
@@ -28,7 +26,7 @@ export function EditKitTrigger({ kit, variant = "icon" }: { kit: KitRow; variant
       <button
         type="button"
         className={
-          variant === "button" ? `${formStyles.deleteButton} ${formStyles.editButtonHover}` : styles.iconButton
+          variant === "button" ? ui.btn : ui.iconBtn
         }
         aria-haspopup="dialog"
         aria-expanded={open}
@@ -36,7 +34,7 @@ export function EditKitTrigger({ kit, variant = "icon" }: { kit: KitRow; variant
         title={`Edit ${title}`}
         onClick={() => setOpen(true)}
       >
-        <PencilIcon size={15} />
+        <PencilIcon size={16} />
         {variant === "button" ? "Edit" : null}
       </button>
       {open ? (

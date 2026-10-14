@@ -4,7 +4,7 @@ import { countKitsByStatus } from "@/db/repositories/kits";
 import { listInventory } from "@/db/repositories/inventory";
 import { listWishlistItems } from "@/db/repositories/wishlist-items";
 import { KIT_STATUSES } from "@/domain/kit";
-import cardStyles from "@/components/wishlist/Wishlist.module.css";
+import ui from "@/styles/ui.module.css";
 
 import styles from "./Dashboard.module.css";
 
@@ -78,7 +78,7 @@ function Stat({
 }) {
   return (
     <Link href={href} className={styles.stat}>
-      <span className={cardStyles.moduleTitle}>{label}</span>
+      <span className={ui.moduleTitle}>{label}</span>
       <span className={styles.statRow}>
         <span className={`${styles.statValue} ${alert ? styles.statValueAlert : ""}`}>{value}</span>
         <span className={styles.statUnit}>{unit}</span>

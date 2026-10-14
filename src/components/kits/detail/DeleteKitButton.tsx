@@ -5,6 +5,7 @@ import { useEffect, useRef, useState, useTransition } from "react";
 import { removeKitAndReturn } from "@/app/(bench)/kits/actions";
 import { TrashIcon } from "@/components/icons";
 import formStyles from "@/components/inventory/InventoryForm.module.css";
+import ui from "@/styles/ui.module.css";
 
 /**
  * Remove, beside Edit in the detail header. Two taps, arming on the first —
@@ -40,7 +41,7 @@ export function DeleteKitButton({ id, name }: { id: number; name: string }) {
       <button
         ref={buttonRef}
         type="button"
-        className={`${formStyles.deleteButton} ${armed ? formStyles.deleteArmed : ""}`}
+        className={`${ui.btn} ${ui.btnAlert} ${armed ? ui.btnAlertOn : ""}`}
         disabled={pending}
         aria-label={armed ? `Confirm removing ${name}` : `Remove ${name}`}
         onClick={() => {
@@ -67,7 +68,7 @@ export function DeleteKitButton({ id, name }: { id: number; name: string }) {
           });
         }}
       >
-        <TrashIcon size={15} />
+        <TrashIcon size={16} />
         {pending ? "Removing…" : armed ? "Tap again to remove" : "Remove"}
       </button>
       {error ? <span className={formStyles.error}>{error}</span> : null}

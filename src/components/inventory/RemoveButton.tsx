@@ -1,7 +1,6 @@
 import { removeInventoryItemAction } from "@/app/(bench)/inventory/actions";
 import { TrashIcon } from "@/components/icons";
-
-import styles from "./Inventory.module.css";
+import ui from "@/styles/ui.module.css";
 
 /**
  * The one-click remove in the table row — no confirmation, no modal.
@@ -18,7 +17,7 @@ export function RemoveButton({ id, paintCode }: { id: number; paintCode: string 
       <input type="hidden" name="paintCode" value={paintCode} />
       <button
         type="submit"
-        className={styles.iconButton}
+        className={`${ui.iconBtn} ${ui.iconBtnAlert}`}
         title={`Remove ${paintCode} from the shelf`}
         aria-label={`Remove ${paintCode} from the shelf`}
       >

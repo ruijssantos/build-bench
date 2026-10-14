@@ -1,3 +1,5 @@
+import ui from "@/styles/ui.module.css";
+
 import styles from "./Wishlist.module.css";
 
 /** How many card-shaped placeholders to reserve — a fixed, documented bound,
@@ -17,7 +19,7 @@ export function KitsSkeleton() {
   return (
     <>
       <div className={styles.subHead} aria-hidden="true">
-        <span className={`${styles.moduleTitle} ${styles.skeletonLine}`} />
+        <span className={`${ui.moduleTitle} ${styles.skeletonLine}`} />
       </div>
       <div className={styles.cardGrid} aria-hidden="true">
         {Array.from({ length: SKELETON_KIT_COUNT }, (_, i) => (
@@ -32,7 +34,7 @@ export function KitsSkeleton() {
               </div>
             </div>
             <div className={styles.savedCardActions}>
-              <span className={`${styles.boughtButton} ${styles.skeletonLine}`} style={{ width: 96 }} />
+              <span className={styles.skeletonButton} style={{ width: 96 }} />
             </div>
           </div>
         ))}

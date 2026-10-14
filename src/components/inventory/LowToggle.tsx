@@ -1,6 +1,7 @@
 import { toggleRunningLow } from "@/app/(bench)/inventory/actions";
 import { LowBottleIcon } from "@/components/icons";
 import { isRunningLow } from "@/domain/inventory";
+import ui from "@/styles/ui.module.css";
 
 import styles from "./Inventory.module.css";
 
@@ -35,12 +36,12 @@ export function LowToggle({
       <input type="hidden" name="state" value={state ?? ""} />
       <button
         type="submit"
-        className={`${styles.lowButton} ${low ? styles.lowButtonActive : ""}`}
+        className={`${ui.btn} ${ui.btnSm} ${ui.btnAlert} ${low ? ui.btnAlertOn : ""}`}
         aria-pressed={low}
         title={low ? `Mark ${paintCode} restocked` : `Mark ${paintCode} running low`}
         aria-label={low ? `Mark ${paintCode} restocked` : `Mark ${paintCode} running low`}
       >
-        <LowBottleIcon size={15} />
+        <LowBottleIcon size={16} />
         <span className={styles.lowButtonLabel}>Low</span>
       </button>
     </form>

@@ -1,4 +1,5 @@
 import cardStyles from "@/components/wishlist/Wishlist.module.css";
+import ui from "@/styles/ui.module.css";
 
 import styles from "./Dashboard.module.css";
 
@@ -18,7 +19,7 @@ export function StatsSkeleton() {
     <div className={styles.stats} aria-hidden="true">
       {Array.from({ length: 4 }, (_, i) => (
         <div className={styles.stat} key={i}>
-          <span className={`${cardStyles.moduleTitle} ${cardStyles.skeletonLine}`} style={{ width: 76 }} />
+          <span className={`${ui.moduleTitle} ${cardStyles.skeletonLine}`} style={{ width: 76 }} />
           <span className={styles.statRow}>
             <span className={`${styles.statValue} ${cardStyles.skeletonLine}`} style={{ width: 40 }} />
           </span>

@@ -5,6 +5,7 @@ import { ExternalLinkIcon, TrashIcon } from "@/components/icons";
 import { ReadyLine } from "@/components/kits/ReadyLine";
 import type { KitReadiness } from "@/db/repositories/kit-paint-requirements";
 import type { KitRow } from "@/db/repositories/kits";
+import ui from "@/styles/ui.module.css";
 
 import { EditKitTrigger } from "./EditKitTrigger";
 import { KitCardBody } from "./KitCardBody";
@@ -56,25 +57,25 @@ export function SavedKitCard({
             Scalemates page does. */}
         {kit.scalematesUrl ? (
           <a
-            className={styles.iconButton}
+            className={ui.iconBtn}
             href={kit.scalematesUrl}
             target="_blank"
             rel="noopener noreferrer"
             title="Open link"
             aria-label={`Open link for ${title}`}
           >
-            <ExternalLinkIcon size={15} />
+            <ExternalLinkIcon size={16} />
           </a>
         ) : null}
         <form action={removeKit}>
           <input type="hidden" name="id" value={kit.id} />
           <button
             type="submit"
-            className={styles.iconButton}
+            className={`${ui.iconBtn} ${ui.iconBtnAlert}`}
             title={`Remove ${title} from the wishlist`}
             aria-label={`Remove ${title} from the wishlist`}
           >
-            <TrashIcon size={15} />
+            <TrashIcon size={16} />
           </button>
         </form>
       </div>

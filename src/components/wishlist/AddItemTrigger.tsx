@@ -3,8 +3,7 @@
 import { lazy, Suspense, useState } from "react";
 
 import { PlusIcon } from "@/components/icons";
-
-import styles from "./Wishlist.module.css";
+import ui from "@/styles/ui.module.css";
 
 const AddItemDialog = lazy(() => import("./AddItemDialog").then((m) => ({ default: m.AddItemDialog })));
 
@@ -17,12 +16,12 @@ export function AddItemTrigger() {
     <>
       <button
         type="button"
-        className={styles.addButton}
+        className={`${ui.btn} ${ui.btnSm} ${ui.btnPrimary}`}
         aria-haspopup="dialog"
         aria-expanded={open}
         onClick={() => setOpen(true)}
       >
-        <PlusIcon size={13} />
+        <PlusIcon size={14} />
         <span>Add</span>
       </button>
 

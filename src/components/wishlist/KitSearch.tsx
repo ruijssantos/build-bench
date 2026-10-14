@@ -7,6 +7,7 @@ import { PlusIcon } from "@/components/icons";
 import { NAV_RECLICK_EVENT } from "@/components/nav/nav-events";
 import type { KitStatus } from "@/domain/kit";
 import type { KitCandidate } from "@/domain/kit-candidate";
+import ui from "@/styles/ui.module.css";
 
 import { KitCandidateCard } from "./KitCandidateCard";
 import styles from "./Wishlist.module.css";
@@ -101,11 +102,11 @@ export function KitSearch({ saveStatus, homeHref }: { saveStatus: KitStatus; hom
           disabled={loading}
         />
         <div className={styles.searchActions}>
-          <button type="submit" className={styles.searchButton} disabled={loading || !query.trim()}>
+          <button type="submit" className={`${ui.btn} ${ui.btnLg} ${ui.btnPrimary} ${styles.searchButton}`} disabled={loading || !query.trim()}>
             {loading ? "Searching…" : "Search"}
           </button>
-          <button type="button" className={styles.manualButton} onClick={() => setManualOpen(true)}>
-            <PlusIcon size={11} /> Add Manually
+          <button type="button" className={`${ui.btn} ${ui.btnLg}`} onClick={() => setManualOpen(true)}>
+            <PlusIcon size={16} /> Add Manually
           </button>
         </div>
       </form>
@@ -135,7 +136,7 @@ export function KitSearch({ saveStatus, homeHref }: { saveStatus: KitStatus; hom
       {state.status === "done" && state.candidates.length > 0 ? (
         <div className={styles.resultsBlock}>
           <div className={styles.subHead}>
-            <span className={styles.moduleTitle}>Search results</span>
+            <span className={ui.moduleTitle}>Search results</span>
             <span className={styles.moduleMeta}>
               {state.candidates.length} found
             </span>

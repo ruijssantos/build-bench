@@ -4,9 +4,9 @@ import { useState, useTransition } from "react";
 
 import { advanceKitStatus, regressKitStatus } from "@/app/(bench)/kits/actions";
 import { markKitBought } from "@/app/(bench)/wishlist/actions";
-import formStyles from "@/components/inventory/InventoryForm.module.css";
 import styles from "@/components/wishlist/Wishlist.module.css";
 import { nextStashStatus, previousStashStatus, statusLabel, type KitStatus } from "@/domain/kit";
+import ui from "@/styles/ui.module.css";
 
 /**
  * The stepper's primary action ("Start building" / "Mark built") and its
@@ -44,7 +44,7 @@ export function StatusActions({ id, status }: { id: number; status: KitStatus })
         <div className={styles.statusActions}>
           <button
             type="button"
-            className={formStyles.primaryButton}
+            className={`${ui.btn} ${ui.btnPrimary}`}
             disabled={pending}
             onClick={() => run(() => markKitBought(id))}
           >
@@ -65,7 +65,7 @@ export function StatusActions({ id, status }: { id: number; status: KitStatus })
         {next ? (
           <button
             type="button"
-            className={formStyles.primaryButton}
+            className={`${ui.btn} ${ui.btnPrimary}`}
             disabled={pending}
             onClick={() => run(() => advanceKitStatus(id, status))}
           >
@@ -75,7 +75,7 @@ export function StatusActions({ id, status }: { id: number; status: KitStatus })
         {prev ? (
           <button
             type="button"
-            className={formStyles.ghostButton}
+            className={ui.btn}
             disabled={pending}
             onClick={() => run(() => regressKitStatus(id, status))}
           >

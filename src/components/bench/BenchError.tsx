@@ -2,6 +2,8 @@
 
 import { catchError, type ErrorInfo } from "next/error";
 
+import ui from "@/styles/ui.module.css";
+
 import styles from "./BenchError.module.css";
 
 /**
@@ -21,7 +23,7 @@ function BenchErrorFallback({ label }: { label: string }, { retry }: ErrorInfo) 
     <div className={styles.card} role="alert">
       <p className={styles.title}>{label} didn&apos;t load</p>
       <p className={styles.detail}>The database didn&apos;t answer.</p>
-      <button type="button" className={styles.retry} onClick={() => retry()}>
+      <button type="button" className={`${ui.btn} ${ui.btnSm} ${styles.retry}`} onClick={() => retry()}>
         Try again
       </button>
     </div>

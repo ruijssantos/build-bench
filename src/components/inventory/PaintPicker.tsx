@@ -4,6 +4,7 @@ import { useCallback, useRef, useState } from "react";
 
 import { SearchIcon } from "@/components/icons";
 import type { PaintHit } from "@/components/thinner/paint-search-index";
+import ui from "@/styles/ui.module.css";
 
 import styles from "./InventoryForm.module.css";
 
@@ -82,7 +83,7 @@ export function PaintPicker({
         <span className={styles.pickedName}>{value.name}</span>
         <button
           type="button"
-          className={styles.pickedChange}
+          className={`${ui.textBtn} ${styles.pickedChange}`}
           onClick={() => {
             onPick(null);
             setTimeout(() => inputRef.current?.focus(), 0);
@@ -96,7 +97,7 @@ export function PaintPicker({
 
   return (
     <div className={styles.pickerWrap}>
-      <div className={styles.pickerBox}>
+      <div className={`${styles.pickerBox} ${ui.inputFocus}`}>
         <SearchIcon size={17} className={styles.pickerIcon} />
         <input
           ref={inputRef}

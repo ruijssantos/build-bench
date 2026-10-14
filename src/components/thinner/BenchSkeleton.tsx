@@ -1,3 +1,5 @@
+import ui from "@/styles/ui.module.css";
+
 import benchNotes from "./BenchNotes.module.css";
 import styles from "./BenchSkeleton.module.css";
 import hero from "./RatioHero.module.css";
@@ -44,7 +46,7 @@ export function BenchSkeleton() {
 
             <div className={hero.ratioSection}>
               <div className={hero.ratioHeader}>
-                <Line className={hero.ratioLabel} width={190} />
+                <Line className={ui.moduleTitle} width={190} />
               </div>
               {/* Same three children as the real card: the ratio numbers are
                   the tallest thing on it, so they have to measure identically
@@ -95,14 +97,14 @@ export function BenchSkeleton() {
         <div className={specs.grid}>
           {["pressure", "distance", "coats", "thinner"].map((key) => (
             <div className={specs.tile} key={key}>
-              <Line className={specs.label} width={72} />
+              <Line className={ui.moduleTitle} width={72} />
               <Line className={specs.value} width={104} />
             </div>
           ))}
         </div>
 
         <div className={benchNotes.card}>
-          <Line className={benchNotes.title} width={110} />
+          <Line className={`${ui.moduleTitle} ${benchNotes.title}`} width={110} />
           <div className={benchNotes.list}>
             {/* Two lines each: bench notes are full sentences, and a
                 one-line placeholder under-reserves every one of them. */}

@@ -4,6 +4,7 @@ import { lazy, Suspense, useState } from "react";
 
 import { CameraIcon } from "@/components/icons";
 import type { KitRow } from "@/db/repositories/kits";
+import ui from "@/styles/ui.module.css";
 
 import styles from "./Wishlist.module.css";
 
@@ -33,7 +34,7 @@ export function ArtEditButton({ kit }: { kit: KitRow }) {
     <>
       <button
         type="button"
-        className={styles.artEditButton}
+        className={`${ui.iconBtn} ${ui.iconBtnScrim} ${styles.artEditButton}`}
         onClick={(e) => {
           // The Stash card is a stretched link; without this the click
           // navigates to the detail page instead of opening the dialog.
@@ -44,7 +45,7 @@ export function ArtEditButton({ kit }: { kit: KitRow }) {
         title="Add a photo"
         aria-label={`Add a photo for ${kit.name ?? "this kit"}`}
       >
-        <CameraIcon size={15} />
+        <CameraIcon size={16} />
       </button>
       {open ? (
         <Suspense fallback={null}>

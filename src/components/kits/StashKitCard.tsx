@@ -8,6 +8,7 @@ import styles from "@/components/wishlist/Wishlist.module.css";
 import type { KitReadiness } from "@/db/repositories/kit-paint-requirements";
 import type { KitRow } from "@/db/repositories/kits";
 import { isStashStatus } from "@/domain/kit";
+import ui from "@/styles/ui.module.css";
 
 import { AdvanceStatusButton } from "./AdvanceStatusButton";
 import { ReadyLine } from "./ReadyLine";
@@ -69,20 +70,20 @@ export function StashKitCard({
         <EditKitTrigger kit={kit} />
         {kit.scalematesUrl ? (
           <a
-            className={styles.iconButton}
+            className={ui.iconBtn}
             href={kit.scalematesUrl}
             target="_blank"
             rel="noopener noreferrer"
             title="Open link"
             aria-label={`Open link for ${title}`}
           >
-            <ExternalLinkIcon size={15} />
+            <ExternalLinkIcon size={16} />
           </a>
         ) : null}
         <form action={removeKit}>
           <input type="hidden" name="id" value={kit.id} />
-          <button type="submit" className={styles.iconButton} title={`Remove ${title}`} aria-label={`Remove ${title}`}>
-            <TrashIcon size={15} />
+          <button type="submit" className={`${ui.iconBtn} ${ui.iconBtnAlert}`} title={`Remove ${title}`} aria-label={`Remove ${title}`}>
+            <TrashIcon size={16} />
           </button>
         </form>
       </div>

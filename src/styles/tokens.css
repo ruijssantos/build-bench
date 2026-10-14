@@ -53,11 +53,30 @@
   --font-ui: var(--font-hanken-grotesk), system-ui, sans-serif;
   --font-mono: var(--font-martian-mono), ui-monospace, monospace;
 
+  /* type scale — whole pixels only, and every size below display comes from
+     here (`npm run lint:css` holds the line). 12px is the floor for anything
+     read. 11px exists for two things only: uppercase micro-tags, whose caps
+     read a size larger, and the phone tab bar's labels (iOS sets its own at
+     10pt). Inputs on a phone are 16px regardless — below that iOS Safari
+     zooms the page on focus. */
+  --text-2xs: 11px;
+  --text-xs: 12px;   /* captions, chips, meta, paint codes */
+  --text-sm: 13px;   /* secondary: hints, row notes, compact buttons, field labels */
+  --text-base: 14px; /* body copy, buttons, table cells */
+  --text-md: 15px;   /* row titles, emphasised values */
+  --text-lg: 17px;   /* card titles, lead paragraphs */
+
   /* geometry */
-  --radius-card: 20px;
-  --radius-card-desktop: 22px;
-  --radius-tile: 14px;
-  --radius-pill: 999px;
+  --radius-card: 20px;   /* 22px on a desktop, below */
+  --radius-tile: 14px;   /* tiles, panels, dropdowns */
+  --radius-control: 12px;   /* buttons and inputs */
+  --radius-control-sm: 10px;   /* small buttons, icon buttons */
+  --radius-pill: 999px;   /* filters and chips — never a button */
+
+  /* control heights — a 44px touch target on a phone (§4.1) */
+  --control-h: 44px;
+  --control-h-sm: 36px;
+  --control-h-lg: 52px;
 
   --shadow-hero: 0 1px 2px rgba(18, 20, 23, 0.04), 0 10px 28px rgba(18, 20, 23, 0.05);
 
@@ -85,11 +104,24 @@
 @media (min-width: 900px) {
   :root {
     --gutter: 40px;
+    --radius-card: 22px;
+    --control-h: 40px;
+    --control-h-lg: 46px;
   }
 }
 
 * {
   box-sizing: border-box;
+}
+
+/* Controls take the page's type like any other element, rather than the
+   browser's own (13.33px system-ui on a button). A control that wants
+   another face or size sets it; none has to restate the default. */
+button,
+input,
+select,
+textarea {
+  font: inherit;
 }
 
 html,
@@ -116,4 +148,11 @@ a {
 
 a:hover {
   color: var(--accent-hover);
+}
+
+/* One focus ring for every control, keyboard only. Zero specificity, so a
+   control that draws its own (an input's halo) simply overrides it. */
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }

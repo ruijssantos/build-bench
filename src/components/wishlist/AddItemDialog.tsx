@@ -5,6 +5,7 @@ import { useState } from "react";
 import { addWishlistItem } from "@/app/(bench)/wishlist/actions";
 import { Modal } from "@/components/bench/Modal";
 import formStyles from "@/components/inventory/InventoryForm.module.css";
+import ui from "@/styles/ui.module.css";
 
 /** Add a tool or supply to the "Other items" list — title, optional URL and
  * notes (docs/PLAN.md §6 Phase 3). Its own chunk, loaded on click. */
@@ -40,12 +41,12 @@ export function AddItemDialog({ onClose }: { onClose: () => void }) {
     <Modal title="Add to the list" onClose={onClose}>
       <div className={formStyles.form}>
         <div className={formStyles.field}>
-          <label className={formStyles.label} htmlFor="wishlist-item-title">
+          <label className={ui.fieldLabel} htmlFor="wishlist-item-title">
             Title
           </label>
           <input
             id="wishlist-item-title"
-            className={formStyles.input}
+            className={ui.input}
             type="text"
             placeholder="Flush cutters, masking tape…"
             value={title}
@@ -55,12 +56,12 @@ export function AddItemDialog({ onClose }: { onClose: () => void }) {
         </div>
 
         <div className={formStyles.field}>
-          <label className={formStyles.label} htmlFor="wishlist-item-url">
+          <label className={ui.fieldLabel} htmlFor="wishlist-item-url">
             Link
           </label>
           <input
             id="wishlist-item-url"
-            className={formStyles.input}
+            className={ui.input}
             type="url"
             placeholder="Optional"
             value={url}
@@ -70,12 +71,12 @@ export function AddItemDialog({ onClose }: { onClose: () => void }) {
         </div>
 
         <div className={formStyles.field}>
-          <label className={formStyles.label} htmlFor="wishlist-item-notes">
+          <label className={ui.fieldLabel} htmlFor="wishlist-item-notes">
             Notes
           </label>
           <input
             id="wishlist-item-notes"
-            className={formStyles.input}
+            className={ui.input}
             type="text"
             placeholder="Optional"
             value={notes}
@@ -88,10 +89,10 @@ export function AddItemDialog({ onClose }: { onClose: () => void }) {
 
         <div className={formStyles.actions}>
           <div className={formStyles.spacer} />
-          <button type="button" className={formStyles.ghostButton} onClick={onClose} disabled={saving}>
+          <button type="button" className={ui.btn} onClick={onClose} disabled={saving}>
             Cancel
           </button>
-          <button type="button" className={formStyles.primaryButton} onClick={() => void save()} disabled={saving}>
+          <button type="button" className={`${ui.btn} ${ui.btnPrimary}`} onClick={() => void save()} disabled={saving}>
             {saving ? "Adding…" : "Add"}
           </button>
         </div>

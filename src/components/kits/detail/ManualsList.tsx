@@ -8,6 +8,7 @@ import formStyles from "@/components/inventory/InventoryForm.module.css";
 import inventoryStyles from "@/components/inventory/Inventory.module.css";
 import styles from "@/components/wishlist/Wishlist.module.css";
 import type { KitManualRow } from "@/db/repositories/kit-manuals";
+import ui from "@/styles/ui.module.css";
 
 import { ManualRow } from "./ManualRow";
 
@@ -98,19 +99,19 @@ export function ManualsList({ kitId, manuals }: { kitId: number; manuals: KitMan
   return (
     <>
       <div className={styles.subHead}>
-        <span className={styles.moduleTitle}>Manuals ({manuals.length})</span>
+        <span className={ui.moduleTitle}>Manuals ({manuals.length})</span>
         <button
           type="button"
-          className={styles.manualButton}
+          className={`${ui.btn} ${ui.btnSm}`}
           onClick={() => fileInputRef.current?.click()}
           disabled={busy}
         >
-          {busy ? null : <PlusIcon size={11} />}
+          {busy ? null : <PlusIcon size={14} />}
           {phase === "uploading" ? "Uploading…" : phase === "saving" ? "Saving…" : "Upload manual"}
         </button>
         <input
           ref={fileInputRef}
-          className={styles.srOnly}
+          className={ui.srOnly}
           type="file"
           accept="application/pdf"
           onChange={(e) => {

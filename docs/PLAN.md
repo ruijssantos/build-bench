@@ -530,13 +530,21 @@ Three faces, one job each. All from Google Fonts, each with a fallback stack.
 |---|---|
 | Screen title | Display 700 · 40px phone / 38px desktop · uppercase · ls .005em · lh .98 |
 | Hero numeral | Display 700 · 66px phone / 86px desktop · ls −.01em |
-| Section title | Display 700 · 20px phone / 22px desktop · uppercase · ls .02em · `--ink` |
-| Module title | Display 600 · 13px phone / 15px desktop · uppercase · ls .14em · `--muted` |
-| Body copy | UI · 13.5px · lh 1.5 · `--ink-soft` |
-| Row title | UI 700 · 14.5px · ls −.01em |
-| Field label | Display 600 · 12.5px · uppercase · ls .12em · `--muted-2` |
-| Caption | UI 500 · 11.5px · `--muted-2` |
-| Paint code | Mono 500 · 12px · ls .02em · `--muted-2` |
+| Section title | `ui.sectionTitle` · Display 700 · 20px phone / 22px desktop · uppercase · ls .02em · `--ink` |
+| Module title | `ui.moduleTitle` · Display 600 · `--text-base` phone / `--text-md` desktop · uppercase · ls .14em · `--muted` |
+| Body copy | UI · `--text-base` (14) · lh 1.5 · `--ink-soft` |
+| Row title | UI 700 · `--text-md` (15) · ls −.01em |
+| Field label | `ui.fieldLabel` · Display 600 · `--text-sm` (13) · uppercase · ls .12em · `--muted-2` |
+| Caption | UI 500 · `--text-xs` (12) · `--muted-2` |
+| Paint code | Mono 500 · `--text-xs` (12) · ls .02em · `--muted-2` |
+
+**The scale** (`tokens.css`, whole pixels only): `--text-2xs` 11 · `--text-xs` 12 ·
+`--text-sm` 13 · `--text-base` 14 · `--text-md` 15 · `--text-lg` 17; display sizes (20 and up)
+stay on their roles. **12px is the floor for anything read.** 11px is only for uppercase
+micro-tags, whose caps read a size larger, and the phone tab bar's labels. A text input is 16px
+on a phone whatever its role, because below that iOS Safari zooms the page on focus.
+`npm run lint:css` fails CI on any other font size. The Oct 2026 sweep that introduced it found
+26 sizes in use, half of them on half-pixels.
 
 Rules for every module, regardless of screen:
 
@@ -570,7 +578,8 @@ why it works on screens (Paints, Shopping) that have nothing to do with instrume
   desktop window never squeezes module titles into truncating. Below the floor the content
   area scrolls horizontally. Both bounds apply above the 900px breakpoint only; phone is
   fluid.
-- **Radii:** card 20 (22 desktop) · tile, input 14 · chip 6–12 · pill 999.
+- **Radii:** card 20 (22 desktop — the token itself switches, so every card follows) · tile 14 ·
+  control 12 (buttons, inputs) · small control 10 · pill 999 (filters and chips only).
 - **Borders:** 1px `--line`. Hairlines do the separating.
 - **Elevation:** exactly one shadow in the whole app, on the hero card —
   `0 1px 2px rgba(18,20,23,.04), 0 10px 28px rgba(18,20,23,.05)`. Everything else is a
@@ -581,6 +590,36 @@ why it works on screens (Paints, Shopping) that have nothing to do with instrume
 - **Tab bar:** 60px tall, hairline top, 6 items (5 routes + sign out), active in `--accent`.
 - **Left rail:** 260px, items 44px, active state is an `--accent-tint` pill at radius 12.
 - **Status bar:** leave the top 44px of a phone layout empty. Never draw fake chrome.
+
+#### Components
+
+Every control lives once, in `src/styles/ui.module.css`, imported as `ui`. A screen's own
+stylesheet adds layout to them (`flex`, `margin`, position) and never restyles them; the shared
+classes set no layout, so the two never set the same property and bundle order can't matter.
+
+| Control | Classes | Spec |
+|---|---|---|
+| Button | `btn` (+ `btnSm` / `btnLg`) | 44 phone / 40 desktop · small 36 · large 52 / 46 (beside `SearchField`) · `--card` ground, `--line-strong` border, UI 600 |
+| Primary | `+ btnPrimary` | Filled `--accent`, `--accent-hover` on hover. One per surface. |
+| Alert / ok | `+ btnAlert`, `btnOk` (`…On` for the armed / done state) | Neutral at rest; hover previews the meaning |
+| Icon button | `iconBtn` (+ `iconBtnAlert`, `iconBtnScrim`) | 36px square, radius 10, 44px hit area via `::after`, 16px glyph |
+| Pill | `pill` (+ `pillOn`, `pillAlert`) | 36px, filters and single choices; selected is filled accent |
+| Input | `input`, `inputFocus` | Control height, 16px phone / 14 desktop, accent border plus tint halo on focus |
+| Text button | `textBtn` | An action inside a sentence; inherits the text's size |
+
+Rules that keep the family coherent:
+
+- **Actions are rounded rectangles; pills are filters and chips.** A button is never a pill.
+- **No transparent controls.** On the cutting-mat grid, a transparent button shows the grid
+  through it. Every control sits on `--card`.
+- **One hover per kind.** A neutral control previews the accent (border, ink and tint). A control
+  with a meaning hovers to that meaning (alert for destructive, ok for bought or built). Rows and
+  nav items are places, not controls, and hover to `--card-sunken`. Selected is always a step
+  stronger than hover: a filled pill against a tinted one, an accent-tint nav item against a
+  sunken one.
+- **Icons in controls:** 16px in an icon button or a default/large button, 14px in a small one.
+- **Focus** is one global ring (2px accent, 2px offset) on `:focus-visible`; inputs replace it
+  with their halo.
 
 #### Livery
 

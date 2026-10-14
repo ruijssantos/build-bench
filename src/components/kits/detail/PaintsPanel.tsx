@@ -7,6 +7,7 @@ import styles from "@/components/wishlist/Wishlist.module.css";
 import { listShelfPaintCodes } from "@/db/repositories/inventory";
 import { listKitPaintRequirements } from "@/db/repositories/kit-paint-requirements";
 import { bucketPaintRequirements, codesToCheckOnShelf } from "@/domain/kit-paints";
+import ui from "@/styles/ui.module.css";
 
 import { DismissUnresolved } from "./DismissUnresolved";
 
@@ -23,7 +24,7 @@ export async function PaintsPanel({ kitId }: { kitId: number }) {
     return (
       <div className={styles.card}>
         <div className={styles.cardBody}>
-          <span className={styles.moduleTitle}>Paints</span>
+          <span className={ui.moduleTitle}>Paints</span>
           <div className={inventoryStyles.emptyCard}>
             Upload a manual and extract its paint list to see what this kit needs.
           </div>
@@ -41,13 +42,13 @@ export async function PaintsPanel({ kitId }: { kitId: number }) {
     <div className={styles.card}>
       <div className={styles.cardBody}>
         <div className={styles.subHead}>
-          <span className={styles.moduleTitle}>Paints</span>
+          <span className={ui.moduleTitle}>Paints</span>
         </div>
 
         <div className={styles.paintBucket}>
           <div className={styles.bucketHead}>
             <span className={`${styles.bucketDot} ${styles.bucketDotOwned}`} />
-            <span className={styles.moduleTitle}>
+            <span className={ui.moduleTitle}>
               Owned ({buckets.owned.length}
               {ownedLow > 0 ? ` · ${ownedLow} low` : ""})
             </span>
@@ -76,7 +77,7 @@ export async function PaintsPanel({ kitId }: { kitId: number }) {
         <div className={styles.paintBucket}>
           <div className={styles.bucketHead}>
             <span className={`${styles.bucketDot} ${styles.bucketDotMissing}`} />
-            <span className={styles.moduleTitle}>Missing ({buckets.missing.length})</span>
+            <span className={ui.moduleTitle}>Missing ({buckets.missing.length})</span>
           </div>
           {buckets.missing.length > 0 ? (
             <div className={styles.cardChips}>
@@ -96,7 +97,7 @@ export async function PaintsPanel({ kitId }: { kitId: number }) {
           <div className={styles.paintBucket}>
             <div className={styles.bucketHead}>
               <span className={`${styles.bucketDot} ${styles.bucketDotEquivalent}`} />
-              <span className={styles.moduleTitle}>Equivalents ({buckets.equivalents.length})</span>
+              <span className={ui.moduleTitle}>Equivalents ({buckets.equivalents.length})</span>
             </div>
             <div className={styles.cardChips}>
               {buckets.equivalents.map((p) => (
@@ -123,7 +124,7 @@ export async function PaintsPanel({ kitId }: { kitId: number }) {
           <div className={styles.paintBucket}>
             <div className={styles.bucketHead}>
               <span className={`${styles.bucketDot} ${styles.bucketDotUnresolved}`} />
-              <span className={styles.moduleTitle}>Unresolved ({buckets.unresolved.length})</span>
+              <span className={ui.moduleTitle}>Unresolved ({buckets.unresolved.length})</span>
             </div>
             {buckets.unresolved.map((u) => (
               <div key={u.rawLabel} className={styles.unresolvedRow}>

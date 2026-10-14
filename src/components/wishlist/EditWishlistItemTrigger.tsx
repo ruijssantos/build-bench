@@ -4,8 +4,7 @@ import { lazy, Suspense, useState } from "react";
 
 import { PencilIcon } from "@/components/icons";
 import type { WishlistItemRow } from "@/db/repositories/wishlist-items";
-
-import styles from "./Wishlist.module.css";
+import ui from "@/styles/ui.module.css";
 
 const EditWishlistItemDialog = lazy(() =>
   import("./EditWishlistItemDialog").then((m) => ({ default: m.EditWishlistItemDialog })),
@@ -20,14 +19,14 @@ export function EditWishlistItemTrigger({ item }: { item: WishlistItemRow }) {
     <>
       <button
         type="button"
-        className={styles.iconButton}
+        className={ui.iconBtn}
         aria-haspopup="dialog"
         aria-expanded={open}
         title={`Edit ${item.title}`}
         aria-label={`Edit ${item.title}`}
         onClick={() => setOpen(true)}
       >
-        <PencilIcon size={15} />
+        <PencilIcon size={16} />
       </button>
       {open ? (
         <Suspense fallback={null}>

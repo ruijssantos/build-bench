@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { resolvePaintIdentity } from "@/lib/thinner-bench";
+import ui from "@/styles/ui.module.css";
 
 import { SearchBox } from "./SearchBox";
 import { resolveBenchParams, type BenchSearchParams } from "./bench-params";
@@ -48,7 +49,7 @@ export async function LineToggle({ searchParams }: { searchParams: Promise<Bench
           href={`/thinner?code=${encodeURIComponent(paint.code)}&line=${option.value}`}
           replace
           scroll={false}
-          className={`${styles.lineButton} ${line === option.value ? styles.lineButtonActive : ""}`}
+          className={`${ui.pill} ${line === option.value ? ui.pillOn : ""}`}
           aria-current={line === option.value ? "true" : undefined}
         >
           {option.label}

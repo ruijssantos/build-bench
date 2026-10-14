@@ -7,6 +7,7 @@ import { Modal } from "@/components/bench/Modal";
 import formStyles from "@/components/inventory/InventoryForm.module.css";
 import { PurchaseFields, purchaseValuesOf } from "@/components/kits/PurchaseFields";
 import type { KitRow } from "@/db/repositories/kits";
+import ui from "@/styles/ui.module.css";
 
 export function EditPurchaseDialog({ kit, onClose }: { kit: KitRow; onClose: () => void }) {
   const [purchase, setPurchase] = useState(() => purchaseValuesOf(kit));
@@ -39,10 +40,10 @@ export function EditPurchaseDialog({ kit, onClose }: { kit: KitRow; onClose: () 
 
         <div className={formStyles.actions}>
           <div className={formStyles.spacer} />
-          <button type="button" className={formStyles.ghostButton} onClick={onClose} disabled={saving}>
+          <button type="button" className={ui.btn} onClick={onClose} disabled={saving}>
             Cancel
           </button>
-          <button type="button" className={formStyles.primaryButton} onClick={() => void save()} disabled={saving}>
+          <button type="button" className={`${ui.btn} ${ui.btnPrimary}`} onClick={() => void save()} disabled={saving}>
             {saving ? "Saving…" : "Save changes"}
           </button>
         </div>

@@ -12,6 +12,7 @@ import {
   type EffectiveRatio,
 } from "@/domain/ratio";
 import type { PaintOwnership, ResolvedPaintIdentity } from "@/lib/thinner-bench";
+import ui from "@/styles/ui.module.css";
 
 import { familyLabel } from "./family-label";
 import styles from "./RatioHero.module.css";
@@ -75,16 +76,16 @@ export function RatioHero({
 
         <div className={styles.ratioSection}>
           <div className={styles.ratioHeader}>
-            <div className={styles.ratioLabel}>Starting ratio · paint to thinner</div>
+            <div className={ui.moduleTitle}>Starting ratio · paint to thinner</div>
             {paint.known && !editing ? (
               <button
                 type="button"
-                className={styles.editButton}
+                className={ui.iconBtn}
                 onClick={() => setEditing(true)}
                 aria-label="Correct this ratio"
                 title="Correct this ratio"
               >
-                <PencilIcon size={15} />
+                <PencilIcon size={16} />
               </button>
             ) : null}
           </div>

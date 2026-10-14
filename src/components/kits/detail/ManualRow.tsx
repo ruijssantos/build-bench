@@ -8,6 +8,7 @@ import { CheckIcon, ExternalLinkIcon, FileIcon, TrashIcon } from "@/components/i
 import styles from "@/components/wishlist/Wishlist.module.css";
 import type { KitManualRow } from "@/db/repositories/kit-manuals";
 import { DEFAULT_EXTRACT_PAGES } from "@/domain/kit-manual";
+import ui from "@/styles/ui.module.css";
 
 function formatBytes(bytes: number | null): string {
   if (!bytes) return "";
@@ -107,42 +108,42 @@ export function ManualRow({
         </div>
         <button
           type="button"
-          className={styles.iconButton}
+          className={`${ui.iconBtn} ${ui.iconBtnAlert}`}
           title="Remove manual"
           aria-label={`Remove ${manual.filename ?? "manual"}`}
           disabled={pendingDelete}
           onClick={runDelete}
         >
-          <TrashIcon size={15} />
+          <TrashIcon size={16} />
         </button>
       </div>
 
       <div className={styles.manualActions}>
         <a
-          className={`${styles.boughtButton} ${styles.manualActionButton}`}
+          className={`${ui.btn} ${ui.btnSm}`}
           href={manual.blobUrl}
           target="_blank"
           rel="noopener noreferrer"
         >
-          <ExternalLinkIcon size={13} /> Open
+          <ExternalLinkIcon size={14} /> Open
         </a>
         {manual.paintsExtractedAt ? (
           <button
             type="button"
-            className={`${styles.boughtButton} ${styles.boughtButtonDone}`}
+            className={`${ui.btn} ${ui.btnSm} ${ui.btnOkOn}`}
             disabled={extracting}
             onClick={() => void runExtract(false)}
           >
-            <CheckIcon size={13} /> {extracting ? "Re-extracting…" : "Extracted — re-run"}
+            <CheckIcon size={14} /> {extracting ? "Re-extracting…" : "Extracted — re-run"}
           </button>
         ) : (
           <button
             type="button"
-            className={`${styles.boughtButton} ${styles.manualActionButton}`}
+            className={`${ui.btn} ${ui.btnSm}`}
             disabled={extracting}
             onClick={() => void runExtract(false)}
           >
-            <FileIcon size={13} /> {extracting ? "Extracting paints…" : "Extract paint list"}
+            <FileIcon size={14} /> {extracting ? "Extracting paints…" : "Extract paint list"}
           </button>
         )}
       </div>
@@ -158,7 +159,7 @@ export function ManualRow({
           {manual.pageCount ? ` of ${manual.pageCount}` : ""} — this manual may print it further in.{" "}
           <button
             type="button"
-            className={styles.linkButton}
+            className={ui.textBtn}
             disabled={extracting}
             onClick={() => void runExtract(true)}
           >

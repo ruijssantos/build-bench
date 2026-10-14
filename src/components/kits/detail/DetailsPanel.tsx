@@ -1,13 +1,14 @@
 import styles from "@/components/wishlist/Wishlist.module.css";
 import type { KitRow } from "@/db/repositories/kits";
 import { formatIsoDate } from "@/domain/dates";
+import ui from "@/styles/ui.module.css";
 
 import { EditPurchaseTrigger } from "./EditPurchaseTrigger";
 
 function Row({ label, value }: { label: string; value: string | null }) {
   return (
     <div className={styles.detailRow}>
-      <span className={styles.detailLabel}>{label}</span>
+      <span className={ui.fieldLabel}>{label}</span>
       <span className={`${styles.detailValue} ${value ? "" : styles.detailValueEmpty}`}>{value ?? "Not set"}</span>
     </div>
   );
@@ -25,7 +26,7 @@ export function DetailsPanel({ kit }: { kit: KitRow }) {
     <div className={styles.card}>
       <div className={styles.cardBody}>
         <div className={styles.subHead}>
-          <span className={styles.moduleTitle}>Purchase &amp; dates</span>
+          <span className={ui.moduleTitle}>Purchase &amp; dates</span>
           <EditPurchaseTrigger kit={kit} />
         </div>
         <Row label="Purchased from" value={kit.purchasedFrom} />

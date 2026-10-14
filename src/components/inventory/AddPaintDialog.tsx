@@ -6,6 +6,7 @@ import { addInventoryItem } from "@/app/(bench)/inventory/actions";
 import { Modal } from "@/components/bench/Modal";
 import type { PaintHit } from "@/components/thinner/paint-search-index";
 import { defaultFormFor } from "@/domain/inventory";
+import ui from "@/styles/ui.module.css";
 
 import { ItemFields, type ItemFieldsValue } from "./ItemFields";
 import { PaintPicker } from "./PaintPicker";
@@ -71,7 +72,7 @@ export function AddPaintDialog({ onClose }: { onClose: () => void }) {
     <Modal title="Add to the shelf" onClose={onClose}>
       <div className={styles.form}>
         <div className={styles.field}>
-          <label className={styles.label} htmlFor="inventory-paint-picker">
+          <label className={ui.fieldLabel} htmlFor="inventory-paint-picker">
             Paint
           </label>
           <PaintPicker value={paint} onPick={pick} />
@@ -83,10 +84,10 @@ export function AddPaintDialog({ onClose }: { onClose: () => void }) {
 
         <div className={styles.actions}>
           <div className={styles.spacer} />
-          <button type="button" className={styles.ghostButton} onClick={onClose} disabled={saving}>
+          <button type="button" className={ui.btn} onClick={onClose} disabled={saving}>
             Cancel
           </button>
-          <button type="button" className={styles.primaryButton} onClick={save} disabled={saving}>
+          <button type="button" className={`${ui.btn} ${ui.btnPrimary}`} onClick={save} disabled={saving}>
             {saving ? "Adding…" : "Add paint"}
           </button>
         </div>

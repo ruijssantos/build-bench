@@ -6,6 +6,7 @@ import { editInventoryItem, removeInventoryItem } from "@/app/(bench)/inventory/
 import { Modal } from "@/components/bench/Modal";
 import { TrashIcon } from "@/components/icons";
 import type { InventoryForm, InventoryState } from "@/domain/inventory";
+import ui from "@/styles/ui.module.css";
 
 import { ItemFields, type ItemFieldsValue } from "./ItemFields";
 import styles from "./InventoryForm.module.css";
@@ -84,7 +85,7 @@ export function EditItemDialog({ item, onClose }: { item: EditableItem; onClose:
     <Modal title={`${item.paintCode} ${item.paintName ?? ""}`.trim()} onClose={onClose}>
       <div className={styles.form}>
         <div className={styles.field}>
-          <span className={styles.label}>Paint</span>
+          <span className={ui.fieldLabel}>Paint</span>
           <div className={styles.picked}>
             <span
               className={styles.pickedSwatch}
@@ -105,18 +106,18 @@ export function EditItemDialog({ item, onClose }: { item: EditableItem; onClose:
         <div className={styles.actions}>
           <button
             type="button"
-            className={`${styles.deleteButton} ${armed ? styles.deleteArmed : ""}`}
+            className={`${ui.btn} ${ui.btnAlert} ${armed ? ui.btnAlertOn : ""}`}
             onClick={remove}
             disabled={saving}
           >
-            <TrashIcon size={15} />
+            <TrashIcon size={16} />
             {armed ? "Tap again to remove" : "Remove"}
           </button>
           <div className={styles.spacer} />
-          <button type="button" className={styles.ghostButton} onClick={onClose} disabled={saving}>
+          <button type="button" className={ui.btn} onClick={onClose} disabled={saving}>
             Cancel
           </button>
-          <button type="button" className={styles.primaryButton} onClick={save} disabled={saving}>
+          <button type="button" className={`${ui.btn} ${ui.btnPrimary}`} onClick={save} disabled={saving}>
             {saving ? "Saving…" : "Save"}
           </button>
         </div>

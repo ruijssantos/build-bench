@@ -8,8 +8,7 @@
   background: var(--ok-tint);
   border-radius: var(--radius-pill);
   padding: 7px 13px;
-  font-family: var(--font-ui);
-  font-size: 12.5px;
+  font-size: var(--text-sm);
   font-weight: 700;
   color: var(--ok);
 }
@@ -17,7 +16,7 @@
 @media (min-width: 900px) {
   .chip {
     padding: 9px 14px;
-    font-size: 13px;
+    font-size: var(--text-base);
   }
 }
 
@@ -51,8 +50,7 @@
   background: var(--card-sunken);
   border-radius: var(--radius-pill);
   padding: 7px 13px;
-  font-family: var(--font-ui);
-  font-size: 12.5px;
+  font-size: var(--text-sm);
   font-weight: 600;
   color: var(--muted);
 }
@@ -60,6 +58,6 @@
 @media (min-width: 900px) {
   .chipAbsent {
     padding: 9px 14px;
-    font-size: 13px;
+    font-size: var(--text-base);
   }
 }

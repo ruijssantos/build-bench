@@ -44,7 +44,7 @@ export function NavRail() {
       </div>
 
       <div className={styles.signOut}>
-        <SignOutButton />
+        <SignOutButton iconSize={19} />
       </div>
     </nav>
   );

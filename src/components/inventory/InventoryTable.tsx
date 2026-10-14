@@ -9,6 +9,7 @@ import {
   isInventoryState,
   paintSearchUrl,
 } from "@/domain/inventory";
+import ui from "@/styles/ui.module.css";
 
 import { EditItemTrigger } from "./EditItemTrigger";
 import { LowToggle } from "./LowToggle";
@@ -127,7 +128,7 @@ export function InventoryTable({
                     {/* Deliberately a search, not a shop: the app carries no
                         pricing (§8) and the right shop differs per paint. */}
                     <a
-                      className={styles.iconButton}
+                      className={ui.iconBtn}
                       href={paintSearchUrl(item.paintCode, item.paintName)}
                       target="_blank"
                       rel="noopener noreferrer"

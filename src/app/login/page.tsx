@@ -1,5 +1,7 @@
 import { Suspense } from "react";
 
+import ui from "@/styles/ui.module.css";
+
 import styles from "./login.module.css";
 
 /**
@@ -25,11 +27,11 @@ export default function LoginPage(props: PageProps<"/login">) {
             <ReturnToField searchParams={props.searchParams} />
           </Suspense>
           <div className={styles.field}>
-            <label className={styles.label} htmlFor="passphrase">
+            <label className={ui.fieldLabel} htmlFor="passphrase">
               Passphrase
             </label>
             <input
-              className={styles.input}
+              className={ui.input}
               id="passphrase"
               name="passphrase"
               type="password"
@@ -38,7 +40,7 @@ export default function LoginPage(props: PageProps<"/login">) {
               required
             />
           </div>
-          <button className={styles.button} type="submit">
+          <button className={`${ui.btn} ${ui.btnPrimary} ${styles.button}`} type="submit">
             Sign in
           </button>
         </form>

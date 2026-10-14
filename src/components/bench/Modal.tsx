@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import type { ReactNode } from "react";
 
 import { XIcon } from "@/components/icons";
+import ui from "@/styles/ui.module.css";
 
 import styles from "./Modal.module.css";
 
@@ -59,7 +60,7 @@ export function Modal({
       <div className={styles.dialog} role="dialog" aria-modal="true" aria-label={title}>
         <div className={styles.header}>
           <span className={styles.title}>{title}</span>
-          <button type="button" className={styles.closeButton} aria-label="Close" onClick={onClose}>
+          <button type="button" className={ui.iconBtn} aria-label="Close" onClick={onClose}>
             <XIcon size={16} />
           </button>
         </div>
