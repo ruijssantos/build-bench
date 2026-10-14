@@ -32,12 +32,15 @@ export default async function GuidePage(props: PageProps<"/guides/[slug]">) {
 
   return (
     <>
-      <PhoneHeader title="Guides" />
+      <PhoneHeader
+        title="Guides"
+        eyebrow={
+          <Link href="/guides" className={`${ui.moduleTitle} ${styles.crumb}`}>
+            <ChevronLeftIcon size={14} /> All guides
+          </Link>
+        }
+      />
       <DesktopHeader title="Tips & Guides" />
-
-      <Link href="/guides" className={`${ui.moduleTitle} ${styles.crumb}`}>
-        <ChevronLeftIcon size={14} /> All guides
-      </Link>
 
       <div className={styles.layout}>
         <GuideSidebar current={guide} />

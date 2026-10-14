@@ -31,8 +31,13 @@ export function PhoneHeader({
   title,
   trailing,
   stackTrailing = false,
+  eyebrow = "The Build Bench",
 }: {
   title: string;
+  /** What sits above the title. The app's name by default; a detail screen
+   * passes its way back instead, so the crumb sits where an eyebrow does
+   * rather than floating above the status-bar space. */
+  eyebrow?: ReactNode;
   trailing?: ReactNode;
   stackTrailing?: boolean;
 }) {
@@ -45,7 +50,7 @@ export function PhoneHeader({
 
       <div className={`${styles.row} ${stackTrailing ? styles.rowStacked : ""}`}>
         <div>
-          <div className={styles.eyebrow}>The Build Bench</div>
+          <div className={styles.eyebrow}>{eyebrow}</div>
           <h1 className={styles.title}>{title}</h1>
         </div>
         {trailing}

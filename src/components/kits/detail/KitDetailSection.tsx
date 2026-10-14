@@ -60,12 +60,16 @@ export async function KitDetailSection({ params }: { params: Promise<{ id: strin
     </div>
   );
 
+  const crumb = (
+    <Link href={wanted ? "/wishlist" : "/kits"} className={`${ui.moduleTitle} ${styles.crumb}`}>
+      <ChevronLeftIcon size={14} /> {wanted ? "Wishlist" : "Stash"}
+    </Link>
+  );
+
   return (
     <>
-      <Link href={wanted ? "/wishlist" : "/kits"} className={`${ui.moduleTitle} ${styles.crumb}`}>
-        <ChevronLeftIcon size={14} /> {wanted ? "Wishlist" : "Stash"}
-      </Link>
-      <PhoneHeader title={title} trailing={headerActions} stackTrailing />
+      <div className={styles.crumbBar}>{crumb}</div>
+      <PhoneHeader title={title} eyebrow={crumb} trailing={headerActions} stackTrailing />
       <DesktopHeader title={title} trailing={headerActions} />
 
       <div className={ui.scrollArea}>
