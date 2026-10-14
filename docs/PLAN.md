@@ -575,7 +575,7 @@ why it works on screens (Paints, Shopping) that have nothing to do with instrume
 - **Elevation:** exactly one shadow in the whole app, on the hero card —
   `0 1px 2px rgba(18,20,23,.04), 0 10px 28px rgba(18,20,23,.05)`. Everything else is a
   hairline. Don't add a second elevation level.
-  The same shadow is what a navigating card lifts onto on hover (see *Motion*); it is
+  The same shadow is what a navigating card takes on hover (see *Motion*); it is
   never a resting second level.
 - **Touch targets:** ≥44px everywhere; tab-bar items 44px.
 - **Tab bar:** 60px tall, hairline top, 6 items (5 routes + sign out), active in `--accent`.
@@ -602,9 +602,10 @@ One curve, three speeds, in `tokens.css`:
   `--dur-base` 200ms (lifts, small moves), `--dur-slow` 320ms (box art, fills).
 - **Hover:** box art scales to `--art-hover-scale` (1.04) inside its frame, on every card
   and dashboard row. A card that navigates (it has the stretched link, or is a stat tile)
-  also lifts 1px onto `--shadow-hero`; a card that doesn't stays put, so the lift keeps
-  meaning *this opens*. Keyboard focus gets the same lift. Hover rules sit inside
-  `@media (hover: hover)` so a tap never leaves a phone card stuck lifted.
+  also takes `--shadow-hero`, in place: cards never move. A card that doesn't navigate
+  stays flat, so the shadow keeps meaning *this opens*. Keyboard focus gets the same
+  shadow. Hover rules sit inside `@media (hover: hover)` so a tap never leaves a phone
+  card stuck in its hover state.
 - `prefers-reduced-motion: reduce` collapses every transition and animation to 1ms,
   globally, in `tokens.css`.
 
