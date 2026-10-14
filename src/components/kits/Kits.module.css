@@ -613,12 +613,18 @@
   min-width: 0;
 }
 
-/* ---- status panel ---- */
+/* ---- status, in the kit card ---- */
 
-/* The bar (StatusBar) sits between the title and the actions with more air
-   than the card body's default 6px, as the old stepper's margins gave it. */
-.statusBody {
+/* Under the Scalemates / Spotmodel links, ruled off from the identity above
+   it: the bar and its actions with more air between them than the card
+   body's default 6px, as the old stepper's margins gave it. */
+.kitStatus {
+  display: flex;
+  flex-direction: column;
   gap: 16px;
+  margin-top: 10px;
+  padding-top: 16px;
+  border-top: 1px solid var(--card-sunken);
 }
 
 .statusActions {
