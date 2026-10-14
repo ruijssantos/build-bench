@@ -62,8 +62,8 @@ export async function KitDetailSection({ params }: { params: Promise<{ id: strin
 
   return (
     <>
-      <Link href={wanted ? "/wishlist" : "/kits"} className={styles.crumb}>
-        <ChevronLeftIcon size={18} /> {wanted ? "Wishlist" : "Stash"}
+      <Link href={wanted ? "/wishlist" : "/kits"} className={`${ui.moduleTitle} ${styles.crumb}`}>
+        <ChevronLeftIcon size={14} /> {wanted ? "Wishlist" : "Stash"}
       </Link>
       <PhoneHeader title={title} trailing={headerActions} stackTrailing />
       <DesktopHeader title={title} trailing={headerActions} />

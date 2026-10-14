@@ -24,8 +24,8 @@ import ui from "@/styles/ui.module.css";
 export function KitDetailSkeleton() {
   return (
     <div aria-hidden="true">
-      <span className={styles.crumb}>
-        <ChevronLeftIcon size={18} /> Kits
+      <span className={`${ui.moduleTitle} ${styles.crumb}`}>
+        <ChevronLeftIcon size={14} /> Kits
       </span>
       <PhoneHeader title="Kit" />
       <DesktopHeader title="Kit" />

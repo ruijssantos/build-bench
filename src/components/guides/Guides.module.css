@@ -125,15 +125,14 @@
 
 /* ---- guide page ---- */
 
+/* `ui.moduleTitle` + this layout — the same crumb as a kit page's. */
 .crumb {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  font-size: var(--text-md);
-  font-weight: 700;
-  color: var(--muted);
+  gap: 4px;
   text-decoration: none;
   padding: 2px var(--gutter) 0;
+  transition: color var(--dur-fast) var(--ease-out);
 }
 
 .crumb:hover {

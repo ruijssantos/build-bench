@@ -6,6 +6,7 @@ import { DesktopHeader } from "@/components/bench/DesktopHeader";
 import { PhoneHeader } from "@/components/bench/PhoneHeader";
 import { GuideBody } from "@/components/guides/GuideBody";
 import styles from "@/components/guides/Guides.module.css";
+import ui from "@/styles/ui.module.css";
 import { GuideSidebar } from "@/components/guides/GuideSidebar";
 import { ChevronLeftIcon } from "@/components/icons";
 import { getGuide, GUIDES } from "@/guides";
@@ -34,8 +35,8 @@ export default async function GuidePage(props: PageProps<"/guides/[slug]">) {
       <PhoneHeader title="Guides" />
       <DesktopHeader title="Tips & Guides" />
 
-      <Link href="/guides" className={styles.crumb}>
-        <ChevronLeftIcon size={18} /> All guides
+      <Link href="/guides" className={`${ui.moduleTitle} ${styles.crumb}`}>
+        <ChevronLeftIcon size={14} /> All guides
       </Link>
 
       <div className={styles.layout}>
