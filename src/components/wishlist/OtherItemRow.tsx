@@ -1,10 +1,10 @@
 import { removeWishlistItemAction, toggleWishlistItemBought } from "@/app/(bench)/wishlist/actions";
 import { CheckIcon, ExternalLinkIcon, TrashIcon } from "@/components/icons";
 import type { WishlistItemRow } from "@/db/repositories/wishlist-items";
+import page from "@/styles/page.module.css";
 import ui from "@/styles/ui.module.css";
 
 import { EditWishlistItemTrigger } from "./EditWishlistItemTrigger";
-import styles from "./Wishlist.module.css";
 
 /** One "Other items" row — a tick, the title (with its optional link), edit,
  * and remove. The tick and remove are `<form action={…}>`s around a
@@ -15,13 +15,13 @@ export function OtherItemRow({ item }: { item: WishlistItemRow }) {
   const bought = item.status === "bought";
 
   return (
-    <div className={styles.itemRow}>
+    <div className={page.itemRow}>
       <form action={toggleWishlistItemBought}>
         <input type="hidden" name="id" value={item.id} />
         <input type="hidden" name="status" value={item.status} />
         <button
           type="submit"
-          className={`${styles.itemTick} ${bought ? styles.itemTickChecked : ""}`}
+          className={`${page.itemTick} ${bought ? page.itemTickChecked : ""}`}
           aria-pressed={bought}
           title={bought ? `Mark ${item.title} wanted again` : `Mark ${item.title} bought`}
           aria-label={bought ? `Mark ${item.title} wanted again` : `Mark ${item.title} bought`}
@@ -30,12 +30,12 @@ export function OtherItemRow({ item }: { item: WishlistItemRow }) {
         </button>
       </form>
 
-      <div className={styles.itemBody}>
-        <div className={styles.itemTitleRow}>
-          <span className={`${styles.itemTitle} ${bought ? styles.itemTitleBought : ""}`}>{item.title}</span>
+      <div className={page.itemBody}>
+        <div className={page.itemTitleRow}>
+          <span className={`${page.itemTitle} ${bought ? page.itemTitleBought : ""}`}>{item.title}</span>
           {item.url ? (
             <a
-              className={styles.itemLink}
+              className={page.itemLink}
               href={item.url}
               target="_blank"
               rel="noopener noreferrer"
@@ -46,7 +46,7 @@ export function OtherItemRow({ item }: { item: WishlistItemRow }) {
             </a>
           ) : null}
         </div>
-        {item.notes ? <span className={styles.itemNotes}>{item.notes}</span> : null}
+        {item.notes ? <span className={page.itemNotes}>{item.notes}</span> : null}
       </div>
 
       <EditWishlistItemTrigger item={item} />

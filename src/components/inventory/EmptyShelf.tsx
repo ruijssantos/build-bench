@@ -1,6 +1,6 @@
 import { PaintsIcon } from "@/components/icons";
+import page from "@/styles/page.module.css";
 
-import styles from "./Inventory.module.css";
 
 /**
  * The true empty state — no rows in `inventory_item` at all.
@@ -12,11 +12,11 @@ import styles from "./Inventory.module.css";
  */
 export function EmptyShelf() {
   return (
-    <div className={styles.emptyState}>
-      <div className={styles.emptyStateCard}>
-        <PaintsIcon size={28} className={styles.emptyStateIcon} />
-        <p className={styles.emptyStateTitle}>Your shelf is empty</p>
-        <p className={styles.emptyStateDescription}>
+    <div className={page.emptyState}>
+      <div className={page.emptyStateCard}>
+        <PaintsIcon size={28} className={page.emptyStateIcon} />
+        <p className={page.emptyStateTitle}>Your shelf is empty</p>
+        <p className={page.emptyStateDescription}>
           Use Add to put your first paint on the shelf.
         </p>
       </div>

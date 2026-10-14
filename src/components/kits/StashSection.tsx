@@ -1,4 +1,4 @@
-import { SavedKitsGrid } from "@/components/wishlist/SavedKitsGrid";
+import { SavedKitsGrid } from "./SavedKitsGrid";
 import { countKitsByStatus } from "@/db/repositories/kits";
 import { STASH_STATUSES, statusLabel } from "@/domain/kit";
 

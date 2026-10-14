@@ -80,31 +80,6 @@
   opacity: 0.22;
 }
 
-/* ---------------------------------------------------------------- filters */
-
-.filters {
-  display: flex;
-  gap: 8px;
-  overflow-x: auto;
-  /* Room for the pills' focus ring, and for the scrollbar the row grows on a
-     narrow phone. */
-  padding-bottom: 2px;
-  scrollbar-width: none;
-}
-
-.filters::-webkit-scrollbar {
-  display: none;
-}
-
-@media (min-width: 900px) {
-  .filters {
-    flex-wrap: wrap;
-    overflow-x: visible;
-  }
-}
-
-/* The pills themselves are `ui.pill` — this row only lays them out. */
-
 /* ------------------------------------------------------------- the table */
 
 .rowTitle {
@@ -329,68 +304,6 @@ a.rowTitle:hover {
   .addButton {
     margin-bottom: 0;
   }
-}
-
-/* ------------------------------------------------------------- empty state */
-
-/* The true empty-shelf state — the only thing on the screen when there's
-   nothing on the shelf, centering a single card in the whole content area. */
-.emptyState {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 40px 0 8px;
-}
-
-.emptyStateCard {
-  width: 100%;
-  max-width: 420px;
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-card);
-  padding: 28px 22px;
-  text-align: center;
-  box-shadow: var(--shadow-hero);
-}
-
-.emptyStateIcon {
-  color: var(--icon-idle);
-  margin-bottom: 12px;
-}
-
-.emptyStateTitle {
-  font-size: var(--text-lg);
-  font-weight: 700;
-  margin: 0 0 6px;
-}
-
-.emptyStateDescription {
-  font-size: var(--text-base);
-  line-height: 1.5;
-  color: var(--muted);
-  margin: 0;
-}
-
-/* The filtered-empty state — a family filter with nothing in it. Different
-   from .emptyState: the shelf isn't empty, just this slice of it, so this
-   stays a quiet inline note rather than a full centered card. */
-.emptyCard {
-  background: var(--card);
-  border: 1px dashed var(--line-strong);
-  border-radius: var(--radius-card);
-  padding: 28px 20px;
-  text-align: center;
-  font-size: var(--text-base);
-  line-height: 1.5;
-  color: var(--muted);
-}
-
-.emptyCard code {
-  font-family: var(--font-mono);
-  background: var(--card-sunken);
-  padding: 2px 6px;
-  border-radius: 6px;
-  color: var(--ink);
 }
 
 /* --------------------------------------------------------------- skeleton */

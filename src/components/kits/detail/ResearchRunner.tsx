@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
 import { SearchIcon } from "@/components/icons";
-import styles from "@/components/wishlist/Wishlist.module.css";
+import page from "@/styles/page.module.css";
 import ui from "@/styles/ui.module.css";
 
 /**
@@ -102,8 +102,8 @@ export function ResearchRunner({ kitId, hasResearch }: { kitId: number; hasResea
       </button>
 
       {running ? (
-        <span className={styles.status}>
-          <span className={styles.spinner} />
+        <span className={page.status}>
+          <span className={page.spinner} />
           {stage === "investigate"
             ? "Reading build threads and reviews… this takes a couple of minutes."
             : "Filing what it found…"}
@@ -111,7 +111,7 @@ export function ResearchRunner({ kitId, hasResearch }: { kitId: number; hasResea
       ) : null}
 
       {error ? (
-        <span className={`${styles.status} ${styles.statusError}`} role="alert">
+        <span className={`${page.status} ${page.statusError}`} role="alert">
           {error}
         </span>
       ) : null}

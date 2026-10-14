@@ -1,6 +1,6 @@
 import { ExternalLinkIcon, PlayIcon } from "@/components/icons";
-import { KitCardBody } from "@/components/wishlist/KitCardBody";
-import styles from "@/components/wishlist/Wishlist.module.css";
+import { KitCardBody } from "@/components/kits/KitCardBody";
+import styles from "@/components/kits/Kits.module.css";
 import type { KitRow } from "@/db/repositories/kits";
 import { kitYoutubeSearchUrl } from "@/domain/kit";
 import ui from "@/styles/ui.module.css";

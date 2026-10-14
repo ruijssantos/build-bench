@@ -1,6 +1,6 @@
 import { KitsIcon } from "@/components/icons";
-import styles from "@/components/inventory/Inventory.module.css";
 import { statusEmptyLine, type StashStatus } from "@/domain/kit";
+import page from "@/styles/page.module.css";
 
 /** The true empty state for the stash — forked from the Wishlist's
  * `EmptyKits` (same card, same icon-title-description shape) rather than
@@ -9,11 +9,11 @@ import { statusEmptyLine, type StashStatus } from "@/domain/kit";
  * `EmptyStashFiltered` for that case). */
 export function EmptyStash() {
   return (
-    <div className={styles.emptyState}>
-      <div className={styles.emptyStateCard}>
-        <KitsIcon size={28} className={styles.emptyStateIcon} />
-        <p className={styles.emptyStateTitle}>Nothing in the stash yet</p>
-        <p className={styles.emptyStateDescription}>Search above, or add a kit by hand — it saves straight here.</p>
+    <div className={page.emptyState}>
+      <div className={page.emptyStateCard}>
+        <KitsIcon size={28} className={page.emptyStateIcon} />
+        <p className={page.emptyStateTitle}>Nothing in the stash yet</p>
+        <p className={page.emptyStateDescription}>Search above, or add a kit by hand — it saves straight here.</p>
       </div>
     </div>
   );
@@ -29,5 +29,5 @@ export function EmptyStash() {
  * "No kits are currently stash."
  */
 export function EmptyStashFiltered({ status }: { status: StashStatus }) {
-  return <div className={styles.emptyCard}>{statusEmptyLine(status)}</div>;
+  return <div className={page.emptyCard}>{statusEmptyLine(status)}</div>;
 }

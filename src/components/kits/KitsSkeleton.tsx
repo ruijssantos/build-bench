@@ -1,10 +1,11 @@
+import page from "@/styles/page.module.css";
 import ui from "@/styles/ui.module.css";
 
-import styles from "./Wishlist.module.css";
+import styles from "./Kits.module.css";
 
 /** How many card-shaped placeholders to reserve — a fixed, documented bound,
  * not a guess at the real count (which isn't knowable before the query
- * resolves; see the comment above `.skeletonSwatch` in Wishlist.module.css
+ * resolves; see the skeleton section of `src/styles/page.module.css`
  * and docs/PERFORMANCE.md, Wishlist section). */
 const SKELETON_KIT_COUNT = 2;
 
@@ -18,23 +19,23 @@ const SKELETON_KIT_COUNT = 2;
 export function KitsSkeleton() {
   return (
     <>
-      <div className={styles.subHead} aria-hidden="true">
-        <span className={`${ui.moduleTitle} ${styles.skeletonLine}`} />
+      <div className={page.subHead} aria-hidden="true">
+        <span className={`${ui.moduleTitle} ${page.skeletonLine}`} />
       </div>
       <div className={styles.cardGrid} aria-hidden="true">
         {Array.from({ length: SKELETON_KIT_COUNT }, (_, i) => (
           <div className={styles.card} key={i}>
-            <div className={`${styles.cardArt} ${styles.skeletonSwatch}`} />
+            <div className={`${styles.cardArt} ${page.skeletonSwatch}`} />
             <div className={styles.cardBody}>
-              <span className={`${styles.cardBrand} ${styles.skeletonLine}`} style={{ width: 64 }} />
-              <span className={`${styles.cardName} ${styles.skeletonLine}`} style={{ width: "80%" }} />
-              <span className={`${styles.cardNumber} ${styles.skeletonLine}`} style={{ width: 48 }} />
+              <span className={`${styles.cardBrand} ${page.skeletonLine}`} style={{ width: 64 }} />
+              <span className={`${styles.cardName} ${page.skeletonLine}`} style={{ width: "80%" }} />
+              <span className={`${styles.cardNumber} ${page.skeletonLine}`} style={{ width: 48 }} />
               <div className={styles.cardChips}>
-                <span className={`${styles.chip} ${styles.skeletonLine}`} style={{ width: 56 }} />
+                <span className={`${styles.chip} ${page.skeletonLine}`} style={{ width: 56 }} />
               </div>
             </div>
             <div className={styles.savedCardActions}>
-              <span className={styles.skeletonButton} style={{ width: 96 }} />
+              <span className={page.skeletonButton} style={{ width: 96 }} />
             </div>
           </div>
         ))}

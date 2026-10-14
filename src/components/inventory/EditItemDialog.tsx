@@ -9,7 +9,7 @@ import type { InventoryForm, InventoryState } from "@/domain/inventory";
 import ui from "@/styles/ui.module.css";
 
 import { ItemFields, type ItemFieldsValue } from "./ItemFields";
-import styles from "./InventoryForm.module.css";
+import styles from "@/components/bench/Form.module.css";
 
 export interface EditableItem {
   id: number;

@@ -4,10 +4,9 @@ import { useRef, useState } from "react";
 
 import { createManualForKit } from "@/app/(bench)/kits/actions";
 import { PlusIcon } from "@/components/icons";
-import formStyles from "@/components/inventory/InventoryForm.module.css";
-import inventoryStyles from "@/components/inventory/Inventory.module.css";
-import styles from "@/components/wishlist/Wishlist.module.css";
+import formStyles from "@/components/bench/Form.module.css";
 import type { KitManualRow } from "@/db/repositories/kit-manuals";
+import page from "@/styles/page.module.css";
 import ui from "@/styles/ui.module.css";
 
 import { ManualRow } from "./ManualRow";
@@ -98,7 +97,7 @@ export function ManualsList({ kitId, manuals }: { kitId: number; manuals: KitMan
 
   return (
     <>
-      <div className={styles.subHead}>
+      <div className={page.subHead}>
         <span className={ui.moduleTitle}>Manuals ({manuals.length})</span>
         <button
           type="button"
@@ -124,7 +123,7 @@ export function ManualsList({ kitId, manuals }: { kitId: number; manuals: KitMan
 
       {error ? <div className={formStyles.error}>{error}</div> : null}
 
-      {manuals.length === 0 ? <div className={inventoryStyles.emptyCard}>No manuals uploaded yet.</div> : null}
+      {manuals.length === 0 ? <div className={page.emptyCard}>No manuals uploaded yet.</div> : null}
 
       {manuals.map((manual) => (
         <ManualRow

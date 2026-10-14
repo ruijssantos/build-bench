@@ -1,9 +1,10 @@
 import Link from "next/link";
 
 import { StatusBar } from "@/components/kits/StatusBar";
-import { KitCardBody } from "@/components/wishlist/KitCardBody";
-import cardStyles from "@/components/wishlist/Wishlist.module.css";
+import { KitCardBody } from "@/components/kits/KitCardBody";
+import cardStyles from "@/components/kits/Kits.module.css";
 import { listKitsByStatuses } from "@/db/repositories/kits";
+import page from "@/styles/page.module.css";
 import ui from "@/styles/ui.module.css";
 
 import styles from "./Dashboard.module.css";
@@ -33,7 +34,7 @@ export async function OnTheBench() {
 
   if (kits.length === 0) {
     return (
-      <div className={cardStyles.itemList}>
+      <div className={page.itemList}>
         <p className={styles.quiet}>
           Nothing on the bench. Move a kit to <Link href="/kits">Building</Link> when you start it.
         </p>

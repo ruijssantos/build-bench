@@ -9,7 +9,7 @@ import type { KitCandidate } from "@/domain/kit-candidate";
 import ui from "@/styles/ui.module.css";
 
 import { KitCardBody } from "./KitCardBody";
-import styles from "./Wishlist.module.css";
+import styles from "./Kits.module.css";
 
 /**
  * One search result, with the button that saves it — docs/PLAN.md §5.1,

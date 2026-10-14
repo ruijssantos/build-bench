@@ -1,4 +1,4 @@
-import styles from "./Wishlist.module.css";
+import page from "@/styles/page.module.css";
 
 /** Same reasoning as `SKELETON_KIT_COUNT` in `KitsSkeleton` — a fixed,
  * documented bound, not the real count. */
@@ -11,12 +11,12 @@ const SKELETON_ITEM_COUNT = 3;
  */
 export function OtherItemsSkeleton() {
   return (
-    <div className={styles.itemList} aria-hidden="true">
+    <div className={page.itemList} aria-hidden="true">
       {Array.from({ length: SKELETON_ITEM_COUNT }, (_, i) => (
-        <div className={styles.itemRow} key={i}>
-          <span className={`${styles.itemTick} ${styles.skeletonTick}`} />
-          <div className={styles.itemBody}>
-            <span className={`${styles.itemTitle} ${styles.skeletonLine}`} style={{ width: i === 1 ? "40%" : "60%" }} />
+        <div className={page.itemRow} key={i}>
+          <span className={`${page.itemTick} ${page.skeletonTick}`} />
+          <div className={page.itemBody}>
+            <span className={`${page.itemTitle} ${page.skeletonLine}`} style={{ width: i === 1 ? "40%" : "60%" }} />
           </div>
         </div>
       ))}

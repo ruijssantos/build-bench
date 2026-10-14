@@ -1,9 +1,10 @@
 import { LowBottleIcon } from "@/components/icons";
 import { MarkBought } from "@/components/kits/MarkBought";
-import cardStyles from "@/components/wishlist/Wishlist.module.css";
+import cardStyles from "@/components/kits/Kits.module.css";
 import { listInventory } from "@/db/repositories/inventory";
 import { listShopRunPaints } from "@/db/repositories/shop-run";
 import { buildShopRun } from "@/domain/dashboard";
+import page from "@/styles/page.module.css";
 
 import styles from "./Dashboard.module.css";
 
@@ -30,7 +31,7 @@ export async function ShopRun() {
 
   if (entries.length === 0) {
     return (
-      <div className={cardStyles.itemList}>
+      <div className={page.itemList}>
         <p className={styles.quiet}>
           Nothing to buy — every paint your kits call for is on the shelf, and nothing is running
           low.
@@ -42,15 +43,15 @@ export async function ShopRun() {
   const firstLowIndex = entries.findIndex((entry) => entry.reason === "low");
 
   return (
-    <div className={cardStyles.itemList}>
+    <div className={page.itemList}>
       {entries.map((entry, index) => (
         <div key={`${entry.reason}-${entry.code}`}>
           {index === firstLowIndex && index > 0 ? <div className={styles.split} /> : null}
-          <div className={cardStyles.itemRow}>
+          <div className={page.itemRow}>
             <span className={cardStyles.paintDot} style={{ background: entry.hex }} />
-            <span className={cardStyles.itemBody}>
-              <span className={cardStyles.itemTitle}>{entry.code}</span>
-              <span className={cardStyles.itemNotes}>
+            <span className={page.itemBody}>
+              <span className={page.itemTitle}>{entry.code}</span>
+              <span className={page.itemNotes}>
                 {entry.name}
                 {entry.reason === "missing" && entry.kitCount
                   ? ` · ${entry.kitCount} ${entry.kitCount === 1 ? "kit" : "kits"}`

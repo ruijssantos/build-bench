@@ -7,7 +7,7 @@
  * `width` (inputs aside) or `position` beyond its own hit area. A caller adds
  * layout with a class of its own, and because the two never set the same
  * property, which CSS module the bundler emits last cannot matter (see
- * `.skeletonLine` in Wishlist.module.css for what that tie cost once).
+ * the skeleton section of page.module.css for what that tie cost once).
  *
  * The rules that keep the family coherent:
  *
@@ -73,23 +73,6 @@
   overflow: hidden;
   clip: rect(0 0 0 0);
   white-space: nowrap;
-}
-
-/* ----------------------------------------------------------------- layout */
-
-/* A screen's content below its header. Scrolls on its own on a phone, where
-   the header and tab bar stay put; on a desktop the content column scrolls
-   instead (layout.module.css). */
-.scrollArea {
-  flex: 1;
-  min-height: 0;
-  overflow-y: auto;
-}
-
-@media (min-width: 900px) {
-  .scrollArea {
-    overflow: visible;
-  }
 }
 
 /* ---------------------------------------------------------------- buttons */

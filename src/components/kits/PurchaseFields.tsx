@@ -1,6 +1,6 @@
 "use client";
 
-import formStyles from "@/components/inventory/InventoryForm.module.css";
+import formStyles from "@/components/bench/Form.module.css";
 import type { KitRow } from "@/db/repositories/kits";
 import ui from "@/styles/ui.module.css";
 

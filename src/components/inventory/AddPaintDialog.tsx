@@ -10,7 +10,7 @@ import ui from "@/styles/ui.module.css";
 
 import { ItemFields, type ItemFieldsValue } from "./ItemFields";
 import { PaintPicker } from "./PaintPicker";
-import styles from "./InventoryForm.module.css";
+import styles from "@/components/bench/Form.module.css";
 
 /**
  * Add a paint to the shelf. Its own chunk, fetched on the first click of the

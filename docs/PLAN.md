@@ -405,8 +405,9 @@ build-bench/
 │   │   ├── login/  ·  page.tsx  ·  layout.tsx  ·  manifest.ts
 │   ├── catalogue/                  ← reference data compiled into the build, not queried —
 │   │                                 see "Reference data rule" below and PERFORMANCE.md §2
-│   ├── components/                 ← one folder per feature (thinner/, inventory/, ...),
-│   │                                 plus bench/ for shared chrome and nav/ for the shell
+│   ├── components/                 ← one folder per concept (kits/, inventory/, thinner/,
+│   │                                 ...), plus bench/ for shared chrome — Modal, the
+│   │                                 dialog trigger, form layout — and nav/ for the shell
 │   ├── db/
 │   │   ├── schema.ts  ·  client.ts        ← Neon serverless driver
 │   │   └── repositories/                  ← only truly runtime-mutable tables: inventory,
@@ -420,14 +421,19 @@ build-bench/
 │   │                                 server helpers
 │   ├── proxy.ts                    ← auth gate + the bench-memory cookie (§6 in
 │   │                                 PERFORMANCE.md)
-│   └── styles/tokens.css           ← the tokens in §4.1, verbatim
+│   └── styles/                     ← tokens.css (the tokens in §4.1, verbatim), and the
+│                                     two shared vocabularies: ui.module.css (controls)
+│                                     and page.module.css (screen structure)
 └── tests/
 ```
 
 The tree above is the convention, not a fixed manifest — each phase adds the files its
 feature needs following this shape (a route folder under `(bench)/`, a component folder
 under `components/`, a repository only if the data is genuinely mutable, pure logic in
-`domain/`). Three rules hold across all of it:
+`domain/`). A component lives in the folder of the concept it renders, not the screen that
+happened to need it first: the kit card was built for the Wishlist and lived in `wishlist/`
+until the Stash, the Dashboard and the detail page were most of its users, all reaching
+across into another feature's folder to get it. Three rules hold across all of it:
 
 **Connection handling.** Neon's serverless HTTP driver (`@neondatabase/serverless`), not
 node-postgres. It speaks HTTP rather than TCP, so there's no connection pool to exhaust
@@ -593,9 +599,15 @@ why it works on screens (Paints, Shopping) that have nothing to do with instrume
 
 #### Components
 
-Every control lives once, in `src/styles/ui.module.css`, imported as `ui`. A screen's own
-stylesheet adds layout to them (`flex`, `margin`, position) and never restyles them; the shared
-classes set no layout, so the two never set the same property and bundle order can't matter.
+Every control lives once, in `src/styles/ui.module.css`, imported as `ui`; the structure they
+sit in — a screen's stack and sections, list rows, the status line, empty states, the filter
+row, skeleton placeholders — lives in `src/styles/page.module.css`, imported as `page`. A
+screen's own stylesheet adds layout to them (`flex`, `margin`, position) and never restyles
+them; the shared classes set no layout, so the two never set the same property and bundle
+order can't matter. Where a local class *has* to override a shared one, it does so by
+specificity (`.searchActions > .searchButton`, `.skeletonLine.skeletonLine`), never by
+which file loads last. Every dialog opens through `bench/DialogTrigger` (a `lazy()` dialog,
+a button, the open state between them).
 
 | Control | Classes | Spec |
 |---|---|---|

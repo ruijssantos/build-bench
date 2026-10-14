@@ -1,16 +1,18 @@
 "use client";
 
-import { lazy, Suspense, useEffect, useState, type FormEvent } from "react";
+import { lazy, useEffect, useState, type FormEvent } from "react";
 
+import { DialogTrigger } from "@/components/bench/DialogTrigger";
 import { SearchField } from "@/components/bench/SearchField";
 import { PlusIcon } from "@/components/icons";
 import { NAV_RECLICK_EVENT } from "@/components/nav/nav-events";
 import type { KitStatus } from "@/domain/kit";
 import type { KitCandidate } from "@/domain/kit-candidate";
+import page from "@/styles/page.module.css";
 import ui from "@/styles/ui.module.css";
 
 import { KitCandidateCard } from "./KitCandidateCard";
-import styles from "./Wishlist.module.css";
+import styles from "./Kits.module.css";
 
 const ManualKitDialog = lazy(() => import("./ManualKitDialog").then((m) => ({ default: m.ManualKitDialog })));
 
@@ -43,7 +45,6 @@ export function KitSearch({ saveStatus, homeHref }: { saveStatus: KitStatus; hom
   const [query, setQuery] = useState("");
   const [state, setState] = useState<SearchState>({ status: "idle" });
   const [runs, setRuns] = useState(0);
-  const [manualOpen, setManualOpen] = useState(false);
 
   /** Back to a blank box — the search's own × clears it, and re-clicking the
    * Wishlist nav tab (see `nav-events.ts`) does the same, since neither a
@@ -105,9 +106,9 @@ export function KitSearch({ saveStatus, homeHref }: { saveStatus: KitStatus; hom
           <button type="submit" className={`${ui.btn} ${ui.btnLg} ${ui.btnPrimary} ${styles.searchButton}`} disabled={loading || !query.trim()}>
             {loading ? "Searching…" : "Search"}
           </button>
-          <button type="button" className={`${ui.btn} ${ui.btnLg}`} onClick={() => setManualOpen(true)}>
+          <DialogTrigger dialog={ManualKitDialog} dialogProps={{ defaultStatus: saveStatus }} className={`${ui.btn} ${ui.btnLg}`}>
             <PlusIcon size={16} /> Add Manually
-          </button>
+          </DialogTrigger>
         </div>
       </form>
 
@@ -116,18 +117,18 @@ export function KitSearch({ saveStatus, homeHref }: { saveStatus: KitStatus; hom
           about, since nothing about the page moves in the meantime. */}
       <div role="status" aria-live="polite">
         {state.status === "loading" ? (
-          <div className={styles.status}>
-            <span className={styles.spinner} aria-hidden="true" />
+          <div className={page.status}>
+            <span className={page.spinner} aria-hidden="true" />
             <span>Searching Scalemates and the web…</span>
           </div>
         ) : null}
 
         {state.status === "error" ? (
-          <div className={`${styles.status} ${styles.statusError}`}>{state.message}</div>
+          <div className={`${page.status} ${page.statusError}`}>{state.message}</div>
         ) : null}
 
         {state.status === "done" && state.candidates.length === 0 ? (
-          <div className={styles.status}>
+          <div className={page.status}>
             No matches for &ldquo;{state.query}&rdquo;. Try different terms, or add it manually.
           </div>
         ) : null}
@@ -135,9 +136,9 @@ export function KitSearch({ saveStatus, homeHref }: { saveStatus: KitStatus; hom
 
       {state.status === "done" && state.candidates.length > 0 ? (
         <div className={styles.resultsBlock}>
-          <div className={styles.subHead}>
+          <div className={page.subHead}>
             <span className={ui.moduleTitle}>Search results</span>
-            <span className={styles.moduleMeta}>
+            <span className={page.moduleMeta}>
               {state.candidates.length} found
             </span>
           </div>
@@ -154,11 +155,6 @@ export function KitSearch({ saveStatus, homeHref }: { saveStatus: KitStatus; hom
         </div>
       ) : null}
 
-      {manualOpen ? (
-        <Suspense fallback={null}>
-          <ManualKitDialog defaultStatus={saveStatus} onClose={() => setManualOpen(false)} />
-        </Suspense>
-      ) : null}
     </div>
   );
 }
