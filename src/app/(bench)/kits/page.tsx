@@ -40,12 +40,17 @@ export default function KitsPage(props: PageProps<"/kits">) {
 
       <div className={ui.scrollArea}>
         <div className={styles.grid}>
-          <KitSearch saveStatus="stash" homeHref="/kits" />
-          <BenchError label="Stash">
-            <Suspense fallback={<KitsSkeleton />}>
-              <StashSection searchParams={props.searchParams} />
-            </Suspense>
-          </BenchError>
+          {/* One section, so search, filters, title and grid keep the 16px
+              rhythm Wishlist and Paints use — as direct children of `.grid`
+              they each sat 40px apart. */}
+          <section className={styles.section}>
+            <KitSearch saveStatus="stash" homeHref="/kits" />
+            <BenchError label="Stash">
+              <Suspense fallback={<KitsSkeleton />}>
+                <StashSection searchParams={props.searchParams} />
+              </Suspense>
+            </BenchError>
+          </section>
         </div>
       </div>
     </>
