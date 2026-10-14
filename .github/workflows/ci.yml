@@ -23,6 +23,16 @@ jobs:
       # docs/PLAN.md §4.1 — fails on a font size off the type scale in
       # tokens.css: a half-pixel, or anything under 16px that isn't a token.
       - run: npm run lint:css
+
+      # Fails on a file nothing imports, an export nothing uses, or a
+      # dependency nothing needs (knip.json). The scripts under scripts/ are
+      # entry points of their own, run by hand.
+      - run: npm run lint:dead
+
+      # The pure logic in src/domain and the colour matcher: ratio and cup
+      # maths, paint codes and search, status rules, extraction and research
+      # normalisation. No database, no network, under two seconds.
+      - run: npm test
       - run: npm run build
 
       # docs/PERFORMANCE.md — fails the build if the Thinner Bench's initial

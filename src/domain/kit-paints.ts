@@ -145,10 +145,10 @@ export function bucketPaintRequirements(
   };
 }
 
-/** Shape shared by the Stash grid's aggregate query (`KitReadiness`, one row
- * per kit) and the detail page's own per-kit buckets (derived from
- * `PaintBuckets`) — the same `ReadyLine` component renders "Own 14 of 17 ·
- * 3 missing" from either. */
+/** A kit's paint readiness as counts — what the Stash and Wishlist grids'
+ * aggregate query (`KitReadiness`, one row per kit) returns, and what
+ * `ReadyLine` and the Dashboard's `isReadyToBuild` read. The detail page
+ * shows the buckets themselves instead. */
 export interface ReadinessCounts {
   ownedCount: number;
   /** Covered by an owned acrylic twin — see `EquivalentPaintDisplay`. On the
@@ -159,11 +159,3 @@ export interface ReadinessCounts {
   unresolvedCount: number;
 }
 
-export function readinessCounts(buckets: PaintBuckets): ReadinessCounts {
-  return {
-    ownedCount: buckets.owned.length,
-    equivalentCount: buckets.equivalents.length,
-    missingCount: buckets.missing.length,
-    unresolvedCount: buckets.unresolved.length,
-  };
-}

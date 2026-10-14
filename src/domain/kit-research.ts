@@ -24,10 +24,10 @@ import { z } from "zod";
 // Vocabulary
 // ---------------------------------------------------------------------------
 
-export const RESEARCH_DIFFICULTIES = ["beginner", "intermediate", "advanced"] as const;
+const RESEARCH_DIFFICULTIES = ["beginner", "intermediate", "advanced"] as const;
 export type ResearchDifficulty = (typeof RESEARCH_DIFFICULTIES)[number];
 
-export function isResearchDifficulty(value: unknown): value is ResearchDifficulty {
+function isResearchDifficulty(value: unknown): value is ResearchDifficulty {
   return typeof value === "string" && (RESEARCH_DIFFICULTIES as readonly string[]).includes(value);
 }
 
@@ -37,16 +37,16 @@ const DIFFICULTY_LABEL: Record<ResearchDifficulty, string> = {
   advanced: "Advanced",
 };
 
-export function difficultyLabel(value: string | null): string | null {
+function difficultyLabel(value: string | null): string | null {
   return isResearchDifficulty(value) ? DIFFICULTY_LABEL[value] : null;
 }
 
 /** How much a fit issue actually costs you at the bench, which is the only
  * thing worth ranking them by. */
-export const ISSUE_SEVERITIES = ["minor", "moderate", "major"] as const;
+const ISSUE_SEVERITIES = ["minor", "moderate", "major"] as const;
 export type IssueSeverity = (typeof ISSUE_SEVERITIES)[number];
 
-export function isIssueSeverity(value: unknown): value is IssueSeverity {
+function isIssueSeverity(value: unknown): value is IssueSeverity {
   return typeof value === "string" && (ISSUE_SEVERITIES as readonly string[]).includes(value);
 }
 
@@ -65,10 +65,10 @@ export function severityLabel(value: string): string {
 
 /** Where in a build a tip lands, so the list can be skimmed for the stage
  * you're actually at rather than read end to end. */
-export const TIP_CATEGORIES = ["prep", "paint", "decals", "assembly", "tools", "reference"] as const;
+const TIP_CATEGORIES = ["prep", "paint", "decals", "assembly", "tools", "reference"] as const;
 export type TipCategory = (typeof TIP_CATEGORIES)[number];
 
-export function isTipCategory(value: unknown): value is TipCategory {
+function isTipCategory(value: unknown): value is TipCategory {
   return typeof value === "string" && (TIP_CATEGORIES as readonly string[]).includes(value);
 }
 
@@ -286,26 +286,6 @@ export function normalizeResearch(raw: RawKitResearch): NormalizedResearch {
     fitIssues,
     tips,
   };
-}
-
-/** Every distinct host the claims and links point at, and the count
- * `difficultyRating` gates on. Hosts rather than URLs: three threads on the same forum are one
- * source agreeing with itself, and counting them as three is exactly the
- * false confidence §5.4 is about. */
-export function countSources(research: NormalizedResearch): number {
-  const hosts = new Set<string>();
-  for (const url of [
-    ...research.fitIssues.map((r) => r.sourceUrl),
-    ...research.tips.map((r) => r.sourceUrl),
-  ]) {
-    try {
-      hosts.add(new URL(url).hostname.replace(/^www\./, ""));
-    } catch {
-      // Can't happen — `usableSourceUrl` parsed it already — but a research
-      // panel is not worth throwing a page over.
-    }
-  }
-  return hosts.size;
 }
 
 /** "forums.example.com/thread/12" → "forums.example.com", for the link label

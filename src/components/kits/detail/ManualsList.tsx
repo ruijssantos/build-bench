@@ -6,6 +6,7 @@ import { createManualForKit } from "@/app/(bench)/kits/actions";
 import { PlusIcon } from "@/components/icons";
 import formStyles from "@/components/bench/Form.module.css";
 import type { KitManualRow } from "@/db/repositories/kit-manuals";
+import type { Result } from "@/lib/result";
 import page from "@/styles/page.module.css";
 import ui from "@/styles/ui.module.css";
 
@@ -70,7 +71,7 @@ export function ManualsList({ kitId, manuals }: { kitId: number; manuals: KitMan
         const body = new FormData();
         body.append("file", file);
         const res = await fetch("/api/kits/manuals/upload", { method: "POST", body });
-        const data = (await res.json()) as { ok: true; url: string } | { ok: false; error: string };
+        const data = (await res.json()) as Result<{ url: string }>;
         if (!data.ok) {
           setError(data.error);
           return;

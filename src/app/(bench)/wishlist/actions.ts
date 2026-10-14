@@ -11,6 +11,7 @@ import {
   WISHLIST_ITEMS_TAG,
 } from "@/db/repositories/wishlist-items";
 import { readText } from "@/lib/form-text";
+import type { Result } from "@/lib/result";
 
 /**
  * Wishlist-only mutations — docs/PLAN.md §6 Phase 3.
@@ -25,7 +26,6 @@ import { readText } from "@/lib/form-text";
  * which has nothing to do with kits at all.
  */
 
-export type WishlistResult = { ok: true } | { ok: false; error: string };
 
 // ---------------------------------------------------------------------------
 // Kits
@@ -36,7 +36,7 @@ export type WishlistResult = { ok: true } | { ok: false; error: string };
  * and the row it lands on is exactly where the stash picks it up. Scoped
  * `wishlist → stash` rather than "set this id to stash": this screen may
  * only move rows it actually shows. */
-export async function markKitBought(id: number): Promise<WishlistResult> {
+export async function markKitBought(id: number): Promise<Result> {
   if (!Number.isInteger(id)) return { ok: false, error: "Unknown kit." };
 
   const updated = await updateKitStatus(id, "wishlist", "stash");
@@ -57,7 +57,7 @@ export interface AddWishlistItemInput {
   notes: string;
 }
 
-export async function addWishlistItem(input: AddWishlistItemInput): Promise<WishlistResult> {
+export async function addWishlistItem(input: AddWishlistItemInput): Promise<Result> {
   const title = readText(input.title);
   if (!title) return { ok: false, error: "Give it a title." };
 
@@ -78,7 +78,7 @@ export interface UpdateWishlistItemInput {
   notes: string;
 }
 
-export async function updateWishlistItem(input: UpdateWishlistItemInput): Promise<WishlistResult> {
+export async function updateWishlistItem(input: UpdateWishlistItemInput): Promise<Result> {
   if (!Number.isInteger(input.id)) return { ok: false, error: "Unknown item." };
 
   const title = readText(input.title);

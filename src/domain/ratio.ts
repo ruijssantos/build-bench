@@ -40,7 +40,7 @@ export interface EffectiveRatio {
 }
 
 /** Millilitres per drop through a 0.3 mm needle — the prototype's constant. */
-export const ML_PER_DROP = 0.05;
+const ML_PER_DROP = 0.05;
 
 /** The additive family (X-20A, X-21) has no ratio of its own — it *is* the thinner/agent. */
 export function isAdditiveFamily(rule: Pick<RatioRuleLike, "family">): boolean {

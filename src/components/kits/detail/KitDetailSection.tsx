@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { Suspense } from "react";
 
 import { BenchError } from "@/components/bench/BenchError";
@@ -25,7 +25,8 @@ import { ResearchSkeleton } from "./ResearchSkeleton";
 import { StatusPanel } from "./StatusPanel";
 
 /**
- * `/kits/[id]` — docs/PLAN.md §6 Phase 4a, the app's first detail route.
+ * A kit's detail page (`KitDetailPage`, at `/kits/[id]` or `/wishlist/[id]`) —
+ * docs/PLAN.md §6 Phase 4a, the app's first detail route.
  * The one query every other panel on this page needs (the kit row itself)
  * sits here; Manuals, Paints and Research need queries of their own, so each
  * gets its own nested <Suspense>+<BenchError> rather than waiting on this one
@@ -44,7 +45,16 @@ import { StatusPanel } from "./StatusPanel";
  * stepper grows a Wishlist step while the kit is still on it, and
  * "Purchase & dates" stays hidden until it's bought.
  */
-export async function KitDetailSection({ params }: { params: Promise<{ id: string }> }) {
+/** The list a kit's page lives under: its URL, its nav highlight, its crumb. */
+export type KitListHref = "/wishlist" | "/kits";
+
+export async function KitDetailSection({
+  params,
+  listHref,
+}: {
+  params: Promise<{ id: string }>;
+  listHref: KitListHref;
+}) {
   const { id: rawId } = await params;
   const id = Number(rawId);
   if (!Number.isInteger(id)) notFound();
@@ -53,6 +63,11 @@ export async function KitDetailSection({ params }: { params: Promise<{ id: strin
   if (!kit || !isKitStatus(kit.status)) notFound();
 
   const wanted = kit.status === "wishlist";
+  // A kit's page is under the list it's on. An old link, or a kit marked
+  // bought while its page is open, lands here under the other list — moved,
+  // rather than shown with the wrong list lit in the nav.
+  const home: KitListHref = wanted ? "/wishlist" : "/kits";
+  if (listHref !== home) redirect(`${home}/${kit.id}`);
   const title = kit.name ?? "Kit";
   const headerActions = (
     <div className={styles.headerActions}>
@@ -62,7 +77,7 @@ export async function KitDetailSection({ params }: { params: Promise<{ id: strin
   );
 
   const crumb = (
-    <Link href={wanted ? "/wishlist" : "/kits"} className={`${ui.moduleTitle} ${styles.crumb}`}>
+    <Link href={home} className={`${ui.moduleTitle} ${styles.crumb}`}>
       <ChevronLeftIcon size={14} /> {wanted ? "Wishlist" : "Stash"}
     </Link>
   );

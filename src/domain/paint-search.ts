@@ -31,7 +31,7 @@ interface IndexedPaint<T extends SearchablePaint> {
 export type PaintSearchIndex<T extends SearchablePaint> = ReadonlyArray<IndexedPaint<T>>;
 
 /** "xf-64" / "XF 64" → "XF64". */
-export function compactPaintCode(raw: string): string {
+function compactPaintCode(raw: string): string {
   return raw.replace(/[\s-]/g, "").toUpperCase();
 }
 

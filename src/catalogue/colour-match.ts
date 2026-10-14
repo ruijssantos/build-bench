@@ -177,8 +177,17 @@ export function gunzeColour(rawCode: string): string | null {
   return GUNZE_HEX.get(prefixed ? `${prefixed[1]}${prefixed[2]}` : key) ?? null;
 }
 
+/** The swatches `scripts/build-catalogue.ts` gives things with no colour of
+ * their own: colourless clears and top coats, thinners, flat base. They stand
+ * for "no colour" on a chip; as colours they are light greys, and with them in
+ * the pool a silver callout came back with Acrylic Thinner, Lacquer Thinner
+ * and Protective Top Coat as its closest matches. Tinted clears (X-27 Clear
+ * Red) carry real swatches and stay in. */
+const PLACEHOLDER_SWATCHES = new Set(["#e9e7df", "#dcdcd6", "#d8d5cc"]);
+
 const TAMIYA_LAB: Array<{ code: string; name: string; hex: string; lab: Lab }> = [];
 for (const paint of CATALOGUE) {
+  if (PLACEHOLDER_SWATCHES.has(paint.hex.toLowerCase())) continue;
   const lab = hexToLab(paint.hex);
   if (lab) {
     TAMIYA_LAB.push({ code: paint.code, name: paint.name, hex: paint.hex, lab });

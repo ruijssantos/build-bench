@@ -7,7 +7,7 @@ import type { PaintLine } from "@/lib/thinner-bench";
  * reference's populated example rather than an empty state, so the screen is
  * immediately useful on first open. Once you've looked at a paint, that's what
  * comes back instead. */
-export const DEFAULT_CODE = "TS-8";
+const DEFAULT_CODE = "TS-8";
 
 export type BenchSearchParams = Record<string, string | string[] | undefined>;
 

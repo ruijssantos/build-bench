@@ -36,6 +36,7 @@ import {
 import type { KitCandidate } from "@/domain/kit-candidate";
 import { deleteBoxArt, isStoredBlobUrl, saveBoxArt } from "@/lib/box-art";
 import { readText } from "@/lib/form-text";
+import type { Result } from "@/lib/result";
 
 /**
  * Kit mutations shared by the Wishlist (Phase 3) and the Stash (Phase 4a) —
@@ -54,7 +55,9 @@ import { readText } from "@/lib/form-text";
 /** `promotable` is set only when the duplicate is a *wishlist* kit and the
  * caller was saving into the stash — the one direction where offering to move
  * the existing row instead of creating a second one makes sense. */
-export type KitResult = { ok: true } | { ok: false; error: string; promotable?: { id: number } };
+/** A kit save can fail because the kit is already on the wishlist — then the
+ * failure carries the row to promote instead of a duplicate. */
+export type KitResult = Result<object, { promotable?: { id: number } }>;
 
 /**
  * `findKitByBrandNumber` searches every status (docs/PLAN.md §6 Phase 4a), so
@@ -293,13 +296,12 @@ export async function updateManualKit(input: UpdateManualKitInput): Promise<KitR
   return { ok: true };
 }
 
-export type FetchArtResult = { ok: true; imageUrl: string } | { ok: false; error: string };
 
 /** Fetches box art from a kit's link, on demand — synchronous, so the person
  * watches it work and gets the real reason when it doesn't (see the Phase 3
  * note this replaces: sites that refuse server-side requests, Scalemates
  * chief among them, are the expected failure, not an exceptional one). */
-export async function fetchKitArt(id: number, linkUrl: string): Promise<FetchArtResult> {
+export async function fetchKitArt(id: number, linkUrl: string): Promise<Result<{ imageUrl: string }>> {
   if (!Number.isInteger(id)) return { ok: false, error: "Unknown kit." };
 
   const link = readText(linkUrl, 2000);
@@ -511,7 +513,7 @@ export interface CreateManualInput {
  */
 export async function createManualForKit(
   input: CreateManualInput,
-): Promise<{ ok: true; manualId: number } | { ok: false; error: string }> {
+): Promise<Result<{ manualId: number }>> {
   if (!Number.isInteger(input.kitId)) return { ok: false, error: "Unknown kit." };
 
   const existing = await findKitById(input.kitId);

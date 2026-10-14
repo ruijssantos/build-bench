@@ -6,6 +6,7 @@ import { advanceKitStatus, regressKitStatus } from "@/app/(bench)/kits/actions";
 import { markKitBought } from "@/app/(bench)/wishlist/actions";
 import styles from "@/components/kits/Kits.module.css";
 import { nextStashStatus, previousStashStatus, statusLabel, type KitStatus } from "@/domain/kit";
+import type { Result } from "@/lib/result";
 import ui from "@/styles/ui.module.css";
 
 /**
@@ -26,7 +27,7 @@ export function StatusActions({ id, status }: { id: number; status: KitStatus })
   /** Both actions return a reason when their `and(id, status)` predicate
    * misses — a stale tab acting on a kit that has since moved. Surfaced
    * rather than discarded, or the button just spins and nothing happens. */
-  function run(action: () => Promise<{ ok: true } | { ok: false; error: string }>) {
+  function run(action: () => Promise<Result>) {
     startTransition(async () => {
       setError(null);
       try {

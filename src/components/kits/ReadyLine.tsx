@@ -3,9 +3,8 @@ import styles from "./Kits.module.css";
 import type { ReadinessCounts } from "@/domain/kit-paints";
 
 /**
- * "Own 14 of 17 · 3 missing" — the Stash card's line and the detail page's
- * Paints panel summary both render this from a `ReadinessCounts`
- * (`PaintsIcon`, the same glyph the nav rail's Paints tab uses, marking the
+ * "Own 14 of 17 · 3 missing" — a kit card's readiness line, rendered from a
+ * `ReadinessCounts` (`PaintsIcon`, the same glyph the nav rail's Paints tab uses, marking the
  * line as being about paints without spending a text label on saying so).
  *
  * Wishlist and Stash cards read it the same way: "N missing" for a gap,

@@ -17,9 +17,9 @@ import styles from "@/components/kits/Kits.module.css";
  * Component; the only client code in it is the bought tick's pending state
  * and the Edit dialog, each its own small island.
  *
- * Like `StashKitCard`, the whole card links to `/kits/[id]` — a kit is the
- * same object on either screen, and manuals, paints and research are as
- * useful before buying it as after. Same stretched-overlay link, for the same
+ * Like `StashKitCard`, the whole card links to the kit's page, here
+ * `/wishlist/[id]`: a kit is the same object on either screen, and manuals,
+ * paints and research are as useful before buying it as after. Same stretched-overlay link, for the same
  * reason (no controls nested inside an `<a>`). */
 export function SavedKitCard({
   kit,
@@ -34,7 +34,7 @@ export function SavedKitCard({
 
   return (
     <div className={styles.card}>
-      <Link href={`/kits/${kit.id}`} className={styles.cardStretchLink} aria-label={`Open ${title}`} />
+      <Link href={`/wishlist/${kit.id}`} className={styles.cardStretchLink} aria-label={`Open ${title}`} />
       <KitCardBody
         imageUrl={kit.imageUrl}
         brand={kit.brand}

@@ -13,6 +13,7 @@ import {
   updateInventoryItem,
 } from "@/db/repositories/inventory";
 import { normalizePaintCode } from "@/domain/paint-code";
+import type { Result } from "@/lib/result";
 import {
   defaultFormFor,
   isInventoryForm,
@@ -32,7 +33,6 @@ import {
  * covers the Thinner Bench's ownership chip for that code alone.
  */
 
-export type InventoryResult = { ok: true } | { ok: false; error: string };
 
 function invalidate(paintCode: string): void {
   updateTag(INVENTORY_TAG);
@@ -59,7 +59,7 @@ export interface AddInventoryItemInput {
   notes?: string | null;
 }
 
-export async function addInventoryItem(input: AddInventoryItemInput): Promise<InventoryResult> {
+export async function addInventoryItem(input: AddInventoryItemInput): Promise<Result> {
   const code = normalizePaintCode(input.code);
 
   // The catalogue is the gate, not the `paint` table: the foreign key would
@@ -112,7 +112,7 @@ export async function addInventoryItem(input: AddInventoryItemInput): Promise<In
  * tab that got there first — either way the shelf already says what the
  * click meant, and adding a second bottle would say something it didn't.
  */
-export async function markPaintBought(rawCode: string): Promise<InventoryResult> {
+export async function markPaintBought(rawCode: string): Promise<Result> {
   const code = normalizePaintCode(rawCode);
   if (!getCataloguePaint(code)) {
     return { ok: false, error: "That isn't a Tamiya code the catalogue knows." };
@@ -136,7 +136,7 @@ export async function markPaintBought(rawCode: string): Promise<InventoryResult>
  * Nothing to clear (a double click, another tab) is not an error: the shelf
  * already says what the click meant.
  */
-export async function markLowRestocked(rawCode: string): Promise<InventoryResult> {
+export async function markLowRestocked(rawCode: string): Promise<Result> {
   const code = normalizePaintCode(rawCode);
   if (!getCataloguePaint(code)) {
     return { ok: false, error: "That isn't a Tamiya code the catalogue knows." };
@@ -156,7 +156,7 @@ export interface EditInventoryItemInput {
   notes?: string | null;
 }
 
-export async function editInventoryItem(input: EditInventoryItemInput): Promise<InventoryResult> {
+export async function editInventoryItem(input: EditInventoryItemInput): Promise<Result> {
   if (!Number.isInteger(input.id)) return { ok: false, error: "Unknown shelf entry." };
   if (!isInventoryForm(input.form)) {
     return { ok: false, error: "Pick a bottle, spray can or decanted jar." };
@@ -182,7 +182,7 @@ export async function editInventoryItem(input: EditInventoryItemInput): Promise<
   return { ok: true };
 }
 
-export async function removeInventoryItem(id: number, paintCode: string): Promise<InventoryResult> {
+export async function removeInventoryItem(id: number, paintCode: string): Promise<Result> {
   if (!Number.isInteger(id)) return { ok: false, error: "Unknown shelf entry." };
 
   const removed = await deleteInventoryItem(id);
