@@ -885,7 +885,8 @@ Bench's "Also sold as" card (§7), the chart's first UI.
 slot became this one, so the phone tab bar still holds five items plus Sign out). Five
 read-only modules over data Phases 2–5 already store, each behind its own `<Suspense>` inside
 its own `<BenchError>`: four linked stat tiles (shelf size, running low, stash, wishlist);
-**On the bench** — every `building` kit as a full card with its readiness line and start date;
+**On the bench** — every `building` kit as a full card with its start date (no readiness line:
+you only start a kit once its paints are in);
 **What you could start** — stashed kits whose every called-for paint is already owned, which
 is the module that makes this screen a decision rather than a readout; **Next shop run** —
 missing paints across unfinished kits rolled up with how many kits each blocks, then bottles

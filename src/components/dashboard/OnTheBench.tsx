@@ -1,9 +1,7 @@
 import Link from "next/link";
 
-import { ReadyLine } from "@/components/kits/ReadyLine";
 import { KitCardBody } from "@/components/wishlist/KitCardBody";
 import cardStyles from "@/components/wishlist/Wishlist.module.css";
-import { getKitReadiness } from "@/db/repositories/kit-paint-requirements";
 import { listKitsByStatuses } from "@/db/repositories/kits";
 import { formatIsoDate } from "@/domain/dates";
 
@@ -14,10 +12,11 @@ import styles from "./Dashboard.module.css";
  * (docs/PLAN.md §6 Phase 6). The screen's lead module, because it answers
  * the question you opened the app holding a part in your hand to ask.
  *
- * Renders the same `KitCardBody` + `ReadyLine` the Stash grid uses rather
- * than a dashboard-specific card: a kit looks like a kit wherever it appears,
- * and the readiness line is the one fact that makes this module more than a
- * shortcut.
+ * Renders the same `KitCardBody` the Stash grid uses rather than a
+ * dashboard-specific card: a kit looks like a kit wherever it appears. No
+ * readiness line here, unlike the Stash card: a kit only goes on the bench
+ * once its paints are in, so "Ready to build" told the owner nothing. A paint
+ * still missing shows up on the shop run beside it.
  *
  * Laid out as a full-width hero rather than a grid — see `.benchCard` in
  * `Dashboard.module.css` for why. Two kits stack as two rows; the owner
@@ -25,7 +24,7 @@ import styles from "./Dashboard.module.css";
  * for and a grid would strand exactly the width this module should be using.
  */
 export async function OnTheBench() {
-  const [kits, readiness] = await Promise.all([listKitsByStatuses(["building"]), getKitReadiness()]);
+  const kits = await listKitsByStatuses(["building"]);
 
   if (kits.length === 0) {
     return (
@@ -37,7 +36,6 @@ export async function OnTheBench() {
     );
   }
 
-  const byKit = new Map(readiness.map((row) => [row.kitId, row]));
 
   return (
     <div className={styles.benchList}>
@@ -61,12 +59,7 @@ export async function OnTheBench() {
               // The first card on the screen is its LCP candidate, same rule
               // as `SavedKitsGrid`'s own first card.
               priority={index === 0}
-              extra={
-                <>
-                  <ReadyLine readiness={byKit.get(kit.id)} />
-                  {started ? <span className={cardStyles.cardNotes}>Started {started}</span> : null}
-                </>
-              }
+              extra={started ? <span className={cardStyles.cardNotes}>Started {started}</span> : null}
             />
           </div>
         );
