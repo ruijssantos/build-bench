@@ -61,7 +61,7 @@ export function KitCardBody({
    * candidate, which isn't saved yet and has nothing to point an edit at. */
   kit?: KitRow;
   /** Extra content rendered inside the card body, after the chips — the
-   * Stash card's readiness line ("Own 14 of 17 · 3 to buy"). */
+   * Stash card's readiness line ("Own 14 of 17 · 3 missing"). */
   extra?: ReactNode;
 }) {
   return (

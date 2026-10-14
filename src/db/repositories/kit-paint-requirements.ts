@@ -136,7 +136,7 @@ export interface KitReadiness {
 }
 
 /**
- * The kit cards' "14 of 17 · 3 to buy" line, for every kit at once — one
+ * The kit cards' "14 of 17 · 3 missing" line, for every kit at once — one
  * aggregate query, not N+1 per card (docs/PLAN.md §6 Phase 4a). Every status,
  * wishlist included: checking what a kit needs against the shelf is as useful
  * before buying it as after (the Wishlist card reads it as "3 missing").

@@ -3,15 +3,14 @@ import styles from "@/components/wishlist/Wishlist.module.css";
 import type { ReadinessCounts } from "@/domain/kit-paints";
 
 /**
- * "Own 14 of 17 · 3 to buy" — the Stash card's line and the detail page's
+ * "Own 14 of 17 · 3 missing" — the Stash card's line and the detail page's
  * Paints panel summary both render this from a `ReadinessCounts`
  * (`PaintsIcon`, the same glyph the nav rail's Paints tab uses, marking the
  * line as being about paints without spending a text label on saying so).
  *
  * `wanted` is a wishlist kit's reading of the same counts: it isn't yours
- * yet, so the gap reads as paint missing rather than paint to buy, and a full
- * shelf means you already have every paint rather than that it's ready to
- * build.
+ * yet, so a full shelf means you already have every paint rather than that
+ * it's ready to build. The gap reads "N missing" either way.
  *
  * A complete shelf reads just "Ready to build" (or "You have them all") —
  * the count adds nothing once nothing is missing. An LP or TS covered by an
@@ -40,7 +39,7 @@ export function ReadyLine({ readiness, wanted = false }: { readiness: ReadinessC
             Own {have} of {have + readiness.missingCount}
           </span>
           <span className={styles.readyBuy}>
-            · {readiness.missingCount} {wanted ? "missing" : "to buy"}
+            · {readiness.missingCount} missing
           </span>
         </>
       ) : (

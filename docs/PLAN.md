@@ -361,8 +361,8 @@ research and finding build videos are all as useful for deciding whether to buy 
 building it, and they stay attached when it's bought. What stays status-shaped is only what's
 genuinely about ownership — the "Purchase & dates" panel appears once it's bought, the status
 ladder shows a Wishlist step only while the kit is still on it, and the shop run (§6 Phase 6)
-counts only kits you own. A wishlist card reads the shared readiness line as "3 missing"
-rather than "3 to buy".
+counts only kits you own. Wishlist and Stash cards share one readiness line ("3 missing");
+only the full-shelf wording differs ("You have them all" against "Ready to build").
 
 `wishlist_item` is genuinely separate, and that's the test working rather than failing: a
 tool or a bottle of glue has no brand, no scale, no kit number and no reference page, and it
@@ -851,7 +851,7 @@ a three-step status stepper (`stash → building → built`, stamping `started_a
 on the way in, editable after), purchase details, manual PDF upload with an **Extract paint
 list** action per manual (Claude Opus 5, streaming, effort high), and the resulting
 `kit_paint_requirement` rows shown as three buckets — Owned, Missing, Unresolved — against the
-shelf. The per-kit bucket view is one targeted query; the Stash grid's "14 of 17 · 3 to buy"
+shelf. The per-kit bucket view is one targeted query; the Stash grid's "14 of 17 · 3 missing"
 line on every card comes from one aggregate query across every kit, not N+1. Wishlist kits
 later got the same detail page (§3.3, and §7 "A kit is a kit").
 
@@ -1172,14 +1172,14 @@ the dates stamp on the way up and clear on the way back; checked `replaceManualP
 replaces exactly (6 rows → 2, no duplication); and confirmed `getStashReadiness` against a
 fixture built for the case it exists to handle — a code owned through two shelf rows (a spray
 can and the jar decanted from it) counting once, a repeated non-Tamiya callout counting once —
-giving owned 2 / missing 1 / unresolved 2, i.e. "Own 2 of 3 · 1 to buy · +2 unresolved".
+giving owned 2 / missing 1 / unresolved 2, i.e. "Own 2 of 3 · 1 missing · +2 unresolved".
 
 The UI then got the same treatment, which is what all of the above was found by: a local
 Postgres seeded with the real 395-paint catalogue, a ten-bottle shelf and five kits spread
 across all three statuses, with the driver temporarily pointed at it (reverted before commit —
 `src/db/client.ts` is untouched). That confirmed, on phone and desktop, the display ordering,
 the three chip colours, the filter pills and their counts, the readiness lines against a kit
-deliberately built for the awkward case ("Own 3 of 5 · 2 to buy · +2 unresolved", with TS-8
+deliberately built for the awkward case ("Own 3 of 5 · 2 missing · +2 unresolved", with TS-8
 owned through two shelf rows and one non-Tamiya callout repeated), the detail page's stepper,
 manuals and three paint buckets, and the modal painting cleanly above everything. It also
 exercised the foreign-key delete through the actual UI rather than through SQL: removing a kit
@@ -1865,7 +1865,7 @@ either of which alone was enough:
    line, because "first row that isn't a spray can" took whatever order Cybermodeler happened
    to list. The shelf (§2.1) is 29 of 33 bottles in `X`/`XF` and holds **all eight** of the
    acrylics those codes also map to. So the screen would have gone from "10 unresolved" to
-   "8 to buy" — every one of them already in the rack.
+   "8 missing" — every one of them already in the rack.
 
 The second is the more instructive failure, because it is the one that looks like success. A
 missing answer announces itself; a confident wrong one gets acted on, and the action here is

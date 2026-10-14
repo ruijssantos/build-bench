@@ -493,7 +493,7 @@
   overflow: hidden;
 }
 
-/* The Stash card's readiness line — "Own 14 of 17 · 3 to buy" — passed into
+/* The Stash card's readiness line — "Own 14 of 17 · 3 missing" — passed into
    KitCardBody as `extra`. The paint icon is the same PaintsIcon the nav rail
    uses for Paints, so it reads as "this line is about paints" without a
    label eating the room a card doesn't have. */
