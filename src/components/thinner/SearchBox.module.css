@@ -60,8 +60,17 @@
   cursor: pointer;
 }
 
-.hit:hover,
 .hitActive {
+  background: var(--card-sunken);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .hit:hover {
+    background: var(--card-sunken);
+  }
+}
+
+.hit:active {
   background: var(--card-sunken);
 }
 

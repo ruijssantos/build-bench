@@ -65,7 +65,13 @@
   cursor: pointer;
 }
 
-.pickerHit:hover {
+@media (hover: hover) and (pointer: fine) {
+  .pickerHit:hover {
+    background: var(--card-sunken);
+  }
+}
+
+.pickerHit:active {
   background: var(--card-sunken);
 }
 

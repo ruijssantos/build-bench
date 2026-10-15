@@ -63,7 +63,13 @@
 
 /* A place, not a control: hover is the neutral sunken ground, one step short
    of the accent tint the active item wears. */
-.item:hover {
+@media (hover: hover) and (pointer: fine) {
+  .item:hover {
+    background: var(--card-sunken);
+  }
+}
+
+.item:active {
   background: var(--card-sunken);
 }
 
@@ -78,8 +84,17 @@
   color: var(--muted-hover);
 }
 
-.itemActive,
-.itemActive:hover {
+.itemActive {
+  background: var(--accent-tint);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .itemActive:hover {
+    background: var(--accent-tint);
+  }
+}
+
+.itemActive:active {
   background: var(--accent-tint);
 }
 

@@ -61,12 +61,17 @@
   color: inherit;
   transition:
     box-shadow var(--dur-base) var(--ease-out),
-    border-color var(--dur-base) var(--ease-out);
+    border-color var(--dur-base) var(--ease-out),
+    transform var(--dur-base) var(--ease-out);
+}
+
+.card:active {
+  transform: scale(0.985);
 }
 
 /* A card that navigates (§4.1 Motion): the hero shadow in place, never at
    rest, same as a kit card or a stat tile. */
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .card:hover {
     color: inherit;
     box-shadow: var(--shadow-hero);
@@ -136,7 +141,13 @@
   transition: color var(--dur-fast) var(--ease-out);
 }
 
-.crumb:hover {
+@media (hover: hover) and (pointer: fine) {
+  .crumb:hover {
+    color: var(--accent);
+  }
+}
+
+.crumb:active {
   color: var(--accent);
 }
 
@@ -190,13 +201,33 @@
   transition: background-color var(--dur-fast) var(--ease-out);
 }
 
-.guideLink:hover {
+@media (hover: hover) and (pointer: fine) {
+  .guideLink:hover {
+    color: var(--ink);
+    background: var(--card-sunken);
+  }
+}
+
+.guideLink:active {
   color: var(--ink);
   background: var(--card-sunken);
 }
 
-.guideLinkActive,
-.guideLinkActive:hover {
+.guideLinkActive {
+  background: var(--card);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .guideLinkActive:hover {
+    background: var(--card);
+    border-color: var(--line);
+    color: var(--ink);
+  }
+}
+
+.guideLinkActive:active {
   background: var(--card);
   border-color: var(--line);
   color: var(--ink);
@@ -238,7 +269,14 @@
   text-decoration: none;
 }
 
-.tocLink:hover {
+@media (hover: hover) and (pointer: fine) {
+  .tocLink:hover {
+    color: var(--accent);
+    border-left-color: var(--accent);
+  }
+}
+
+.tocLink:active {
   color: var(--accent);
   border-left-color: var(--accent);
 }

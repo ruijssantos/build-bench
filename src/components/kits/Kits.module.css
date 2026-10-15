@@ -118,7 +118,15 @@
   overflow: hidden;
   transition:
     box-shadow var(--dur-base) var(--ease-out),
-    border-color var(--dur-base) var(--ease-out);
+    border-color var(--dur-base) var(--ease-out),
+    transform var(--dur-base) var(--ease-out);
+}
+
+/* Pressed: a card that navigates gives slightly under the finger. Not the
+   hover shadow and art zoom — those preview a destination, which a press is
+   already going to. */
+.card:has(> .cardStretchLink:active) {
+  transform: scale(0.985);
 }
 
 /* Hover (docs/PLAN.md §4.1 Motion). A card that navigates — it carries the
@@ -127,7 +135,7 @@
    panel) gets neither, so hover keeps meaning "this opens". Keyboard focus on
    the stretched link gets the same shadow. Hover-capable pointers only, so a tap
    on a phone doesn't leave a card stuck mid-lift. */
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .card:has(> .cardStretchLink):hover {
     box-shadow: var(--shadow-hero);
     border-color: var(--line-strong);
@@ -173,7 +181,15 @@
    children only: the trash button sits inside its `<form>`, so it keeps its
    alert hover. Out-specifies `.btn:hover` and `.iconBtn:hover` (0,3,0) rather
    than relying on bundle order. */
-.cardBuilt .savedCardActions > :is(a, button):not(:disabled):hover {
+@media (hover: hover) and (pointer: fine) {
+  .cardBuilt .savedCardActions > :is(a, button):not(:disabled):hover {
+    border-color: var(--ok);
+    background: var(--ok-track);
+    color: var(--ok);
+  }
+}
+
+.cardBuilt .savedCardActions > :is(a, button):not(:disabled):active {
   border-color: var(--ok);
   background: var(--ok-track);
   color: var(--ok);
@@ -557,7 +573,14 @@
   transition: background-color var(--dur-fast) var(--ease-out);
 }
 
-.referenceList > .referenceRow:hover {
+@media (hover: hover) and (pointer: fine) {
+  .referenceList > .referenceRow:hover {
+    background: var(--card-sunken);
+    color: inherit;
+  }
+}
+
+.referenceList > .referenceRow:active {
   background: var(--card-sunken);
   color: inherit;
 }
@@ -584,7 +607,13 @@
   margin-top: 12px;
 }
 
-.crumb:hover {
+@media (hover: hover) and (pointer: fine) {
+  .crumb:hover {
+    color: var(--accent);
+  }
+}
+
+.crumb:active {
   color: var(--accent);
 }
 
@@ -799,7 +828,14 @@
   cursor: pointer;
 }
 
-.ownedChip:hover {
+@media (hover: hover) and (pointer: fine) {
+  .ownedChip:hover {
+    background: var(--ok);
+    color: var(--bg);
+  }
+}
+
+.ownedChip:active {
   background: var(--ok);
   color: var(--bg);
 }
@@ -810,7 +846,14 @@
   cursor: pointer;
 }
 
-.missingChip:hover {
+@media (hover: hover) and (pointer: fine) {
+  .missingChip:hover {
+    background: var(--alert);
+    color: var(--bg);
+  }
+}
+
+.missingChip:active {
   background: var(--alert);
   color: var(--bg);
 }
@@ -848,22 +891,51 @@
   visibility: hidden;
 }
 
-.markBought:not(:disabled):hover,
 .markBought:not(:disabled):focus-visible,
 .markBought[data-pending] {
   background: var(--ok);
   color: var(--bg);
 }
 
-.markBought:not(:disabled):hover .markBoughtIdle,
+@media (hover: hover) and (pointer: fine) {
+  .markBought:not(:disabled):hover {
+    background: var(--ok);
+    color: var(--bg);
+  }
+}
+
+.markBought:not(:disabled):active {
+  background: var(--ok);
+  color: var(--bg);
+}
+
 .markBought:not(:disabled):focus-visible .markBoughtIdle,
 .markBought[data-pending] .markBoughtIdle {
   visibility: hidden;
 }
 
-.markBought:not(:disabled):hover .markBoughtAction,
+@media (hover: hover) and (pointer: fine) {
+  .markBought:not(:disabled):hover .markBoughtIdle {
+    visibility: hidden;
+  }
+}
+
+.markBought:not(:disabled):active .markBoughtIdle {
+  visibility: hidden;
+}
+
 .markBought:not(:disabled):focus-visible .markBoughtAction,
 .markBought[data-pending] .markBoughtAction {
+  visibility: visible;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .markBought:not(:disabled):hover .markBoughtAction {
+    visibility: visible;
+  }
+}
+
+.markBought:not(:disabled):active .markBoughtAction {
   visibility: visible;
 }
 
@@ -893,7 +965,13 @@
   cursor: pointer;
 }
 
-.equivalentChip:hover {
+@media (hover: hover) and (pointer: fine) {
+  .equivalentChip:hover {
+    background: var(--ok-tint);
+  }
+}
+
+.equivalentChip:active {
   background: var(--ok-tint);
 }
 
@@ -913,7 +991,13 @@
   letter-spacing: 0.04em;
 }
 
-.ownedChip:hover .lowMark {
+@media (hover: hover) and (pointer: fine) {
+  .ownedChip:hover .lowMark {
+    color: inherit;
+  }
+}
+
+.ownedChip:active .lowMark {
   color: inherit;
 }
 
@@ -1047,6 +1131,12 @@
   text-decoration: none;
 }
 
-.claimSource:hover {
+@media (hover: hover) and (pointer: fine) {
+  .claimSource:hover {
+    text-decoration: underline;
+  }
+}
+
+.claimSource:active {
   text-decoration: underline;
 }
