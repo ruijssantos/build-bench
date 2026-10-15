@@ -129,11 +129,6 @@
   font-size: var(--text-sm);
 }
 
-.btnLg {
-  height: var(--control-h-lg);
-  padding: 0 20px;
-}
-
 @media (hover: hover) and (pointer: fine) {
   .btn:not(:disabled):hover {
     border-color: var(--accent);

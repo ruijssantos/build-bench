@@ -1,10 +1,9 @@
 "use client";
 
-import { lazy, useEffect, useState, type FormEvent } from "react";
+import { lazy, useEffect, useRef, useState, type FormEvent } from "react";
 
 import { DialogTrigger } from "@/components/bench/DialogTrigger";
 import { SearchField } from "@/components/bench/SearchField";
-import { PlusIcon } from "@/components/icons";
 import { NAV_RECLICK_EVENT } from "@/components/nav/nav-events";
 import type { KitStatus } from "@/domain/kit";
 import type { KitCandidate } from "@/domain/kit-candidate";
@@ -21,6 +20,8 @@ type ResolveResponse = Result<{ candidates: KitCandidate[] }>;
 
 type SearchState =
   | { status: "idle" }
+  /** Search pressed with nothing typed — a nudge, not an error. */
+  | { status: "empty" }
   | { status: "loading" }
   | { status: "error"; message: string }
   /** `run` is a per-search sequence number, used only to key the card grid —
@@ -29,6 +30,12 @@ type SearchState =
 
 /**
  * The kit search — docs/PLAN.md §5.1 stage A, §6 Phase 3.
+ *
+ * The field and Search share one row, and manual entry is a quiet link under
+ * them: search is what happens nearly every time, typing a kit in by hand
+ * is the fallback when it can't find one. Search is never disabled — a big
+ * greyed-out primary was the loudest thing on the screen while doing
+ * nothing — so pressing it empty says what to type instead.
  *
  * Submit-triggered, not type-ahead: unlike the paint catalogue
  * (docs/PERFORMANCE.md §3), there's no free local index behind this — every
@@ -46,6 +53,7 @@ export function KitSearch({ saveStatus, homeHref }: { saveStatus: KitStatus; hom
   const [query, setQuery] = useState("");
   const [state, setState] = useState<SearchState>({ status: "idle" });
   const [runs, setRuns] = useState(0);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   /** Back to a blank box — the search's own × clears it, and re-clicking the
    * Wishlist nav tab (see `nav-events.ts`) does the same, since neither a
@@ -67,7 +75,12 @@ export function KitSearch({ saveStatus, homeHref }: { saveStatus: KitStatus; hom
   async function search(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const trimmed = query.trim();
-    if (!trimmed || state.status === "loading") return;
+    if (state.status === "loading") return;
+    if (!trimmed) {
+      setState({ status: "empty" });
+      inputRef.current?.focus();
+      return;
+    }
 
     const run = runs + 1;
     setRuns(run);
@@ -93,35 +106,43 @@ export function KitSearch({ saveStatus, homeHref }: { saveStatus: KitStatus; hom
 
   return (
     <div className={styles.searchCard}>
-      <form className={styles.searchForm} onSubmit={(e) => void search(e)}>
-        <SearchField
-          id="kit-search-input"
-          label="Search for a kit by number or name"
-          placeholder="Brand and kit number for accurate results"
-          value={query}
-          onChange={setQuery}
-          onClear={reset}
-          disabled={loading}
-        />
-        <div className={styles.searchActions}>
-          <button type="submit" className={`${ui.btn} ${ui.btnLg} ${ui.btnPrimary} ${styles.searchButton}`} disabled={loading || !query.trim()}>
+      <div className={styles.searchBar}>
+        <form className={styles.searchForm} onSubmit={(e) => void search(e)}>
+          <SearchField
+            ref={inputRef}
+            id="kit-search-input"
+            label="Search for a kit by number or name"
+            placeholder="Brand and kit number"
+            value={query}
+            onChange={setQuery}
+            onClear={reset}
+            disabled={loading}
+          />
+          <button type="submit" className={`${ui.btn} ${ui.btnPrimary}`} disabled={loading}>
             {loading ? "Searching…" : "Search"}
           </button>
-          <DialogTrigger dialog={ManualKitDialog} dialogProps={{ defaultStatus: saveStatus }} className={`${ui.btn} ${ui.btnLg}`}>
-            <PlusIcon size={16} /> Add Manually
+        </form>
+        <p className={styles.searchManual}>
+          Can&rsquo;t find it?{" "}
+          <DialogTrigger dialog={ManualKitDialog} dialogProps={{ defaultStatus: saveStatus }} className={ui.textBtn}>
+            Add it manually
           </DialogTrigger>
-        </div>
-      </form>
+        </p>
+      </div>
 
       {/* One live region for all three outcomes: a submit whose result takes
           20s to arrive is exactly the case a screen reader has to be told
           about, since nothing about the page moves in the meantime. */}
-      <div role="status" aria-live="polite">
+      <div role="status" aria-live="polite" className={styles.searchStatus}>
         {state.status === "loading" ? (
           <div className={page.status}>
             <span className={page.spinner} aria-hidden="true" />
             <span>Searching Scalemates and the web…</span>
           </div>
+        ) : null}
+
+        {state.status === "empty" ? (
+          <div className={page.status}>Type a brand and kit number to search, e.g. &ldquo;Tamiya 24345&rdquo;.</div>
         ) : null}
 
         {state.status === "error" ? (
