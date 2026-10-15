@@ -244,7 +244,13 @@
   cursor: pointer;
 }
 
-.itemTick:hover {
+@media (hover: hover) and (pointer: fine) {
+  .itemTick:hover {
+    border-color: var(--ok);
+  }
+}
+
+.itemTick:active {
   border-color: var(--ok);
 }
 
@@ -291,7 +297,13 @@
   display: inline-flex;
 }
 
-.itemLink:hover {
+@media (hover: hover) and (pointer: fine) {
+  .itemLink:hover {
+    color: var(--accent);
+  }
+}
+
+.itemLink:active {
   color: var(--accent);
 }
 

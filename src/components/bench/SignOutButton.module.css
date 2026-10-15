@@ -23,7 +23,14 @@
   color: var(--icon-idle);
 }
 
-.button:hover {
+@media (hover: hover) and (pointer: fine) {
+  .button:hover {
+    background: var(--card-sunken);
+    color: var(--ink);
+  }
+}
+
+.button:active {
   background: var(--card-sunken);
   color: var(--ink);
 }

@@ -40,6 +40,13 @@
   height: 44px;
   text-decoration: none;
   color: var(--icon-idle);
+  transition: opacity var(--dur-base) var(--ease-out);
+}
+
+/* Pressed: the tab dims, as a native tab bar's does. No hover rule and no
+   background square — that was the browser's tap flash, now off (tokens.css). */
+.item:active {
+  opacity: 0.5;
 }
 
 .itemLabel {

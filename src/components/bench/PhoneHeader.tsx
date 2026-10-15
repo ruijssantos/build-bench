@@ -23,9 +23,13 @@ import { SignOutButton } from "./SignOutButton";
  * with the buttons stranded halfway down them. Defaults to the side-by-side
  * layout so every other screen is unaffected.
  *
- * Sign out is a bare icon in the top-right corner, in the status-bar band
- * above the title row — clear of `trailing`, which sits at the row's bottom
- * edge, so it never collides with an Add button or Edit/Remove.
+ * Sign out is a bare icon on the eyebrow's line, opposite it. It used to
+ * float alone in a 44px "status bar" band above everything, which was dead
+ * space: `statusBarStyle: "default"` (layout.tsx) already starts the page
+ * below the real status bar, so the band only pushed the header down and
+ * left the icon looking stranded. On one line with the eyebrow, two small
+ * things balance each other and the title gets the full width under them.
+ * `env(safe-area-inset-top)` covers any device that does draw under the bar.
  */
 export function PhoneHeader({
   title,
@@ -43,16 +47,13 @@ export function PhoneHeader({
 }) {
   return (
     <div className={styles.header}>
-
-      <div className={styles.statusBarSpace} />
-
-      <SignOutButton formClassName={styles.signOutForm} className={ui.iconBtn} iconOnly iconSize={16} />
+      <div className={styles.topBar}>
+        <div className={styles.eyebrow}>{eyebrow}</div>
+        <SignOutButton formClassName={styles.signOutForm} className={ui.iconBtn} iconOnly iconSize={16} />
+      </div>
 
       <div className={`${styles.row} ${stackTrailing ? styles.rowStacked : ""}`}>
-        <div>
-          <div className={styles.eyebrow}>{eyebrow}</div>
-          <h1 className={styles.title}>{title}</h1>
-        </div>
+        <h1 className={styles.title}>{title}</h1>
         {trailing}
       </div>
     </div>

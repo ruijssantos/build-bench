@@ -130,6 +130,14 @@ body {
   overflow-x: hidden;
 }
 
+/* No grey tap flash: the browser's default highlight lingers on whatever was
+   tapped, a tab bar icon included. It's replaced, not just removed: every
+   control has its own press state (`:active`, beside each hover rule), so a
+   tap still answers at once. */
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
 body {
   background-color: var(--bg);
   background-image: var(--bg-grid);
@@ -144,8 +152,21 @@ a {
   color: var(--accent);
 }
 
-a:hover {
+@media (hover: hover) and (pointer: fine) {
+  a:hover {
+    color: var(--accent-hover);
+  }
+}
+
+a:active {
   color: var(--accent-hover);
+}
+
+/* Press-in is instant; release fades back over the control's own transition.
+   Touch feedback that eases in reads as lag. `!important` because each
+   control's transition lives on its own class, at every specificity. */
+:active {
+  transition-duration: 0s !important;
 }
 
 /* One focus ring for every control, keyboard only. Zero specificity, so a

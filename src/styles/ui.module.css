@@ -14,6 +14,10 @@
  * - Actions are rounded rectangles; pills are for filters and chips only.
  * - Every control sits on `--card`, never transparent — on the cutting-mat
  *   grid a transparent button shows the grid through it.
+ * - Hover exists only where a pointer can hover (`(hover: hover) and
+ *   (pointer: fine)`); a phone would otherwise keep it stuck on whatever was
+ *   last tapped. Every hover rule has an ungated `:active` twin, so a press
+ *   shows the same look the instant a finger lands, everywhere.
  * - Hover on a neutral control previews the accent: border, ink and tint all
  *   go blue. A control that carries a meaning hovers to that meaning instead
  *   (`.btnAlert` to alert, `.btnOk` to ok). Rows and nav items, which are
@@ -87,7 +91,18 @@
   transition:
     background-color var(--dur-fast) var(--ease-out),
     border-color var(--dur-fast) var(--ease-out),
-    color var(--dur-fast) var(--ease-out);
+    color var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
+}
+
+/* Pressed: the hover look (its `:active` twin sits beside each hover rule
+   below), and the control gives a little under the finger. */
+.btn:not(:disabled):active {
+  transform: scale(0.97);
+}
+
+.iconBtn:not(:disabled):active {
+  transform: scale(0.9);
 }
 
 /* Secondary by default: the quiet one beside a primary, and every bordered
@@ -114,7 +129,15 @@
   font-size: var(--text-sm);
 }
 
-.btn:not(:disabled):hover {
+@media (hover: hover) and (pointer: fine) {
+  .btn:not(:disabled):hover {
+    border-color: var(--accent);
+    background: var(--accent-tint);
+    color: var(--accent);
+  }
+}
+
+.btn:not(:disabled):active {
   border-color: var(--accent);
   background: var(--accent-tint);
   color: var(--accent);
@@ -127,7 +150,15 @@
   color: var(--card);
 }
 
-.btnPrimary:not(:disabled):hover {
+@media (hover: hover) and (pointer: fine) {
+  .btnPrimary:not(:disabled):hover {
+    border-color: var(--accent-hover);
+    background: var(--accent-hover);
+    color: var(--card);
+  }
+}
+
+.btnPrimary:not(:disabled):active {
   border-color: var(--accent-hover);
   background: var(--accent-hover);
   color: var(--card);
@@ -135,8 +166,21 @@
 
 /* Destructive, or "running low": neutral at rest, alert on hover, and
    `.btnAlertOn` for the armed / switched-on state. */
-.btnAlert:not(:disabled):hover,
 .btnAlertOn {
+  border-color: var(--alert);
+  background: var(--alert-tint);
+  color: var(--alert);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .btnAlert:not(:disabled):hover {
+    border-color: var(--alert);
+    background: var(--alert-tint);
+    color: var(--alert);
+  }
+}
+
+.btnAlert:not(:disabled):active {
   border-color: var(--alert);
   background: var(--alert-tint);
   color: var(--alert);
@@ -144,8 +188,21 @@
 
 /* Heading somewhere `--ok` means — bought, built. Hover previews it;
    `.btnOkOn` is already there. */
-.btnOk:not(:disabled):hover,
 .btnOkOn {
+  border-color: var(--ok);
+  background: var(--ok-tint);
+  color: var(--ok);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .btnOk:not(:disabled):hover {
+    border-color: var(--ok);
+    background: var(--ok-tint);
+    color: var(--ok);
+  }
+}
+
+.btnOk:not(:disabled):active {
   border-color: var(--ok);
   background: var(--ok-tint);
   color: var(--ok);
@@ -174,7 +231,14 @@
   cursor: pointer;
 }
 
-.textBtn:not(:disabled):hover {
+@media (hover: hover) and (pointer: fine) {
+  .textBtn:not(:disabled):hover {
+    color: var(--accent-hover);
+    text-decoration: underline;
+  }
+}
+
+.textBtn:not(:disabled):active {
   color: var(--accent-hover);
   text-decoration: underline;
 }
@@ -209,19 +273,42 @@
   inset: -4px;
 }
 
-.iconBtn:not(:disabled):hover {
+@media (hover: hover) and (pointer: fine) {
+  .iconBtn:not(:disabled):hover {
+    background: var(--accent-tint);
+    color: var(--accent);
+  }
+}
+
+.iconBtn:not(:disabled):active {
   background: var(--accent-tint);
   color: var(--accent);
 }
 
-.iconBtnAlert:not(:disabled):hover {
+@media (hover: hover) and (pointer: fine) {
+  .iconBtnAlert:not(:disabled):hover {
+    background: var(--alert-tint);
+    color: var(--alert);
+  }
+}
+
+.iconBtnAlert:not(:disabled):active {
   background: var(--alert-tint);
   color: var(--alert);
 }
 
 /* Over box art, where an un-grounded glyph would vanish into the picture. */
-.iconBtnScrim,
-.iconBtnScrim:not(:disabled):hover {
+.iconBtnScrim {
+  color: var(--card);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .iconBtnScrim:not(:disabled):hover {
+    color: var(--card);
+  }
+}
+
+.iconBtnScrim:not(:disabled):active {
   color: var(--card);
 }
 
@@ -229,7 +316,13 @@
   background: var(--scrim-strong);
 }
 
-.iconBtnScrim:not(:disabled):hover {
+@media (hover: hover) and (pointer: fine) {
+  .iconBtnScrim:not(:disabled):hover {
+    background: var(--scrim-stronger);
+  }
+}
+
+.iconBtnScrim:not(:disabled):active {
   background: var(--scrim-stronger);
 }
 
@@ -250,14 +343,37 @@
   font-size: var(--text-sm);
 }
 
-.pill:hover {
+@media (hover: hover) and (pointer: fine) {
+  .pill:hover {
+    border-color: var(--accent);
+    background: var(--accent-tint);
+    color: var(--accent);
+  }
+}
+
+.pill:active {
   border-color: var(--accent);
   background: var(--accent-tint);
   color: var(--accent);
 }
 
-.pillOn,
-.pillOn:hover {
+.pillOn {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--card);
+  font-weight: 700;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .pillOn:hover {
+    border-color: var(--accent);
+    background: var(--accent);
+    color: var(--card);
+    font-weight: 700;
+  }
+}
+
+.pillOn:active {
   border-color: var(--accent);
   background: var(--accent);
   color: var(--card);
@@ -265,13 +381,30 @@
 }
 
 /* "Running low" — the one filter that means act on this (§4.1). */
-.pillAlert,
-.pillAlert:hover {
+.pillAlert {
   border-color: var(--alert);
   color: var(--alert);
 }
 
-.pillAlert:hover {
+@media (hover: hover) and (pointer: fine) {
+  .pillAlert:hover {
+    border-color: var(--alert);
+    color: var(--alert);
+  }
+}
+
+.pillAlert:active {
+  border-color: var(--alert);
+  color: var(--alert);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .pillAlert:hover {
+    background: var(--alert-tint);
+  }
+}
+
+.pillAlert:active {
   background: var(--alert-tint);
 }
 

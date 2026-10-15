@@ -39,10 +39,15 @@
   color: inherit;
   transition:
     box-shadow var(--dur-base) var(--ease-out),
-    border-color var(--dur-base) var(--ease-out);
+    border-color var(--dur-base) var(--ease-out),
+    transform var(--dur-base) var(--ease-out);
 }
 
-@media (hover: hover) {
+.stat:active {
+  transform: scale(0.97);
+}
+
+@media (hover: hover) and (pointer: fine) {
   .stat:hover {
     box-shadow: var(--shadow-hero);
     border-color: var(--line-strong);
@@ -191,7 +196,14 @@
   transition: background-color var(--dur-fast) var(--ease-out);
 }
 
-.rowLink:hover {
+@media (hover: hover) and (pointer: fine) {
+  .rowLink:hover {
+    background: var(--card-sunken);
+    color: inherit;
+  }
+}
+
+.rowLink:active {
   background: var(--card-sunken);
   color: inherit;
 }
@@ -217,7 +229,7 @@
 }
 
 /* The row's box art scales with the row, same as a card's (Kits.module.css). */
-@media (hover: hover) {
+@media (hover: hover) and (pointer: fine) {
   .rowLink:hover .thumbImg {
     transform: scale(var(--art-hover-scale));
   }

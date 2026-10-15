@@ -32,6 +32,7 @@ export function KitDetailSkeleton() {
       </div>
       <PhoneHeader
         title="Kit"
+        stackTrailing
         eyebrow={
           <span className={`${ui.moduleTitle} ${styles.crumb}`}>
             <ChevronLeftIcon size={14} /> Kits
