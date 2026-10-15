@@ -93,7 +93,14 @@
   white-space: nowrap;
 }
 
-a.rowTitle:hover {
+@media (hover: hover) and (pointer: fine) {
+  a.rowTitle:hover {
+    color: var(--accent);
+    text-decoration: underline;
+  }
+}
+
+a.rowTitle:active {
   color: var(--accent);
   text-decoration: underline;
 }
@@ -150,7 +157,13 @@ a.rowTitle:hover {
   text-decoration: none;
 }
 
-.sortHeader:hover {
+@media (hover: hover) and (pointer: fine) {
+  .sortHeader:hover {
+    color: var(--ink);
+  }
+}
+
+.sortHeader:active {
   color: var(--ink);
 }
 
@@ -159,7 +172,13 @@ a.rowTitle:hover {
   color: var(--faint);
 }
 
-.sortHeader:hover .sortIconIdle {
+@media (hover: hover) and (pointer: fine) {
+  .sortHeader:hover .sortIconIdle {
+    color: var(--muted);
+  }
+}
+
+.sortHeader:active .sortIconIdle {
   color: var(--muted);
 }
 
