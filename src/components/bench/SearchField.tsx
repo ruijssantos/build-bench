@@ -22,6 +22,9 @@ export interface SearchFieldProps
    * Wishlist's clear also resets its results — same control, different
    * caller-owned behaviour behind it. */
   onClear?: () => void;
+  /** `standard` matches every other control (44px on a phone); `large` is
+   * for a search that is its screen's one action — Thinner's. */
+  size?: "large" | "standard";
 }
 
 /**
@@ -35,11 +38,11 @@ export interface SearchFieldProps
  * management after a result is picked or the field is cleared.
  */
 export const SearchField = forwardRef<HTMLInputElement, SearchFieldProps>(function SearchField(
-  { id, label, value, onChange, onClear, ...inputProps },
+  { id, label, value, onChange, onClear, size = "large", ...inputProps },
   ref,
 ) {
   return (
-    <div className={`${styles.box} ${ui.inputFocus}`}>
+    <div className={`${styles.box} ${size === "standard" ? styles.boxStandard : ""} ${ui.inputFocus}`}>
       <SearchIcon size={19} className={styles.icon} />
       <label htmlFor={id} className={ui.srOnly}>
         {label}

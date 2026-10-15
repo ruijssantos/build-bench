@@ -30,47 +30,51 @@
   }
 }
 
-/* Phone: the box (shared `SearchField`, `src/components/bench`) on its own
-   row, Search and Add Manually paired below it. Desktop: all three share
-   one row — the box gives up the width the stacked buttons no longer need,
-   and Search + Add Manually sit to its right rather than under it. */
-.searchForm {
+/* The field and Search on one row, manual entry as a line under them on a
+   phone; on a desk the line moves to the end of the same row. */
+.searchBar {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-}
-
-@media (min-width: 900px) {
-  .searchForm {
-    flex-direction: row;
-    align-items: center;
-    gap: 10px;
-  }
-}
-
-.searchActions {
-  display: flex;
   gap: 10px;
 }
 
 @media (min-width: 900px) {
-  .searchActions {
-    flex: none;
+  .searchBar {
+    flex-direction: row;
+    align-items: center;
+    gap: 18px;
   }
 }
 
-/* Search grows to the row on a phone; Add Manually keeps its own width.
-   `.searchActions >` so the desktop padding outranks `ui.btn`'s by
-   specificity rather than by stylesheet order. */
-.searchActions > .searchButton {
+.searchForm {
   flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-@media (min-width: 900px) {
-  .searchActions > .searchButton {
-    flex: none;
-    padding: 0 28px;
-  }
+.searchManual {
+  flex: none;
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--muted);
+}
+
+/* The live region stays in the page even when empty (a screen reader only
+   announces into one that already exists), so it cancels the card's gap
+   instead of adding a blank row under the search. */
+.searchStatus:empty {
+  margin-top: -12px;
+}
+
+/* `ui.textBtn` is the size of its text, a miss waiting to happen on a
+   phone. Padding takes the target to ~40px; the matching negative margin
+   gives the space back. `.searchManual >` outranks `ui.textBtn`'s own
+   `padding: 0` by specificity, not stylesheet order. */
+.searchManual > button {
+  padding: 12px 4px;
+  margin: -12px -4px;
 }
 
 /* Results live inside .searchCard once a search has run — a hairline break
