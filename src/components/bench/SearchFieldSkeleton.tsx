@@ -14,7 +14,7 @@ import styles from "./SearchField.module.css";
  * unstyled icon on a bare div and stayed that way. Reading the real
  * component's stylesheet is what stops that happening again.
  *
- * `.box` carries a fixed height (52px, 46px on desktop), so the reserved box
+ * `.box` carries a fixed height (44px, 40px on desktop), so the reserved box
  * is exactly the right size at both breakpoints with nothing inside it —
  * there is no text to hide and nothing to measure.
  *

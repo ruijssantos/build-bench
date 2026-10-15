@@ -117,7 +117,6 @@ export function KitSearch({ saveStatus, homeHref }: { saveStatus: KitStatus; hom
             onChange={setQuery}
             onClear={reset}
             disabled={loading}
-            size="standard"
           />
           <button type="submit" className={`${ui.btn} ${ui.btnPrimary}`} disabled={loading}>
             {loading ? "Searching…" : "Search"}

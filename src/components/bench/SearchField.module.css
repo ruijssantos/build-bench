@@ -7,7 +7,8 @@
   background: var(--card);
   border: 1px solid var(--line-strong);
   border-radius: var(--radius-control);
-  height: var(--control-h-lg);
+  /* The standard control height, like every other input and button. */
+  height: var(--control-h);
   display: flex;
   align-items: center;
   gap: 12px;
@@ -20,10 +21,6 @@
     gap: 11px;
     padding: 0 15px;
   }
-}
-
-.boxStandard {
-  height: var(--control-h);
 }
 
 .icon {
