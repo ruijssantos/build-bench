@@ -59,9 +59,10 @@ function rememberBenchSelection(request: NextRequest, response: NextResponse): v
 }
 
 export const config = {
-  // Everything except: Next internals, the PWA manifest and icons (a phone
-  // may fetch these before you're logged in), and /api/login itself.
+  // Everything except: Next internals, the PWA manifest and every icon it
+  // and the page point at, `/icons/*` included (a phone may fetch these
+  // before you're logged in), and /api/login itself.
   matcher: [
-    "/((?!_next/static|_next/image|favicon\\.ico|manifest\\.webmanifest|icon\\.png|apple-icon\\.png|api/login).*)",
+    "/((?!_next/static|_next/image|favicon\\.ico|manifest\\.webmanifest|icon\\.png|apple-icon\\.png|icons/|api/login).*)",
   ],
 };
