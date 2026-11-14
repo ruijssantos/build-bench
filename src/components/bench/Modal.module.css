@@ -83,6 +83,10 @@
   max-height: 88vh;
   background: var(--card);
   border-radius: var(--radius-card) var(--radius-card) 0 0;
+  /* The sheet sits on the screen's bottom edge, so in the home-screen web
+     app its last row would land under the home indicator. 0 everywhere
+     else. See NavTabBar.module.css. */
+  padding-bottom: env(safe-area-inset-bottom);
   box-shadow: var(--shadow-hero);
   display: flex;
   flex-direction: column;
