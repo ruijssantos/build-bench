@@ -48,6 +48,10 @@ export const viewport: Viewport = {
   themeColor: "#f3f4f1",
   width: "device-width",
   initialScale: 1,
+  // Lets `env(safe-area-inset-*)` report real values. Without it they're
+  // always 0, and in the home-screen web app the tab bar sat under the
+  // home indicator. See NavTabBar.module.css.
+  viewportFit: "cover",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

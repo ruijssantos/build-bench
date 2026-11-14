@@ -11,13 +11,20 @@
    The cost is that it drops out of `.shell`'s normal flow, which is why
    `.content` below carries matching bottom padding — nothing else on the
    page needed compensating for `sticky`, but `fixed` needs it here. */
+/* The safe-area inset grows the bar only where the home indicator overlaps
+   it: ~34px in the iOS home-screen web app, 0 in Safari with its toolbar
+   showing and on desktop. The tabs keep their 60px row; the extra is padding
+   underneath. Needs `viewportFit: "cover"` (app/layout.tsx). `.content` in
+   (bench)/layout.module.css reserves the same height. */
 .bar {
   position: fixed;
   left: 0;
   right: 0;
   bottom: 0;
   z-index: 1;
-  height: 60px;
+  box-sizing: border-box;
+  height: calc(60px + env(safe-area-inset-bottom));
+  padding-bottom: env(safe-area-inset-bottom);
   background: var(--card);
   border-top: 1px solid var(--line);
   display: flex;
