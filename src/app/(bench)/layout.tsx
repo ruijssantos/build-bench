@@ -1,3 +1,4 @@
+import { RefreshOnReturn } from "@/components/bench/RefreshOnReturn";
 import { NavRail } from "@/components/nav/NavRail";
 import { NavTabBar } from "@/components/nav/NavTabBar";
 
@@ -28,6 +29,7 @@ export default function BenchLayout({ children }: { children: React.ReactNode })
         <div className={styles.contentInner}>{children}</div>
       </main>
       <NavTabBar />
+      <RefreshOnReturn />
     </div>
   );
 }
