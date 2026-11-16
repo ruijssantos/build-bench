@@ -23,6 +23,11 @@
      there), so it no longer reserves this space on its own. Reset by the
      desktop padding below, where the tab bar itself is `display: none`. */
   padding-bottom: calc(60px + env(safe-area-inset-bottom));
+  /* Its own stacking context, so no z-index inside a page can rise above the
+     fixed tab bar (a sibling of this element). Without it, the kit cards'
+     controls at z-index 2 (Kits.module.css) drew over the bar at 1. Modals
+     are portalled to <body>, outside this, so they still cover the bar. */
+  isolation: isolate;
 }
 
 @media (min-width: 900px) {
